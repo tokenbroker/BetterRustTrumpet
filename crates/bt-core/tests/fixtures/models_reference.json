@@ -1261,6 +1261,354 @@
       }
     ]
   },
+  "ruleNormalization": {
+    "rules": [
+      {
+        "input": {
+          "current": [
+            null,
+            {},
+            {
+              "ExeName": " \t PLAYER.EXE ",
+              "DisplayName": " Music ",
+              "IconPath": " C:\\music.ico ",
+              "VolumeMode": 95,
+              "VolumePercent": 120,
+              "IsPinned": false,
+              "IsDesktopApp": true,
+              "CreatedAtUtc": "2024-03-04T05:06:07Z"
+            },
+            {
+              "ExeName": "player.exe",
+              "HardMuted": true
+            },
+            {
+              "ExeName": "İΣK",
+              "VolumeMode": "Lock",
+              "VolumePercent": -12
+            }
+          ],
+          "legacy": [
+            {
+              "ExeName": "legacy",
+              "DisplayName": "Ignored"
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [
+              {
+                "ExeName": "player.exe",
+                "DisplayName": "Music",
+                "IconPath": "C:\\music.ico",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "2024-03-04T05:06:07Z"
+              },
+              {
+                "ExeName": "İσk",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 2,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "saveMigration": false
+          }
+        }
+      },
+      {
+        "input": {
+          "current": [],
+          "legacy": [
+            null,
+            {},
+            {
+              "ExeName": " OLD ",
+              "DisplayName": " Old app ",
+              "HardMutedAtUtc": "2021-01-02T03:04:05Z"
+            },
+            {
+              "ExeName": "old"
+            },
+            {
+              "ExeName": "other"
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [
+              {
+                "ExeName": "old",
+                "DisplayName": "Old app",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2021-01-02T03:04:05Z"
+              },
+              {
+                "ExeName": "other",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "saveMigration": true
+          }
+        }
+      },
+      {
+        "input": {
+          "current": [
+            null,
+            {
+              "ExeName": "  "
+            }
+          ],
+          "legacy": [
+            null,
+            {}
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [],
+            "saveMigration": true
+          }
+        }
+      },
+      {
+        "input": {
+          "current": [],
+          "legacy": null
+        },
+        "result": {
+          "value": {
+            "entries": [],
+            "saveMigration": false
+          }
+        }
+      },
+      {
+        "input": {
+          "current": "invalid JSON",
+          "legacy": [
+            {
+              "ExeName": "fallback"
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [
+              {
+                "ExeName": "fallback",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "saveMigration": true
+          }
+        }
+      },
+      {
+        "input": {
+          "current": [],
+          "legacy": "invalid JSON"
+        },
+        "result": {
+          "value": {
+            "entries": [],
+            "saveMigration": false
+          }
+        }
+      },
+      {
+        "input": {
+          "current": [
+            {
+              "ExeName": "neutral"
+            }
+          ],
+          "legacy": [
+            {
+              "ExeName": "old"
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [
+              {
+                "ExeName": "neutral",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "saveMigration": false
+          }
+        }
+      },
+      {
+        "input": {
+          "current": null,
+          "legacy": [
+            null
+          ]
+        },
+        "result": {
+          "value": {
+            "entries": [],
+            "saveMigration": true
+          }
+        }
+      }
+    ],
+    "hiddenApps": [
+      {
+        "input": [
+          null,
+          {},
+          {
+            "DeviceId": " SPEAKERS ",
+            "AppId": " ID ",
+            "ExeName": null,
+            "DisplayName": " App ",
+            "HiddenAtUtc": "2022-01-02T03:04:05Z"
+          },
+          {
+            "DeviceId": "speakers",
+            "AppId": "id",
+            "ExeName": ""
+          },
+          {
+            "DeviceId": "speakers",
+            "ExeName": "Music"
+          },
+          {
+            "DeviceId": "",
+            "ExeName": "music"
+          },
+          {
+            "DeviceId": "a|b",
+            "AppId": "c",
+            "ExeName": "d"
+          },
+          {
+            "DeviceId": "a",
+            "AppId": "b|c",
+            "ExeName": "d"
+          },
+          {
+            "DeviceId": "Σ",
+            "AppId": " ID ",
+            "DisplayName": " "
+          }
+        ],
+        "result": {
+          "value": [
+            {
+              "DeviceId": "speakers",
+              "AppId": "id",
+              "ExeName": "",
+              "DisplayName": "App",
+              "HiddenAtUtc": "2022-01-02T03:04:05Z"
+            },
+            {
+              "DeviceId": "speakers",
+              "AppId": "",
+              "ExeName": "music",
+              "DisplayName": "",
+              "HiddenAtUtc": "0001-01-01T00:00:00"
+            },
+            {
+              "DeviceId": "a|b",
+              "AppId": "c",
+              "ExeName": "d",
+              "DisplayName": "",
+              "HiddenAtUtc": "0001-01-01T00:00:00"
+            },
+            {
+              "DeviceId": "σ",
+              "AppId": "id",
+              "ExeName": "",
+              "DisplayName": "",
+              "HiddenAtUtc": "0001-01-01T00:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "hiddenDevices": [
+      {
+        "input": [
+          null,
+          {},
+          {
+            "DeviceId": " DEVICE ",
+            "DisplayName": " First "
+          },
+          {
+            "DeviceId": "device",
+            "DisplayName": "Second"
+          },
+          {
+            "DeviceId": "ΣK",
+            "DisplayName": null
+          }
+        ],
+        "result": {
+          "value": [
+            {
+              "DeviceId": "device",
+              "DisplayName": "First",
+              "HiddenAtUtc": "0001-01-01T00:00:00"
+            },
+            {
+              "DeviceId": "σk",
+              "DisplayName": "",
+              "HiddenAtUtc": "0001-01-01T00:00:00"
+            }
+          ]
+        }
+      }
+    ]
+  },
   "slugAllBmpFingerprint": "1efc5cf90da8976b",
   "hotkey": {
     "Modifiers": 0,
@@ -2371,7 +2719,7 @@
         "Name": "Night",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 14:17",
+        "UpdatedAt": "2026-10-26 14:25",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -2448,7 +2796,7 @@
         "Name": "Renamed",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 14:17",
+        "UpdatedAt": "2026-10-26 14:25",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -2525,7 +2873,7 @@
         "Name": "Renamed",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 14:17",
+        "UpdatedAt": "2026-10-26 14:25",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -2639,7 +2987,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -2715,7 +3063,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -2793,7 +3141,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -2869,7 +3217,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -2910,7 +3258,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -2942,7 +3290,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 14:17",
+            "UpdatedAt": "2026-10-26 14:25",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
