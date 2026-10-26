@@ -1,0 +1,21 @@
+[package]
+name = "bt-app"
+description = "BetterTrumpet Rust port: tray app (preview)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file = "../../../LICENSE"
+
+[[bin]]
+name = "BetterTrumpet"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+bt-audio = { path = "../bt-audio" }
+serde.workspace = true
+serde_json.workspace = true
+tauri = { version = "2", features = ["tray-icon", "image-ico"] }

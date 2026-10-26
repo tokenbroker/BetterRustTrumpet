@@ -11,12 +11,30 @@ cd rust
 cargo test -p bt-core
 ```
 
+## Preview app
+
+A runnable preview exists while the parity milestones continue (D34). It is a
+tray icon whose left click opens a flyout with every active output device and
+its apps (volume, mute, peak meters); right click offers the Windows volume
+mixer, Sound settings and Exit. It does not read or change BetterTrumpet
+settings yet.
+
+```powershell
+cd rust
+cargo run -p bt-app --release            # tray only
+cargo run -p bt-app --release -- --show  # also open the flyout at startup
+cargo run -p bt-audio --example sessions # print devices and sessions
+```
+
+The release binary is `rust/target/release/BetterTrumpet.exe`. Requires
+Windows 10/11 with the WebView2 runtime (preinstalled on Windows 11).
+
 ## Workspace
 
-`bt-core` contains portable compatibility behavior. Windows audio/media, IPC,
-Tauri app and CLI crates will be added in the ordered milestones after core
-acceptance. The early standalone audio probe has been retired in favor of the
-audited architecture.
+`bt-core` contains portable compatibility behavior. `bt-audio` is the Core
+Audio engine (preview scope so far: endpoints, app sessions, volume, mute,
+peaks on a dedicated COM thread). `bt-app` is the Tauri v2 tray app. Media,
+IPC and CLI crates follow in their milestones.
 
 Model golden fixtures can be regenerated on Windows with .NET 8 desktop runtime:
 

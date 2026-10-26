@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/bt-core"]
+members = ["crates/bt-core", "crates/bt-audio", "crates/bt-app"]
 resolver = "3"
 
 [workspace.package]
@@ -13,3 +13,4 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["float_roundtrip"] }
 thiserror = "2"
 quick-xml = "0.41.0"
+windows = "0.62"

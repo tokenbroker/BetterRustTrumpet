@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BetterTrumpet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="flyout" aria-label="Volume mixer">
+    <div id="devices"></div>
+    <p id="status" hidden></p>
+  </main>
+  <template id="device-template">
+    <section class="device">
+      <header>
+        <span class="device-name"></span>
+        <span class="default-badge" hidden>Default</span>
+      </header>
+      <div class="row master">
+        <button class="mute" type="button" aria-label="Mute device"></button>
+        <div class="slider">
+          <input type="range" min="0" max="100" step="1" aria-label="Device volume" />
+          <div class="peak"><div class="peak-fill"></div></div>
+        </div>
+        <span class="value"></span>
+      </div>
+      <div class="apps"></div>
+    </section>
+  </template>
+  <template id="app-template">
+    <div class="row app">
+      <button class="mute icon" type="button"><span class="initial"></span></button>
+      <div class="slider">
+        <span class="app-name"></span>
+        <input type="range" min="0" max="100" step="1" />
+        <div class="peak"><div class="peak-fill"></div></div>
+      </div>
+      <span class="value"></span>
+    </div>
+  </template>
+  <script src="main.js"></script>
+</body>
+</html>
