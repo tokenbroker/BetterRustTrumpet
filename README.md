@@ -18,6 +18,15 @@ Tauri app and CLI crates will be added in the ordered milestones after core
 acceptance. The early standalone audio probe has been retired in favor of the
 audited architecture.
 
+Model golden fixtures can be regenerated on Windows with .NET 8 desktop runtime:
+
+```powershell
+python ../docs/port/capture_model_fixtures.py
+```
+
+That helper executes original model source in an isolated temporary project;
+it does not start the legacy tray application or access user settings.
+
 Based on EarTrumpet by David Golden, Rafael Rivera and Dave Amenta and
 BetterTrumpet by xammen. Preserve the entire upstream [LICENSE](../LICENSE),
 including its preamble, in source and distributions.

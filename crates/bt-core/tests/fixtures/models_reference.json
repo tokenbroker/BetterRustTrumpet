@@ -1,0 +1,495 @@
+{
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31",
+  "hotkey": {
+    "Modifiers": 0,
+    "Key": 0,
+    "IsEmpty": true
+  },
+  "themes": [
+    {
+      "Name": "Default (Windows Accent)",
+      "Category": "Minimal",
+      "Thumb": "#0078D7",
+      "Fill": "#0078D7",
+      "Background": "#505050",
+      "Peak": "#0078D7",
+      "WindowBg": "#202020",
+      "Text": "#FFFFFF",
+      "Glow": "#0078D7",
+      "Opacity": null
+    },
+    {
+      "Name": "Midnight Studio",
+      "Category": "Minimal",
+      "Thumb": "#5C91EE",
+      "Fill": "#3A6FCE",
+      "Background": "#1C1F27",
+      "Peak": "#F2B556",
+      "WindowBg": "#101218",
+      "Text": "#F2F4F8",
+      "Glow": "#689EF8",
+      "Opacity": 0.45
+    },
+    {
+      "Name": "Graphite",
+      "Category": "Minimal",
+      "Thumb": "#DEAE70",
+      "Fill": "#AE7B4C",
+      "Background": "#27282D",
+      "Peak": "#6FC2A5",
+      "WindowBg": "#16171B",
+      "Text": "#EEEFEA",
+      "Glow": "#E7B575",
+      "Opacity": 0.75
+    },
+    {
+      "Name": "Spotify",
+      "Category": "Apps",
+      "Thumb": "#1ED760",
+      "Fill": "#19AF50",
+      "Background": "#282828",
+      "Peak": "#FF7864",
+      "WindowBg": "#121212",
+      "Text": "#F0F0F0",
+      "Glow": "#1ED760",
+      "Opacity": 0.85
+    },
+    {
+      "Name": "Discord",
+      "Category": "Apps",
+      "Thumb": "#5865F2",
+      "Fill": "#57F287",
+      "Background": "#1E1F22",
+      "Peak": "#F0B232",
+      "WindowBg": "#2B2D31",
+      "Text": "#E3E5E8",
+      "Glow": "#5865F2",
+      "Opacity": 0.9
+    },
+    {
+      "Name": "Dracula",
+      "Category": "Editors",
+      "Thumb": "#BD93F9",
+      "Fill": "#FF79C6",
+      "Background": "#21222C",
+      "Peak": "#8BE9FD",
+      "WindowBg": "#282A36",
+      "Text": "#F8F8F2",
+      "Glow": "#BD93F9",
+      "Opacity": 0.75
+    },
+    {
+      "Name": "Catppuccin",
+      "Category": "Editors",
+      "Thumb": "#CBA6F7",
+      "Fill": "#89B4FA",
+      "Background": "#181825",
+      "Peak": "#A6E3A1",
+      "WindowBg": "#1E1E2E",
+      "Text": "#CDD6F4",
+      "Glow": "#F5C2E7",
+      "Opacity": 0.7
+    },
+    {
+      "Name": "Nord",
+      "Category": "Editors",
+      "Thumb": "#88C0D0",
+      "Fill": "#A3BE8C",
+      "Background": "#242933",
+      "Peak": "#D08770",
+      "WindowBg": "#2E3440",
+      "Text": "#D8DEE9",
+      "Glow": "#88C0D0",
+      "Opacity": 0.65
+    },
+    {
+      "Name": "Synthwave",
+      "Category": "Atmosphere",
+      "Thumb": "#FF1080",
+      "Fill": "#00FFFF",
+      "Background": "#19052D",
+      "Peak": "#FFA000",
+      "WindowBg": "#0F021E",
+      "Text": "#FF82DC",
+      "Glow": "#B400FF",
+      "Opacity": 0.5
+    },
+    {
+      "Name": "Aurora",
+      "Category": "Atmosphere",
+      "Thumb": "#00FFAA",
+      "Fill": "#783CDC",
+      "Background": "#080F19",
+      "Peak": "#FF8CB4",
+      "WindowBg": "#050A12",
+      "Text": "#BEF0DC",
+      "Glow": "#00DC96",
+      "Opacity": 0.45
+    },
+    {
+      "Name": "High Contrast",
+      "Category": "Accessibility",
+      "Thumb": "#FFFFFF",
+      "Fill": "#FFFF00",
+      "Background": "#000000",
+      "Peak": "#00FFFF",
+      "WindowBg": "#000000",
+      "Text": "#FFFFFF",
+      "Glow": "#FFFF00",
+      "Opacity": 1.0
+    },
+    {
+      "Name": "Color Blind Safe",
+      "Category": "Accessibility",
+      "Thumb": "#0072B2",
+      "Fill": "#E69F00",
+      "Background": "#0F0F12",
+      "Peak": "#CC79A7",
+      "WindowBg": "#101014",
+      "Text": "#DCDCE6",
+      "Glow": "#56B4E9",
+      "Opacity": 0.95
+    }
+  ],
+  "themeImports": [
+    {
+      "input": "{\"Name\":\"Legacy\",\"Thumb\":\"#102030\",\"Fill\":\"#abcdef\",\"Background\":\"#010203\",\"Peak\":\"#fff\"}",
+      "result": {
+        "value": {
+          "Name": "Legacy",
+          "Category": "Custom",
+          "Thumb": "#102030",
+          "Fill": "#ABCDEF",
+          "Background": "#010203",
+          "Peak": "#FFFFFF",
+          "WindowBg": "#000000",
+          "Text": "#FFFFFF",
+          "Glow": "#ABCDEF",
+          "Opacity": null
+        }
+      }
+    },
+    {
+      "input": "{\"Name\":\"Opaque\",\"Category\":\"Custom\",\"Thumb\":\"#123456\",\"Fill\":\"#123456\",\"Background\":\"#123456\",\"Peak\":\"#123456\",\"Opacity\":2}",
+      "result": {
+        "value": {
+          "Name": "Opaque",
+          "Category": "Custom",
+          "Thumb": "#123456",
+          "Fill": "#123456",
+          "Background": "#123456",
+          "Peak": "#123456",
+          "WindowBg": "#000000",
+          "Text": "#FFFFFF",
+          "Glow": "#123456",
+          "Opacity": 1.0
+        }
+      }
+    },
+    {
+      "input": "{\"Thumb\":\"#123456\",\"Fill\":\"#123456\",\"Background\":\"#123456\",\"Peak\":\"#123456\",\"Opacity\":\"0.01\"}",
+      "result": {
+        "value": {
+          "Name": null,
+          "Category": "Custom",
+          "Thumb": "#123456",
+          "Fill": "#123456",
+          "Background": "#123456",
+          "Peak": "#123456",
+          "WindowBg": "#000000",
+          "Text": "#FFFFFF",
+          "Glow": "#123456",
+          "Opacity": 0.05
+        }
+      }
+    },
+    {
+      "input": "{\"Thumb\":\"#GGGGGG\",\"Fill\":\"#123456\",\"Background\":\"#123456\",\"Peak\":\"#123456\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Thumb\":\"#123456\",\"Background\":\"#123456\",\"Peak\":\"#123456\"}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "input": "{}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": null,
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": false,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": []
+        }
+      }
+    },
+    {
+      "input": "{\"SchemaVersion\":1,\"Name\":\"Night\",\"ApplyAppsOnly\":true,\"Devices\":[{\"DeviceId\":\"speakers\",\"Apps\":[{\"ExeName\":\"music\",\"Volume\":35}]}]}",
+      "result": {
+        "value": {
+          "SchemaVersion": 1,
+          "Id": null,
+          "Name": "Night",
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": false,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": true,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": [
+            {
+              "DeviceId": "speakers",
+              "DisplayName": null,
+              "Volume": 0,
+              "IsMuted": false,
+              "IncludeVolume": true,
+              "Apps": [
+                {
+                  "ExeName": "music",
+                  "AppId": null,
+                  "DisplayName": null,
+                  "DeviceId": null,
+                  "DeviceDisplayName": null,
+                  "Volume": 35,
+                  "IsMuted": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "input": "{\"ApplyAppsOnly\":true,\"IncludeDeviceVolumes\":true}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": null,
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": false,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": []
+        }
+      }
+    },
+    {
+      "input": "{\"IncludeDeviceVolumes\":true,\"ApplyAppsOnly\":true}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": null,
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": false,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": true,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": []
+        }
+      }
+    },
+    {
+      "input": "{\"nAmE\":\"Mixed Case\",\"RouteApps\":false,\"CaptureScope\":\"AllDevices\"}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": "Mixed Case",
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 1,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": false,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": false,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": []
+        }
+      }
+    },
+    {
+      "input": "{\"Hotkey\":null,\"Devices\":null,\"DefaultDevices\":null,\"CaptureScope\":14}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": null,
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 14,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": null,
+          "ApplyAppsOnly": false,
+          "Hotkey": null,
+          "Devices": null
+        }
+      }
+    },
+    {
+      "input": "{\"Hotkey\":{\"Modifiers\":196608,\"Key\":80,\"IsEmpty\":true},\"Ignored\":{\"future\":true}}",
+      "result": {
+        "value": {
+          "SchemaVersion": 3,
+          "Id": null,
+          "Name": null,
+          "Slug": null,
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": false,
+          "Hotkey": {
+            "Modifiers": 196608,
+            "Key": 80,
+            "IsEmpty": false
+          },
+          "Devices": []
+        }
+      }
+    }
+  ],
+  "appRules": [
+    {
+      "input": "{}",
+      "result": {
+        "value": {
+          "ExeName": null,
+          "DisplayName": null,
+          "IconPath": null,
+          "IsDesktopApp": false,
+          "IsPinned": false,
+          "HardMuted": false,
+          "FocusLostEnabled": false,
+          "VolumeMode": 0,
+          "VolumePercent": 0,
+          "CreatedAtUtc": "0001-01-01T00:00:00"
+        }
+      }
+    },
+    {
+      "input": "{\"ExeName\":\"discord\",\"IsPinned\":true,\"VolumeMode\":\"Lock\",\"VolumePercent\":55}",
+      "result": {
+        "value": {
+          "ExeName": "discord",
+          "DisplayName": null,
+          "IconPath": null,
+          "IsDesktopApp": false,
+          "IsPinned": true,
+          "HardMuted": false,
+          "FocusLostEnabled": false,
+          "VolumeMode": 2,
+          "VolumePercent": 55,
+          "CreatedAtUtc": "0001-01-01T00:00:00"
+        }
+      }
+    },
+    {
+      "input": "{\"exeNAME\":\"music\",\"VolumeMode\":45,\"HasActiveBehavior\":false}",
+      "result": {
+        "value": {
+          "ExeName": "music",
+          "DisplayName": null,
+          "IconPath": null,
+          "IsDesktopApp": false,
+          "IsPinned": false,
+          "HardMuted": false,
+          "FocusLostEnabled": false,
+          "VolumeMode": 45,
+          "VolumePercent": 0,
+          "CreatedAtUtc": "0001-01-01T00:00:00"
+        }
+      }
+    }
+  ]
+}
