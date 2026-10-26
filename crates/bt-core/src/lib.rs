@@ -4,10 +4,12 @@
 pub mod cli;
 pub mod cli_responses;
 pub mod cli_rules;
+pub mod cli_validation;
 pub mod focus;
 pub mod folders;
 pub mod identity;
 pub mod models;
+pub mod numbers;
 pub mod profiles;
 pub mod protocol;
 pub mod rules;

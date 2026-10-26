@@ -3,6 +3,7 @@
 use crate::{
     cli::is_flag,
     identity::filename_without_extension,
+    numbers::IntegerFormat,
     text::{
         invariant_lower, is_blank, ordinal_compare, ordinal_contains, ordinal_ignore_case,
         ordinal_ignore_case_optional, ordinal_key, ordinal_starts_with,
@@ -99,7 +100,11 @@ pub struct PlanChange {
 
 pub const USAGE: &str = "usage: rule-preview --keep APP=VOL [--keep APP=VOL] [--others VOL] [--apps-only] [--current-device]";
 
-fn target(value: &str, assignment: &mut Assignment) -> Result<(), String> {
+fn target(
+    value: &str,
+    assignment: &mut Assignment,
+    format: IntegerFormat<'_>,
+) -> Result<(), String> {
     if is_blank(Some(value)) {
         return Err("missing assignment value".into());
     }
@@ -108,16 +113,8 @@ fn target(value: &str, assignment: &mut Assignment) -> Result<(), String> {
         "mute" | "muted" => assignment.is_muted = Some(true),
         "unmute" | "unmuted" => assignment.is_muted = Some(false),
         _ => {
-            // int.TryParse(NumberStyles.Integer): ASCII digits/whitespace and
-            // trailing NUL compatibility. Non-en-US number-format contracts
-            // still need implementation/fixtures before the CLI gate closes.
-            let numeric = normalized
-                .trim_end_matches('%')
-                .trim_end_matches('\0')
-                .trim_matches(|c: char| c == ' ' || ('\t'..='\r').contains(&c));
-            let volume = numeric
-                .parse::<i32>()
-                .ok()
+            let volume = format
+                .parse_i32(normalized.trim_end_matches('%'))
                 .filter(|n| (0..=100).contains(n))
                 .ok_or_else(|| "volume must be 0-100, mute, or unmute".to_owned())?;
             assignment.volume = Some(volume);
@@ -128,6 +125,14 @@ fn target(value: &str, assignment: &mut Assignment) -> Result<(), String> {
 }
 
 pub fn parse_assignment(value: &str, is_others: bool) -> Result<Assignment, String> {
+    parse_assignment_with_format(value, is_others, IntegerFormat::INVARIANT)
+}
+
+pub fn parse_assignment_with_format(
+    value: &str,
+    is_others: bool,
+    format: IntegerFormat<'_>,
+) -> Result<Assignment, String> {
     let mut assignment = Assignment {
         is_others,
         ..Default::default()
@@ -136,7 +141,7 @@ pub fn parse_assignment(value: &str, is_others: bool) -> Result<Assignment, Stri
         return Err("empty assignment".into());
     }
     if is_others && !value.contains('=') {
-        target(value, &mut assignment)?;
+        target(value, &mut assignment, format)?;
         return Ok(assignment);
     }
     let (query, state) = value
@@ -146,11 +151,18 @@ pub fn parse_assignment(value: &str, is_others: bool) -> Result<Assignment, Stri
     let query = query.trim();
     assignment.is_others |= ordinal_ignore_case(query, "others") || query == "*";
     assignment.query = Some(query.into());
-    target(state, &mut assignment)?;
+    target(state, &mut assignment, format)?;
     Ok(assignment)
 }
 
+/// Invariant-format convenience entry point. Installed commands supply their
+/// culture through parse_with_format.
 pub fn parse(args: &[String]) -> Result<Spec, String> {
+    parse_with_format(args, IntegerFormat::INVARIANT)
+}
+
+/// The installed dispatcher supplies its CurrentCulture number signs.
+pub fn parse_with_format(args: &[String], format: IntegerFormat<'_>) -> Result<Spec, String> {
     if args.is_empty() {
         return Err(USAGE.into());
     }
@@ -169,12 +181,13 @@ pub fn parse(args: &[String]) -> Result<Spec, String> {
                 .get(index)
                 .ok_or_else(|| format!("{arg} requires APP=VOL"))?;
             index += 1;
-            spec.keep.push(parse_assignment(value, false)?);
+            spec.keep
+                .push(parse_assignment_with_format(value, false, format)?);
         } else if is_flag(arg, "--others") {
             let value = args.get(index).ok_or("--others requires VOL")?;
             index += 1;
-            spec.others = Some(parse_assignment(value, true)?);
-        } else if let Ok(assignment) = parse_assignment(arg, false) {
+            spec.others = Some(parse_assignment_with_format(value, true, format)?);
+        } else if let Ok(assignment) = parse_assignment_with_format(arg, false, format) {
             if assignment.is_others {
                 return Err(format!("unknown rule argument: {arg}"));
             }
@@ -501,16 +514,32 @@ pub fn preview_command(
     collection: Option<&Collection>,
     args: &[String],
 ) -> Result<PreviewResponse, String> {
+    preview_command_with_format(collection, args, IntegerFormat::INVARIANT)
+}
+
+pub fn preview_command_with_format(
+    collection: Option<&Collection>,
+    args: &[String],
+    format: IntegerFormat<'_>,
+) -> Result<PreviewResponse, String> {
     let collection = collection.ok_or("audio not ready")?;
-    Ok(preview(collection, &parse(args)?))
+    Ok(preview(collection, &parse_with_format(args, format)?))
 }
 
 pub fn apply_command(
     collection: Option<&mut Collection>,
     args: &[String],
 ) -> Result<ApplyResponse, String> {
+    apply_command_with_format(collection, args, IntegerFormat::INVARIANT)
+}
+
+pub fn apply_command_with_format(
+    collection: Option<&mut Collection>,
+    args: &[String],
+    format: IntegerFormat<'_>,
+) -> Result<ApplyResponse, String> {
     let collection = collection.ok_or("audio not ready")?;
-    Ok(apply(collection, &parse(args)?))
+    Ok(apply(collection, &parse_with_format(args, format)?))
 }
 
 pub fn resolve_command(

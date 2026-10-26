@@ -6,6 +6,11 @@ adapt rules from the .NET runtime's
 
 Copyright (c) .NET Foundation and Contributors.
 
+The integer parsing/sign rules in `bt-core/src/numbers.rs` also adapt
+[Number.Parsing.cs](https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/Number.Parsing.cs)
+and [NumberFormatInfo.cs](https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/Globalization/NumberFormatInfo.cs)
+from the .NET 8 runtime, under the same copyright and MIT license below.
+
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
