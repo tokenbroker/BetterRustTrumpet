@@ -24,6 +24,15 @@ pub fn invariant_lower(value: &str) -> String {
         .collect()
 }
 
+/// `ToUpperInvariant`, which also maps characters OrdinalIgnoreCase does not
+/// treat as equal (e.g. U+017F to `S`).
+pub fn invariant_upper(value: &str) -> String {
+    value
+        .chars()
+        .map(|c| mapped(c as u32, data::INVARIANT_UPPER_RANGES).unwrap_or(c))
+        .collect()
+}
+
 pub fn ordinal_ignore_case(left: &str, right: &str) -> bool {
     let fold = |c: char| mapped(c as u32, data::ORDINAL_UPPER_RANGES).unwrap_or(c);
     left.chars().map(fold).eq(right.chars().map(fold))

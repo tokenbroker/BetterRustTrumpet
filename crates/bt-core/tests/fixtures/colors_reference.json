@@ -1,0 +1,2935 @@
+{
+  "cultures": [
+    {
+      "culture": "",
+      "colors": [
+        {
+          "input": "#FFF",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#fff",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#8FFF",
+          "result": {
+            "a": 136,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1057523849,
+            "text": "#88FFFFFF"
+          }
+        },
+        {
+          "input": "#123456",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "#12345678",
+          "result": {
+            "a": 18,
+            "r": 52,
+            "g": 86,
+            "b": 120,
+            "scA": 1032884369,
+            "text": "#12345678"
+          }
+        },
+        {
+          "input": "#abcdef",
+          "result": {
+            "a": 255,
+            "r": 171,
+            "g": 205,
+            "b": 239,
+            "scA": 1065353216,
+            "text": "#FFABCDEF"
+          }
+        },
+        {
+          "input": "#ABCDEF",
+          "result": {
+            "a": 255,
+            "r": 171,
+            "g": 205,
+            "b": 239,
+            "scA": 1065353216,
+            "text": "#FFABCDEF"
+          }
+        },
+        {
+          "input": "#00FFFFFF",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "#FF",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#FFFFF",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#1234567",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#123456789",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#GGG",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#12345G",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": " #123456 ",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "\t#123\n",
+          "result": {
+            "a": 255,
+            "r": 17,
+            "g": 34,
+            "b": 51,
+            "scA": 1065353216,
+            "text": "#FF112233"
+          }
+        },
+        {
+          "input": "#١٢٣",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "##12",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#1 2",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#ffffffff",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#00000000",
+          "result": {
+            "a": 0,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 0,
+            "text": "#00000000"
+          }
+        },
+        {
+          "input": " #123456 ",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "Red",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "red",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "RED",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "rEd",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": " Red ",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "Transparent",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "transparent",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "Aqua",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FF00FFFF"
+          }
+        },
+        {
+          "input": "Cyan",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FF00FFFF"
+          }
+        },
+        {
+          "input": "Fuchsia",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFF00FF"
+          }
+        },
+        {
+          "input": "Magenta",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFF00FF"
+          }
+        },
+        {
+          "input": "White",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "whıte",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ALICEBLUE",
+          "result": {
+            "a": 255,
+            "r": 240,
+            "g": 248,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFF0F8FF"
+          }
+        },
+        {
+          "input": "LightGoldenrodYellow",
+          "result": {
+            "a": 255,
+            "r": 250,
+            "g": 250,
+            "b": 210,
+            "scA": 1065353216,
+            "text": "#FFFAFAD2"
+          }
+        },
+        {
+          "input": "YellowGreen",
+          "result": {
+            "a": 255,
+            "r": 154,
+            "g": 205,
+            "b": 50,
+            "scA": 1065353216,
+            "text": "#FF9ACD32"
+          }
+        },
+        {
+          "input": "Unknown",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "   ",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Red,",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Re d",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Gray",
+          "result": {
+            "a": 255,
+            "r": 128,
+            "g": 128,
+            "b": 128,
+            "scA": 1065353216,
+            "text": "#FF808080"
+          }
+        },
+        {
+          "input": "Grey",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "DarkGrey",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "KHAKI",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Khaki",
+          "result": {
+            "a": 255,
+            "r": 240,
+            "g": 230,
+            "b": 140,
+            "scA": 1065353216,
+            "text": "#FFF0E68C"
+          }
+        },
+        {
+          "input": "ſILVER",
+          "result": {
+            "a": 255,
+            "r": 192,
+            "g": 192,
+            "b": 192,
+            "scA": 1065353216,
+            "text": "#FFC0C0C0"
+          }
+        },
+        {
+          "input": "Silver",
+          "result": {
+            "a": 255,
+            "r": 192,
+            "g": 192,
+            "b": 192,
+            "scA": 1065353216,
+            "text": "#FFC0C0C0"
+          }
+        },
+        {
+          "input": "RebeccaPurple",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Red\u0000",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,0.5,0.25",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 188,
+            "b": 137,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0.5, 0.25"
+          }
+        },
+        {
+          "input": "sc#1, 0.5, 0.25",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 188,
+            "b": 137,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0.5, 0.25"
+          }
+        },
+        {
+          "input": "sc#0.5,1,0,0",
+          "result": {
+            "a": 128,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1056964608,
+            "text": "sc#0.5, 1, 0, 0"
+          }
+        },
+        {
+          "input": "sc# 1 0 0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0, 0"
+          }
+        },
+        {
+          "input": "sc#1 0 0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0, 0"
+          }
+        },
+        {
+          "input": "sc#1,,0,0",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1,0",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1,0,0,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#-1,2,0.5",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 255,
+            "b": 188,
+            "scA": 1065353216,
+            "text": "sc#1, -1, 2, 0.5"
+          }
+        },
+        {
+          "input": "sc#NaN,0,0",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, NaN, 0, 0"
+          }
+        },
+        {
+          "input": "sc#1e-3,1,1",
+          "result": {
+            "a": 255,
+            "r": 3,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "sc#1, 0.001, 1, 1"
+          }
+        },
+        {
+          "input": "sc#'1',0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.002,0.5,0.99999",
+          "result": {
+            "a": 255,
+            "r": 7,
+            "g": 188,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "sc#1, 0.002, 0.5, 0.99999"
+          }
+        },
+        {
+          "input": "sc#0.0031308,0.0031309,0.04045",
+          "result": {
+            "a": 255,
+            "r": 10,
+            "g": 10,
+            "b": 57,
+            "scA": 1065353216,
+            "text": "sc#1, 0.0031308, 0.0031309, 0.04045"
+          }
+        },
+        {
+          "input": "sc#2,0.5,0.5,0.5",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 188,
+            "b": 188,
+            "scA": 1073741824,
+            "text": "sc#2, 0.5, 0.5, 0.5"
+          }
+        },
+        {
+          "input": "sc#-0.5,0.5,0.5,0.5",
+          "result": {
+            "a": 0,
+            "r": 188,
+            "g": 188,
+            "b": 188,
+            "scA": -1090519040,
+            "text": "sc#-0.5, 0.5, 0.5, 0.5"
+          }
+        },
+        {
+          "input": "sc#0.5,0.5,0.5,",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#,0.5,0.5,0.5",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,0,0 ",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0, 0"
+          }
+        },
+        {
+          "input": " sc#1,0,0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0, 0"
+          }
+        },
+        {
+          "input": "SC#1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1.5e1,0.25,0.75",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 137,
+            "b": 225,
+            "scA": 1065353216,
+            "text": "sc#1, 15, 0.25, 0.75"
+          }
+        },
+        {
+          "input": "sc#1,000,0,0",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 0, 0, 0"
+          }
+        },
+        {
+          "input": "sc#0,5;0,25;0,75",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0,5 0,25 0,75",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#+0.5,0.5,0.5",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 188,
+            "b": 188,
+            "scA": 1065353216,
+            "text": "sc#1, 0.5, 0.5, 0.5"
+          }
+        },
+        {
+          "input": "sc#Infinity,0,0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, Infinity, 0, 0"
+          }
+        },
+        {
+          "input": "sc#0.1,0.2,0.3,0.4",
+          "result": {
+            "a": 26,
+            "r": 124,
+            "g": 149,
+            "b": 170,
+            "scA": 1036831949,
+            "text": "sc#0.1, 0.2, 0.3, 0.4"
+          }
+        },
+        {
+          "input": "sc#0.18,0.5,0.73",
+          "result": {
+            "a": 255,
+            "r": 118,
+            "g": 188,
+            "b": 222,
+            "scA": 1065353216,
+            "text": "sc#1, 0.18, 0.5, 0.73"
+          }
+        },
+        {
+          "input": "sc#1e10,0,0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1E+10, 0, 0"
+          }
+        },
+        {
+          "input": "sc#1,0,0 ",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 0, 0"
+          }
+        },
+        {
+          "input": "sc#0x1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.99999994,0.5000001,0.21404114",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 188,
+            "b": 128,
+            "scA": 1065353216,
+            "text": "sc#1, 0.99999994, 0.5000001, 0.21404114"
+          }
+        },
+        {
+          "input": "sc#1, 1 ,1",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "sc#1, 1, 1, 1"
+          }
+        },
+        {
+          "input": "sc#1 ,, 1,1",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#١,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#.5,0.,5.",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 0,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "sc#1, 0.5, 0, 5"
+          }
+        },
+        {
+          "input": "sc#Infinity;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#∞;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#NaN;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#-∞;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1.000,5;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,5e1;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#.5;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#,5;0;0",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1..0;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,,5;0;0",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#infinity;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#+∞;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#-NaN;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1e;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1e+;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ContextColor file:///C:/bt-port-nonexistent.icc 1,0,0,0",
+          "result": {
+            "errorType": "FileNotFoundException"
+          }
+        },
+        {
+          "input": "contextcolor x",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ContextColor",
+          "result": {
+            "errorType": "FormatException"
+          }
+        }
+      ],
+      "scFloats": [
+        {
+          "input": "1",
+          "bits": 1065353216,
+          "text": "sc#1, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.5",
+          "bits": 1056964608,
+          "text": "sc#0.5, 0.5, 0.25, 1",
+          "a": 128,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.1",
+          "bits": 1036831949,
+          "text": "sc#0.1, 0.5, 0.25, 1",
+          "a": 26,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E-05",
+          "bits": 925353388,
+          "text": "sc#1E-05, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.0001",
+          "bits": 953267991,
+          "text": "sc#0.0001, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1234567",
+          "bits": 1234613304,
+          "text": "sc#1234567, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "12345678",
+          "bits": 1262248270,
+          "text": "sc#12345678, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.2345678E+07",
+          "bits": 1262248270,
+          "text": "sc#12345678, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "16777216",
+          "bits": 1266679808,
+          "text": "sc#16777216, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+07",
+          "bits": 1259902592,
+          "text": "sc#10000000, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+38",
+          "bits": 2123789977,
+          "text": "sc#1E+38, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "3.4028235E+38",
+          "bits": 2139095039,
+          "text": "sc#3.4028235E+38, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.401298E-45",
+          "bits": 1,
+          "text": "sc#1E-45, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.333333343",
+          "bits": 1051372203,
+          "text": "sc#0.33333334, 0.5, 0.25, 1",
+          "a": 85,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-0",
+          "bits": -2147483648,
+          "text": "sc#-0, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.17549435E-38",
+          "bits": 8388608,
+          "text": "sc#1.1754944E-38, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "100000",
+          "bits": 1203982336,
+          "text": "sc#100000, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "9999999",
+          "bits": 1259902591,
+          "text": "sc#9999999, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.00001234",
+          "bits": 927926245,
+          "text": "sc#1.234E-05, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+08",
+          "bits": 1287568416,
+          "text": "sc#100000000, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+09",
+          "bits": 1315859240,
+          "text": "sc#1E+09, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "123456789",
+          "bits": 1290500515,
+          "text": "sc#123456790, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.5E+09",
+          "bits": 1320341598,
+          "text": "sc#1.5E+09, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "999999999",
+          "bits": 1315859240,
+          "text": "sc#1E+09, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "NaN",
+          "bits": -4194304,
+          "text": "sc#NaN, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "Infinity",
+          "bits": 2139095040,
+          "text": "sc#Infinity, 0.5, 0.25, 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-Infinity",
+          "bits": -8388608,
+          "text": "sc#-Infinity, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-1.5",
+          "bits": -1077936128,
+          "text": "sc#-1.5, 0.5, 0.25, 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        }
+      ]
+    },
+    {
+      "culture": "de-DE",
+      "colors": [
+        {
+          "input": "#FFF",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#fff",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#8FFF",
+          "result": {
+            "a": 136,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1057523849,
+            "text": "#88FFFFFF"
+          }
+        },
+        {
+          "input": "#123456",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "#12345678",
+          "result": {
+            "a": 18,
+            "r": 52,
+            "g": 86,
+            "b": 120,
+            "scA": 1032884369,
+            "text": "#12345678"
+          }
+        },
+        {
+          "input": "#abcdef",
+          "result": {
+            "a": 255,
+            "r": 171,
+            "g": 205,
+            "b": 239,
+            "scA": 1065353216,
+            "text": "#FFABCDEF"
+          }
+        },
+        {
+          "input": "#ABCDEF",
+          "result": {
+            "a": 255,
+            "r": 171,
+            "g": 205,
+            "b": 239,
+            "scA": 1065353216,
+            "text": "#FFABCDEF"
+          }
+        },
+        {
+          "input": "#00FFFFFF",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "#FF",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#FFFFF",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#1234567",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#123456789",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#GGG",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#12345G",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": " #123456 ",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "\t#123\n",
+          "result": {
+            "a": 255,
+            "r": 17,
+            "g": 34,
+            "b": 51,
+            "scA": 1065353216,
+            "text": "#FF112233"
+          }
+        },
+        {
+          "input": "#١٢٣",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "##12",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#1 2",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "#ffffffff",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "#00000000",
+          "result": {
+            "a": 0,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 0,
+            "text": "#00000000"
+          }
+        },
+        {
+          "input": " #123456 ",
+          "result": {
+            "a": 255,
+            "r": 18,
+            "g": 52,
+            "b": 86,
+            "scA": 1065353216,
+            "text": "#FF123456"
+          }
+        },
+        {
+          "input": "Red",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "red",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "RED",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "rEd",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": " Red ",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "#FFFF0000"
+          }
+        },
+        {
+          "input": "Transparent",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "transparent",
+          "result": {
+            "a": 0,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 0,
+            "text": "#00FFFFFF"
+          }
+        },
+        {
+          "input": "Aqua",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FF00FFFF"
+          }
+        },
+        {
+          "input": "Cyan",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FF00FFFF"
+          }
+        },
+        {
+          "input": "Fuchsia",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFF00FF"
+          }
+        },
+        {
+          "input": "Magenta",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFF00FF"
+          }
+        },
+        {
+          "input": "White",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFFFFFFF"
+          }
+        },
+        {
+          "input": "whıte",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ALICEBLUE",
+          "result": {
+            "a": 255,
+            "r": 240,
+            "g": 248,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "#FFF0F8FF"
+          }
+        },
+        {
+          "input": "LightGoldenrodYellow",
+          "result": {
+            "a": 255,
+            "r": 250,
+            "g": 250,
+            "b": 210,
+            "scA": 1065353216,
+            "text": "#FFFAFAD2"
+          }
+        },
+        {
+          "input": "YellowGreen",
+          "result": {
+            "a": 255,
+            "r": 154,
+            "g": 205,
+            "b": 50,
+            "scA": 1065353216,
+            "text": "#FF9ACD32"
+          }
+        },
+        {
+          "input": "Unknown",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "   ",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Red,",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Re d",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Gray",
+          "result": {
+            "a": 255,
+            "r": 128,
+            "g": 128,
+            "b": 128,
+            "scA": 1065353216,
+            "text": "#FF808080"
+          }
+        },
+        {
+          "input": "Grey",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "DarkGrey",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "KHAKI",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Khaki",
+          "result": {
+            "a": 255,
+            "r": 240,
+            "g": 230,
+            "b": 140,
+            "scA": 1065353216,
+            "text": "#FFF0E68C"
+          }
+        },
+        {
+          "input": "ſILVER",
+          "result": {
+            "a": 255,
+            "r": 192,
+            "g": 192,
+            "b": 192,
+            "scA": 1065353216,
+            "text": "#FFC0C0C0"
+          }
+        },
+        {
+          "input": "Silver",
+          "result": {
+            "a": 255,
+            "r": 192,
+            "g": 192,
+            "b": 192,
+            "scA": 1065353216,
+            "text": "#FFC0C0C0"
+          }
+        },
+        {
+          "input": "RebeccaPurple",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "Red\u0000",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,0.5,0.25",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1, 0.5, 0.25",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "scA": 1065353216,
+            "text": "sc#1; 1; 5; 25"
+          }
+        },
+        {
+          "input": "sc#0.5,1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc# 1 0 0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 1; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1 0 0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 1; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1,,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,0",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1,0,0,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#-1,2,0.5",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#NaN,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1e-3,1,1",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#'1',0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.002,0.5,0.99999",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.0031308,0.0031309,0.04045",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#2,0.5,0.5,0.5",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#-0.5,0.5,0.5,0.5",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.5,0.5,0.5,",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#,0.5,0.5,0.5",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 1; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1,0,0 ",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": " sc#1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "SC#1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1",
+          "result": {
+            "errorType": "InvalidOperationException"
+          }
+        },
+        {
+          "input": "sc#1.5e1,0.25,0.75",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,000,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0,5;0,25;0,75",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 137,
+            "b": 225,
+            "scA": 1065353216,
+            "text": "sc#1; 0,5; 0,25; 0,75"
+          }
+        },
+        {
+          "input": "sc#0,5 0,25 0,75",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 137,
+            "b": 225,
+            "scA": 1065353216,
+            "text": "sc#1; 0,5; 0,25; 0,75"
+          }
+        },
+        {
+          "input": "sc#+0.5,0.5,0.5",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#Infinity,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.1,0.2,0.3,0.4",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.18,0.5,0.73",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1e10,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1,0,0 ",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0x1,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#0.99999994,0.5000001,0.21404114",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1, 1 ,1",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 255,
+            "b": 89,
+            "scA": 1065353216,
+            "text": "sc#1; 1; 1; 0,1"
+          }
+        },
+        {
+          "input": "sc#1 ,, 1,1",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#١,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#.5,0.,5.",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#Infinity;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#∞;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; ∞; 0; 0"
+          }
+        },
+        {
+          "input": "sc#NaN;0;0",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; NaN; 0; 0"
+          }
+        },
+        {
+          "input": "sc#-∞;0;0",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; -∞; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1.000,5;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 1000,5; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1,5e1;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 15; 0; 0"
+          }
+        },
+        {
+          "input": "sc#.5;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#,5;0;0",
+          "result": {
+            "a": 255,
+            "r": 188,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 0,5; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1..0;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; 10; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1,,5;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#infinity;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#+∞;0;0",
+          "result": {
+            "a": 255,
+            "r": 255,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; ∞; 0; 0"
+          }
+        },
+        {
+          "input": "sc#-NaN;0;0",
+          "result": {
+            "a": 255,
+            "r": 0,
+            "g": 0,
+            "b": 0,
+            "scA": 1065353216,
+            "text": "sc#1; NaN; 0; 0"
+          }
+        },
+        {
+          "input": "sc#1e;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "sc#1e+;0;0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ContextColor file:///C:/bt-port-nonexistent.icc 1,0,0,0",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "contextcolor x",
+          "result": {
+            "errorType": "FormatException"
+          }
+        },
+        {
+          "input": "ContextColor",
+          "result": {
+            "errorType": "FormatException"
+          }
+        }
+      ],
+      "scFloats": [
+        {
+          "input": "1",
+          "bits": 1065353216,
+          "text": "sc#1; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.5",
+          "bits": 1056964608,
+          "text": "sc#0,5; 0,5; 0,25; 1",
+          "a": 128,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.1",
+          "bits": 1036831949,
+          "text": "sc#0,1; 0,5; 0,25; 1",
+          "a": 26,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E-05",
+          "bits": 925353388,
+          "text": "sc#1E-05; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.0001",
+          "bits": 953267991,
+          "text": "sc#0,0001; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1234567",
+          "bits": 1234613304,
+          "text": "sc#1234567; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "12345678",
+          "bits": 1262248270,
+          "text": "sc#12345678; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.2345678E+07",
+          "bits": 1262248270,
+          "text": "sc#12345678; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "16777216",
+          "bits": 1266679808,
+          "text": "sc#16777216; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+07",
+          "bits": 1259902592,
+          "text": "sc#10000000; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+38",
+          "bits": 2123789977,
+          "text": "sc#1E+38; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "3.4028235E+38",
+          "bits": 2139095039,
+          "text": "sc#3,4028235E+38; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.401298E-45",
+          "bits": 1,
+          "text": "sc#1E-45; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.333333343",
+          "bits": 1051372203,
+          "text": "sc#0,33333334; 0,5; 0,25; 1",
+          "a": 85,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-0",
+          "bits": -2147483648,
+          "text": "sc#-0; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.17549435E-38",
+          "bits": 8388608,
+          "text": "sc#1,1754944E-38; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "100000",
+          "bits": 1203982336,
+          "text": "sc#100000; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "9999999",
+          "bits": 1259902591,
+          "text": "sc#9999999; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "0.00001234",
+          "bits": 927926245,
+          "text": "sc#1,234E-05; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+08",
+          "bits": 1287568416,
+          "text": "sc#100000000; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1E+09",
+          "bits": 1315859240,
+          "text": "sc#1E+09; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "123456789",
+          "bits": 1290500515,
+          "text": "sc#123456790; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "1.5E+09",
+          "bits": 1320341598,
+          "text": "sc#1,5E+09; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "999999999",
+          "bits": 1315859240,
+          "text": "sc#1E+09; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "NaN",
+          "bits": -4194304,
+          "text": "sc#NaN; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "Infinity",
+          "bits": 2139095040,
+          "text": "sc#∞; 0,5; 0,25; 1",
+          "a": 255,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-Infinity",
+          "bits": -8388608,
+          "text": "sc#-∞; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        },
+        {
+          "input": "-1.5",
+          "bits": -1077936128,
+          "text": "sc#-1,5; 0,5; 0,25; 1",
+          "a": 0,
+          "r": 188,
+          "g": 137,
+          "b": 255
+        }
+      ]
+    }
+  ],
+  "knownColors": [
+    {
+      "name": "AliceBlue",
+      "argb": 4293982463
+    },
+    {
+      "name": "AntiqueWhite",
+      "argb": 4294634455
+    },
+    {
+      "name": "Aqua",
+      "argb": 4278255615
+    },
+    {
+      "name": "Aquamarine",
+      "argb": 4286578644
+    },
+    {
+      "name": "Azure",
+      "argb": 4293984255
+    },
+    {
+      "name": "Beige",
+      "argb": 4294309340
+    },
+    {
+      "name": "Bisque",
+      "argb": 4294960324
+    },
+    {
+      "name": "Black",
+      "argb": 4278190080
+    },
+    {
+      "name": "BlanchedAlmond",
+      "argb": 4294962125
+    },
+    {
+      "name": "Blue",
+      "argb": 4278190335
+    },
+    {
+      "name": "BlueViolet",
+      "argb": 4287245282
+    },
+    {
+      "name": "Brown",
+      "argb": 4289014314
+    },
+    {
+      "name": "BurlyWood",
+      "argb": 4292786311
+    },
+    {
+      "name": "CadetBlue",
+      "argb": 4284456608
+    },
+    {
+      "name": "Chartreuse",
+      "argb": 4286578432
+    },
+    {
+      "name": "Chocolate",
+      "argb": 4291979550
+    },
+    {
+      "name": "Coral",
+      "argb": 4294934352
+    },
+    {
+      "name": "CornflowerBlue",
+      "argb": 4284782061
+    },
+    {
+      "name": "Cornsilk",
+      "argb": 4294965468
+    },
+    {
+      "name": "Crimson",
+      "argb": 4292613180
+    },
+    {
+      "name": "Cyan",
+      "argb": 4278255615
+    },
+    {
+      "name": "DarkBlue",
+      "argb": 4278190219
+    },
+    {
+      "name": "DarkCyan",
+      "argb": 4278225803
+    },
+    {
+      "name": "DarkGoldenrod",
+      "argb": 4290283019
+    },
+    {
+      "name": "DarkGray",
+      "argb": 4289309097
+    },
+    {
+      "name": "DarkGreen",
+      "argb": 4278215680
+    },
+    {
+      "name": "DarkKhaki",
+      "argb": 4290623339
+    },
+    {
+      "name": "DarkMagenta",
+      "argb": 4287299723
+    },
+    {
+      "name": "DarkOliveGreen",
+      "argb": 4283788079
+    },
+    {
+      "name": "DarkOrange",
+      "argb": 4294937600
+    },
+    {
+      "name": "DarkOrchid",
+      "argb": 4288230092
+    },
+    {
+      "name": "DarkRed",
+      "argb": 4287299584
+    },
+    {
+      "name": "DarkSalmon",
+      "argb": 4293498490
+    },
+    {
+      "name": "DarkSeaGreen",
+      "argb": 4287609999
+    },
+    {
+      "name": "DarkSlateBlue",
+      "argb": 4282924427
+    },
+    {
+      "name": "DarkSlateGray",
+      "argb": 4281290575
+    },
+    {
+      "name": "DarkTurquoise",
+      "argb": 4278243025
+    },
+    {
+      "name": "DarkViolet",
+      "argb": 4287889619
+    },
+    {
+      "name": "DeepPink",
+      "argb": 4294907027
+    },
+    {
+      "name": "DeepSkyBlue",
+      "argb": 4278239231
+    },
+    {
+      "name": "DimGray",
+      "argb": 4285098345
+    },
+    {
+      "name": "DodgerBlue",
+      "argb": 4280193279
+    },
+    {
+      "name": "Firebrick",
+      "argb": 4289864226
+    },
+    {
+      "name": "FloralWhite",
+      "argb": 4294966000
+    },
+    {
+      "name": "ForestGreen",
+      "argb": 4280453922
+    },
+    {
+      "name": "Fuchsia",
+      "argb": 4294902015
+    },
+    {
+      "name": "Gainsboro",
+      "argb": 4292664540
+    },
+    {
+      "name": "GhostWhite",
+      "argb": 4294506751
+    },
+    {
+      "name": "Gold",
+      "argb": 4294956800
+    },
+    {
+      "name": "Goldenrod",
+      "argb": 4292519200
+    },
+    {
+      "name": "Gray",
+      "argb": 4286611584
+    },
+    {
+      "name": "Green",
+      "argb": 4278222848
+    },
+    {
+      "name": "GreenYellow",
+      "argb": 4289593135
+    },
+    {
+      "name": "Honeydew",
+      "argb": 4293984240
+    },
+    {
+      "name": "HotPink",
+      "argb": 4294928820
+    },
+    {
+      "name": "IndianRed",
+      "argb": 4291648604
+    },
+    {
+      "name": "Indigo",
+      "argb": 4283105410
+    },
+    {
+      "name": "Ivory",
+      "argb": 4294967280
+    },
+    {
+      "name": "Khaki",
+      "argb": 4293977740
+    },
+    {
+      "name": "Lavender",
+      "argb": 4293322490
+    },
+    {
+      "name": "LavenderBlush",
+      "argb": 4294963445
+    },
+    {
+      "name": "LawnGreen",
+      "argb": 4286381056
+    },
+    {
+      "name": "LemonChiffon",
+      "argb": 4294965965
+    },
+    {
+      "name": "LightBlue",
+      "argb": 4289583334
+    },
+    {
+      "name": "LightCoral",
+      "argb": 4293951616
+    },
+    {
+      "name": "LightCyan",
+      "argb": 4292935679
+    },
+    {
+      "name": "LightGoldenrodYellow",
+      "argb": 4294638290
+    },
+    {
+      "name": "LightGray",
+      "argb": 4292072403
+    },
+    {
+      "name": "LightGreen",
+      "argb": 4287688336
+    },
+    {
+      "name": "LightPink",
+      "argb": 4294948545
+    },
+    {
+      "name": "LightSalmon",
+      "argb": 4294942842
+    },
+    {
+      "name": "LightSeaGreen",
+      "argb": 4280332970
+    },
+    {
+      "name": "LightSkyBlue",
+      "argb": 4287090426
+    },
+    {
+      "name": "LightSlateGray",
+      "argb": 4286023833
+    },
+    {
+      "name": "LightSteelBlue",
+      "argb": 4289774814
+    },
+    {
+      "name": "LightYellow",
+      "argb": 4294967264
+    },
+    {
+      "name": "Lime",
+      "argb": 4278255360
+    },
+    {
+      "name": "LimeGreen",
+      "argb": 4281519410
+    },
+    {
+      "name": "Linen",
+      "argb": 4294635750
+    },
+    {
+      "name": "Magenta",
+      "argb": 4294902015
+    },
+    {
+      "name": "Maroon",
+      "argb": 4286578688
+    },
+    {
+      "name": "MediumAquamarine",
+      "argb": 4284927402
+    },
+    {
+      "name": "MediumBlue",
+      "argb": 4278190285
+    },
+    {
+      "name": "MediumOrchid",
+      "argb": 4290401747
+    },
+    {
+      "name": "MediumPurple",
+      "argb": 4287852763
+    },
+    {
+      "name": "MediumSeaGreen",
+      "argb": 4282168177
+    },
+    {
+      "name": "MediumSlateBlue",
+      "argb": 4286277870
+    },
+    {
+      "name": "MediumSpringGreen",
+      "argb": 4278254234
+    },
+    {
+      "name": "MediumTurquoise",
+      "argb": 4282962380
+    },
+    {
+      "name": "MediumVioletRed",
+      "argb": 4291237253
+    },
+    {
+      "name": "MidnightBlue",
+      "argb": 4279834992
+    },
+    {
+      "name": "MintCream",
+      "argb": 4294311930
+    },
+    {
+      "name": "MistyRose",
+      "argb": 4294960353
+    },
+    {
+      "name": "Moccasin",
+      "argb": 4294960309
+    },
+    {
+      "name": "NavajoWhite",
+      "argb": 4294958765
+    },
+    {
+      "name": "Navy",
+      "argb": 4278190208
+    },
+    {
+      "name": "OldLace",
+      "argb": 4294833638
+    },
+    {
+      "name": "Olive",
+      "argb": 4286611456
+    },
+    {
+      "name": "OliveDrab",
+      "argb": 4285238819
+    },
+    {
+      "name": "Orange",
+      "argb": 4294944000
+    },
+    {
+      "name": "OrangeRed",
+      "argb": 4294919424
+    },
+    {
+      "name": "Orchid",
+      "argb": 4292505814
+    },
+    {
+      "name": "PaleGoldenrod",
+      "argb": 4293847210
+    },
+    {
+      "name": "PaleGreen",
+      "argb": 4288215960
+    },
+    {
+      "name": "PaleTurquoise",
+      "argb": 4289720046
+    },
+    {
+      "name": "PaleVioletRed",
+      "argb": 4292571283
+    },
+    {
+      "name": "PapayaWhip",
+      "argb": 4294963157
+    },
+    {
+      "name": "PeachPuff",
+      "argb": 4294957753
+    },
+    {
+      "name": "Peru",
+      "argb": 4291659071
+    },
+    {
+      "name": "Pink",
+      "argb": 4294951115
+    },
+    {
+      "name": "Plum",
+      "argb": 4292714717
+    },
+    {
+      "name": "PowderBlue",
+      "argb": 4289781990
+    },
+    {
+      "name": "Purple",
+      "argb": 4286578816
+    },
+    {
+      "name": "Red",
+      "argb": 4294901760
+    },
+    {
+      "name": "RosyBrown",
+      "argb": 4290547599
+    },
+    {
+      "name": "RoyalBlue",
+      "argb": 4282477025
+    },
+    {
+      "name": "SaddleBrown",
+      "argb": 4287317267
+    },
+    {
+      "name": "Salmon",
+      "argb": 4294606962
+    },
+    {
+      "name": "SandyBrown",
+      "argb": 4294222944
+    },
+    {
+      "name": "SeaGreen",
+      "argb": 4281240407
+    },
+    {
+      "name": "SeaShell",
+      "argb": 4294964718
+    },
+    {
+      "name": "Sienna",
+      "argb": 4288696877
+    },
+    {
+      "name": "Silver",
+      "argb": 4290822336
+    },
+    {
+      "name": "SkyBlue",
+      "argb": 4287090411
+    },
+    {
+      "name": "SlateBlue",
+      "argb": 4285160141
+    },
+    {
+      "name": "SlateGray",
+      "argb": 4285563024
+    },
+    {
+      "name": "Snow",
+      "argb": 4294966010
+    },
+    {
+      "name": "SpringGreen",
+      "argb": 4278255487
+    },
+    {
+      "name": "SteelBlue",
+      "argb": 4282811060
+    },
+    {
+      "name": "Tan",
+      "argb": 4291998860
+    },
+    {
+      "name": "Teal",
+      "argb": 4278222976
+    },
+    {
+      "name": "Thistle",
+      "argb": 4292394968
+    },
+    {
+      "name": "Tomato",
+      "argb": 4294927175
+    },
+    {
+      "name": "Transparent",
+      "argb": 16777215
+    },
+    {
+      "name": "Turquoise",
+      "argb": 4282441936
+    },
+    {
+      "name": "Violet",
+      "argb": 4293821166
+    },
+    {
+      "name": "Wheat",
+      "argb": 4294303411
+    },
+    {
+      "name": "White",
+      "argb": 4294967295
+    },
+    {
+      "name": "WhiteSmoke",
+      "argb": 4294309365
+    },
+    {
+      "name": "Yellow",
+      "argb": 4294967040
+    },
+    {
+      "name": "YellowGreen",
+      "argb": 4288335154
+    }
+  ],
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31"
+}

@@ -17,6 +17,11 @@ rules of [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13,
 Copyright (c) 2007 James Newton-King, also under the MIT license below. Its
 round-trip double formatting follows the .NET runtime's number formatting.
 
+`bt-core/src/colors.rs` adapts `Parsers.ParseColor`, `KnownColors`,
+`TokenizerHelper` and `Color.FromScRgb`/`ToString` from
+[dotnet/wpf](https://github.com/dotnet/wpf), Copyright (c) .NET Foundation
+and Contributors, under the MIT license below.
+
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
