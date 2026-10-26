@@ -1,6 +1,7 @@
 {
   "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
   "runtime": "8.0.31",
+  "slugAllBmpFingerprint": "1efc5cf90da8976b",
   "hotkey": {
     "Modifiers": 0,
     "Key": 0,
@@ -490,6 +491,1255 @@
           "CreatedAtUtc": "0001-01-01T00:00:00"
         }
       }
+    }
+  ],
+  "profileMigrations": [
+    {
+      "input": "{}",
+      "result": {
+        "value": {
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "00000000000000000000000000000001",
+            "Name": null,
+            "Slug": "",
+            "CreatedAt": null,
+            "UpdatedAt": null,
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          },
+          "assignedId": true
+        }
+      }
+    },
+    {
+      "input": "{\"Id\":\"keep\",\"Name\":\" Écran / Night  Mode \",\"SchemaVersion\":0,\"CreatedAt\":\"2026-10-26 12:30\",\"Hotkey\":null,\"DefaultDevices\":null,\"Devices\":null}",
+      "result": {
+        "value": {
+          "profile": {
+            "SchemaVersion": 1,
+            "Id": "keep",
+            "Name": " Écran / Night  Mode ",
+            "Slug": "écran-night-mode",
+            "CreatedAt": "2026-10-26 12:30",
+            "UpdatedAt": "2026-10-26 12:30",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          },
+          "assignedId": false
+        }
+      }
+    },
+    {
+      "input": "{\"Id\":\"keep\",\"Slug\":\"Custom-Slug\",\"UpdatedAt\":\"unchanged\",\"Devices\":[null,{\"DeviceId\":\"output\",\"DisplayName\":\"Speakers\",\"Apps\":[null,{\"ExeName\":\"music\"},{\"DeviceId\":\"other\",\"DeviceDisplayName\":\"Explicit\"}]},{\"Apps\":null}]}",
+      "result": {
+        "value": {
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "keep",
+            "Name": null,
+            "Slug": "Custom-Slug",
+            "CreatedAt": null,
+            "UpdatedAt": "unchanged",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": [
+              {
+                "DeviceId": "output",
+                "DisplayName": "Speakers",
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": [
+                  {
+                    "ExeName": "music",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "output",
+                    "DeviceDisplayName": "Speakers",
+                    "Volume": 0,
+                    "IsMuted": false
+                  },
+                  {
+                    "ExeName": null,
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "other",
+                    "DeviceDisplayName": "Explicit",
+                    "Volume": 0,
+                    "IsMuted": false
+                  }
+                ]
+              },
+              {
+                "DeviceId": null,
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": []
+              }
+            ]
+          },
+          "assignedId": false
+        }
+      }
+    },
+    {
+      "input": "{\"Name\":\"   \",\"Id\":\"  \",\"UpdatedAt\":\"  \",\"RouteApps\":false,\"IncludeAppVolumes\":false,\"ApplyAppsOnly\":true}",
+      "result": {
+        "value": {
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "00000000000000000000000000000001",
+            "Name": "   ",
+            "Slug": "",
+            "CreatedAt": null,
+            "UpdatedAt": null,
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": false,
+            "IncludeAppVolumes": false,
+            "RouteApps": false,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": true,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          },
+          "assignedId": true
+        }
+      }
+    }
+  ],
+  "slugs": [
+    {
+      "input": null,
+      "value": "",
+      "lower": null
+    },
+    {
+      "input": "",
+      "value": "",
+      "lower": ""
+    },
+    {
+      "input": "Night Mode",
+      "value": "night-mode",
+      "lower": "night mode"
+    },
+    {
+      "input": "  Work / Calls  ",
+      "value": "work-calls",
+      "lower": "  work / calls  "
+    },
+    {
+      "input": "ÉCRAN 日本語",
+      "value": "écran-日本語",
+      "lower": "écran 日本語"
+    },
+    {
+      "input": "Ⅳ ½ ² ٣",
+      "value": "٣",
+      "lower": "ⅳ ½ ² ٣"
+    },
+    {
+      "input": "A😀B",
+      "value": "a-b",
+      "lower": "a😀b"
+    },
+    {
+      "input": "𐐀 Music",
+      "value": "music",
+      "lower": "𐐨 music"
+    },
+    {
+      "input": "İ I ı i",
+      "value": "İ-i-ı-i",
+      "lower": "İ i ı i"
+    },
+    {
+      "input": "Σ σ ς",
+      "value": "σ-σ-ς",
+      "lower": "σ σ ς"
+    },
+    {
+      "input": "é",
+      "value": "e",
+      "lower": "é"
+    },
+    {
+      "input": "K ſ µ",
+      "value": "k-ſ-µ",
+      "lower": "k ſ µ"
+    },
+    {
+      "input": "---",
+      "value": "",
+      "lower": "---"
+    },
+    {
+      "input": "A\u0085B",
+      "value": "a-b",
+      "lower": "a\u0085b"
+    }
+  ],
+  "ordinalCases": [
+    {
+      "left": "ÉCRAN",
+      "right": "écran",
+      "equal": true
+    },
+    {
+      "left": "Σ",
+      "right": "ς",
+      "equal": true
+    },
+    {
+      "left": "µ",
+      "right": "Μ",
+      "equal": true
+    },
+    {
+      "left": "ſ",
+      "right": "S",
+      "equal": false
+    },
+    {
+      "left": "K",
+      "right": "K",
+      "equal": false
+    },
+    {
+      "left": "I",
+      "right": "ı",
+      "equal": false
+    },
+    {
+      "left": "İ",
+      "right": "i",
+      "equal": false
+    },
+    {
+      "left": "𐐀",
+      "right": "𐐨",
+      "equal": true
+    },
+    {
+      "left": "ß",
+      "right": "SS",
+      "equal": false
+    },
+    {
+      "left": null,
+      "right": null,
+      "equal": true
+    },
+    {
+      "left": null,
+      "right": "",
+      "equal": false
+    }
+  ],
+  "profileParses": [
+    {
+      "input": "",
+      "result": {
+        "value": {
+          "profiles": [],
+          "assignedIds": false
+        }
+      },
+      "legacy": []
+    },
+    {
+      "input": "  ",
+      "result": {
+        "value": {
+          "profiles": [],
+          "assignedIds": false
+        }
+      },
+      "legacy": []
+    },
+    {
+      "input": "<?xml version=\"1.0\"?><nil />",
+      "result": {
+        "value": {
+          "profiles": [],
+          "assignedIds": false
+        }
+      },
+      "legacy": []
+    },
+    {
+      "input": "null",
+      "result": {
+        "value": {
+          "profiles": [],
+          "assignedIds": false
+        }
+      },
+      "legacy": []
+    },
+    {
+      "input": "[]",
+      "result": {
+        "value": {
+          "profiles": [],
+          "assignedIds": false
+        }
+      },
+      "legacy": []
+    },
+    {
+      "input": "[null,{\"Id\":\"keep\",\"Name\":\"Night\",\"Devices\":[null,{\"DeviceId\":\"d\",\"Apps\":null}]}]",
+      "result": {
+        "value": {
+          "profiles": [
+            {
+              "SchemaVersion": 3,
+              "Id": "keep",
+              "Name": "Night",
+              "Slug": "night",
+              "CreatedAt": null,
+              "UpdatedAt": null,
+              "CaptureScope": 0,
+              "IncludeDeviceVolumes": true,
+              "IncludeAppVolumes": true,
+              "RouteApps": true,
+              "DefaultDevices": {
+                "Playback": null,
+                "PlaybackCommunications": null,
+                "Recording": null,
+                "RecordingCommunications": null
+              },
+              "ApplyAppsOnly": false,
+              "Hotkey": {
+                "Modifiers": 0,
+                "Key": 0,
+                "IsEmpty": true
+              },
+              "Devices": [
+                {
+                  "DeviceId": "d",
+                  "DisplayName": null,
+                  "Volume": 0,
+                  "IsMuted": false,
+                  "IncludeVolume": true,
+                  "Apps": []
+                }
+              ]
+            }
+          ],
+          "assignedIds": false
+        }
+      },
+      "legacy": [
+        {
+          "SchemaVersion": 3,
+          "Id": "keep",
+          "Name": "Night",
+          "Slug": "night",
+          "CreatedAt": null,
+          "UpdatedAt": null,
+          "CaptureScope": 0,
+          "IncludeDeviceVolumes": true,
+          "IncludeAppVolumes": true,
+          "RouteApps": true,
+          "DefaultDevices": {
+            "Playback": null,
+            "PlaybackCommunications": null,
+            "Recording": null,
+            "RecordingCommunications": null
+          },
+          "ApplyAppsOnly": false,
+          "Hotkey": {
+            "Modifiers": 0,
+            "Key": 0,
+            "IsEmpty": true
+          },
+          "Devices": [
+            {
+              "DeviceId": "d",
+              "DisplayName": null,
+              "Volume": 0,
+              "IsMuted": false,
+              "IncludeVolume": true,
+              "Apps": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "input": "not-json",
+      "result": {
+        "errorType": "JsonReaderException"
+      },
+      "legacy": []
+    },
+    {
+      "input": "{}",
+      "result": {
+        "errorType": "JsonSerializationException"
+      },
+      "legacy": []
+    }
+  ],
+  "profileCollection": {
+    "initial": [
+      {
+        "SchemaVersion": 3,
+        "Id": "A",
+        "Name": "Night",
+        "Slug": "night",
+        "CreatedAt": "original",
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 131072,
+          "Key": 80,
+          "IsEmpty": false
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "B",
+        "Name": "ÉCRAN",
+        "Slug": "custom",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "C",
+        "Name": "😀",
+        "Slug": "",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      }
+    ],
+    "lookups": [
+      {
+        "query": "NIGHT",
+        "index": 0
+      },
+      {
+        "query": "écran",
+        "index": 1
+      },
+      {
+        "query": "custom",
+        "index": 1
+      },
+      {
+        "query": "---",
+        "index": 2
+      },
+      {
+        "query": "missing",
+        "index": -1
+      },
+      {
+        "query": "  ",
+        "index": -1
+      }
+    ],
+    "cycles": [
+      {
+        "last": "",
+        "direction": -1,
+        "index": 2
+      },
+      {
+        "last": "",
+        "direction": 0,
+        "index": 0
+      },
+      {
+        "last": "",
+        "direction": 1,
+        "index": 0
+      },
+      {
+        "last": "a",
+        "direction": -1,
+        "index": 2
+      },
+      {
+        "last": "a",
+        "direction": 0,
+        "index": 1
+      },
+      {
+        "last": "a",
+        "direction": 1,
+        "index": 1
+      },
+      {
+        "last": "C",
+        "direction": -1,
+        "index": 1
+      },
+      {
+        "last": "C",
+        "direction": 0,
+        "index": 0
+      },
+      {
+        "last": "C",
+        "direction": 1,
+        "index": 0
+      },
+      {
+        "last": "missing",
+        "direction": -1,
+        "index": 2
+      },
+      {
+        "last": "missing",
+        "direction": 0,
+        "index": 0
+      },
+      {
+        "last": "missing",
+        "direction": 1,
+        "index": 0
+      }
+    ],
+    "saved": [
+      {
+        "SchemaVersion": 3,
+        "Id": "A",
+        "Name": "Night",
+        "Slug": null,
+        "CreatedAt": "original",
+        "UpdatedAt": "2026-10-26 13:57",
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 131072,
+          "Key": 80,
+          "IsEmpty": false
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "B",
+        "Name": "ÉCRAN",
+        "Slug": "custom",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "C",
+        "Name": "😀",
+        "Slug": "",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      }
+    ],
+    "renamed": [
+      {
+        "SchemaVersion": 3,
+        "Id": "A",
+        "Name": "Renamed",
+        "Slug": null,
+        "CreatedAt": "original",
+        "UpdatedAt": "2026-10-26 13:57",
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 131072,
+          "Key": 80,
+          "IsEmpty": false
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "B",
+        "Name": "ÉCRAN",
+        "Slug": "custom",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "C",
+        "Name": "😀",
+        "Slug": "",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      }
+    ],
+    "imported": [
+      {
+        "SchemaVersion": 3,
+        "Id": "A",
+        "Name": "Renamed",
+        "Slug": null,
+        "CreatedAt": "original",
+        "UpdatedAt": "2026-10-26 13:57",
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 131072,
+          "Key": 80,
+          "IsEmpty": false
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "B",
+        "Name": "ÉCRAN",
+        "Slug": "custom",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "C",
+        "Name": "😀",
+        "Slug": "",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      },
+      {
+        "SchemaVersion": 3,
+        "Id": "00000000000000000000000000000001",
+        "Name": "Renamed (Imported)",
+        "Slug": "night",
+        "CreatedAt": null,
+        "UpdatedAt": null,
+        "CaptureScope": 0,
+        "IncludeDeviceVolumes": true,
+        "IncludeAppVolumes": true,
+        "RouteApps": true,
+        "DefaultDevices": {
+          "Playback": null,
+          "PlaybackCommunications": null,
+          "Recording": null,
+          "RecordingCommunications": null
+        },
+        "ApplyAppsOnly": false,
+        "Hotkey": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        },
+        "Devices": []
+      }
+    ]
+  },
+  "profileEdits": [
+    {
+      "profile": "{\"Id\":\"edit\",\"Devices\":[{\"DeviceId\":\"d\",\"Apps\":[{\"DeviceId\":\"d\",\"ExeName\":\"music\",\"Volume\":10},{\"DeviceId\":\"d\",\"ExeName\":\"MUSIC\",\"Volume\":20}]},{\"DeviceId\":\"empty\",\"Apps\":[]},{\"DeviceId\":\"carrier\",\"IncludeVolume\":false,\"Apps\":[]}]}",
+      "steps": [
+        {
+          "operation": {
+            "method": "setDevice",
+            "key": "D",
+            "volume": -10,
+            "muted": true
+          },
+          "result": true,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": true,
+                "IncludeVolume": true,
+                "Apps": [
+                  {
+                    "ExeName": "music",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 10,
+                    "IsMuted": false
+                  },
+                  {
+                    "ExeName": "MUSIC",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 20,
+                    "IsMuted": false
+                  }
+                ]
+              },
+              {
+                "DeviceId": "empty",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": []
+              },
+              {
+                "DeviceId": "carrier",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": false,
+                "Apps": []
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "method": "removeDevice",
+            "key": "d"
+          },
+          "result": true,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": true,
+                "IncludeVolume": false,
+                "Apps": [
+                  {
+                    "ExeName": "music",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 10,
+                    "IsMuted": false
+                  },
+                  {
+                    "ExeName": "MUSIC",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 20,
+                    "IsMuted": false
+                  }
+                ]
+              },
+              {
+                "DeviceId": "empty",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": []
+              },
+              {
+                "DeviceId": "carrier",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": false,
+                "Apps": []
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "method": "setApp",
+            "key": "D|music",
+            "volume": 150,
+            "muted": false
+          },
+          "result": true,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": true,
+                "IncludeVolume": false,
+                "Apps": [
+                  {
+                    "ExeName": "music",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 100,
+                    "IsMuted": false
+                  },
+                  {
+                    "ExeName": "MUSIC",
+                    "AppId": null,
+                    "DisplayName": null,
+                    "DeviceId": "d",
+                    "DeviceDisplayName": null,
+                    "Volume": 100,
+                    "IsMuted": false
+                  }
+                ]
+              },
+              {
+                "DeviceId": "empty",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": []
+              },
+              {
+                "DeviceId": "carrier",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": false,
+                "Apps": []
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "method": "removeApp",
+            "key": "d|music"
+          },
+          "result": true,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": [
+              {
+                "DeviceId": "empty",
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "IncludeVolume": true,
+                "Apps": []
+              }
+            ]
+          }
+        },
+        {
+          "operation": {
+            "method": "removeDevice",
+            "key": "empty"
+          },
+          "result": true,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          }
+        },
+        {
+          "operation": {
+            "method": "removeApp",
+            "key": "missing"
+          },
+          "result": false,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "edit",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "2026-10-26 13:57",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          }
+        }
+      ]
+    },
+    {
+      "profile": "{\"Id\":\"prune\",\"UpdatedAt\":\"old\",\"Devices\":[{\"DeviceId\":\"empty\",\"IncludeVolume\":false,\"Apps\":[]}]}",
+      "steps": [
+        {
+          "operation": {
+            "method": "removeApp",
+            "key": "missing"
+          },
+          "result": false,
+          "profile": {
+            "SchemaVersion": 3,
+            "Id": "prune",
+            "Name": null,
+            "Slug": null,
+            "CreatedAt": null,
+            "UpdatedAt": "old",
+            "CaptureScope": 0,
+            "IncludeDeviceVolumes": true,
+            "IncludeAppVolumes": true,
+            "RouteApps": true,
+            "DefaultDevices": {
+              "Playback": null,
+              "PlaybackCommunications": null,
+              "Recording": null,
+              "RecordingCommunications": null
+            },
+            "ApplyAppsOnly": false,
+            "Hotkey": {
+              "Modifiers": 0,
+              "Key": 0,
+              "IsEmpty": true
+            },
+            "Devices": []
+          }
+        }
+      ]
     }
   ]
 }

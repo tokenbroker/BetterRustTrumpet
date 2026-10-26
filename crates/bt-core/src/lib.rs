@@ -3,6 +3,8 @@
 
 pub mod cli;
 pub mod models;
+pub mod profiles;
 pub mod protocol;
+pub mod text;
 pub mod themes;
 pub mod undo;

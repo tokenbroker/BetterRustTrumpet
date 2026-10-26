@@ -26,6 +26,8 @@ python ../docs/port/capture_model_fixtures.py
 
 That helper executes original model source in an isolated temporary project;
 it does not start the legacy tray application or access user settings.
+It also captures pure profile service scenarios and emits the versioned .NET
+text tables used for portable matching and preset slugs.
 
 Based on EarTrumpet by David Golden, Rafael Rivera and Dave Amenta and
 BetterTrumpet by xammen. Preserve the entire upstream [LICENSE](../LICENSE),
