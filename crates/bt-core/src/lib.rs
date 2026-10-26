@@ -9,6 +9,7 @@ pub mod models;
 pub mod profiles;
 pub mod protocol;
 pub mod rules;
+pub mod settings;
 pub mod text;
 pub mod themes;
 pub mod undo;
