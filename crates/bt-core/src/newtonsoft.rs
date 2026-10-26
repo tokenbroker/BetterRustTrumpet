@@ -19,9 +19,9 @@ mod keys {
     include!("data/dotnet_keys.rs");
 }
 
-const TICKS_PER_MINUTE: i64 = 600_000_000;
-const TICKS_PER_DAY: i64 = 864_000_000_000;
-const MAX_TICKS: i64 = 3_155_378_975_999_999_999;
+pub(crate) const TICKS_PER_MINUTE: i64 = 600_000_000;
+pub(crate) const TICKS_PER_DAY: i64 = 864_000_000_000;
+pub(crate) const MAX_TICKS: i64 = 3_155_378_975_999_999_999;
 const JAVASCRIPT_EPOCH_TICKS: i64 = 621_355_968_000_000_000;
 /// `double.NaN` on .NET (sign bit set), as distinct from Rust's `f64::NAN`.
 pub const DOTNET_NAN: f64 = f64::from_bits(0xfff8_0000_0000_0000);
@@ -68,6 +68,8 @@ pub enum Token {
     Date(Date),
     /// A JavaScript constructor (`new Name(...)`), kept only for skipping.
     Constructor,
+    /// Typed-mode number text, converted later by the `ReadAs*` rules.
+    RawNumber(String),
     Object(Vec<(String, Token)>),
     Array(Vec<Token>),
 }
@@ -84,6 +86,9 @@ struct Reader<'a, Z: ?Sized> {
     chars: Vec<char>,
     pos: usize,
     zone: &'a Z,
+    /// Typed mode (`DeserializeObject<T>`): strings and numbers stay raw for
+    /// the property's `ReadAs*` method instead of `ReadType.Read` parsing.
+    raw: bool,
 }
 
 fn whitespace(c: char) -> bool {
@@ -256,17 +261,33 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
             Some(_) => return Err(Error),
         }
         let number: String = self.chars[start..self.pos].iter().collect();
+        if self.raw {
+            return Ok(Token::RawNumber(number));
+        }
+        classify(&number)
+    }
+}
+
+/// `ParseReadNumber` with `ReadType.Read`.
+fn classify(number: &str) -> Result<Token, Error> {
+    match number {
+        "NaN" => return Ok(Token::Float(DOTNET_NAN)),
+        "Infinity" => return Ok(Token::Float(f64::INFINITY)),
+        "-Infinity" => return Ok(Token::Float(f64::NEG_INFINITY)),
+        _ => {}
+    }
+    {
         let bytes = number.as_bytes();
         if bytes.len() > 1 && bytes[0] == b'0' && !matches!(bytes[1], b'.' | b'e' | b'E') {
             let parsed = match number.get(..2) {
                 Some("0x" | "0X") => radix(&number[2..], 16),
-                _ => radix(&number, 8),
+                _ => radix(number, 8),
             };
             return parsed.map(Token::Integer);
         }
         let (negative, digits) = match number.strip_prefix('-') {
             Some(rest) => (true, rest),
-            None => (false, number.as_str()),
+            None => (false, number),
         };
         if !digits.is_empty() && digits.bytes().all(|b| b.is_ascii_digit()) {
             if let Ok(value) = number.parse::<i64>() {
@@ -286,12 +307,18 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
         // The captured reader yields positive zero for "-0.0" and underflow.
         Ok(Token::Float(if value == 0.0 { 0.0 } else { value }))
     }
+}
+
+impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
     fn value(&mut self, context: Context) -> Result<Token, Error> {
         self.skip()?;
         let c = self.peek().ok_or(Error)?;
         Ok(match c {
             '"' | '\'' => {
                 let value = self.string()?;
+                if self.raw {
+                    return Ok(Token::String(value));
+                }
                 match date(&value, self.zone)? {
                     Some(date) => Token::Date(date),
                     None => Token::String(value),
@@ -321,15 +348,27 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
             }
             'N' => {
                 self.literal("NaN", context)?;
-                Token::Float(DOTNET_NAN)
+                if self.raw {
+                    Token::RawNumber("NaN".into())
+                } else {
+                    Token::Float(DOTNET_NAN)
+                }
             }
             'I' => {
                 self.literal("Infinity", context)?;
-                Token::Float(f64::INFINITY)
+                if self.raw {
+                    Token::RawNumber("Infinity".into())
+                } else {
+                    Token::Float(f64::INFINITY)
+                }
             }
             '-' if self.at(1) == Some('I') => {
                 self.literal("-Infinity", context)?;
-                Token::Float(f64::NEG_INFINITY)
+                if self.raw {
+                    Token::RawNumber("-Infinity".into())
+                } else {
+                    Token::Float(f64::NEG_INFINITY)
+                }
             }
             '{' => {
                 self.pos += 1;
@@ -387,7 +426,7 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
             };
             // JTokenWriter: "last property name wins" by remove-then-append.
             // The root is a dictionary, where only the final value matters.
-            if !root {
+            if !root && !self.raw {
                 members.retain(|(existing, _)| *existing != name);
             }
             members.push((name, value));
@@ -423,7 +462,13 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
         }
         self.pos += 1;
         let (args, commented) = self.items(')', Context::Constructor)?;
-        if name == "Date" {
+        if self.raw {
+            // Skipped by Read: no JTokenWriter date conversion, but every
+            // argument is still read with ReadType.Read.
+            for arg in &args {
+                check_read(arg, self.zone)?;
+            }
+        } else if name == "Date" {
             constructor_date(&args, commented)?;
         }
         Ok(Token::Constructor)
@@ -487,6 +532,7 @@ pub fn parse_object_document(
         chars: text.chars().collect(),
         pos: 0,
         zone,
+        raw: false,
     };
     reader.skip()?;
     let result = match reader.peek() {
@@ -512,12 +558,164 @@ pub fn parse_object_document(
     Ok(result)
 }
 
+// ---- typed mode (DeserializeObject<T>) -----------------------------------------
+
+/// Parses a `DeserializeObject<T>` document in typed mode. `Ok(None)` is a
+/// null or empty document; callers reject roots of the wrong shape.
+pub fn parse_typed_document(
+    text: &str,
+    zone: &(impl LocalZone + ?Sized),
+) -> Result<Option<Token>, Error> {
+    let mut reader = Reader {
+        chars: text.chars().collect(),
+        pos: 0,
+        zone,
+        raw: true,
+    };
+    reader.skip()?;
+    let result = match reader.peek() {
+        None => return Ok(None),
+        Some('n') if reader.at(1) == Some('u') => {
+            reader.literal("null", Context::Root)?;
+            None
+        }
+        Some(_) => Some(reader.value(Context::Root)?),
+    };
+    reader.skip()?;
+    if reader.peek().is_some() {
+        return Err(Error);
+    }
+    Ok(result)
+}
+
+/// `JsonReader.Skip` over a typed-mode value: every token is read with
+/// `ReadType.Read`, so dates and numbers are parsed (and may throw).
+pub fn check_read(token: &Token, zone: &(impl LocalZone + ?Sized)) -> Result<(), Error> {
+    match token {
+        Token::String(s) => date(s, zone).map(|_| ()),
+        Token::RawNumber(n) => classify(n).map(|_| ()),
+        Token::Object(members) => members.iter().try_for_each(|(_, v)| check_read(v, zone)),
+        Token::Array(items) => items.iter().try_for_each(|v| check_read(v, zone)),
+        _ => Ok(()),
+    }
+}
+
+fn non_base10(number: &str) -> Option<(&str, u32)> {
+    let bytes = number.as_bytes();
+    if bytes.len() > 1 && bytes[0] == b'0' && !matches!(bytes[1], b'.' | b'e' | b'E') {
+        Some(match number.get(..2) {
+            Some("0x" | "0X") => (&number[2..], 16),
+            _ => (number, 8),
+        })
+    } else {
+        None
+    }
+}
+
+/// `ReadAsString` in typed mode: number text is validated but kept verbatim.
+pub fn typed_string(token: &Token) -> Result<Option<String>, Error> {
+    match token {
+        Token::String(s) => Ok(Some(s.clone())),
+        Token::RawNumber(n) => {
+            let valid = match (n.as_str(), non_base10(n)) {
+                ("NaN" | "Infinity" | "-Infinity", _) => true,
+                (_, Some((digits, base))) => radix(digits, base).is_ok(),
+                _ => n.parse::<f64>().is_ok(),
+            };
+            if valid {
+                Ok(Some(n.clone()))
+            } else {
+                Err(Error)
+            }
+        }
+        Token::Bool(b) => Ok(Some(b.to_string())),
+        Token::Null | Token::Undefined => Ok(None),
+        _ => Err(Error),
+    }
+}
+
+/// `ReadAsInt32` in typed mode (no date parsing of strings).
+pub fn typed_int32(token: &Token) -> Result<Option<i32>, Error> {
+    match token {
+        Token::String(s) if s.is_empty() => Ok(None),
+        Token::String(s) => IntegerFormat::INVARIANT.parse_i32(s).map(Some).ok_or(Error),
+        Token::RawNumber(n) => {
+            if let Some((digits, base)) = non_base10(n) {
+                // Convert.ToInt32(text, 16 or 8): 32-bit two's complement.
+                if digits.is_empty() || !digits.chars().all(|c| c.is_digit(base)) {
+                    return Err(Error);
+                }
+                return u32::from_str_radix(digits, base)
+                    .map(|v| Some(v as i32))
+                    .map_err(|_| Error);
+            }
+            let digits = n.strip_prefix('-').unwrap_or(n);
+            if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
+                return Err(Error);
+            }
+            n.parse::<i32>().map(Some).map_err(|_| Error)
+        }
+        Token::Null | Token::Undefined => Ok(None),
+        _ => Err(Error),
+    }
+}
+
+/// `ReadAsDateTime` in typed mode. `fallback` is `DateTime.TryParse` with the
+/// invariant culture and `DateTimeStyles.RoundtripKind`.
+pub fn typed_datetime(
+    token: &Token,
+    zone: &(impl LocalZone + ?Sized),
+    fallback: impl FnOnce(&str) -> Option<Date>,
+) -> Result<Option<Date>, Error> {
+    match token {
+        Token::String(s) if s.is_empty() => Ok(None),
+        Token::String(s) => match date(s, zone)? {
+            Some(date) => Ok(Some(date)),
+            None => fallback(s).map(Some).ok_or(Error),
+        },
+        Token::Null | Token::Undefined => Ok(None),
+        _ => Err(Error),
+    }
+}
+
+/// Typed property lookup: exact name first, then ordinal ignore-case.
+pub fn member_index(names: &[&str], name: &str) -> Option<usize> {
+    names.iter().position(|n| *n == name).or_else(|| {
+        names
+            .iter()
+            .position(|n| text::ordinal_ignore_case(n, name))
+    })
+}
+
+/// `JsonConvert.ToString(string)` quoting with the default escape handling.
+pub fn quote(value: &str) -> String {
+    let mut out = String::with_capacity(value.len() + 2);
+    out.push('"');
+    for c in value.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            '\u{8}' => out.push_str("\\b"),
+            '\u{c}' => out.push_str("\\f"),
+            c if (c as u32) < 0x20 || matches!(c, '\u{85}' | '\u{2028}' | '\u{2029}') => {
+                out.push_str(&format!("\\u{:04x}", c as u32));
+            }
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+    out
+}
+
 // ---- dates -----------------------------------------------------------------
 
 fn leap(year: i32) -> bool {
     year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
-fn days_in_month(year: i32, month: i32) -> i32 {
+pub(crate) fn days_in_month(year: i32, month: i32) -> i32 {
     match month {
         2 if leap(year) => 29,
         2 => 28,
@@ -526,7 +724,7 @@ fn days_in_month(year: i32, month: i32) -> i32 {
     }
 }
 /// Days from 0001-01-01 (proleptic Gregorian).
-fn days_from_civil(year: i32, month: i32, day: i32) -> i64 {
+pub(crate) fn days_from_civil(year: i32, month: i32, day: i32) -> i64 {
     let y = i64::from(year) - 1;
     let mut days = y * 365 + y / 4 - y / 100 + y / 400;
     for m in 1..month {
@@ -534,7 +732,7 @@ fn days_from_civil(year: i32, month: i32, day: i32) -> i64 {
     }
     days + i64::from(day) - 1
 }
-fn civil_from_days(mut days: i64) -> (i32, i32, i32) {
+pub(crate) fn civil_from_days(mut days: i64) -> (i32, i32, i32) {
     let mut year = (days / 146_097 * 400 + 1) as i32;
     days %= 146_097;
     let centuries = (days / 36_524).min(3);
@@ -577,7 +775,7 @@ fn to_local(utc: i64, zone: &(impl LocalZone + ?Sized)) -> Date {
         kind: DateKind::Local { offset_minutes },
     }
 }
-fn local_date(ticks: i64, zone: &(impl LocalZone + ?Sized)) -> Date {
+pub(crate) fn local_date(ticks: i64, zone: &(impl LocalZone + ?Sized)) -> Date {
     Date {
         ticks,
         kind: DateKind::Local {

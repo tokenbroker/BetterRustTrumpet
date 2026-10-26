@@ -1,0 +1,1929 @@
+{
+  "loads": [
+    {
+      "input": null,
+      "deserialize": {
+        "value": "[]"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "",
+      "deserialize": {
+        "value": "null"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "   ",
+      "deserialize": {
+        "value": "null"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "null",
+      "deserialize": {
+        "value": "null"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[]",
+      "deserialize": {
+        "value": "[]"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "{}",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[null]",
+      "deserialize": {
+        "value": "[null]"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[1]",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[[]]",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "\"x\"",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "garbage",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":null,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\Games\\\\\",\"VolumePercent\":150},{\"FolderPath\":\"c:/games\",\"VolumePercent\":5}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\Games\\\\\",\"VolumePercent\":150,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"Id\":null,\"FolderPath\":\"c:/games\",\"VolumePercent\":5,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\" \",\"FolderPath\":\"\\\\\\\\server\\\\share\\\\\",\"VolumePercent\":-5,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\" \",\"FolderPath\":\"\\\\\\\\server\\\\share\\\\\",\"VolumePercent\":-5,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"\\\\\\\\server\\\\share\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"\\\\\\\\server\\\\share\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"b\",\"FolderPath\":\"/opt/app/\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2021-01-01T00:00:00Z\"},{\"Id\":\"a\",\"FolderPath\":\"D:\\\\x\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2020-01-01T00:00:00+05:00\"},{\"Id\":\"c\",\"FolderPath\":\"E:\\\\y\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2020-01-01T00:00:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"b\",\"FolderPath\":\"/opt/app/\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2021-01-01T00:00:00Z\"},{\"Id\":\"a\",\"FolderPath\":\"D:\\\\x\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2019-12-31T13:00:00-06:00\"},{\"Id\":\"c\",\"FolderPath\":\"E:\\\\y\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2020-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"D:\\\\x\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2019-12-31T13:00:00-06:00\"},{\"Id\":\"c\",\"FolderPath\":\"E:\\\\y\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2020-01-01T00:00:00\"},{\"Id\":\"b\",\"FolderPath\":\"/opt/app\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2021-01-01T00:00:00Z\"}]",
+      "json": "[{\"Id\":\"b\",\"FolderPath\":\"/opt/app\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2021-01-01T00:00:00Z\"},{\"Id\":\"a\",\"FolderPath\":\"D:\\\\x\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2019-12-31T13:00:00-06:00\"},{\"Id\":\"c\",\"FolderPath\":\"E:\\\\y\",\"VolumePercent\":30,\"CreatedAtUtc\":\"2020-01-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"id\":\"lower\",\"folderpath\":\"C:\\\\Lower\",\"volumepercent\":\"7\",\"createdatutc\":\"2020-01-01T00:00:00Z\",\"Extra\":[1,{\"a\":\"9999-12-31T24:00:00\"}]}]",
+      "deserialize": {
+        "errorType": "ArgumentOutOfRangeException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"\",\"VolumePercent\":5},{\"FolderPath\":null},{\"FolderPath\":\"   \"},{\"FolderPath\":\"\\\"C:\\\\Quoted\\\"\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"\",\"VolumePercent\":5,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"Id\":null,\"FolderPath\":null,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"Id\":null,\"FolderPath\":\"   \",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"Id\":null,\"FolderPath\":\"\\\"C:\\\\Quoted\\\"\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Quoted\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Quoted\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":5.5}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":null}]",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":\"x\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":5,\"Id\":6}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"6\",\"FolderPath\":\"5\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"6\",\"FolderPath\":\"C:\\\\Reference\\\\Workspace\\\\5\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"6\",\"FolderPath\":\"C:\\\\Reference\\\\Workspace\\\\5\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":true}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"true\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Reference\\\\Workspace\\\\true\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Reference\\\\Workspace\\\\true\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"Id\":\"2026-10-26T15:35:33Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"2026-10-26T15:35:33Z\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"2026-10-26T15:35:33Z\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"2026-10-26T15:35:33Z\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"Id\":\"9999-12-31T24:00:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"9999-12-31T24:00:00\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"9999-12-31T24:00:00\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"9999-12-31T24:00:00\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"Unknown\":\"9999-12-31T24:00:00\"}]",
+      "deserialize": {
+        "errorType": "ArgumentOutOfRangeException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":\"9999-12-31T24:00:00\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"FolderPath\":\"C:\\\\B\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{'FolderPath':'C:\\\\A',VolumePercent:0x10,},]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":16,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":16,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":16,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\"}] trailing",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"Unknown\":new Date(1, 2)}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"Unknown\":new Foo(true)}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\é\\u2028\\\"\\u0001\\t\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\é\\u2028\\\"\\u0001\\t\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\é\\u2028\\\"\\u0001\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\é\\u2028\\\"\\u0001\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"},{\"FolderPath\":\"C:\\\\B\",\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"},{\"Id\":null,\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"C:\\\\B\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":2147483648}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":true}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\"},]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[,{\"FolderPath\":\"C:\\\\A\"}]",
+      "deserialize": {
+        "value": "[null,{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"FolderPath\":\"C:\\\\A\",}]",
+      "deserialize": {
+        "value": "[{\"Id\":null,\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33+02:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T00:00:00Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T00:00:00Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"\\/Date(0)\\/\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1970-01-01T00:00:00Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1970-01-01T00:00:00Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1970-01-01T00:00:00Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"\\/Date(0+0100)\\/\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1969-12-31T18:00:00-06:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1969-12-31T18:00:00-06:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1969-12-31T18:00:00-06:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"\"}]",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":null}]",
+      "deserialize": {
+        "errorType": "JsonSerializationException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":5}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":5.5}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":true}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":{}}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":[]}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 3:35 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 15:35:33\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26/10/2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026/10/26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 26, 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26 Oct 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Monday, October 26, 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.5\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.5\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.5\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.5\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.12345678Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33 Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33 +02:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33GMT\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Mon, 26 Oct 2026 15:35:33 GMT\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567-05:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"  2026-10-26  \"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"3 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"garbage\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-02-30\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"9999-12-31T24:00:00\"}]",
+      "deserialize": {
+        "errorType": "ArgumentOutOfRangeException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T24:00:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"20261026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1/2/3\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2003-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2003-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2003-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"12:00:00 AM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.000Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":undefined}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"\\u0032026-10-26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":new Date(0)}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 3:35 PM +02:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 26 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"October 26, 2026 15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26 October 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567+02\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33.1234567-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33.1234567-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:33.1234567-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1/2/30\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2030-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1/2/29\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2029-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2029-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2029-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1/2/99\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1999-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1999-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1999-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"13/1/2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-1-2\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T3:5:7\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026.10.26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26.10.2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Tue, 26 Oct 2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Mon, 26 Oct 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"15:35:33Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"PM 3\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"3PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"15h35\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"3:35 pm\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"3:35 a.m.\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"12:30 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"12:30 AM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:30:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:30:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:30:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0:30 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T12:30:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"13:00 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T13:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T13:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T13:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 3 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26 Oct\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026 Oct 26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10-26-2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.12345675Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.99999999Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:34Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:34Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:34Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T23:59:59.99999999Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-27T00:00:00Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33 GMT+02:00\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33 UTC\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33 -0500\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33 +5\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T05:35:33-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T05:35:33-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T05:35:33-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"sept 26 2026\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Sep 26 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"SEPTEMBER 26 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-09-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26-Oct-2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026T15:35\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26  15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26,15:35\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1 2 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2/29/2027\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2/29/2028\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2028-02-29T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2028-02-29T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2028-02-29T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"26/10\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33.\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33.1\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33.1234567890\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234568\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"\\u00a02026-10-26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26\\u3000\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01 00:00:00 +05:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T13:00:00-06:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T13:00:00-06:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T13:00:00-06:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"9999-12-31 23:59:59 -05:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"9999-12-31T22:59:59-06:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"9999-12-31T22:59:59-06:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"9999-12-31T22:59:59-06:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 24:00\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 23:60\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"3:35 PM +02:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T08:35:00-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"15:35 -05:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:00-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"5 Oct\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2005-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2005-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2005-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"5 Oct 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 5\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-05T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026 Oct\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-01T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1 2\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-01-02T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/2026 3:5 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 3:5:7\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:07\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:07\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:07\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 03:05\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T03:05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 26 2026 3 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15 PM\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Monday 26 Oct 2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Mon 2026-10-26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 Mon\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"10/26/26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-0500\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33-05:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26 15:35:33.1234567 Z\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T15:35:33.1234567Z\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct 26\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"Oct-26-2026\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"1/2/2026 13:00 AM\"}]",
+      "deserialize": {
+        "errorType": "JsonReaderException"
+      },
+      "sorted": "[]",
+      "json": "[]",
+      "saved": false
+    },
+    {
+      "input": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01 05:00:00 +05:00\"}]",
+      "deserialize": {
+        "value": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T18:00:00-06:00\"}]"
+      },
+      "sorted": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T18:00:00-06:00\"}]",
+      "json": "[{\"Id\":\"a\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":40,\"CreatedAtUtc\":\"0001-01-01T18:00:00-06:00\"}]",
+      "saved": false
+    }
+  ],
+  "scenarios": [
+    {
+      "initial": null,
+      "steps": [
+        {
+          "op": [
+            "add",
+            "C:\\Games\\",
+            150
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "add",
+            "c:/games",
+            150
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "add",
+            "C:\\Games",
+            20
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "addDefault",
+            "D:\\Tools"
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "add",
+            "",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "add",
+            "   ",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\Games\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            "generated01",
+            "E:\\Moved",
+            -3
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            "generated01",
+            "e:\\moved\\",
+            0
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            "missing",
+            "F:\\",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            " ",
+            "F:\\",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            "generated02",
+            "",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"Id\":\"generated02\",\"FolderPath\":\"D:\\\\Tools\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "remove",
+            "generated02"
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "remove",
+            "generated02"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "remove",
+            ""
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "match",
+            "E:\\Moved\\app.exe"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": {
+            "matched": true,
+            "volume": 0
+          }
+        },
+        {
+          "op": [
+            "match",
+            "C:\\Other\\app.exe"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"E:\\\\Moved\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": {
+            "matched": false,
+            "volume": 0
+          }
+        }
+      ]
+    },
+    {
+      "initial": "[{\"Id\":\"x\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":10,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"},{\"FolderPath\":\"C:\\\\A\\\\B\",\"VolumePercent\":20}]",
+      "steps": [
+        {
+          "op": [
+            "match",
+            "C:\\A\\B\\app.exe"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"x\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":10,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"},{\"FolderPath\":\"C:\\\\A\\\\B\",\"VolumePercent\":20}]",
+          "sorted": "[{\"Id\":\"x\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":10,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"},{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\\\\B\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": {
+            "matched": true,
+            "volume": 20
+          }
+        },
+        {
+          "op": [
+            "match",
+            "C:\\A\\app.exe"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"x\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":10,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"},{\"FolderPath\":\"C:\\\\A\\\\B\",\"VolumePercent\":20}]",
+          "sorted": "[{\"Id\":\"x\",\"FolderPath\":\"C:\\\\A\",\"VolumePercent\":10,\"CreatedAtUtc\":\"2020-01-01T00:00:00Z\"},{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\A\\\\B\",\"VolumePercent\":20,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": {
+            "matched": true,
+            "volume": 10
+          }
+        },
+        {
+          "op": [
+            "set",
+            "  "
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[]",
+          "sorted": "[]",
+          "result": null
+        },
+        {
+          "op": [
+            "set",
+            "[{\"FolderPath\":\"Z:\\\\\"}]"
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"FolderPath\":\"Z:\\\\\"}]",
+          "sorted": "[{\"Id\":\"generated02\",\"FolderPath\":\"Z:\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "match",
+            "Z:\\app.exe"
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"FolderPath\":\"Z:\\\\\"}]",
+          "sorted": "[{\"Id\":\"generated02\",\"FolderPath\":\"Z:\",\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": {
+            "matched": true,
+            "volume": 0
+          }
+        },
+        {
+          "op": [
+            "set",
+            "garbage"
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "garbage",
+          "sorted": "[]",
+          "result": null
+        },
+        {
+          "op": [
+            "add",
+            "C:\\New",
+            5
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated03\",\"FolderPath\":\"C:\\\\New\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated03\",\"FolderPath\":\"C:\\\\New\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "set",
+            null
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[]",
+          "sorted": "[]",
+          "result": null
+        }
+      ]
+    },
+    {
+      "initial": "garbage",
+      "steps": [
+        {
+          "op": [
+            "add",
+            "C:\\X",
+            5
+          ],
+          "events": 1,
+          "saved": true,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\X\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\X\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        },
+        {
+          "op": [
+            "update",
+            "generated01",
+            "C:\\X",
+            5
+          ],
+          "events": 0,
+          "saved": false,
+          "stored": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\X\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "sorted": "[{\"Id\":\"generated01\",\"FolderPath\":\"C:\\\\X\",\"VolumePercent\":5,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+          "result": null
+        }
+      ]
+    }
+  ],
+  "generatedNow": "\"2030-01-02T03:04:05.1234567Z\"",
+  "todayTicks": 639285696000000000,
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31"
+}
