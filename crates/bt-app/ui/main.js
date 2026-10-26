@@ -155,7 +155,19 @@ function stop() {
 
 listen("flyout-shown", start);
 listen("flyout-hidden", stop);
+const pinEl = document.getElementById("pin");
+function showPin(pinned) {
+  pinEl.hidden = !pinned;
+}
+invoke("is_pinned").then(showPin);
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") invoke("hide_flyout");
+  if (event.ctrlKey && event.key.toLowerCase() === "p") {
+    event.preventDefault();
+    invoke("toggle_pin").then(showPin);
+  }
 });
 refresh();
+// Events emitted before this script loaded (e.g. `--show`) are missed, so
+// start polling if the window is already visible.
+window.__TAURI__.window.getCurrentWindow().isVisible().then((visible) => visible && start());

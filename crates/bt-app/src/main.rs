@@ -7,7 +7,10 @@
 
 use bt_audio::{AudioEngine, Snapshot};
 use std::{
-    sync::Mutex,
+    sync::{
+        Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
     time::{Duration, Instant},
 };
 use tauri::{
@@ -18,12 +21,16 @@ use tauri::{
 };
 
 const FLYOUT: &str = "flyout";
+/// Logical flyout width (tauri.conf.json uses the same value).
+const FLYOUT_WIDTH: f64 = 380.0;
 
 struct App {
     audio: AudioEngine,
     /// When focus loss last hid the flyout; a tray click right after it is the
     /// same gesture and must not reopen the window.
     hidden_at: Mutex<Option<Instant>>,
+    /// Pinned flyouts stay open when they lose focus (Ctrl+P).
+    pinned: AtomicBool,
 }
 
 fn error(e: impl std::fmt::Display) -> String {
@@ -66,6 +73,15 @@ fn set_app_mute(
         .set_app_mute(&device_id, &app_key, muted)
         .map_err(error)
 }
+/// Toggles pinning and returns the new state.
+#[tauri::command]
+fn toggle_pin(app: State<'_, App>) -> bool {
+    !app.pinned.fetch_xor(true, Ordering::Relaxed)
+}
+#[tauri::command]
+fn is_pinned(app: State<'_, App>) -> bool {
+    app.pinned.load(Ordering::Relaxed)
+}
 #[tauri::command]
 fn hide_flyout(window: WebviewWindow) {
     hide(&window);
@@ -73,17 +89,21 @@ fn hide_flyout(window: WebviewWindow) {
 /// The flyout reports its content height so the window hugs it.
 #[tauri::command]
 fn fit_flyout(window: WebviewWindow, height: f64) -> Result<(), String> {
+    // Work in inner (client) pixels throughout: set_size sets the inner size,
+    // so comparing against or reusing the outer size (frame + shadow) grows
+    // the window a little on every refresh.
     let scale = window.scale_factor().map_err(error)?;
-    let size = window.outer_size().map_err(error)?;
+    let current = window.inner_size().map_err(error)?;
     let max = window
         .current_monitor()
         .ok()
         .flatten()
         .map_or(900.0, |m| m.work_area().size.height as f64 * 0.8);
-    let height = (height * scale).clamp(120.0, max).round() as u32;
-    if height != size.height {
+    let width = (FLYOUT_WIDTH * scale).round() as u32;
+    let height = (height * scale).clamp(120.0 * scale, max).round() as u32;
+    if current.width.abs_diff(width) > 1 || current.height.abs_diff(height) > 1 {
         window
-            .set_size(tauri::PhysicalSize::new(size.width, height))
+            .set_size(tauri::PhysicalSize::new(width, height))
             .map_err(error)?;
         place_near_taskbar(&window, None);
     }
@@ -161,6 +181,7 @@ fn main() {
         .manage(App {
             audio,
             hidden_at: Mutex::new(None),
+            pinned: AtomicBool::new(std::env::args().any(|a| a == "--pinned")),
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
@@ -169,6 +190,8 @@ fn main() {
             set_app_volume,
             set_app_mute,
             hide_flyout,
+            toggle_pin,
+            is_pinned,
             fit_flyout
         ])
         .setup(|app| {
@@ -213,6 +236,9 @@ fn main() {
         })
         .on_window_event(|window, event| {
             if let WindowEvent::Focused(false) = event {
+                if window.state::<App>().pinned.load(Ordering::Relaxed) {
+                    return;
+                }
                 if let Some(webview) = window.app_handle().get_webview_window(window.label()) {
                     if webview.is_visible().unwrap_or(false) {
                         if let Ok(mut t) = window.state::<App>().hidden_at.lock() {

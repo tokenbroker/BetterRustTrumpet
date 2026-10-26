@@ -21,11 +21,12 @@ html, body {
   user-select: none;
   overflow: hidden;
 }
-#flyout {
-  padding: 8px;
-  background: linear-gradient(145deg, #47336f 0%, #3b2d8c 35%, #202064 70%, #11123f 100%);
-  min-height: 100vh;
-}
+html, body { height: 100%; }
+body { background: linear-gradient(145deg, #47336f 0%, #3b2d8c 35%, #202064 70%, #11123f 100%); }
+/* No min-height here: its height is measured to size the window, so it must
+   reflect content only. Overflow scrolls when the content is capped. */
+#flyout { padding: 8px; }
+body { overflow-y: auto; }
 #devices { display: flex; flex-direction: column; gap: 8px; }
 .device {
   background: var(--card);
@@ -82,3 +83,4 @@ input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-of
 }
 .muted .icon .initial { text-decoration: line-through; }
 #status { margin: 12px; color: var(--text-muted); text-align: center; }
+#pin { margin: 0 4px 6px; font-size: 11px; color: var(--accent-strong); }
