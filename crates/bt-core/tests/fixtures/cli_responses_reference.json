@@ -1,0 +1,1660 @@
+{
+  "culture": "en-US",
+  "resourceSet": "EarTrumpet/Properties/Resources.resx (neutral strings)",
+  "projections": [
+    {
+      "input": {
+        "collection": {
+          "Default": {
+            "Id": "speaker",
+            "DisplayName": "Speakers",
+            "Volume": 85,
+            "IsMuted": false,
+            "Apps": [
+              null,
+              {
+                "Id": "session-1",
+                "ExeName": "music",
+                "DisplayName": "Music",
+                "Volume": 75,
+                "IsMuted": false,
+                "ProcessId": 101
+              },
+              {
+                "Id": "session-2",
+                "ExeName": "MUSIC",
+                "DisplayName": "Music Other",
+                "Volume": 35,
+                "IsMuted": true,
+                "ProcessId": 102
+              },
+              {
+                "Id": null,
+                "ExeName": null,
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "ProcessId": 0
+              }
+            ]
+          },
+          "AllDevices": [
+            null,
+            {
+              "Id": "speaker",
+              "DisplayName": "Speakers",
+              "Volume": 85,
+              "IsMuted": false,
+              "Apps": [
+                null,
+                {
+                  "Id": "session-1",
+                  "ExeName": "music",
+                  "DisplayName": "Music",
+                  "Volume": 75,
+                  "IsMuted": false,
+                  "ProcessId": 101
+                },
+                {
+                  "Id": "session-2",
+                  "ExeName": "MUSIC",
+                  "DisplayName": "Music Other",
+                  "Volume": 35,
+                  "IsMuted": true,
+                  "ProcessId": 102
+                },
+                {
+                  "Id": null,
+                  "ExeName": null,
+                  "DisplayName": null,
+                  "Volume": 0,
+                  "IsMuted": false,
+                  "ProcessId": 0
+                }
+              ]
+            },
+            {
+              "Id": "mic",
+              "DisplayName": "Microphone",
+              "Volume": 40,
+              "IsMuted": true,
+              "Apps": []
+            }
+          ]
+        },
+        "settings": {
+          "VolumeProfilesJson": "[{\"Id\": \"focus-id\", \"Name\": \"Focus Mode\", \"Slug\": \"focus-mode\", \"CreatedAt\": \"2024-01-02 03:04\", \"IncludeDeviceVolumes\": false, \"IncludeAppVolumes\": false, \"RouteApps\": false, \"Devices\": [{\"DeviceId\": \"speaker\", \"IncludeVolume\": true, \"Apps\": [{\"ExeName\": \"music\"}, {\"ExeName\": \"music\"}]}, {\"DeviceId\": \"mic\", \"IncludeVolume\": false, \"Apps\": [{\"ExeName\": \"chat\"}]}], \"DefaultDevices\": {\"Playback\": {\"DeviceId\": \"speaker\", \"DisplayName\": \"Speakers\"}, \"Recording\": {\"DeviceId\": \"mic\", \"DisplayName\": null}}}]",
+          "QuickTrumpetLastAppliedId": "FOCUS-ID"
+        },
+        "args": [],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [
+          {
+            "id": "speaker",
+            "name": "Speakers",
+            "volume": 85,
+            "isMuted": false,
+            "isDefault": true,
+            "apps": [
+              {
+                "id": "session-1",
+                "name": "Music",
+                "exeName": "music",
+                "volume": 75,
+                "isMuted": false
+              },
+              {
+                "id": "session-2",
+                "name": "Music Other",
+                "exeName": "MUSIC",
+                "volume": 35,
+                "isMuted": true
+              },
+              {
+                "id": null,
+                "name": null,
+                "exeName": null,
+                "volume": 0,
+                "isMuted": false
+              }
+            ]
+          },
+          {
+            "id": "mic",
+            "name": "Microphone",
+            "volume": 40,
+            "isMuted": true,
+            "isDefault": false,
+            "apps": []
+          }
+        ],
+        "apps": [
+          {
+            "exeName": "music",
+            "displayName": "Music",
+            "volume": 75,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 101
+          },
+          {
+            "exeName": null,
+            "displayName": null,
+            "volume": 0,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 0
+          }
+        ],
+        "volume": {
+          "device": "Speakers",
+          "volume": 85,
+          "isMuted": false
+        },
+        "default": {
+          "id": "speaker",
+          "name": "Speakers",
+          "volume": 85,
+          "isMuted": false
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.28Z",
+          "devices": [
+            {
+              "name": "Speakers",
+              "volume": 85,
+              "isMuted": false,
+              "isDefault": true,
+              "appCount": 4,
+              "apps": [
+                {
+                  "exeName": "music",
+                  "name": "Music",
+                  "volume": 75,
+                  "isMuted": false,
+                  "processId": 101
+                },
+                {
+                  "exeName": "MUSIC",
+                  "name": "Music Other",
+                  "volume": 35,
+                  "isMuted": true,
+                  "processId": 102
+                },
+                {
+                  "exeName": null,
+                  "name": null,
+                  "volume": 0,
+                  "isMuted": false,
+                  "processId": 0
+                }
+              ]
+            },
+            {
+              "name": "Microphone",
+              "volume": 40,
+              "isMuted": true,
+              "isDefault": false,
+              "appCount": 0,
+              "apps": []
+            }
+          ]
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": "Speakers",
+          "devices": 3,
+          "apps": 4,
+          "presets": 1
+        },
+        "profiles": [
+          {
+            "name": "Focus Mode",
+            "slug": "focus-mode",
+            "devices": 1,
+            "apps": 3,
+            "createdAt": "2024-01-02 03:04",
+            "summary": "Speakers",
+            "includeDeviceVolumes": false,
+            "includeAppVolumes": false,
+            "routeApps": false,
+            "defaults": {
+              "output": "Speakers",
+              "mic": "mic"
+            },
+            "lastApplied": true
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "collection": null,
+        "settings": null,
+        "args": [],
+        "managerReady": false,
+        "version": null
+      },
+      "result": {
+        "devices": {
+          "error": "audio not ready"
+        },
+        "apps": {
+          "error": "audio not ready"
+        },
+        "volume": {
+          "error": "device not found"
+        },
+        "default": {
+          "error": "audio not ready"
+        },
+        "watch": {
+          "error": "audio not ready"
+        },
+        "doctor": {
+          "ok": false,
+          "version": "unknown",
+          "audioReady": false,
+          "deviceManagerReady": false,
+          "settingsReady": false,
+          "defaultDevice": null,
+          "devices": 0,
+          "apps": 0,
+          "presets": 0
+        },
+        "profiles": {
+          "error": "settings not available"
+        }
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": null,
+          "AllDevices": []
+        },
+        "settings": {
+          "VolumeProfilesJson": "invalid JSON"
+        },
+        "args": [],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [],
+        "apps": [],
+        "volume": {
+          "error": "device not found"
+        },
+        "default": {
+          "error": "no default device"
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.299Z",
+          "devices": []
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": null,
+          "devices": 0,
+          "apps": 0,
+          "presets": 0
+        },
+        "profiles": []
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": null,
+          "AllDevices": null
+        },
+        "settings": {
+          "VolumeProfilesJson": null
+        },
+        "args": [],
+        "managerReady": false,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [],
+        "apps": [],
+        "volume": {
+          "error": "device not found"
+        },
+        "default": {
+          "error": "no default device"
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.3Z",
+          "devices": []
+        },
+        "doctor": {
+          "ok": false,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": false,
+          "settingsReady": true,
+          "defaultDevice": null,
+          "devices": 0,
+          "apps": 0,
+          "presets": 0
+        },
+        "profiles": []
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": null,
+          "AllDevices": [
+            {
+              "Id": null,
+              "DisplayName": null,
+              "Volume": 0,
+              "IsMuted": false,
+              "Apps": null
+            }
+          ]
+        },
+        "settings": {
+          "VolumeProfilesJson": "[null,{}]"
+        },
+        "args": [],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [
+          {
+            "id": null,
+            "name": null,
+            "volume": 0,
+            "isMuted": false,
+            "isDefault": true,
+            "apps": []
+          }
+        ],
+        "apps": [],
+        "volume": {
+          "error": "device not found"
+        },
+        "default": {
+          "error": "no default device"
+        },
+        "watch": {
+          "error": "Value cannot be null. (Parameter 'source')"
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": null,
+          "devices": 1,
+          "apps": 0,
+          "presets": 2
+        },
+        "profiles": [
+          {
+            "name": null,
+            "slug": "",
+            "devices": 0,
+            "apps": 0,
+            "createdAt": null,
+            "summary": "Empty preset",
+            "includeDeviceVolumes": true,
+            "includeAppVolumes": true,
+            "routeApps": true,
+            "defaults": {},
+            "lastApplied": false
+          }
+        ]
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": {
+            "Id": "speaker",
+            "DisplayName": "Speakers",
+            "Volume": 85,
+            "IsMuted": false,
+            "Apps": [
+              null,
+              {
+                "Id": "session-1",
+                "ExeName": "music",
+                "DisplayName": "Music",
+                "Volume": 75,
+                "IsMuted": false,
+                "ProcessId": 101
+              },
+              {
+                "Id": "session-2",
+                "ExeName": "MUSIC",
+                "DisplayName": "Music Other",
+                "Volume": 35,
+                "IsMuted": true,
+                "ProcessId": 102
+              },
+              {
+                "Id": null,
+                "ExeName": null,
+                "DisplayName": null,
+                "Volume": 0,
+                "IsMuted": false,
+                "ProcessId": 0
+              }
+            ]
+          },
+          "AllDevices": [
+            null,
+            {
+              "Id": "speaker",
+              "DisplayName": "Speakers",
+              "Volume": 85,
+              "IsMuted": false,
+              "Apps": [
+                null,
+                {
+                  "Id": "session-1",
+                  "ExeName": "music",
+                  "DisplayName": "Music",
+                  "Volume": 75,
+                  "IsMuted": false,
+                  "ProcessId": 101
+                },
+                {
+                  "Id": "session-2",
+                  "ExeName": "MUSIC",
+                  "DisplayName": "Music Other",
+                  "Volume": 35,
+                  "IsMuted": true,
+                  "ProcessId": 102
+                },
+                {
+                  "Id": null,
+                  "ExeName": null,
+                  "DisplayName": null,
+                  "Volume": 0,
+                  "IsMuted": false,
+                  "ProcessId": 0
+                }
+              ]
+            },
+            {
+              "Id": "mic",
+              "DisplayName": "Microphone",
+              "Volume": 40,
+              "IsMuted": true,
+              "Apps": []
+            }
+          ]
+        },
+        "settings": {
+          "VolumeProfilesJson": "null"
+        },
+        "args": [
+          "--device",
+          "SPEAKER"
+        ],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [
+          {
+            "id": "speaker",
+            "name": "Speakers",
+            "volume": 85,
+            "isMuted": false,
+            "isDefault": true,
+            "apps": [
+              {
+                "id": "session-1",
+                "name": "Music",
+                "exeName": "music",
+                "volume": 75,
+                "isMuted": false
+              },
+              {
+                "id": "session-2",
+                "name": "Music Other",
+                "exeName": "MUSIC",
+                "volume": 35,
+                "isMuted": true
+              },
+              {
+                "id": null,
+                "name": null,
+                "exeName": null,
+                "volume": 0,
+                "isMuted": false
+              }
+            ]
+          },
+          {
+            "id": "mic",
+            "name": "Microphone",
+            "volume": 40,
+            "isMuted": true,
+            "isDefault": false,
+            "apps": []
+          }
+        ],
+        "apps": [
+          {
+            "exeName": "music",
+            "displayName": "Music",
+            "volume": 75,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 101
+          },
+          {
+            "exeName": null,
+            "displayName": null,
+            "volume": 0,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 0
+          }
+        ],
+        "volume": {
+          "error": "Object reference not set to an instance of an object."
+        },
+        "default": {
+          "id": "speaker",
+          "name": "Speakers",
+          "volume": 85,
+          "isMuted": false
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.301Z",
+          "devices": [
+            {
+              "name": "Speakers",
+              "volume": 85,
+              "isMuted": false,
+              "isDefault": true,
+              "appCount": 4,
+              "apps": [
+                {
+                  "exeName": "music",
+                  "name": "Music",
+                  "volume": 75,
+                  "isMuted": false,
+                  "processId": 101
+                },
+                {
+                  "exeName": "MUSIC",
+                  "name": "Music Other",
+                  "volume": 35,
+                  "isMuted": true,
+                  "processId": 102
+                },
+                {
+                  "exeName": null,
+                  "name": null,
+                  "volume": 0,
+                  "isMuted": false,
+                  "processId": 0
+                }
+              ]
+            },
+            {
+              "name": "Microphone",
+              "volume": 40,
+              "isMuted": true,
+              "isDefault": false,
+              "appCount": 0,
+              "apps": []
+            }
+          ]
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": "Speakers",
+          "devices": 3,
+          "apps": 4,
+          "presets": 0
+        },
+        "profiles": []
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": null,
+          "AllDevices": [
+            {
+              "Id": "speaker",
+              "DisplayName": "Speakers",
+              "Volume": 85,
+              "IsMuted": false,
+              "Apps": [
+                null,
+                {
+                  "Id": "session-1",
+                  "ExeName": "music",
+                  "DisplayName": "Music",
+                  "Volume": 75,
+                  "IsMuted": false,
+                  "ProcessId": 101
+                },
+                {
+                  "Id": "session-2",
+                  "ExeName": "MUSIC",
+                  "DisplayName": "Music Other",
+                  "Volume": 35,
+                  "IsMuted": true,
+                  "ProcessId": 102
+                },
+                {
+                  "Id": null,
+                  "ExeName": null,
+                  "DisplayName": null,
+                  "Volume": 0,
+                  "IsMuted": false,
+                  "ProcessId": 0
+                }
+              ]
+            }
+          ]
+        },
+        "settings": {
+          "VolumeProfilesJson": "[]"
+        },
+        "args": [
+          "--device",
+          "sPeAk"
+        ],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [
+          {
+            "id": "speaker",
+            "name": "Speakers",
+            "volume": 85,
+            "isMuted": false,
+            "isDefault": false,
+            "apps": [
+              {
+                "id": "session-1",
+                "name": "Music",
+                "exeName": "music",
+                "volume": 75,
+                "isMuted": false
+              },
+              {
+                "id": "session-2",
+                "name": "Music Other",
+                "exeName": "MUSIC",
+                "volume": 35,
+                "isMuted": true
+              },
+              {
+                "id": null,
+                "name": null,
+                "exeName": null,
+                "volume": 0,
+                "isMuted": false
+              }
+            ]
+          }
+        ],
+        "apps": [
+          {
+            "exeName": "music",
+            "displayName": "Music",
+            "volume": 75,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 101
+          },
+          {
+            "exeName": null,
+            "displayName": null,
+            "volume": 0,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 0
+          }
+        ],
+        "volume": {
+          "device": "Speakers",
+          "volume": 85,
+          "isMuted": false
+        },
+        "default": {
+          "error": "no default device"
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.301Z",
+          "devices": [
+            {
+              "name": "Speakers",
+              "volume": 85,
+              "isMuted": false,
+              "isDefault": false,
+              "appCount": 4,
+              "apps": [
+                {
+                  "exeName": "music",
+                  "name": "Music",
+                  "volume": 75,
+                  "isMuted": false,
+                  "processId": 101
+                },
+                {
+                  "exeName": "MUSIC",
+                  "name": "Music Other",
+                  "volume": 35,
+                  "isMuted": true,
+                  "processId": 102
+                },
+                {
+                  "exeName": null,
+                  "name": null,
+                  "volume": 0,
+                  "isMuted": false,
+                  "processId": 0
+                }
+              ]
+            }
+          ]
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": null,
+          "devices": 1,
+          "apps": 4,
+          "presets": 0
+        },
+        "profiles": []
+      }
+    },
+    {
+      "input": {
+        "collection": {
+          "Default": null,
+          "AllDevices": [
+            {
+              "Id": "speaker",
+              "DisplayName": "Speakers",
+              "Volume": 85,
+              "IsMuted": false,
+              "Apps": [
+                null,
+                {
+                  "Id": "session-1",
+                  "ExeName": "music",
+                  "DisplayName": "Music",
+                  "Volume": 75,
+                  "IsMuted": false,
+                  "ProcessId": 101
+                },
+                {
+                  "Id": "session-2",
+                  "ExeName": "MUSIC",
+                  "DisplayName": "Music Other",
+                  "Volume": 35,
+                  "IsMuted": true,
+                  "ProcessId": 102
+                },
+                {
+                  "Id": null,
+                  "ExeName": null,
+                  "DisplayName": null,
+                  "Volume": 0,
+                  "IsMuted": false,
+                  "ProcessId": 0
+                }
+              ]
+            }
+          ]
+        },
+        "settings": {
+          "VolumeProfilesJson": "[{}]"
+        },
+        "args": [
+          "--device",
+          "missing"
+        ],
+        "managerReady": true,
+        "version": "3.2.1.0"
+      },
+      "result": {
+        "devices": [
+          {
+            "id": "speaker",
+            "name": "Speakers",
+            "volume": 85,
+            "isMuted": false,
+            "isDefault": false,
+            "apps": [
+              {
+                "id": "session-1",
+                "name": "Music",
+                "exeName": "music",
+                "volume": 75,
+                "isMuted": false
+              },
+              {
+                "id": "session-2",
+                "name": "Music Other",
+                "exeName": "MUSIC",
+                "volume": 35,
+                "isMuted": true
+              },
+              {
+                "id": null,
+                "name": null,
+                "exeName": null,
+                "volume": 0,
+                "isMuted": false
+              }
+            ]
+          }
+        ],
+        "apps": [
+          {
+            "exeName": "music",
+            "displayName": "Music",
+            "volume": 75,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 101
+          },
+          {
+            "exeName": null,
+            "displayName": null,
+            "volume": 0,
+            "isMuted": false,
+            "device": "Speakers",
+            "processId": 0
+          }
+        ],
+        "volume": {
+          "error": "device not found"
+        },
+        "default": {
+          "error": "no default device"
+        },
+        "watch": {
+          "timestamp": "2026-10-26T14:54:30.301Z",
+          "devices": [
+            {
+              "name": "Speakers",
+              "volume": 85,
+              "isMuted": false,
+              "isDefault": false,
+              "appCount": 4,
+              "apps": [
+                {
+                  "exeName": "music",
+                  "name": "Music",
+                  "volume": 75,
+                  "isMuted": false,
+                  "processId": 101
+                },
+                {
+                  "exeName": "MUSIC",
+                  "name": "Music Other",
+                  "volume": 35,
+                  "isMuted": true,
+                  "processId": 102
+                },
+                {
+                  "exeName": null,
+                  "name": null,
+                  "volume": 0,
+                  "isMuted": false,
+                  "processId": 0
+                }
+              ]
+            }
+          ]
+        },
+        "doctor": {
+          "ok": true,
+          "version": "3.2.1.0",
+          "audioReady": true,
+          "deviceManagerReady": true,
+          "settingsReady": true,
+          "defaultDevice": null,
+          "devices": 1,
+          "apps": 4,
+          "presets": 1
+        },
+        "profiles": [
+          {
+            "name": null,
+            "slug": "",
+            "devices": 0,
+            "apps": 0,
+            "createdAt": null,
+            "summary": "Empty preset",
+            "includeDeviceVolumes": true,
+            "includeAppVolumes": true,
+            "routeApps": true,
+            "defaults": {},
+            "lastApplied": false
+          }
+        ]
+      }
+    }
+  ],
+  "batches": [
+    {
+      "input": {
+        "args": [],
+        "responses": []
+      },
+      "result": {
+        "response": {
+          "error": "usage: batch <command...> [<command...>]"
+        },
+        "calls": []
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "doctor",
+          "mute"
+        ],
+        "responses": [
+          "{\"ok\":false}",
+          "{\"ok\":false,\"nested\":{\"error\":\"ignored\"}}"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": true,
+          "results": [
+            {
+              "command": "doctor",
+              "response": {
+                "ok": false
+              }
+            },
+            {
+              "command": "mute",
+              "response": {
+                "ok": false,
+                "nested": {
+                  "error": "ignored"
+                }
+              }
+            }
+          ]
+        },
+        "calls": [
+          "doctor",
+          "mute"
+        ]
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "mute",
+          "--app",
+          "Music Player",
+          "get-volume",
+          "--device",
+          "speakers",
+          "doctor",
+          "watch"
+        ],
+        "responses": [
+          "{\"ok\":false}",
+          "{\"error\":null}",
+          "[1,2,3]",
+          "null"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": false,
+          "results": [
+            {
+              "command": "mute --app \"Music Player\"",
+              "response": {
+                "ok": false
+              }
+            },
+            {
+              "command": "get-volume --device speakers",
+              "response": {
+                "error": null
+              }
+            },
+            {
+              "command": "doctor",
+              "response": [
+                1,
+                2,
+                3
+              ]
+            },
+            {
+              "command": "watch",
+              "response": null
+            }
+          ]
+        },
+        "calls": [
+          "mute --app \"Music Player\"",
+          "get-volume --device speakers",
+          "doctor",
+          "watch"
+        ]
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "doctor",
+          "ping",
+          "export-settings",
+          "copy.btsettings"
+        ],
+        "responses": [
+          "not JSON\nraw"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": true,
+          "results": [
+            {
+              "command": "doctor ping export-settings copy.btsettings",
+              "response": "not JSON\nraw"
+            }
+          ]
+        },
+        "calls": [
+          "doctor ping export-settings copy.btsettings"
+        ]
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "volume",
+          "Music \"quoted\" Name",
+          "10",
+          "mute",
+          "space app"
+        ],
+        "responses": [
+          "true",
+          "{\"Error\":\"not lower case\"}"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": true,
+          "results": [
+            {
+              "command": "volume \"Music \"quoted\" Name\" 10",
+              "response": true
+            },
+            {
+              "command": "mute \"space app\"",
+              "response": {
+                "Error": "not lower case"
+              }
+            }
+          ]
+        },
+        "calls": [
+          "volume \"Music \"quoted\" Name\" 10",
+          "mute \"space app\""
+        ]
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "doctor",
+          "watch"
+        ],
+        "responses": [
+          "{\"error\":false}",
+          "{\"error\":\"failure\"}"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": false,
+          "results": [
+            {
+              "command": "doctor",
+              "response": {
+                "error": false
+              }
+            },
+            {
+              "command": "watch",
+              "response": {
+                "error": "failure"
+              }
+            }
+          ]
+        },
+        "calls": [
+          "doctor",
+          "watch"
+        ]
+      }
+    },
+    {
+      "input": {
+        "args": [
+          "ping"
+        ],
+        "responses": [
+          "{\"status\":\"ok\",\"version\":\"unknown\"}"
+        ]
+      },
+      "result": {
+        "response": {
+          "ok": true,
+          "results": [
+            {
+              "command": "ping",
+              "response": {
+                "status": "ok",
+                "version": "unknown"
+              }
+            }
+          ]
+        },
+        "calls": [
+          "ping"
+        ]
+      }
+    }
+  ],
+  "shapes": [
+    {
+      "input": {
+        "version": "3.2.1.0",
+        "device": {
+          "Id": "speaker",
+          "DisplayName": "Speakers",
+          "Volume": 85,
+          "IsMuted": false,
+          "Apps": [
+            null,
+            {
+              "Id": "session-1",
+              "ExeName": "music",
+              "DisplayName": "Music",
+              "Volume": 75,
+              "IsMuted": false,
+              "ProcessId": 101
+            },
+            {
+              "Id": "session-2",
+              "ExeName": "MUSIC",
+              "DisplayName": "Music Other",
+              "Volume": 35,
+              "IsMuted": true,
+              "ProcessId": 102
+            },
+            {
+              "Id": null,
+              "ExeName": null,
+              "DisplayName": null,
+              "Volume": 0,
+              "IsMuted": false,
+              "ProcessId": 0
+            }
+          ]
+        },
+        "app": {
+          "Id": "session-1",
+          "ExeName": "music",
+          "DisplayName": "Music",
+          "Volume": 75,
+          "IsMuted": false,
+          "ProcessId": 101
+        },
+        "profile": {
+          "Id": "focus-id",
+          "Name": "Focus Mode",
+          "Slug": "focus-mode",
+          "CreatedAt": "2024-01-02 03:04",
+          "IncludeDeviceVolumes": false,
+          "IncludeAppVolumes": false,
+          "RouteApps": false,
+          "Devices": [
+            {
+              "DeviceId": "speaker",
+              "IncludeVolume": true,
+              "Apps": [
+                {
+                  "ExeName": "music"
+                },
+                {
+                  "ExeName": "music"
+                }
+              ]
+            },
+            {
+              "DeviceId": "mic",
+              "IncludeVolume": false,
+              "Apps": [
+                {
+                  "ExeName": "chat"
+                }
+              ]
+            }
+          ],
+          "DefaultDevices": {
+            "Playback": {
+              "DeviceId": "speaker",
+              "DisplayName": "Speakers"
+            },
+            "Recording": {
+              "DeviceId": "mic",
+              "DisplayName": null
+            }
+          }
+        },
+        "volume": 25,
+        "delta": -50,
+        "mute": true,
+        "routed": 2,
+        "routedApps": [
+          "Music"
+        ],
+        "appExe": "music",
+        "success": false,
+        "path": "C:\\Settings Folder\\copy.btsettings",
+        "error": "bad \"quoted\" command\nnext line",
+        "update": {
+          "IsUpdateAvailable": true,
+          "LatestVersion": "4.0.0",
+          "ReleaseUrl": "https://example.invalid/release",
+          "LastCheckTime": "2024-05-06T07:08:09Z"
+        },
+        "applyResult": {
+          "DevicesApplied": 2,
+          "AppsApplied": 3,
+          "AppsMissing": 1,
+          "AppsRouted": 2,
+          "DevicesMissing": [
+            "Disconnected"
+          ],
+          "Warnings": [
+            "Missing route"
+          ],
+          "DefaultsApplied": [
+            {
+              "Role": 0,
+              "DeviceId": "speaker",
+              "DisplayName": "Speakers"
+            },
+            {
+              "Role": 1,
+              "DeviceId": "SPEAKER",
+              "DisplayName": "Speakers"
+            },
+            {
+              "Role": 2,
+              "DeviceId": "mic",
+              "DisplayName": "Microphone"
+            },
+            {
+              "Role": 7,
+              "DeviceId": "usb",
+              "DisplayName": null
+            }
+          ]
+        },
+        "spec": {
+          "Keep": [
+            {
+              "Query": "music"
+            },
+            {
+              "Query": "missing"
+            }
+          ]
+        },
+        "plan": [
+          {
+            "Scope": "app",
+            "Rule": "keep",
+            "Query": "music",
+            "MatchType": "exe",
+            "AppId": null,
+            "ExeName": "music",
+            "DisplayName": "Music",
+            "DeviceId": "speaker",
+            "DeviceName": "Speakers",
+            "ProcessId": 101,
+            "VolumeBefore": 75,
+            "VolumeAfter": 25,
+            "IsMutedBefore": false,
+            "IsMutedAfter": false
+          }
+        ]
+      },
+      "result": {
+        "Ping": {
+          "status": "ok",
+          "version": "3.2.1.0"
+        },
+        "DeviceRelative": {
+          "ok": true,
+          "device": "Speakers",
+          "volume": 25,
+          "delta": -50
+        },
+        "DeviceAbsolute": {
+          "ok": true,
+          "device": "Speakers",
+          "volume": 25
+        },
+        "AppAbsolute": {
+          "ok": true,
+          "app": "Music",
+          "volume": 25
+        },
+        "AppRelative": {
+          "ok": true,
+          "app": "Music",
+          "volume": 25,
+          "delta": -50
+        },
+        "AppMute": {
+          "ok": true,
+          "app": "Music",
+          "isMuted": false
+        },
+        "DeviceMute": {
+          "ok": true,
+          "device": "Speakers",
+          "isMuted": true
+        },
+        "SetDefault": {
+          "ok": true,
+          "name": "Speakers",
+          "id": "speaker"
+        },
+        "Route": {
+          "ok": true,
+          "app": "Music",
+          "device": "Speakers",
+          "processesRouted": 2
+        },
+        "Update": {
+          "updateAvailable": true,
+          "currentVersion": "3.2.1.0",
+          "latestVersion": "4.0.0",
+          "releaseUrl": "https://example.invalid/release",
+          "lastChecked": "2024-05-06T07:08:09"
+        },
+        "Save": {
+          "ok": true,
+          "preset": "Focus Mode",
+          "slug": "focus-mode",
+          "captureScope": "CurrentDevice",
+          "applyAppsOnly": true,
+          "includeAppVolumes": false,
+          "routeApps": false,
+          "defaults": {
+            "output": "Speakers",
+            "mic": "mic"
+          },
+          "devices": 1,
+          "apps": 3,
+          "summary": "Speakers"
+        },
+        "Delete": {
+          "ok": true,
+          "preset": "Focus Mode"
+        },
+        "Create": {
+          "ok": true,
+          "preset": "Focus Mode",
+          "slug": "focus-mode",
+          "captureScope": "CurrentDevice",
+          "applyAppsOnly": true,
+          "appsChanged": 1,
+          "appsCaptured": 3,
+          "changes": [
+            {
+              "Scope": "app",
+              "Rule": "keep",
+              "Query": "music",
+              "MatchType": "exe",
+              "AppId": null,
+              "ExeName": "music",
+              "DisplayName": "Music",
+              "DeviceId": "speaker",
+              "DeviceName": "Speakers",
+              "ProcessId": 101,
+              "VolumeBefore": 75,
+              "VolumeAfter": 25,
+              "IsMutedBefore": false,
+              "IsMutedAfter": false
+            }
+          ],
+          "warnings": [
+            "App not found: missing"
+          ]
+        },
+        "Path": {
+          "ok": false,
+          "path": "C:\\Settings Folder\\copy.btsettings"
+        },
+        "ApplyProfile": {
+          "ok": true,
+          "preset": "Focus Mode",
+          "slug": "focus-mode",
+          "defaultsApplied": [
+            {
+              "role": "output",
+              "name": "Speakers",
+              "id": "speaker"
+            },
+            {
+              "role": "outputCalls",
+              "name": "Speakers",
+              "id": "SPEAKER"
+            },
+            {
+              "role": "mic",
+              "name": "Microphone",
+              "id": "mic"
+            },
+            {
+              "role": "micCalls",
+              "name": null,
+              "id": "usb"
+            }
+          ],
+          "devicesApplied": 2,
+          "devicesMissing": [
+            "Disconnected"
+          ],
+          "appsApplied": 3,
+          "appsMissing": 1,
+          "appsRouted": 2,
+          "summary": "Output → Speakers · Mic → Microphone · Calls mic →  · 2 devices · 3 apps\nNot connected: Disconnected",
+          "warnings": [
+            "Missing route"
+          ]
+        },
+        "Error": {
+          "error": "bad \"quoted\" command\nnext line"
+        }
+      }
+    },
+    {
+      "input": {
+        "version": null,
+        "device": {
+          "Id": null,
+          "DisplayName": null
+        },
+        "app": {
+          "DisplayName": null,
+          "IsMuted": true
+        },
+        "profile": {},
+        "volume": 25,
+        "delta": -50,
+        "mute": false,
+        "routed": 2,
+        "routedApps": [
+          null
+        ],
+        "appExe": "music",
+        "success": true,
+        "path": "C:\\Settings Folder\\copy.btsettings",
+        "error": "bad \"quoted\" command\nnext line",
+        "update": {},
+        "applyResult": {},
+        "spec": {},
+        "plan": []
+      },
+      "result": {
+        "Ping": {
+          "status": "ok",
+          "version": "unknown"
+        },
+        "DeviceRelative": {
+          "ok": true,
+          "device": null,
+          "volume": 25,
+          "delta": -50
+        },
+        "DeviceAbsolute": {
+          "ok": true,
+          "device": null,
+          "volume": 25
+        },
+        "AppAbsolute": {
+          "ok": true,
+          "app": null,
+          "volume": 25
+        },
+        "AppRelative": {
+          "ok": true,
+          "app": null,
+          "volume": 25,
+          "delta": -50
+        },
+        "AppMute": {
+          "ok": true,
+          "app": null,
+          "isMuted": true
+        },
+        "DeviceMute": {
+          "ok": true,
+          "device": null,
+          "isMuted": false
+        },
+        "SetDefault": {
+          "ok": true,
+          "name": null,
+          "id": null
+        },
+        "Route": {
+          "ok": true,
+          "app": "music",
+          "device": null,
+          "processesRouted": 2
+        },
+        "Update": {
+          "updateAvailable": false,
+          "currentVersion": "unknown",
+          "latestVersion": "unknown",
+          "releaseUrl": "",
+          "lastChecked": "0001-01-01T00:00:00"
+        },
+        "Save": {
+          "ok": true,
+          "preset": null,
+          "slug": null,
+          "captureScope": "CurrentDevice",
+          "applyAppsOnly": false,
+          "includeAppVolumes": true,
+          "routeApps": true,
+          "defaults": {},
+          "devices": 0,
+          "apps": 0,
+          "summary": "Empty preset"
+        },
+        "Delete": {
+          "ok": true,
+          "preset": null
+        },
+        "Create": {
+          "ok": true,
+          "preset": null,
+          "slug": null,
+          "captureScope": "CurrentDevice",
+          "applyAppsOnly": false,
+          "appsChanged": 0,
+          "appsCaptured": 0,
+          "changes": [],
+          "warnings": []
+        },
+        "Path": {
+          "ok": true,
+          "path": "C:\\Settings Folder\\copy.btsettings"
+        },
+        "ApplyProfile": {
+          "ok": true,
+          "preset": null,
+          "slug": "",
+          "defaultsApplied": [],
+          "devicesApplied": 0,
+          "devicesMissing": [],
+          "appsApplied": 0,
+          "appsMissing": 0,
+          "appsRouted": 0,
+          "summary": "Nothing to change",
+          "warnings": []
+        },
+        "Error": {
+          "error": "bad \"quoted\" command\nnext line"
+        }
+      }
+    }
+  ],
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31"
+}

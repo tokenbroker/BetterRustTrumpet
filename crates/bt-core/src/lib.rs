@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 
 pub mod cli;
+pub mod cli_responses;
 pub mod cli_rules;
 pub mod focus;
 pub mod folders;

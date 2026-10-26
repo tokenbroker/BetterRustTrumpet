@@ -78,7 +78,7 @@ pub struct AppMatch {
     pub is_muted: bool,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "PascalCase")]
 pub struct PlanChange {
     pub scope: String,
