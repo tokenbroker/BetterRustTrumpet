@@ -64,6 +64,12 @@ pub fn ordinal_contains(value: &str, query: &str) -> bool {
     fold(value).contains(&fold(query))
 }
 
+/// UTF-16 `char.IsLetterOrDigit`: supplementary characters arrive as
+/// surrogate halves, which are neither.
+pub fn bmp_letter_or_digit(c: char) -> bool {
+    c.len_utf16() == 1 && mapped(c as u32, data::SLUG_RANGES).is_some()
+}
+
 pub fn bmp_letter(c: char) -> bool {
     c.len_utf16() == 1 && mapped(c as u32, data::SLUG_RANGES).is_some() && !c.is_numeric()
 }

@@ -515,7 +515,12 @@ fn floating(text: &str) -> Result<f64, Error> {
             {
                 return Err(Error::Value);
             }
-            text.parse().map_err(|_| Error::Value)
+            let value: f64 = text.parse().map_err(|_| Error::Value)?;
+            Ok(if value.is_nan() {
+                crate::newtonsoft::DOTNET_NAN
+            } else {
+                value
+            })
         }
     }
 }

@@ -24,6 +24,25 @@ impl IntegerFormat<'_> {
         )
     }
     pub fn parse_i32(self, value: &str) -> Option<i32> {
+        let (negative, magnitude) = self.parse_magnitude(value, 2147483647, 2147483648)?;
+        Some(if negative {
+            (-(magnitude as i64)) as i32
+        } else {
+            magnitude as i32
+        })
+    }
+    /// `UInt32.Parse` with `NumberStyles.Integer`: "-0" is accepted, any other
+    /// negative value overflows.
+    pub fn parse_u32(self, value: &str) -> Option<u32> {
+        let (_, magnitude) = self.parse_magnitude(value, u64::from(u32::MAX), 0)?;
+        Some(magnitude as u32)
+    }
+    fn parse_magnitude(
+        self,
+        value: &str,
+        positive_limit: u64,
+        negative_limit: u64,
+    ) -> Option<(bool, u64)> {
         let mut value = value.trim_start_matches(integer_space);
         let mut negative = false;
         if self.positive_sign == "+" && self.negative_sign == "-" {
@@ -46,12 +65,16 @@ impl IntegerFormat<'_> {
         if digits == 0 {
             return None;
         }
-        let limit = if negative { 2147483648_u32 } else { 2147483647 };
-        let mut magnitude = 0_u32;
+        let limit = if negative {
+            negative_limit
+        } else {
+            positive_limit
+        };
+        let mut magnitude = 0_u64;
         for digit in value[..digits].bytes() {
             magnitude = magnitude
                 .checked_mul(10)?
-                .checked_add(u32::from(digit - b'0'))?;
+                .checked_add(u64::from(digit - b'0'))?;
             if magnitude > limit {
                 return None;
             }
@@ -60,11 +83,7 @@ impl IntegerFormat<'_> {
         if !trailing.bytes().all(|b| b == 0) {
             return None;
         }
-        Some(if negative {
-            (-i64::from(magnitude)) as i32
-        } else {
-            magnitude as i32
-        })
+        Some((negative, magnitude))
     }
 }
 fn integer_space(c: char) -> bool {

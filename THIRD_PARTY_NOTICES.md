@@ -11,6 +11,12 @@ The integer parsing/sign rules in `bt-core/src/numbers.rs` also adapt
 and [NumberFormatInfo.cs](https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.Private.CoreLib/src/System/Globalization/NumberFormatInfo.cs)
 from the .NET 8 runtime, under the same copyright and MIT license below.
 
+`bt-core/src/newtonsoft.rs` adapts the reader leniency, date parsing
+(`DateTimeParser`, `DateTimeUtils`), `EnumUtils.ParseEnum` and conversion
+rules of [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 13,
+Copyright (c) 2007 James Newton-King, also under the MIT license below. Its
+round-trip double formatting follows the .NET runtime's number formatting.
+
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
