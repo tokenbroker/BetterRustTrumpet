@@ -58,7 +58,7 @@ pub(crate) fn windows_root_length(path: &[u16]) -> usize {
     }
 }
 
-fn filename_without_extension(path: &str) -> String {
+pub(crate) fn filename_without_extension(path: &str) -> String {
     let path: Vec<u16> = path.encode_utf16().collect();
     let root = windows_root_length(&path);
     let start = path

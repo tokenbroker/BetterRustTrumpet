@@ -29,6 +29,18 @@ pub fn ordinal_ignore_case(left: &str, right: &str) -> bool {
     left.chars().map(fold).eq(right.chars().map(fold))
 }
 
+/// Stable keys for .NET ordinal-ignore-case sets and reference ordering.
+pub fn ordinal_key(value: &str) -> String {
+    value
+        .chars()
+        .map(|c| mapped(c as u32, data::ORDINAL_UPPER_RANGES).unwrap_or(c))
+        .collect()
+}
+
+pub fn ordinal_compare(left: &str, right: &str) -> std::cmp::Ordering {
+    ordinal_key(left).chars().cmp(ordinal_key(right).chars())
+}
+
 pub fn ordinal_ignore_case_optional(left: Option<&str>, right: Option<&str>) -> bool {
     match (left, right) {
         (Some(left), Some(right)) => ordinal_ignore_case(left, right),
