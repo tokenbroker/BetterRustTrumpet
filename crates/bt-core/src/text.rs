@@ -37,6 +37,25 @@ pub fn ordinal_ignore_case_optional(left: Option<&str>, right: Option<&str>) -> 
     }
 }
 
+pub fn ordinal_starts_with(value: &str, prefix: &str) -> bool {
+    let fold = |c: char| mapped(c as u32, data::ORDINAL_UPPER_RANGES).unwrap_or(c);
+    let mut value = value.chars().map(fold);
+    prefix.chars().map(fold).all(|c| value.next() == Some(c))
+}
+
+pub fn ordinal_contains(value: &str, query: &str) -> bool {
+    let fold = |s: &str| {
+        s.chars()
+            .map(|c| mapped(c as u32, data::ORDINAL_UPPER_RANGES).unwrap_or(c))
+            .collect::<String>()
+    };
+    fold(value).contains(&fold(query))
+}
+
+pub fn bmp_letter(c: char) -> bool {
+    c.len_utf16() == 1 && mapped(c as u32, data::SLUG_RANGES).is_some() && !c.is_numeric()
+}
+
 /// VolumeProfileService.ToSlug iterates UTF-16 chars, so supplementary letters
 /// are separators too. Generated ranges include only the source's accepted BMP
 /// letters/decimal digits and their invariant lowercase output.

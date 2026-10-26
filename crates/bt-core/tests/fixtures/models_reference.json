@@ -1,6 +1,1266 @@
 {
   "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
   "runtime": "8.0.31",
+  "policies": {
+    "identity": [
+      {
+        "input": null,
+        "exe": {
+          "value": ""
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "",
+        "exe": {
+          "value": ""
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "music.exe",
+        "exe": {
+          "value": "music"
+        },
+        "token": {
+          "value": "music"
+        }
+      },
+      {
+        "input": "  \"C:\\Apps\\Music.EXE\"  ",
+        "exe": {
+          "value": "Music"
+        },
+        "token": {
+          "value": "music"
+        }
+      },
+      {
+        "input": "C:music.exe",
+        "exe": {
+          "value": "music"
+        },
+        "token": {
+          "value": "music"
+        }
+      },
+      {
+        "input": "file.exe:stream",
+        "exe": {
+          "value": "file"
+        },
+        "token": {
+          "value": "file"
+        }
+      },
+      {
+        "input": ".exe",
+        "exe": {
+          "value": ".exe"
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "/usr/bin/player",
+        "exe": {
+          "value": "player"
+        },
+        "token": {
+          "value": "player"
+        }
+      },
+      {
+        "input": "\\\\server\\share",
+        "exe": {
+          "value": "\\\\server\\share"
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "//server/share/",
+        "exe": {
+          "value": "//server/share/"
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "A.B.C",
+        "exe": {
+          "value": "A.B"
+        },
+        "token": {
+          "value": "a.b"
+        }
+      },
+      {
+        "input": "\" Music.exe \"",
+        "exe": {
+          "value": " Music"
+        },
+        "token": {
+          "value": "\" music"
+        }
+      },
+      {
+        "input": "a\u0000b.exe",
+        "exe": {
+          "value": "a\u0000b"
+        },
+        "token": {
+          "value": "a\u0000b"
+        }
+      },
+      {
+        "input": "\\\\?\\C:\\Music\\music.exe",
+        "exe": {
+          "value": "music"
+        },
+        "token": {
+          "value": "music"
+        }
+      },
+      {
+        "input": "\\\\?\\UNC\\server\\share",
+        "exe": {
+          "value": "\\\\?\\UNC\\server\\share"
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "\\\\.\\PIPE",
+        "exe": {
+          "value": "\\\\.\\PIPE"
+        },
+        "token": {
+          "value": ""
+        }
+      },
+      {
+        "input": "\\??\\C:\\music.exe",
+        "exe": {
+          "value": "music"
+        },
+        "token": {
+          "value": "music"
+        }
+      },
+      {
+        "input": "\\\\?\\unc\\server\\share",
+        "exe": {
+          "value": "share"
+        },
+        "token": {
+          "value": "share"
+        }
+      }
+    ],
+    "matches": [
+      {
+        "input": {
+          "exe": "Music",
+          "display": "Music Player",
+          "appId": "vendor.music",
+          "query": "C:\\Apps\\music.exe"
+        },
+        "result": {
+          "value": {
+            "exact": true,
+            "partial": false,
+            "app": true,
+            "device": false,
+            "score": 100
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "music",
+          "display": "Music Player",
+          "appId": "vendor.music",
+          "query": "pla"
+        },
+        "result": {
+          "value": {
+            "exact": false,
+            "partial": true,
+            "app": true,
+            "device": true,
+            "score": 60
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "ÉCRAN",
+          "display": "Écran Audio",
+          "appId": "vendor.audio",
+          "query": "écran"
+        },
+        "result": {
+          "value": {
+            "exact": true,
+            "partial": true,
+            "app": true,
+            "device": true,
+            "score": 100
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": null,
+          "display": null,
+          "appId": null,
+          "query": ""
+        },
+        "result": {
+          "value": {
+            "exact": false,
+            "partial": false,
+            "app": false,
+            "device": false,
+            "score": 0
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "longgame",
+          "display": "Other",
+          "appId": "vendor.longgame",
+          "query": "game"
+        },
+        "result": {
+          "value": {
+            "exact": false,
+            "partial": true,
+            "app": true,
+            "device": false,
+            "score": 60
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "music",
+          "display": "Music",
+          "appId": "vendor.music",
+          "query": "\"music.exe\""
+        },
+        "result": {
+          "value": {
+            "exact": true,
+            "partial": false,
+            "app": true,
+            "device": false,
+            "score": 0
+          }
+        }
+      }
+    ],
+    "pathResolution": [
+      {
+        "input": "C:\\Games\\One\\game.exe",
+        "full": {
+          "value": "C:\\Games\\One\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "c:/games/",
+        "full": {
+          "value": "c:\\games\\"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "C:\\Games2\\game.exe",
+        "full": {
+          "value": "C:\\Games2\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "C:\\Games",
+        "full": {
+          "value": "C:\\Games"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "C:\\game.exe",
+        "full": {
+          "value": "C:\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "C:\\",
+        "full": {
+          "value": "C:\\"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "C:\\Games\\..\\Other\\game.exe",
+        "full": {
+          "value": "C:\\Other\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "\\\\server\\share\\game.exe",
+        "full": {
+          "value": "\\\\server\\share\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "//server/share/",
+        "full": {
+          "value": "\\\\server\\share\\"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "/opt/games/game",
+        "full": {
+          "value": "C:\\opt\\games\\game"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "/opt/games/",
+        "full": {
+          "value": "C:\\opt\\games\\"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "/opt/Game",
+        "full": {
+          "value": "C:\\opt\\Game"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "/",
+        "full": {
+          "value": "C:\\"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "\"C:\\Games\\game.exe\"",
+        "full": {
+          "value": "C:\\Reference\\Workspace\\\"C:\\Games\\game.exe\""
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "C:\\Games\\game.exe",
+        "full": {
+          "value": "C:\\Games\\game.exe"
+        },
+        "qualified": {
+          "value": true
+        }
+      },
+      {
+        "input": "\"C:\\Games\"",
+        "full": {
+          "value": "C:\\Reference\\Workspace\\\"C:\\Games\""
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "game.exe",
+        "full": {
+          "value": "C:\\Reference\\Workspace\\game.exe"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": ".",
+        "full": {
+          "value": "C:\\Reference\\Workspace"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "C:game.exe",
+        "full": {
+          "value": "C:\\Reference\\Workspace\\game.exe"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "C:",
+        "full": {
+          "value": "C:\\Reference\\Workspace"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "\\rooted\\game.exe",
+        "full": {
+          "value": "C:\\rooted\\game.exe"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "\\rooted",
+        "full": {
+          "value": "C:\\rooted"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "bad\u0000path",
+        "full": {
+          "errorType": "ArgumentException"
+        },
+        "qualified": {
+          "value": false
+        }
+      },
+      {
+        "input": "",
+        "full": {
+          "errorType": "ArgumentException"
+        },
+        "qualified": {
+          "value": false
+        }
+      }
+    ],
+    "folders": [
+      {
+        "input": {
+          "exe": "C:\\Games\\One\\game.exe",
+          "folder": "c:/games/"
+        },
+        "result": {
+          "value": {
+            "folder": "c:\\games",
+            "executable": "C:\\Games\\One\\game.exe",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\Games2\\game.exe",
+          "folder": "C:\\Games"
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Games",
+            "executable": "C:\\Games2\\game.exe",
+            "usable": true,
+            "under": false
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\Games",
+          "folder": "C:\\Games"
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Games",
+            "executable": "C:\\Games",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\game.exe",
+          "folder": "C:\\"
+        },
+        "result": {
+          "value": {
+            "folder": "C:",
+            "executable": "C:\\game.exe",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\Games\\..\\Other\\game.exe",
+          "folder": "C:\\Games"
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Games",
+            "executable": "C:\\Games\\..\\Other\\game.exe",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "\\\\server\\share\\game.exe",
+          "folder": "//server/share/"
+        },
+        "result": {
+          "value": {
+            "folder": "\\\\server\\share",
+            "executable": "\\\\server\\share\\game.exe",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "/opt/games/game",
+          "folder": "/opt/games/"
+        },
+        "result": {
+          "value": {
+            "folder": "/opt/games",
+            "executable": "/opt/games/game",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "/opt/Game",
+          "folder": "/"
+        },
+        "result": {
+          "value": {
+            "folder": "/",
+            "executable": "/opt/Game",
+            "usable": true,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "\"C:\\Games\\game.exe\"",
+          "folder": "\"C:\\Games\""
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Games",
+            "executable": "C:\\Games\\game.exe",
+            "usable": false,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "game.exe",
+          "folder": "."
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Reference\\Workspace",
+            "executable": "C:\\Reference\\Workspace\\game.exe",
+            "usable": false,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:game.exe",
+          "folder": "C:"
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\Reference\\Workspace",
+            "executable": "C:\\Reference\\Workspace\\game.exe",
+            "usable": false,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "\\rooted\\game.exe",
+          "folder": "\\rooted"
+        },
+        "result": {
+          "value": {
+            "folder": "C:\\rooted",
+            "executable": "C:\\rooted\\game.exe",
+            "usable": false,
+            "under": true
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "game.exe",
+          "folder": "bad\u0000path"
+        },
+        "result": {
+          "value": {
+            "folder": "",
+            "executable": "C:\\Reference\\Workspace\\game.exe",
+            "usable": false,
+            "under": false
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": null,
+          "folder": null
+        },
+        "result": {
+          "value": {
+            "folder": "",
+            "executable": "",
+            "usable": false,
+            "under": false
+          }
+        }
+      }
+    ],
+    "folderRules": [
+      {
+        "input": {
+          "exe": "C:\\Games\\One\\game.exe",
+          "rules": [
+            {
+              "path": "C:\\Games",
+              "volume": 40,
+              "ticks": 2
+            },
+            {
+              "path": "C:\\Games\\One",
+              "volume": 130,
+              "ticks": 3
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "matched": true,
+            "volume": 100
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\Games\\game.exe",
+          "rules": [
+            {
+              "path": "C:\\Games",
+              "volume": 40,
+              "ticks": 2
+            },
+            {
+              "path": "c:/games/",
+              "volume": 20,
+              "ticks": 1
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "matched": true,
+            "volume": 20
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "C:\\Games2\\game.exe",
+          "rules": [
+            {
+              "path": "C:\\Games",
+              "volume": 40,
+              "ticks": 2
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "matched": false,
+            "volume": 0
+          }
+        }
+      },
+      {
+        "input": {
+          "exe": "\"C:\\Games\\game.exe\"",
+          "rules": [
+            {
+              "path": "C:\\Games",
+              "volume": 40,
+              "ticks": 2
+            }
+          ]
+        },
+        "result": {
+          "value": {
+            "matched": false,
+            "volume": 0
+          }
+        }
+      }
+    ],
+    "focus": [
+      [
+        {
+          "input": {
+            "pid": 1,
+            "mode": 2,
+            "percent": 20,
+            "sessions": [
+              {
+                "Key": "a",
+                "ProcessId": 1,
+                "Volume": 80,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              },
+              {
+                "Key": "b",
+                "ProcessId": 2,
+                "Volume": 60,
+                "IsMuted": true,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [],
+          "saved": false
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 2,
+            "percent": 20,
+            "sessions": [
+              {
+                "Key": "a",
+                "ProcessId": 1,
+                "Volume": 80,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              },
+              {
+                "Key": "b",
+                "ProcessId": 2,
+                "Volume": 60,
+                "IsMuted": true,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "b",
+              "Volume": 20,
+              "IsMuted": true
+            }
+          ],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 2,
+            "mode": 2,
+            "percent": 30,
+            "sessions": [
+              {
+                "Key": "a",
+                "ProcessId": 1,
+                "Volume": 80,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              },
+              {
+                "Key": "b",
+                "ProcessId": 2,
+                "Volume": 20,
+                "IsMuted": true,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "a",
+              "Volume": 30,
+              "IsMuted": false
+            },
+            {
+              "Key": "b",
+              "Volume": 60,
+              "IsMuted": true
+            }
+          ],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 2,
+            "mode": 2,
+            "percent": 30,
+            "sessions": [
+              {
+                "Key": "a",
+                "ProcessId": 1,
+                "Volume": 30,
+                "IsMuted": false,
+                "CanAdjust": false,
+                "ExecutableName": ""
+              },
+              {
+                "Key": "b",
+                "ProcessId": 2,
+                "Volume": 60,
+                "IsMuted": true,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "a",
+              "Volume": 80,
+              "IsMuted": false
+            }
+          ],
+          "saved": false
+        },
+        {
+          "input": {
+            "pid": 0,
+            "mode": 0,
+            "percent": 0,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": false
+        }
+      ],
+      [
+        {
+          "input": {
+            "pid": 99,
+            "mode": 1,
+            "percent": 0,
+            "ignoredPid": 99,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": false
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 1,
+            "percent": 0,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": false
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 1,
+            "percent": 0,
+            "exe": "Game.exe",
+            "sessions": [
+              {
+                "Key": "same",
+                "ProcessId": 2,
+                "Volume": 50,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": "game"
+              },
+              {
+                "Key": "other",
+                "ProcessId": 3,
+                "Volume": 65,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "other",
+              "Volume": 65,
+              "IsMuted": true
+            }
+          ],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 0,
+            "mode": 1,
+            "percent": 0,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 99,
+            "mode": 2,
+            "percent": 15,
+            "ignoredPid": 99,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 0,
+            "percent": 0,
+            "sessions": [
+              {
+                "Key": "other",
+                "ProcessId": 3,
+                "Volume": 65,
+                "IsMuted": true,
+                "CanAdjust": false,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "other",
+              "Volume": 65,
+              "IsMuted": false
+            }
+          ],
+          "saved": false
+        }
+      ],
+      [
+        {
+          "input": {
+            "pid": 1,
+            "mode": 2,
+            "percent": 10
+          },
+          "adjustments": [],
+          "saved": false
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 2,
+            "percent": 10,
+            "sessions": [
+              {
+                "Key": "x",
+                "ProcessId": 2,
+                "Volume": 90,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              },
+              {
+                "Key": "",
+                "ProcessId": 0,
+                "Volume": 60,
+                "IsMuted": false,
+                "CanAdjust": true,
+                "ExecutableName": ""
+              }
+            ]
+          },
+          "adjustments": [
+            {
+              "Key": "x",
+              "Volume": 10,
+              "IsMuted": false
+            }
+          ],
+          "saved": true
+        },
+        {
+          "input": {
+            "pid": 1,
+            "mode": 2,
+            "percent": 10,
+            "sessions": []
+          },
+          "adjustments": [],
+          "saved": false
+        }
+      ]
+    ],
+    "fade": [
+      {
+        "input": [
+          0,
+          1,
+          0.5
+        ],
+        "volume": 1
+      },
+      {
+        "input": [
+          100,
+          0,
+          0.005
+        ],
+        "volume": 100
+      },
+      {
+        "input": [
+          -10,
+          120,
+          0.5
+        ],
+        "volume": 50
+      },
+      {
+        "input": [
+          10,
+          80,
+          -1
+        ],
+        "volume": 10
+      },
+      {
+        "input": [
+          10,
+          80,
+          2
+        ],
+        "volume": 80
+      },
+      {
+        "input": [
+          0,
+          100,
+          "NaN"
+        ],
+        "volume": -2147483648
+      },
+      {
+        "input": [
+          0,
+          100,
+          "Infinity"
+        ],
+        "volume": 100
+      }
+    ],
+    "windowSizes": [
+      {
+        "input": [
+          100,
+          100
+        ],
+        "result": {
+          "value": {
+            "valid": true,
+            "width": 360.0,
+            "height": 200.0
+          }
+        }
+      },
+      {
+        "input": [
+          9000,
+          9000
+        ],
+        "result": {
+          "value": {
+            "valid": true,
+            "width": 4096.0,
+            "height": 4096.0
+          }
+        }
+      },
+      {
+        "input": [
+          600,
+          400
+        ],
+        "result": {
+          "value": {
+            "valid": true,
+            "width": 600.0,
+            "height": 400.0
+          }
+        }
+      },
+      {
+        "input": [
+          -1,
+          400
+        ],
+        "result": {
+          "value": {
+            "valid": false,
+            "width": 0.0,
+            "height": 0.0
+          }
+        }
+      },
+      {
+        "input": [
+          "NaN",
+          400
+        ],
+        "result": {
+          "value": {
+            "valid": false,
+            "width": 0.0,
+            "height": 0.0
+          }
+        }
+      },
+      {
+        "input": [
+          "Infinity",
+          400
+        ],
+        "result": {
+          "value": {
+            "valid": false,
+            "width": 0.0,
+            "height": 0.0
+          }
+        }
+      }
+    ],
+    "notifications": [
+      {
+        "input": [
+          null,
+          "new",
+          true
+        ],
+        "value": false
+      },
+      {
+        "input": [
+          "old",
+          null,
+          true
+        ],
+        "value": false
+      },
+      {
+        "input": [
+          "same",
+          "SAME",
+          true
+        ],
+        "value": false
+      },
+      {
+        "input": [
+          "old",
+          "new",
+          true
+        ],
+        "value": true
+      },
+      {
+        "input": [
+          "old",
+          "new",
+          false
+        ],
+        "value": false
+      },
+      {
+        "input": [
+          "écran",
+          "ÉCRAN",
+          true
+        ],
+        "value": false
+      }
+    ]
+  },
   "slugAllBmpFingerprint": "1efc5cf90da8976b",
   "hotkey": {
     "Modifiers": 0,
@@ -1111,7 +2371,7 @@
         "Name": "Night",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 13:57",
+        "UpdatedAt": "2026-10-26 14:17",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -1188,7 +2448,7 @@
         "Name": "Renamed",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 13:57",
+        "UpdatedAt": "2026-10-26 14:17",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -1265,7 +2525,7 @@
         "Name": "Renamed",
         "Slug": null,
         "CreatedAt": "original",
-        "UpdatedAt": "2026-10-26 13:57",
+        "UpdatedAt": "2026-10-26 14:17",
         "CaptureScope": 0,
         "IncludeDeviceVolumes": true,
         "IncludeAppVolumes": true,
@@ -1379,7 +2639,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -1455,7 +2715,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -1533,7 +2793,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -1609,7 +2869,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -1650,7 +2910,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
@@ -1682,7 +2942,7 @@
             "Name": null,
             "Slug": null,
             "CreatedAt": null,
-            "UpdatedAt": "2026-10-26 13:57",
+            "UpdatedAt": "2026-10-26 14:17",
             "CaptureScope": 0,
             "IncludeDeviceVolumes": true,
             "IncludeAppVolumes": true,
