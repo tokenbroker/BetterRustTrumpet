@@ -1156,14 +1156,15 @@ pub fn read_as_string(token: &Token) -> Result<Option<String>, Error> {
 
 /// `EnumUtils.ParseEnum` over the Windows Forms `Keys` names.
 pub fn parse_keys(value: &str) -> Result<i32, Error> {
-    let exact = |name: &str| {
-        keys::KEY_NAMES
-            .iter()
-            .find(|(n, _)| *n == name)
-            .map(|e| e.1)
-    };
+    parse_enum(value, keys::KEY_NAMES)
+}
+
+/// `EnumUtils.ParseEnum`: whole-name match, numeric text, then a
+/// comma-separated list of exact-or-ignore-case names OR-ed together.
+pub fn parse_enum(value: &str, names: &[(&str, i32)]) -> Result<i32, Error> {
+    let exact = |name: &str| names.iter().find(|(n, _)| *n == name).map(|e| e.1);
     let folded = |name: &str| {
-        keys::KEY_NAMES
+        names
             .iter()
             .find(|(n, _)| text::ordinal_ignore_case(n, name))
             .map(|e| e.1)
@@ -1200,6 +1201,8 @@ fn read_enum(token: &Token) -> Result<i32, Error> {
     match token {
         Token::Integer(i) => Ok(*i as i32),
         Token::Bool(b) => Ok(i32::from(*b)),
+        // Captured: any floating-point value becomes the zero enum value.
+        Token::Float(_) => Ok(0),
         _ => Err(Error),
     }
 }
@@ -1320,4 +1323,44 @@ pub fn to_placement(token: &Token) -> Result<WindowPlacement, Error> {
 }
 pub fn to_u32(token: &Token) -> Result<u32, Error> {
     read_u32(token)
+}
+
+/// `ReadAsBoolean` in typed mode: no date parsing; NaN/Infinity literals are
+/// rejected, other numbers are true when non-zero.
+pub fn typed_bool(token: &Token) -> Result<Option<bool>, Error> {
+    match token {
+        Token::String(s) if s.is_empty() => Ok(None),
+        Token::String(s) => parse_bool(s).map(Some).ok_or(Error),
+        Token::RawNumber(n) if matches!(n.as_str(), "NaN" | "Infinity" | "-Infinity") => Err(Error),
+        Token::RawNumber(n) => match classify(n)? {
+            Token::Integer(i) => Ok(Some(i != 0)),
+            Token::BigInteger(_) => Ok(Some(true)),
+            Token::Float(f) => Ok(Some(f != 0.0)),
+            _ => Err(Error),
+        },
+        Token::Bool(b) => Ok(Some(*b)),
+        Token::Null | Token::Undefined => Ok(None),
+        _ => Err(Error),
+    }
+}
+
+/// An enum property in typed mode (`ReadType.Read` then `EnsureType`).
+pub fn typed_enum(
+    token: &Token,
+    names: &[(&str, i32)],
+    zone: &(impl LocalZone + ?Sized),
+) -> Result<i32, Error> {
+    match token {
+        Token::String(s) => match date(s, zone)? {
+            Some(_) => Err(Error),
+            None => parse_enum(s, names),
+        },
+        Token::RawNumber(n) => match classify(n)? {
+            Token::Integer(i) => Ok(i as i32),
+            Token::Float(_) => Ok(0),
+            _ => Err(Error),
+        },
+        Token::Bool(b) => Ok(i32::from(*b)),
+        _ => Err(Error),
+    }
 }

@@ -22,5 +22,6 @@ pub mod rules;
 pub mod settings;
 pub mod text;
 pub mod themes;
+pub mod typed_lists;
 pub mod undo;
 pub mod window_policy;

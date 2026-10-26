@@ -1,0 +1,1067 @@
+{
+  "apps": [
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":1}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":2.5}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":0.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\"true\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\" True \"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\"yes\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\"1\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\"\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":null}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":\"2026-10-26T15:35:33Z\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":NaN}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":99999999999999999999}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HardMuted\":[]}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"Launch\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"lock\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":2}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"2\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\" 1 \"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"Launch, Lock\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":3,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"Launch,\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":true}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":7}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":7,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":-1}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":-1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":4294967297}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":1,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":1.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":null}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"\\/Date(0)\\/\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"x\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"None\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":0x2}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":2,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":99999999999999999999}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":\"50\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":50,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":50,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":50.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":0x20}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":32,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":32,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":010}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":8,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":8,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":\"0x20\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":-0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumePercent\":\"  7  \"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":7,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":7,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"CreatedAtUtc\":\"10/26/2026\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"CreatedAtUtc\":\"2026-10-26T15:35:33+02:00\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T08:35:33-05:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"CreatedAtUtc\":null}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"CreatedAtUtc\":\"x\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":5}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"5\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":\"5\",\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":true}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"true\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":\"true\",\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":1.50}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"1.50\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":\"1.50\",\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":0x1F}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"0x1F\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":\"0x1F\",\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":\"2026-10-26T15:35:33Z\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"2026-10-26T15:35:33Z\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":\"2026-10-26T15:35:33Z\",\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IconPath\":{}}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"exename\":\"LOWER.EXE\",\"EXENAME\":\"upper.exe\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"upper.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"upper.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"IsDesktopApp\":\"false\",\"IsPinned\":\"TRUE\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"FocusLostEnabled\":-1}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"Unknown\":{\"nested\":[1,\"9999-12-31T24:00:00\"]}}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"Unknown\":01.5}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"Unknown\":new Foo(1)}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"Unknown\":undefined}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":2.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":1.5}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":1e3}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":-1.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":2.0,\"VolumePercent\":5}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":5,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":5,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":NaN}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":Infinity}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":1e400}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":0.0}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"HasVolumeRule\":true,\"HasActiveBehavior\":\"x\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"app.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":1,\"VolumeMode\":\"x\"}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"app.exe\",\"VolumeMode\":\"x\",\"VolumeMode\":1}]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[{'ExeName':'a.exe',HardMuted:true,},/*c*/]",
+        "legacy": null
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"a.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[{\"ExeName\":\"a.exe\",\"DisplayName\":null,\"IconPath\":null,\"IsDesktopApp\":false,\"IsPinned\":false,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": {
+        "current": "[{\"ExeName\":\"a.exe\"},5]",
+        "legacy": "[{\"ExeName\":\"old.exe\"}]"
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":true}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "{\"ExeName\":\"a.exe\"}",
+        "legacy": "[{\"ExeName\":\"old.exe\",\"HardMutedAtUtc\":\"Oct 26 2026\"}]"
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T00:00:00\"}],\"saveMigration\":true}"
+      },
+      "raw": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": {
+        "current": "[]",
+        "legacy": "[{\"ExeName\":\"old.exe\",\"HardMutedAtUtc\":5}]"
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": {
+        "current": "[]",
+        "legacy": "[{\"exename\":\"OLD.EXE\",\"displayname\":\"Old\",\"hardmutedatutc\":\"2026-10-26 15:35\"}]"
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"old.exe\",\"DisplayName\":\"Old\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2026-10-26T15:35:00\"}],\"saveMigration\":true}"
+      },
+      "raw": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": {
+        "current": "[]",
+        "legacy": "null"
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": {
+        "current": "[]",
+        "legacy": ""
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":false}"
+      },
+      "raw": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": {
+        "current": "[]",
+        "legacy": "[,]"
+      },
+      "result": {
+        "value": "{\"entries\":[],\"saveMigration\":true}"
+      },
+      "raw": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": {
+        "current": "",
+        "legacy": "[{\"ExeName\":\"old.exe\"}]"
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":true}"
+      },
+      "raw": {
+        "value": "null"
+      }
+    },
+    {
+      "input": {
+        "current": "null",
+        "legacy": "[{\"ExeName\":\"old.exe\"}]"
+      },
+      "result": {
+        "value": "{\"entries\":[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}],\"saveMigration\":true}"
+      },
+      "raw": {
+        "value": "null"
+      }
+    }
+  ],
+  "hiddenApps": [
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"HiddenAtUtc\":\"10/26/2026 3 PM\"}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"\",\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2026-10-26T15:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"HiddenAtUtc\":null}]",
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"HiddenAtUtc\":\"\\/Date(0)\\/\"}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"\",\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"1970-01-01T00:00:00Z\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"AppId\":5}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"5\",\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"deviceid\":\"OTHER\",\"DeviceId\":\"Speakers\"}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"\",\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"HiddenAtUtc\":\"2026-02-30\"}]",
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"DisplayName\":false}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"\",\"ExeName\":\"app.exe\",\"DisplayName\":\"false\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"speakers\",\"ExeName\":\"app.exe\",\"Extra\":[new Date(0)]}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"speakers\",\"AppId\":\"\",\"ExeName\":\"app.exe\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[null,{}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[1]",
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "garbage",
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "null",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    }
+  ],
+  "hiddenDevices": [
+    {
+      "input": "[{\"DeviceId\":\"d\",\"HiddenAtUtc\":\"Oct 26, 2026\"}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2026-10-26T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":7,\"DisplayName\":0x10}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"7\",\"DisplayName\":\"0x10\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"d\",\"HiddenAtUtc\":true}]",
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{deviceid:'d',}]",
+      "result": {
+        "value": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"0001-01-01T00:00:00\"}]"
+      }
+    },
+    {
+      "input": "[{\"DeviceId\":\"d\",\"HiddenAtUtc\":\"\"}]",
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    }
+  ],
+  "todayTicks": 639285696000000000,
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31"
+}
