@@ -8,6 +8,7 @@ pub mod cli_validation;
 pub mod focus;
 pub mod folders;
 pub mod identity;
+pub mod legacy_xml;
 pub mod models;
 pub mod numbers;
 pub mod profiles;

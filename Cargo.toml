@@ -12,3 +12,4 @@ authors = ["David Golden", "Rafael Rivera", "Dave Amenta", "xammen"]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"
+quick-xml = "0.41.0"

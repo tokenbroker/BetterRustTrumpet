@@ -161,7 +161,7 @@
           "isMuted": false
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.007Z",
+          "timestamp": "2026-10-26T15:39:26.214Z",
           "devices": [
             {
               "name": "Speakers",
@@ -297,7 +297,7 @@
           "error": "no default device"
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.026Z",
+          "timestamp": "2026-10-26T15:39:26.232Z",
           "devices": []
         },
         "doctor": {
@@ -337,7 +337,7 @@
           "error": "no default device"
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.027Z",
+          "timestamp": "2026-10-26T15:39:26.233Z",
           "devices": []
         },
         "doctor": {
@@ -583,7 +583,7 @@
           "isMuted": false
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.028Z",
+          "timestamp": "2026-10-26T15:39:26.234Z",
           "devices": [
             {
               "name": "Speakers",
@@ -749,7 +749,7 @@
           "error": "no default device"
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.028Z",
+          "timestamp": "2026-10-26T15:39:26.234Z",
           "devices": [
             {
               "name": "Speakers",
@@ -905,7 +905,7 @@
           "error": "no default device"
         },
         "watch": {
-          "timestamp": "2026-10-26T15:11:44.028Z",
+          "timestamp": "2026-10-26T15:39:26.234Z",
           "devices": [
             {
               "name": "Speakers",

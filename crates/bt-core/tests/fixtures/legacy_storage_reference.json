@@ -1,0 +1,2891 @@
+{
+  "samples": [
+    {
+      "kind": "Bool",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><boolean>true</boolean>",
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "kind": "Bool",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><boolean>false</boolean>",
+      "result": {
+        "value": false
+      }
+    },
+    {
+      "kind": "I32",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><int>-2147483648</int>",
+      "result": {
+        "value": -2147483648
+      }
+    },
+    {
+      "kind": "U32",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><unsignedInt>4294967295</unsignedInt>",
+      "result": {
+        "value": 4294967295
+      }
+    },
+    {
+      "kind": "F64",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><double>0.7</double>",
+      "result": {
+        "value": 0.7
+      }
+    },
+    {
+      "kind": "F64",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><double>NaN</double>",
+      "result": {
+        "value": "NaN"
+      }
+    },
+    {
+      "kind": "F64",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><double>INF</double>",
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "kind": "F64",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><double>-0</double>",
+      "result": {
+        "value": 0.0
+      }
+    },
+    {
+      "kind": "F32",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><float>1.2345679</float>",
+      "result": {
+        "value": 1.2345679
+      }
+    },
+    {
+      "kind": "String",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><string p1:nil=\"true\" xmlns:p1=\"http://www.w3.org/2001/XMLSchema-instance\" />",
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "kind": "String",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><string>&lt;text&gt; &amp; \r\n tab\t</string>",
+      "result": {
+        "value": "<text> & \n tab\t"
+      }
+    },
+    {
+      "kind": "Hotkey",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><HotkeyData xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Modifiers>None</Modifiers><Key>None</Key></HotkeyData>",
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "kind": "Hotkey",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><HotkeyData xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><Modifiers>Shift Control</Modifiers><Key>P</Key></HotkeyData>",
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "kind": "Hotkey",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><HotkeyData xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:nil=\"true\" />",
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "kind": "OptionalPlacement",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><WINDOWPLACEMENT xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:nil=\"true\" />",
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "kind": "OptionalPlacement",
+      "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><WINDOWPLACEMENT xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><length>44</length><flags>4294967295</flags><showCmd>3</showCmd><ptMinPosition><x>-1</x><y>2</y></ptMinPosition><ptMaxPosition><x>3</x><y>-4</y></ptMaxPosition><rcNormalPosition><Left>-1920</Left><Top>20</Top><Right>0</Right><Bottom>1080</Bottom></rcNormalPosition></WINDOWPLACEMENT>",
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 4294967295,
+          "showCmd": 3,
+          "ptMinPosition": {
+            "x": -1,
+            "y": 2
+          },
+          "ptMaxPosition": {
+            "x": 3,
+            "y": -4
+          },
+          "rcNormalPosition": {
+            "Left": -1920,
+            "Top": 20,
+            "Right": 0,
+            "Bottom": 1080
+          }
+        }
+      }
+    }
+  ],
+  "parses": [
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>true</boolean>"
+      },
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>false</boolean>"
+      },
+      "result": {
+        "value": false
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>1</boolean>"
+      },
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>0</boolean>"
+      },
+      "result": {
+        "value": false
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>True</boolean>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean> true </boolean>"
+      },
+      "result": {
+        "value": true
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>\tfalse\n</boolean>"
+      },
+      "result": {
+        "value": false
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean>yes</boolean>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean></boolean>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean> true</boolean>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>0</int>"
+      },
+      "result": {
+        "value": 0
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>-2147483648</int>"
+      },
+      "result": {
+        "value": -2147483648
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>2147483647</int>"
+      },
+      "result": {
+        "value": 2147483647
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>2147483648</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>+10</int>"
+      },
+      "result": {
+        "value": 10
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int> 10 </int>"
+      },
+      "result": {
+        "value": 10
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int> 10</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1.0</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>١٠</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1<!--comment-->0</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1<![CDATA[0]]></int>"
+      },
+      "result": {
+        "value": 10
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt>4294967295</unsignedInt>"
+      },
+      "result": {
+        "value": 4294967295
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt>4294967296</unsignedInt>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt>-0</unsignedInt>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt>-1</unsignedInt>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt>+5</unsignedInt>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "U32",
+        "xml": "<unsignedInt> 5 </unsignedInt>"
+      },
+      "result": {
+        "value": 5
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>1.25</double>"
+      },
+      "result": {
+        "value": 1.25
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double> 1.25 </double>"
+      },
+      "result": {
+        "value": 1.25
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>1,25</double>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>NaN</double>"
+      },
+      "result": {
+        "value": "NaN"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>nan</double>"
+      },
+      "result": {
+        "value": "NaN"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>INF</double>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>+INF</double>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>-INF</double>"
+      },
+      "result": {
+        "value": "-Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>Infinity</double>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>-Infinity</double>"
+      },
+      "result": {
+        "value": "-Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>+Infinity</double>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>1e309</double>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double>-0</double>"
+      },
+      "result": {
+        "value": 0.0
+      }
+    },
+    {
+      "input": {
+        "kind": "F64",
+        "xml": "<double></double>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>1.25</float>"
+      },
+      "result": {
+        "value": 1.25
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float> 1.25 </float>"
+      },
+      "result": {
+        "value": 1.25
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>1,25</float>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>NaN</float>"
+      },
+      "result": {
+        "value": "NaN"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>nan</float>"
+      },
+      "result": {
+        "value": "NaN"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>INF</float>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>+INF</float>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>-INF</float>"
+      },
+      "result": {
+        "value": "-Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>Infinity</float>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>-Infinity</float>"
+      },
+      "result": {
+        "value": "-Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>+Infinity</float>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>1e309</float>"
+      },
+      "result": {
+        "value": "Infinity"
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float>-0</float>"
+      },
+      "result": {
+        "value": -0.0
+      }
+    },
+    {
+      "input": {
+        "kind": "F32",
+        "xml": "<float></float>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string></string>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>  keep \t space  </string>"
+      },
+      "result": {
+        "value": "  keep \t space  "
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>a&amp;b&lt;c&gt;</string>"
+      },
+      "result": {
+        "value": "a&b<c>"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>a<![CDATA[<b>]]>c</string>"
+      },
+      "result": {
+        "value": "a<b>c"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>a&#13;&#10;b</string>"
+      },
+      "result": {
+        "value": "a\r\nb"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>a\r\nb</string>"
+      },
+      "result": {
+        "value": "a\nb"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><nested>x</nested></string>"
+      },
+      "result": {
+        "value": "x"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><!--c-->10</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>10<!--c--></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1<!--c-->0</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1<?p x?>0</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><?p x?>10</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><nested>10</nested></int>"
+      },
+      "result": {
+        "value": 10
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>a<nested>x</nested>b</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><a>1</a><b>0</b></int>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int> <nested>10</nested> </int>"
+      },
+      "result": {
+        "value": 10
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><nested/></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><nested></nested></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><nested>10<!--c--></nested></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><!--c-->10</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>10<!--c--></string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>1<!--c-->0</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>1<?p x?>0</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><?p x?>10</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><nested>10</nested></string>"
+      },
+      "result": {
+        "value": "10"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>a<nested>x</nested>b</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><a>1</a><b>0</b></string>"
+      },
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string> <nested>10</nested> </string>"
+      },
+      "result": {
+        "value": "10"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><nested/></string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><nested></nested></string>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><nested>10<!--c--></nested></string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>   </string>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>\n\t</string>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><![CDATA[   ]]></string>"
+      },
+      "result": {
+        "value": "   "
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xml:space=\"preserve\">   </string>"
+      },
+      "result": {
+        "value": "   "
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><a>1</a><bad>"
+      },
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><a>1</a></string><extra/>"
+      },
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string><a>1</a>\u0000"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><a>1</a><b>0</b>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><a>1</a></int><extra/>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "Bool",
+        "xml": "<boolean xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control Shift</Modifiers><Key>P</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control, Shift</Modifiers><Key>P</Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control\tShift</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control\nShift</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control Shift</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control Shift</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key/></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>p</Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>80</Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>Unknown</Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Unknown>anything</Unknown><Key>P</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P</Key><Key>invalid</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key xmlns=\"urn:other\">P</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>None</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>KeyCode Modifiers</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": -1,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Alt Control</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 393216,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control</Modifiers><Modifiers>Alt</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 131072,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P<child/></Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT><length>44</length><flags>4294967295</flags><ptMinPosition><x>-1</x><y>2</y></ptMinPosition></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 4294967295,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": -1,
+            "y": 2
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT><length>44</length><length>bad</length></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT><showCmd>-1</showCmd></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT><ptMinPosition><x>1</x><x>bad</x></ptMinPosition></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 1,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "OptionalPlacement",
+        "xml": "<WINDOWPLACEMENT><Unknown><bad/></Unknown><showCmd>3</showCmd></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 3,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<Int>1</Int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int xmlns=\"urn:other\">1</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<p:int xmlns:p=\"urn:other\">1</p:int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1</int><int>2</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1</int> trailing"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><int>1</int>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int><bad/></int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>&unknown;</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1</bad>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!--only comment-->"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!DOCTYPE int [<!ENTITY n \"10\">]><int>&n;</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string/><extra/>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string/>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1</int><!--c-->"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": " <int>1</int>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!--c--><?xml version=\"1.0\"?><int>1</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!DOCTYPE int><int>1</int>"
+      },
+      "result": {
+        "value": 1
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\">x<a/></string>"
+      },
+      "result": {
+        "value": null
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"maybe\">x</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xmlns:xsi=\"http://www.w3.org/2000/10/XMLSchema-instance\" xsi:nil=\"true\"/>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xml:space=\"preserve\"><a xml:space=\"default\">  </a></string>"
+      },
+      "result": {
+        "value": ""
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string xml:space=\"bogus\">x</string>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "String",
+        "xml": "<string>&#32;&#32;</string>"
+      },
+      "result": {
+        "value": "  "
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData/>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData/><x/>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P</Key></HotkeyData><x/>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData>text<!--c--><Key>P</Key>tail</HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key><c>P</c></Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key> P </Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers>Control  Shift</Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 196608,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Modifiers> Control </Modifiers></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 131072,
+          "Key": 0,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P</Key><Unknown><x>1</y></Unknown></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData xmlns=\"urn:other\"><Key>P</Key></HotkeyData>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><rcNormalPosition><Left>-5</Left><Bottom>7</Bottom></rcNormalPosition></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": -5,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 7
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><ptMaxPosition/><showCmd>2</showCmd></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 2,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><length> 44 </length></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P<!--c--></Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key><!--c-->P</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>P<?x y?></Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key><![CDATA[P]]></Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key>&#80;</Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key><![CDATA[ P ]]></Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 80,
+          "IsEmpty": false
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Hotkey",
+        "xml": "<HotkeyData><Key><?x y?></Key></HotkeyData>"
+      },
+      "result": {
+        "value": {
+          "Modifiers": 0,
+          "Key": 0,
+          "IsEmpty": true
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><length>4<!--c-->4</length></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><length>4<![CDATA[4]]></length></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 44,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><length/></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><length></length></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><ptMinPosition>5<x>1</x></ptMinPosition></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 1,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "Placement",
+        "xml": "<WINDOWPLACEMENT><ptMinPosition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"><x>1</x></ptMinPosition></WINDOWPLACEMENT>"
+      },
+      "result": {
+        "value": {
+          "length": 0,
+          "flags": 0,
+          "showCmd": 0,
+          "ptMinPosition": {
+            "x": 1,
+            "y": 0
+          },
+          "ptMaxPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "rcNormalPosition": {
+            "Left": 0,
+            "Top": 0,
+            "Right": 0,
+            "Bottom": 0
+          }
+        }
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": " <?xml version=\"1.0\"?><int>1</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<int>1</int><!DOCTYPE int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!DOCTYPE int><!DOCTYPE int><int>1</int>"
+      },
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": {
+        "kind": "I32",
+        "xml": "<!DOCTYPE int [<!ATTLIST int a CDATA \"x\">]><int>1</int>"
+      },
+      "result": {
+        "value": 1
+      }
+    }
+  ],
+  "keyNames": [
+    {
+      "name": "None",
+      "value": 0
+    },
+    {
+      "name": "LButton",
+      "value": 1
+    },
+    {
+      "name": "RButton",
+      "value": 2
+    },
+    {
+      "name": "Cancel",
+      "value": 3
+    },
+    {
+      "name": "MButton",
+      "value": 4
+    },
+    {
+      "name": "XButton1",
+      "value": 5
+    },
+    {
+      "name": "XButton2",
+      "value": 6
+    },
+    {
+      "name": "Back",
+      "value": 8
+    },
+    {
+      "name": "Tab",
+      "value": 9
+    },
+    {
+      "name": "LineFeed",
+      "value": 10
+    },
+    {
+      "name": "Clear",
+      "value": 12
+    },
+    {
+      "name": "Return",
+      "value": 13
+    },
+    {
+      "name": "Enter",
+      "value": 13
+    },
+    {
+      "name": "ShiftKey",
+      "value": 16
+    },
+    {
+      "name": "ControlKey",
+      "value": 17
+    },
+    {
+      "name": "Menu",
+      "value": 18
+    },
+    {
+      "name": "Pause",
+      "value": 19
+    },
+    {
+      "name": "CapsLock",
+      "value": 20
+    },
+    {
+      "name": "Capital",
+      "value": 20
+    },
+    {
+      "name": "HangulMode",
+      "value": 21
+    },
+    {
+      "name": "HanguelMode",
+      "value": 21
+    },
+    {
+      "name": "KanaMode",
+      "value": 21
+    },
+    {
+      "name": "JunjaMode",
+      "value": 23
+    },
+    {
+      "name": "FinalMode",
+      "value": 24
+    },
+    {
+      "name": "HanjaMode",
+      "value": 25
+    },
+    {
+      "name": "KanjiMode",
+      "value": 25
+    },
+    {
+      "name": "Escape",
+      "value": 27
+    },
+    {
+      "name": "IMEConvert",
+      "value": 28
+    },
+    {
+      "name": "IMENonconvert",
+      "value": 29
+    },
+    {
+      "name": "IMEAccept",
+      "value": 30
+    },
+    {
+      "name": "IMEAceept",
+      "value": 30
+    },
+    {
+      "name": "IMEModeChange",
+      "value": 31
+    },
+    {
+      "name": "Space",
+      "value": 32
+    },
+    {
+      "name": "Prior",
+      "value": 33
+    },
+    {
+      "name": "PageUp",
+      "value": 33
+    },
+    {
+      "name": "PageDown",
+      "value": 34
+    },
+    {
+      "name": "Next",
+      "value": 34
+    },
+    {
+      "name": "End",
+      "value": 35
+    },
+    {
+      "name": "Home",
+      "value": 36
+    },
+    {
+      "name": "Left",
+      "value": 37
+    },
+    {
+      "name": "Up",
+      "value": 38
+    },
+    {
+      "name": "Right",
+      "value": 39
+    },
+    {
+      "name": "Down",
+      "value": 40
+    },
+    {
+      "name": "Select",
+      "value": 41
+    },
+    {
+      "name": "Print",
+      "value": 42
+    },
+    {
+      "name": "Execute",
+      "value": 43
+    },
+    {
+      "name": "Snapshot",
+      "value": 44
+    },
+    {
+      "name": "PrintScreen",
+      "value": 44
+    },
+    {
+      "name": "Insert",
+      "value": 45
+    },
+    {
+      "name": "Delete",
+      "value": 46
+    },
+    {
+      "name": "Help",
+      "value": 47
+    },
+    {
+      "name": "D0",
+      "value": 48
+    },
+    {
+      "name": "D1",
+      "value": 49
+    },
+    {
+      "name": "D2",
+      "value": 50
+    },
+    {
+      "name": "D3",
+      "value": 51
+    },
+    {
+      "name": "D4",
+      "value": 52
+    },
+    {
+      "name": "D5",
+      "value": 53
+    },
+    {
+      "name": "D6",
+      "value": 54
+    },
+    {
+      "name": "D7",
+      "value": 55
+    },
+    {
+      "name": "D8",
+      "value": 56
+    },
+    {
+      "name": "D9",
+      "value": 57
+    },
+    {
+      "name": "A",
+      "value": 65
+    },
+    {
+      "name": "B",
+      "value": 66
+    },
+    {
+      "name": "C",
+      "value": 67
+    },
+    {
+      "name": "D",
+      "value": 68
+    },
+    {
+      "name": "E",
+      "value": 69
+    },
+    {
+      "name": "F",
+      "value": 70
+    },
+    {
+      "name": "G",
+      "value": 71
+    },
+    {
+      "name": "H",
+      "value": 72
+    },
+    {
+      "name": "I",
+      "value": 73
+    },
+    {
+      "name": "J",
+      "value": 74
+    },
+    {
+      "name": "K",
+      "value": 75
+    },
+    {
+      "name": "L",
+      "value": 76
+    },
+    {
+      "name": "M",
+      "value": 77
+    },
+    {
+      "name": "N",
+      "value": 78
+    },
+    {
+      "name": "O",
+      "value": 79
+    },
+    {
+      "name": "P",
+      "value": 80
+    },
+    {
+      "name": "Q",
+      "value": 81
+    },
+    {
+      "name": "R",
+      "value": 82
+    },
+    {
+      "name": "S",
+      "value": 83
+    },
+    {
+      "name": "T",
+      "value": 84
+    },
+    {
+      "name": "U",
+      "value": 85
+    },
+    {
+      "name": "V",
+      "value": 86
+    },
+    {
+      "name": "W",
+      "value": 87
+    },
+    {
+      "name": "X",
+      "value": 88
+    },
+    {
+      "name": "Y",
+      "value": 89
+    },
+    {
+      "name": "Z",
+      "value": 90
+    },
+    {
+      "name": "LWin",
+      "value": 91
+    },
+    {
+      "name": "RWin",
+      "value": 92
+    },
+    {
+      "name": "Apps",
+      "value": 93
+    },
+    {
+      "name": "Sleep",
+      "value": 95
+    },
+    {
+      "name": "NumPad0",
+      "value": 96
+    },
+    {
+      "name": "NumPad1",
+      "value": 97
+    },
+    {
+      "name": "NumPad2",
+      "value": 98
+    },
+    {
+      "name": "NumPad3",
+      "value": 99
+    },
+    {
+      "name": "NumPad4",
+      "value": 100
+    },
+    {
+      "name": "NumPad5",
+      "value": 101
+    },
+    {
+      "name": "NumPad6",
+      "value": 102
+    },
+    {
+      "name": "NumPad7",
+      "value": 103
+    },
+    {
+      "name": "NumPad8",
+      "value": 104
+    },
+    {
+      "name": "NumPad9",
+      "value": 105
+    },
+    {
+      "name": "Multiply",
+      "value": 106
+    },
+    {
+      "name": "Add",
+      "value": 107
+    },
+    {
+      "name": "Separator",
+      "value": 108
+    },
+    {
+      "name": "Subtract",
+      "value": 109
+    },
+    {
+      "name": "Decimal",
+      "value": 110
+    },
+    {
+      "name": "Divide",
+      "value": 111
+    },
+    {
+      "name": "F1",
+      "value": 112
+    },
+    {
+      "name": "F2",
+      "value": 113
+    },
+    {
+      "name": "F3",
+      "value": 114
+    },
+    {
+      "name": "F4",
+      "value": 115
+    },
+    {
+      "name": "F5",
+      "value": 116
+    },
+    {
+      "name": "F6",
+      "value": 117
+    },
+    {
+      "name": "F7",
+      "value": 118
+    },
+    {
+      "name": "F8",
+      "value": 119
+    },
+    {
+      "name": "F9",
+      "value": 120
+    },
+    {
+      "name": "F10",
+      "value": 121
+    },
+    {
+      "name": "F11",
+      "value": 122
+    },
+    {
+      "name": "F12",
+      "value": 123
+    },
+    {
+      "name": "F13",
+      "value": 124
+    },
+    {
+      "name": "F14",
+      "value": 125
+    },
+    {
+      "name": "F15",
+      "value": 126
+    },
+    {
+      "name": "F16",
+      "value": 127
+    },
+    {
+      "name": "F17",
+      "value": 128
+    },
+    {
+      "name": "F18",
+      "value": 129
+    },
+    {
+      "name": "F19",
+      "value": 130
+    },
+    {
+      "name": "F20",
+      "value": 131
+    },
+    {
+      "name": "F21",
+      "value": 132
+    },
+    {
+      "name": "F22",
+      "value": 133
+    },
+    {
+      "name": "F23",
+      "value": 134
+    },
+    {
+      "name": "F24",
+      "value": 135
+    },
+    {
+      "name": "NumLock",
+      "value": 144
+    },
+    {
+      "name": "Scroll",
+      "value": 145
+    },
+    {
+      "name": "LShiftKey",
+      "value": 160
+    },
+    {
+      "name": "RShiftKey",
+      "value": 161
+    },
+    {
+      "name": "LControlKey",
+      "value": 162
+    },
+    {
+      "name": "RControlKey",
+      "value": 163
+    },
+    {
+      "name": "LMenu",
+      "value": 164
+    },
+    {
+      "name": "RMenu",
+      "value": 165
+    },
+    {
+      "name": "BrowserBack",
+      "value": 166
+    },
+    {
+      "name": "BrowserForward",
+      "value": 167
+    },
+    {
+      "name": "BrowserRefresh",
+      "value": 168
+    },
+    {
+      "name": "BrowserStop",
+      "value": 169
+    },
+    {
+      "name": "BrowserSearch",
+      "value": 170
+    },
+    {
+      "name": "BrowserFavorites",
+      "value": 171
+    },
+    {
+      "name": "BrowserHome",
+      "value": 172
+    },
+    {
+      "name": "VolumeMute",
+      "value": 173
+    },
+    {
+      "name": "VolumeDown",
+      "value": 174
+    },
+    {
+      "name": "VolumeUp",
+      "value": 175
+    },
+    {
+      "name": "MediaNextTrack",
+      "value": 176
+    },
+    {
+      "name": "MediaPreviousTrack",
+      "value": 177
+    },
+    {
+      "name": "MediaStop",
+      "value": 178
+    },
+    {
+      "name": "MediaPlayPause",
+      "value": 179
+    },
+    {
+      "name": "LaunchMail",
+      "value": 180
+    },
+    {
+      "name": "SelectMedia",
+      "value": 181
+    },
+    {
+      "name": "LaunchApplication1",
+      "value": 182
+    },
+    {
+      "name": "LaunchApplication2",
+      "value": 183
+    },
+    {
+      "name": "Oem1",
+      "value": 186
+    },
+    {
+      "name": "OemSemicolon",
+      "value": 186
+    },
+    {
+      "name": "Oemplus",
+      "value": 187
+    },
+    {
+      "name": "Oemcomma",
+      "value": 188
+    },
+    {
+      "name": "OemMinus",
+      "value": 189
+    },
+    {
+      "name": "OemPeriod",
+      "value": 190
+    },
+    {
+      "name": "OemQuestion",
+      "value": 191
+    },
+    {
+      "name": "Oem2",
+      "value": 191
+    },
+    {
+      "name": "Oemtilde",
+      "value": 192
+    },
+    {
+      "name": "Oem3",
+      "value": 192
+    },
+    {
+      "name": "OemOpenBrackets",
+      "value": 219
+    },
+    {
+      "name": "Oem4",
+      "value": 219
+    },
+    {
+      "name": "Oem5",
+      "value": 220
+    },
+    {
+      "name": "OemPipe",
+      "value": 220
+    },
+    {
+      "name": "OemCloseBrackets",
+      "value": 221
+    },
+    {
+      "name": "Oem6",
+      "value": 221
+    },
+    {
+      "name": "OemQuotes",
+      "value": 222
+    },
+    {
+      "name": "Oem7",
+      "value": 222
+    },
+    {
+      "name": "Oem8",
+      "value": 223
+    },
+    {
+      "name": "Oem102",
+      "value": 226
+    },
+    {
+      "name": "OemBackslash",
+      "value": 226
+    },
+    {
+      "name": "ProcessKey",
+      "value": 229
+    },
+    {
+      "name": "Packet",
+      "value": 231
+    },
+    {
+      "name": "Attn",
+      "value": 246
+    },
+    {
+      "name": "Crsel",
+      "value": 247
+    },
+    {
+      "name": "Exsel",
+      "value": 248
+    },
+    {
+      "name": "EraseEof",
+      "value": 249
+    },
+    {
+      "name": "Play",
+      "value": 250
+    },
+    {
+      "name": "Zoom",
+      "value": 251
+    },
+    {
+      "name": "NoName",
+      "value": 252
+    },
+    {
+      "name": "Pa1",
+      "value": 253
+    },
+    {
+      "name": "OemClear",
+      "value": 254
+    },
+    {
+      "name": "KeyCode",
+      "value": 65535
+    },
+    {
+      "name": "Shift",
+      "value": 65536
+    },
+    {
+      "name": "Control",
+      "value": 131072
+    },
+    {
+      "name": "Alt",
+      "value": 262144
+    },
+    {
+      "name": "Modifiers",
+      "value": -65536
+    }
+  ],
+  "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
+  "runtime": "8.0.31"
+}
