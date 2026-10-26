@@ -1,0 +1,13 @@
+[package]
+name = "bt-core"
+description = "Portable compatibility models and behavior for the BetterTrumpet Rust port"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file = "../../../LICENSE"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
