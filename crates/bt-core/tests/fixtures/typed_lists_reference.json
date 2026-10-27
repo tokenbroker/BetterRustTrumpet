@@ -1,4 +1,2658 @@
 {
+  "hiddenLifecycle": {
+    "scenarios": [
+      {
+        "initialApps": null,
+        "initialDevices": null,
+        "steps": [
+          {
+            "op": [
+              "hideApp",
+              null,
+              "id",
+              "a.exe",
+              "alpha"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              "dev",
+              null,
+              null,
+              "alpha"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              " DEV ",
+              " ID ",
+              " A.EXE ",
+              " alpha "
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              "dev",
+              "id",
+              "a.exe",
+              "beta"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "DEV",
+              "id",
+              "different.exe"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "dev",
+              "different",
+              "a.exe"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "other",
+              "id",
+              "a.exe"
+            ],
+            "result": false,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "unhideApp",
+              "dev",
+              "id",
+              "different.exe"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "countApps"
+            ],
+            "result": 1,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "dev",
+              null,
+              "a.exe"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              "dev",
+              "other",
+              "a.exe",
+              "beta"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "countDeviceApps",
+              "dev"
+            ],
+            "result": 2,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "listDeviceApps",
+              "DEV"
+            ],
+            "result": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "listDeviceApps",
+              null
+            ],
+            "result": [],
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "countDeviceApps",
+              "  "
+            ],
+            "result": 0,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "copyApps"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "id",
+                "ExeName": "a.exe",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"id\",\"ExeName\":\"a.exe\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "unhideApp",
+              "dev",
+              "id",
+              "a.exe"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "dev",
+              "id",
+              "a.exe"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "dev",
+                "AppId": "other",
+                "ExeName": "a.exe",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"dev\",\"AppId\":\"other\",\"ExeName\":\"a.exe\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "unhideDeviceApps",
+              "DEV"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "unhideDeviceApps",
+              "dev"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "allApps"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideDevice",
+              " Dev ",
+              " alpha "
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "hideDevice",
+              "dev",
+              "beta"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "isDevice",
+              "DEV"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "hideDevice",
+              "other",
+              "alpha"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "countDevices"
+            ],
+            "result": 2,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "copyDevices"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "dev",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"dev\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "unhideDevice",
+              "DEV"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "isDevice",
+              "dev"
+            ],
+            "result": false,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "unhideDevice",
+              null
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "other",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"other\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "allDevices"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "allDevices"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          }
+        ]
+      },
+      {
+        "initialApps": "broken",
+        "initialDevices": "{}",
+        "steps": [
+          {
+            "op": [
+              "countApps"
+            ],
+            "result": 0,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "broken",
+            "devicesRaw": "{}"
+          },
+          {
+            "op": [
+              "countDevices"
+            ],
+            "result": 0,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "broken",
+            "devicesRaw": "{}"
+          },
+          {
+            "op": [
+              "hideApp",
+              "d",
+              "a",
+              null
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"d\",\"AppId\":\"a\",\"ExeName\":\"\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "{}"
+          },
+          {
+            "op": [
+              "hideDevice",
+              "d"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[{\"DeviceId\":\"d\",\"AppId\":\"a\",\"ExeName\":\"\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "reload"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[{\"DeviceId\":\"d\",\"AppId\":\"a\",\"ExeName\":\"\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "isApp",
+              "d",
+              "a",
+              null
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[{\"DeviceId\":\"d\",\"AppId\":\"a\",\"ExeName\":\"\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          },
+          {
+            "op": [
+              "isDevice",
+              "d"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "appsRaw": "[{\"DeviceId\":\"d\",\"AppId\":\"a\",\"ExeName\":\"\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]"
+          }
+        ]
+      },
+      {
+        "initialApps": null,
+        "initialDevices": null,
+        "steps": [
+          {
+            "op": [
+              "hideApp",
+              "x|y",
+              "z",
+              "a",
+              "beta"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              "x",
+              "y|z",
+              "a",
+              "alpha"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "x",
+                "AppId": "y|z",
+                "ExeName": "a",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "countApps"
+            ],
+            "result": 2,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "x",
+                "AppId": "y|z",
+                "ExeName": "a",
+                "DisplayName": "alpha",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "reload"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "countApps"
+            ],
+            "result": 1,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "x",
+              "y|z",
+              "a"
+            ],
+            "result": false,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "isApp",
+              "x|y",
+              "z",
+              "a"
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"a\",\"DisplayName\":\"alpha\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "hideApp",
+              "x",
+              "y|z",
+              "b",
+              "gamma"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [
+              {
+                "DeviceId": "x",
+                "AppId": "y|z",
+                "ExeName": "b",
+                "DisplayName": "gamma",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "DeviceId": "x|y",
+                "AppId": "z",
+                "ExeName": "a",
+                "DisplayName": "beta",
+                "HiddenAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ],
+            "devices": [],
+            "appsRaw": "[{\"DeviceId\":\"x|y\",\"AppId\":\"z\",\"ExeName\":\"a\",\"DisplayName\":\"beta\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"},{\"DeviceId\":\"x\",\"AppId\":\"y|z\",\"ExeName\":\"b\",\"DisplayName\":\"gamma\",\"HiddenAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "devicesRaw": "[]"
+          },
+          {
+            "op": [
+              "allApps"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          }
+        ]
+      },
+      {
+        "initialApps": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+        "initialDevices": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]",
+        "steps": [
+          {
+            "op": [
+              "countApps"
+            ],
+            "result": 1,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "listDeviceApps",
+              "d"
+            ],
+            "result": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "isApp",
+              "d",
+              "a",
+              ""
+            ],
+            "result": true,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "countDevices"
+            ],
+            "result": 1,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "reload"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "copyApps"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "copyDevices"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 0,
+            "writes": 0,
+            "apps": [
+              {
+                "DeviceId": "d",
+                "AppId": "a",
+                "ExeName": "",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[null,{\"DeviceId\":\"D\",\"AppId\":\"A\",\"DisplayName\":\"zeta\"},{\"DeviceId\":\"d\",\"AppId\":\"a\",\"DisplayName\":\"alpha\"}]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "allApps"
+            ],
+            "result": null,
+            "appsEvents": 1,
+            "devicesEvents": 0,
+            "writes": 1,
+            "apps": [],
+            "devices": [
+              {
+                "DeviceId": "d",
+                "DisplayName": "zeta",
+                "HiddenAtUtc": "0001-01-01T00:00:00"
+              }
+            ],
+            "appsRaw": "[]",
+            "devicesRaw": "[{\"DeviceId\":\"d\",\"DisplayName\":\"zeta\"},null,{\"DeviceId\":\"D\",\"DisplayName\":\"alpha\"}]"
+          },
+          {
+            "op": [
+              "allDevices"
+            ],
+            "result": null,
+            "appsEvents": 0,
+            "devicesEvents": 1,
+            "writes": 1,
+            "apps": [],
+            "devices": [],
+            "appsRaw": "[]",
+            "devicesRaw": "[]"
+          }
+        ]
+      }
+    ],
+    "now": "2030-01-02T03:04:05.1234567Z",
+    "comparisons": [
+      [
+        "dev",
+        "dev",
+        0
+      ],
+      [
+        "dev",
+        "id",
+        -1
+      ],
+      [
+        "dev",
+        "a.exe",
+        1
+      ],
+      [
+        "dev",
+        "alpha",
+        1
+      ],
+      [
+        "dev",
+        "other",
+        -1
+      ],
+      [
+        "dev",
+        "beta",
+        1
+      ],
+      [
+        "dev",
+        "d",
+        1
+      ],
+      [
+        "dev",
+        "a",
+        1
+      ],
+      [
+        "dev",
+        "",
+        1
+      ],
+      [
+        "dev",
+        "x|y",
+        -1
+      ],
+      [
+        "dev",
+        "z",
+        -1
+      ],
+      [
+        "dev",
+        "x",
+        -1
+      ],
+      [
+        "dev",
+        "y|z",
+        -1
+      ],
+      [
+        "dev",
+        "b",
+        1
+      ],
+      [
+        "dev",
+        "gamma",
+        -1
+      ],
+      [
+        "dev",
+        "zeta",
+        -1
+      ],
+      [
+        "id",
+        "dev",
+        1
+      ],
+      [
+        "id",
+        "id",
+        0
+      ],
+      [
+        "id",
+        "a.exe",
+        1
+      ],
+      [
+        "id",
+        "alpha",
+        1
+      ],
+      [
+        "id",
+        "other",
+        -1
+      ],
+      [
+        "id",
+        "beta",
+        1
+      ],
+      [
+        "id",
+        "d",
+        1
+      ],
+      [
+        "id",
+        "a",
+        1
+      ],
+      [
+        "id",
+        "",
+        1
+      ],
+      [
+        "id",
+        "x|y",
+        -1
+      ],
+      [
+        "id",
+        "z",
+        -1
+      ],
+      [
+        "id",
+        "x",
+        -1
+      ],
+      [
+        "id",
+        "y|z",
+        -1
+      ],
+      [
+        "id",
+        "b",
+        1
+      ],
+      [
+        "id",
+        "gamma",
+        1
+      ],
+      [
+        "id",
+        "zeta",
+        -1
+      ],
+      [
+        "a.exe",
+        "dev",
+        -1
+      ],
+      [
+        "a.exe",
+        "id",
+        -1
+      ],
+      [
+        "a.exe",
+        "a.exe",
+        0
+      ],
+      [
+        "a.exe",
+        "alpha",
+        -1
+      ],
+      [
+        "a.exe",
+        "other",
+        -1
+      ],
+      [
+        "a.exe",
+        "beta",
+        -1
+      ],
+      [
+        "a.exe",
+        "d",
+        -1
+      ],
+      [
+        "a.exe",
+        "a",
+        1
+      ],
+      [
+        "a.exe",
+        "",
+        1
+      ],
+      [
+        "a.exe",
+        "x|y",
+        -1
+      ],
+      [
+        "a.exe",
+        "z",
+        -1
+      ],
+      [
+        "a.exe",
+        "x",
+        -1
+      ],
+      [
+        "a.exe",
+        "y|z",
+        -1
+      ],
+      [
+        "a.exe",
+        "b",
+        -1
+      ],
+      [
+        "a.exe",
+        "gamma",
+        -1
+      ],
+      [
+        "a.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "alpha",
+        "dev",
+        -1
+      ],
+      [
+        "alpha",
+        "id",
+        -1
+      ],
+      [
+        "alpha",
+        "a.exe",
+        1
+      ],
+      [
+        "alpha",
+        "alpha",
+        0
+      ],
+      [
+        "alpha",
+        "other",
+        -1
+      ],
+      [
+        "alpha",
+        "beta",
+        -1
+      ],
+      [
+        "alpha",
+        "d",
+        -1
+      ],
+      [
+        "alpha",
+        "a",
+        1
+      ],
+      [
+        "alpha",
+        "",
+        1
+      ],
+      [
+        "alpha",
+        "x|y",
+        -1
+      ],
+      [
+        "alpha",
+        "z",
+        -1
+      ],
+      [
+        "alpha",
+        "x",
+        -1
+      ],
+      [
+        "alpha",
+        "y|z",
+        -1
+      ],
+      [
+        "alpha",
+        "b",
+        -1
+      ],
+      [
+        "alpha",
+        "gamma",
+        -1
+      ],
+      [
+        "alpha",
+        "zeta",
+        -1
+      ],
+      [
+        "other",
+        "dev",
+        1
+      ],
+      [
+        "other",
+        "id",
+        1
+      ],
+      [
+        "other",
+        "a.exe",
+        1
+      ],
+      [
+        "other",
+        "alpha",
+        1
+      ],
+      [
+        "other",
+        "other",
+        0
+      ],
+      [
+        "other",
+        "beta",
+        1
+      ],
+      [
+        "other",
+        "d",
+        1
+      ],
+      [
+        "other",
+        "a",
+        1
+      ],
+      [
+        "other",
+        "",
+        1
+      ],
+      [
+        "other",
+        "x|y",
+        -1
+      ],
+      [
+        "other",
+        "z",
+        -1
+      ],
+      [
+        "other",
+        "x",
+        -1
+      ],
+      [
+        "other",
+        "y|z",
+        -1
+      ],
+      [
+        "other",
+        "b",
+        1
+      ],
+      [
+        "other",
+        "gamma",
+        1
+      ],
+      [
+        "other",
+        "zeta",
+        -1
+      ],
+      [
+        "beta",
+        "dev",
+        -1
+      ],
+      [
+        "beta",
+        "id",
+        -1
+      ],
+      [
+        "beta",
+        "a.exe",
+        1
+      ],
+      [
+        "beta",
+        "alpha",
+        1
+      ],
+      [
+        "beta",
+        "other",
+        -1
+      ],
+      [
+        "beta",
+        "beta",
+        0
+      ],
+      [
+        "beta",
+        "d",
+        -1
+      ],
+      [
+        "beta",
+        "a",
+        1
+      ],
+      [
+        "beta",
+        "",
+        1
+      ],
+      [
+        "beta",
+        "x|y",
+        -1
+      ],
+      [
+        "beta",
+        "z",
+        -1
+      ],
+      [
+        "beta",
+        "x",
+        -1
+      ],
+      [
+        "beta",
+        "y|z",
+        -1
+      ],
+      [
+        "beta",
+        "b",
+        1
+      ],
+      [
+        "beta",
+        "gamma",
+        -1
+      ],
+      [
+        "beta",
+        "zeta",
+        -1
+      ],
+      [
+        "d",
+        "dev",
+        -1
+      ],
+      [
+        "d",
+        "id",
+        -1
+      ],
+      [
+        "d",
+        "a.exe",
+        1
+      ],
+      [
+        "d",
+        "alpha",
+        1
+      ],
+      [
+        "d",
+        "other",
+        -1
+      ],
+      [
+        "d",
+        "beta",
+        1
+      ],
+      [
+        "d",
+        "d",
+        0
+      ],
+      [
+        "d",
+        "a",
+        1
+      ],
+      [
+        "d",
+        "",
+        1
+      ],
+      [
+        "d",
+        "x|y",
+        -1
+      ],
+      [
+        "d",
+        "z",
+        -1
+      ],
+      [
+        "d",
+        "x",
+        -1
+      ],
+      [
+        "d",
+        "y|z",
+        -1
+      ],
+      [
+        "d",
+        "b",
+        1
+      ],
+      [
+        "d",
+        "gamma",
+        -1
+      ],
+      [
+        "d",
+        "zeta",
+        -1
+      ],
+      [
+        "a",
+        "dev",
+        -1
+      ],
+      [
+        "a",
+        "id",
+        -1
+      ],
+      [
+        "a",
+        "a.exe",
+        -1
+      ],
+      [
+        "a",
+        "alpha",
+        -1
+      ],
+      [
+        "a",
+        "other",
+        -1
+      ],
+      [
+        "a",
+        "beta",
+        -1
+      ],
+      [
+        "a",
+        "d",
+        -1
+      ],
+      [
+        "a",
+        "a",
+        0
+      ],
+      [
+        "a",
+        "",
+        1
+      ],
+      [
+        "a",
+        "x|y",
+        -1
+      ],
+      [
+        "a",
+        "z",
+        -1
+      ],
+      [
+        "a",
+        "x",
+        -1
+      ],
+      [
+        "a",
+        "y|z",
+        -1
+      ],
+      [
+        "a",
+        "b",
+        -1
+      ],
+      [
+        "a",
+        "gamma",
+        -1
+      ],
+      [
+        "a",
+        "zeta",
+        -1
+      ],
+      [
+        "",
+        "dev",
+        -1
+      ],
+      [
+        "",
+        "id",
+        -1
+      ],
+      [
+        "",
+        "a.exe",
+        -1
+      ],
+      [
+        "",
+        "alpha",
+        -1
+      ],
+      [
+        "",
+        "other",
+        -1
+      ],
+      [
+        "",
+        "beta",
+        -1
+      ],
+      [
+        "",
+        "d",
+        -1
+      ],
+      [
+        "",
+        "a",
+        -1
+      ],
+      [
+        "",
+        "",
+        0
+      ],
+      [
+        "",
+        "x|y",
+        -1
+      ],
+      [
+        "",
+        "z",
+        -1
+      ],
+      [
+        "",
+        "x",
+        -1
+      ],
+      [
+        "",
+        "y|z",
+        -1
+      ],
+      [
+        "",
+        "b",
+        -1
+      ],
+      [
+        "",
+        "gamma",
+        -1
+      ],
+      [
+        "",
+        "zeta",
+        -1
+      ],
+      [
+        "x|y",
+        "dev",
+        1
+      ],
+      [
+        "x|y",
+        "id",
+        1
+      ],
+      [
+        "x|y",
+        "a.exe",
+        1
+      ],
+      [
+        "x|y",
+        "alpha",
+        1
+      ],
+      [
+        "x|y",
+        "other",
+        1
+      ],
+      [
+        "x|y",
+        "beta",
+        1
+      ],
+      [
+        "x|y",
+        "d",
+        1
+      ],
+      [
+        "x|y",
+        "a",
+        1
+      ],
+      [
+        "x|y",
+        "",
+        1
+      ],
+      [
+        "x|y",
+        "x|y",
+        0
+      ],
+      [
+        "x|y",
+        "z",
+        -1
+      ],
+      [
+        "x|y",
+        "x",
+        1
+      ],
+      [
+        "x|y",
+        "y|z",
+        -1
+      ],
+      [
+        "x|y",
+        "b",
+        1
+      ],
+      [
+        "x|y",
+        "gamma",
+        1
+      ],
+      [
+        "x|y",
+        "zeta",
+        -1
+      ],
+      [
+        "z",
+        "dev",
+        1
+      ],
+      [
+        "z",
+        "id",
+        1
+      ],
+      [
+        "z",
+        "a.exe",
+        1
+      ],
+      [
+        "z",
+        "alpha",
+        1
+      ],
+      [
+        "z",
+        "other",
+        1
+      ],
+      [
+        "z",
+        "beta",
+        1
+      ],
+      [
+        "z",
+        "d",
+        1
+      ],
+      [
+        "z",
+        "a",
+        1
+      ],
+      [
+        "z",
+        "",
+        1
+      ],
+      [
+        "z",
+        "x|y",
+        1
+      ],
+      [
+        "z",
+        "z",
+        0
+      ],
+      [
+        "z",
+        "x",
+        1
+      ],
+      [
+        "z",
+        "y|z",
+        1
+      ],
+      [
+        "z",
+        "b",
+        1
+      ],
+      [
+        "z",
+        "gamma",
+        1
+      ],
+      [
+        "z",
+        "zeta",
+        -1
+      ],
+      [
+        "x",
+        "dev",
+        1
+      ],
+      [
+        "x",
+        "id",
+        1
+      ],
+      [
+        "x",
+        "a.exe",
+        1
+      ],
+      [
+        "x",
+        "alpha",
+        1
+      ],
+      [
+        "x",
+        "other",
+        1
+      ],
+      [
+        "x",
+        "beta",
+        1
+      ],
+      [
+        "x",
+        "d",
+        1
+      ],
+      [
+        "x",
+        "a",
+        1
+      ],
+      [
+        "x",
+        "",
+        1
+      ],
+      [
+        "x",
+        "x|y",
+        -1
+      ],
+      [
+        "x",
+        "z",
+        -1
+      ],
+      [
+        "x",
+        "x",
+        0
+      ],
+      [
+        "x",
+        "y|z",
+        -1
+      ],
+      [
+        "x",
+        "b",
+        1
+      ],
+      [
+        "x",
+        "gamma",
+        1
+      ],
+      [
+        "x",
+        "zeta",
+        -1
+      ],
+      [
+        "y|z",
+        "dev",
+        1
+      ],
+      [
+        "y|z",
+        "id",
+        1
+      ],
+      [
+        "y|z",
+        "a.exe",
+        1
+      ],
+      [
+        "y|z",
+        "alpha",
+        1
+      ],
+      [
+        "y|z",
+        "other",
+        1
+      ],
+      [
+        "y|z",
+        "beta",
+        1
+      ],
+      [
+        "y|z",
+        "d",
+        1
+      ],
+      [
+        "y|z",
+        "a",
+        1
+      ],
+      [
+        "y|z",
+        "",
+        1
+      ],
+      [
+        "y|z",
+        "x|y",
+        1
+      ],
+      [
+        "y|z",
+        "z",
+        -1
+      ],
+      [
+        "y|z",
+        "x",
+        1
+      ],
+      [
+        "y|z",
+        "y|z",
+        0
+      ],
+      [
+        "y|z",
+        "b",
+        1
+      ],
+      [
+        "y|z",
+        "gamma",
+        1
+      ],
+      [
+        "y|z",
+        "zeta",
+        -1
+      ],
+      [
+        "b",
+        "dev",
+        -1
+      ],
+      [
+        "b",
+        "id",
+        -1
+      ],
+      [
+        "b",
+        "a.exe",
+        1
+      ],
+      [
+        "b",
+        "alpha",
+        1
+      ],
+      [
+        "b",
+        "other",
+        -1
+      ],
+      [
+        "b",
+        "beta",
+        -1
+      ],
+      [
+        "b",
+        "d",
+        -1
+      ],
+      [
+        "b",
+        "a",
+        1
+      ],
+      [
+        "b",
+        "",
+        1
+      ],
+      [
+        "b",
+        "x|y",
+        -1
+      ],
+      [
+        "b",
+        "z",
+        -1
+      ],
+      [
+        "b",
+        "x",
+        -1
+      ],
+      [
+        "b",
+        "y|z",
+        -1
+      ],
+      [
+        "b",
+        "b",
+        0
+      ],
+      [
+        "b",
+        "gamma",
+        -1
+      ],
+      [
+        "b",
+        "zeta",
+        -1
+      ],
+      [
+        "gamma",
+        "dev",
+        1
+      ],
+      [
+        "gamma",
+        "id",
+        -1
+      ],
+      [
+        "gamma",
+        "a.exe",
+        1
+      ],
+      [
+        "gamma",
+        "alpha",
+        1
+      ],
+      [
+        "gamma",
+        "other",
+        -1
+      ],
+      [
+        "gamma",
+        "beta",
+        1
+      ],
+      [
+        "gamma",
+        "d",
+        1
+      ],
+      [
+        "gamma",
+        "a",
+        1
+      ],
+      [
+        "gamma",
+        "",
+        1
+      ],
+      [
+        "gamma",
+        "x|y",
+        -1
+      ],
+      [
+        "gamma",
+        "z",
+        -1
+      ],
+      [
+        "gamma",
+        "x",
+        -1
+      ],
+      [
+        "gamma",
+        "y|z",
+        -1
+      ],
+      [
+        "gamma",
+        "b",
+        1
+      ],
+      [
+        "gamma",
+        "gamma",
+        0
+      ],
+      [
+        "gamma",
+        "zeta",
+        -1
+      ],
+      [
+        "zeta",
+        "dev",
+        1
+      ],
+      [
+        "zeta",
+        "id",
+        1
+      ],
+      [
+        "zeta",
+        "a.exe",
+        1
+      ],
+      [
+        "zeta",
+        "alpha",
+        1
+      ],
+      [
+        "zeta",
+        "other",
+        1
+      ],
+      [
+        "zeta",
+        "beta",
+        1
+      ],
+      [
+        "zeta",
+        "d",
+        1
+      ],
+      [
+        "zeta",
+        "a",
+        1
+      ],
+      [
+        "zeta",
+        "",
+        1
+      ],
+      [
+        "zeta",
+        "x|y",
+        1
+      ],
+      [
+        "zeta",
+        "z",
+        1
+      ],
+      [
+        "zeta",
+        "x",
+        1
+      ],
+      [
+        "zeta",
+        "y|z",
+        1
+      ],
+      [
+        "zeta",
+        "b",
+        1
+      ],
+      [
+        "zeta",
+        "gamma",
+        1
+      ],
+      [
+        "zeta",
+        "zeta",
+        0
+      ]
+    ]
+  },
   "appLifecycle": {
     "scenarios": [
       {

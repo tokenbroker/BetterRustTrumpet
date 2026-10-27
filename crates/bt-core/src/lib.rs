@@ -12,6 +12,7 @@ pub mod dotnet_datetime;
 pub mod focus;
 pub mod folder_rules;
 pub mod folders;
+pub mod hidden;
 pub mod identity;
 pub mod legacy_store;
 pub mod legacy_xml;
