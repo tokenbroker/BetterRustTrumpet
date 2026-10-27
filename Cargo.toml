@@ -10,7 +10,7 @@ authors = ["David Golden", "Rafael Rivera", "Dave Amenta", "xammen"]
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
-serde_json = { version = "1", features = ["float_roundtrip"] }
+serde_json = { version = "1", features = ["float_roundtrip", "raw_value"] }
 thiserror = "2"
 quick-xml = "0.41.0"
 windows = "0.62"

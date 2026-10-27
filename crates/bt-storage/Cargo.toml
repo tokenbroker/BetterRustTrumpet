@@ -11,6 +11,7 @@ license-file = "../../../LICENSE"
 bt-core = { path = "../bt-core" }
 thiserror.workspace = true
 tempfile = "3.27.0"
+fs2 = "0.4.3"
 
 [dev-dependencies]
 serde_json.workspace = true

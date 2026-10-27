@@ -2,6 +2,7 @@
 //! immutable, versioned archive; decoded reads retain legacy bag semantics.
 //! The app's editable settings will be a separate file, never this archive.
 #![forbid(unsafe_code)]
+pub mod editable;
 use bt_core::{
     legacy_store::{PORTABLE_MARKERS, PortableSnapshot},
     migration,

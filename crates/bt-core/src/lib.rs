@@ -20,6 +20,7 @@ pub mod migration;
 pub mod models;
 pub mod newtonsoft;
 pub mod numbers;
+pub mod overrides;
 pub mod profiles;
 pub mod protocol;
 pub mod registry_snapshot;

@@ -144,22 +144,27 @@ impl RegistrySnapshot {
         let Ok(Some(Object::String(units))) = project(raw, true, env) else {
             return Read::Default;
         };
-        if matches!(request, Request::Value(Kind::String)) {
-            return Read::StringUtf16(units);
-        }
-        // Invalid surrogate units are illegal XML chars. Use an illegal XML
-        // sentinel rather than U+FFFD, so the streaming reader fails only if
-        // it actually reaches them (it can stop before unread trailing data).
-        let xml: String = char::decode_utf16(units)
-            .map(|c| c.unwrap_or('\u{1}'))
-            .collect();
-        if text::is_blank(Some(&xml)) {
-            return Read::Default;
-        }
-        let kind = match request {
-            Request::Value(kind) => kind,
-            Request::NullDefaultString => Kind::String,
-        };
-        legacy_xml::decode(&xml, kind).map_or(Read::Throws, Read::Value)
+        read_text(&units, request)
     }
+}
+
+/// Read an already stored string using the registry bag's runtime-default route.
+pub fn read_text(units: &[u16], request: Request) -> Read {
+    if matches!(request, Request::Value(Kind::String)) {
+        return Read::StringUtf16(units.to_vec());
+    }
+    // Invalid surrogate units are illegal XML chars. Use an illegal XML
+    // sentinel rather than U+FFFD, so the streaming reader fails only if
+    // it actually reaches them (it can stop before unread trailing data).
+    let xml: String = char::decode_utf16(units.iter().copied())
+        .map(|c| c.unwrap_or('\u{1}'))
+        .collect();
+    if text::is_blank(Some(&xml)) {
+        return Read::Default;
+    }
+    let kind = match request {
+        Request::Value(kind) => kind,
+        Request::NullDefaultString => Kind::String,
+    };
+    legacy_xml::decode(&xml, kind).map_or(Read::Throws, Read::Value)
 }
