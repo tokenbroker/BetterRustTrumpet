@@ -1,12 +1,15 @@
 //! BetterTrumpet Rust port — preview tray app.
 //!
-//! Scope of this preview: a tray icon whose left click toggles a flyout with
-//! every active output device and its apps (volume, mute, peak meters), and a
-//! right-click menu. Everything else in PARITY.md is still to come.
+//! Daily-use features first: a tray flyout with every output device and its
+//! apps (volume, mute, peaks, names and icons), default-device switching from
+//! the flyout and the tray menu, a live tooltip, single instance and
+//! "Start with Windows". Everything else in PARITY.md is still to come.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use bt_app::win32::{icons, startup};
 use bt_audio::{AudioEngine, Snapshot};
 use std::{
+    collections::HashMap,
     sync::{
         Mutex,
         atomic::{AtomicBool, Ordering},
@@ -16,7 +19,7 @@ use std::{
 use tauri::{
     AppHandle, Emitter, Manager, PhysicalPosition, PhysicalRect, Rect, State, WebviewWindow,
     WindowEvent,
-    menu::{Menu, MenuItem, PredefinedMenuItem},
+    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 };
 
@@ -31,28 +34,59 @@ struct App {
     hidden_at: Mutex<Option<Instant>>,
     /// Pinned flyouts stay open when they lose focus (Ctrl+P).
     pinned: AtomicBool,
+    /// Icon data URLs per executable path.
+    icons: Mutex<HashMap<String, Option<String>>>,
 }
 
 fn error(e: impl std::fmt::Display) -> String {
     e.to_string()
 }
 
+// Audio commands are async so they run off the UI thread.
 #[tauri::command]
-fn snapshot(app: State<'_, App>) -> Result<Snapshot, String> {
+async fn snapshot(app: State<'_, App>) -> Result<Snapshot, String> {
     app.audio.snapshot().map_err(error)
 }
 #[tauri::command]
-fn set_device_volume(app: State<'_, App>, device_id: String, volume: f32) -> Result<(), String> {
+async fn set_default_device(handle: AppHandle, device_id: String) -> Result<(), String> {
+    let result = handle
+        .state::<App>()
+        .audio
+        .set_default_device(&device_id)
+        .map_err(error);
+    refresh_tray(&handle);
+    result
+}
+/// PNG data URL of an executable's icon (cached; `None` when it has none).
+#[tauri::command]
+async fn app_icon(app: State<'_, App>, path: String) -> Result<Option<String>, String> {
+    if let Some(cached) = app.icons.lock().map_err(error)?.get(&path) {
+        return Ok(cached.clone());
+    }
+    let url = icons::data_url(&path, 32);
+    app.icons.lock().map_err(error)?.insert(path, url.clone());
+    Ok(url)
+}
+#[tauri::command]
+async fn set_device_volume(
+    app: State<'_, App>,
+    device_id: String,
+    volume: f32,
+) -> Result<(), String> {
     app.audio
         .set_device_volume(&device_id, volume)
         .map_err(error)
 }
 #[tauri::command]
-fn set_device_mute(app: State<'_, App>, device_id: String, muted: bool) -> Result<(), String> {
+async fn set_device_mute(
+    app: State<'_, App>,
+    device_id: String,
+    muted: bool,
+) -> Result<(), String> {
     app.audio.set_device_mute(&device_id, muted).map_err(error)
 }
 #[tauri::command]
-fn set_app_volume(
+async fn set_app_volume(
     app: State<'_, App>,
     device_id: String,
     app_key: String,
@@ -63,7 +97,7 @@ fn set_app_volume(
         .map_err(error)
 }
 #[tauri::command]
-fn set_app_mute(
+async fn set_app_mute(
     app: State<'_, App>,
     device_id: String,
     app_key: String,
@@ -145,6 +179,16 @@ fn place_near_taskbar(window: &WebviewWindow, tray: Option<Rect>) {
     let _ = window.set_position(PhysicalPosition::new(x, y));
 }
 
+fn show(app: &AppHandle, tray: Option<Rect>) {
+    let Some(window) = app.get_webview_window(FLYOUT) else {
+        return;
+    };
+    place_near_taskbar(&window, tray);
+    let _ = window.show();
+    let _ = window.set_focus();
+    let _ = window.emit("flyout-shown", ());
+}
+
 fn toggle(app: &AppHandle, tray: Rect) {
     let Some(window) = app.get_webview_window(FLYOUT) else {
         return;
@@ -163,10 +207,136 @@ fn toggle(app: &AppHandle, tray: Rect) {
     if recently_hidden {
         return;
     }
-    place_near_taskbar(&window, Some(tray));
-    let _ = window.show();
-    let _ = window.set_focus();
-    let _ = window.emit("flyout-shown", ());
+    show(app, Some(tray));
+}
+
+/// Tray menu: output devices (checked = default), then app actions.
+fn build_menu(app: &AppHandle, devices: &Snapshot) -> tauri::Result<Menu<tauri::Wry>> {
+    let menu = Menu::new(app)?;
+    if devices.devices.is_empty() {
+        menu.append(&MenuItem::with_id(
+            app,
+            "none",
+            "No output devices",
+            false,
+            None::<&str>,
+        )?)?;
+    }
+    for device in &devices.devices {
+        let id = format!("device:{}", device.id);
+        menu.append(&CheckMenuItem::with_id(
+            app,
+            id,
+            &device.name,
+            true,
+            device.is_default,
+            None::<&str>,
+        )?)?;
+    }
+    menu.append(&PredefinedMenuItem::separator(app)?)?;
+    menu.append(&CheckMenuItem::with_id(
+        app,
+        "startup",
+        "Start with Windows",
+        true,
+        startup::is_enabled(),
+        None::<&str>,
+    )?)?;
+    menu.append(&MenuItem::with_id(
+        app,
+        "mixer",
+        "Volume mixer",
+        true,
+        None::<&str>,
+    )?)?;
+    menu.append(&MenuItem::with_id(
+        app,
+        "sound",
+        "Sound settings",
+        true,
+        None::<&str>,
+    )?)?;
+    menu.append(&PredefinedMenuItem::separator(app)?)?;
+    menu.append(&MenuItem::with_id(app, "quit", "Exit", true, None::<&str>)?)?;
+    Ok(menu)
+}
+
+fn tooltip(devices: &Snapshot) -> String {
+    let text = match devices.devices.iter().find(|d| d.is_default) {
+        Some(d) if d.muted => format!("BetterTrumpet\n{}: muted", d.name),
+        Some(d) => format!("BetterTrumpet\n{}: {:.0}%", d.name, d.volume * 100.0),
+        None => "BetterTrumpet\nNo output device".into(),
+    };
+    // Windows truncates tray tooltips at 127 characters.
+    text.chars().take(127).collect()
+}
+
+/// Rebuilds the tray menu and tooltip from the current devices.
+fn refresh_tray(app: &AppHandle) {
+    let Some(tray) = app.tray_by_id("main") else {
+        return;
+    };
+    let Ok(devices) = app.state::<App>().audio.devices() else {
+        return;
+    };
+    if let Ok(menu) = build_menu(app, &devices) {
+        let _ = tray.set_menu(Some(menu));
+    }
+    let _ = tray.set_tooltip(Some(tooltip(&devices)));
+}
+
+/// Keeps the tray menu and tooltip current. Devices only (no sessions), and
+/// the menu is rebuilt only when the device list or default changes.
+fn watch_devices(app: AppHandle) {
+    std::thread::spawn(move || {
+        let mut last_menu = String::new();
+        let mut last_tip = String::new();
+        loop {
+            if let Ok(devices) = app.state::<App>().audio.devices() {
+                let key: String = devices
+                    .devices
+                    .iter()
+                    .map(|d| format!("{}|{}|{}\n", d.id, d.name, d.is_default))
+                    .collect::<String>()
+                    + &startup::is_enabled().to_string();
+                if let Some(tray) = app.tray_by_id("main") {
+                    if key != last_menu {
+                        if let Ok(menu) = build_menu(&app, &devices) {
+                            let _ = tray.set_menu(Some(menu));
+                        }
+                        last_menu = key;
+                    }
+                    let tip = tooltip(&devices);
+                    if tip != last_tip {
+                        let _ = tray.set_tooltip(Some(&tip));
+                        last_tip = tip;
+                    }
+                }
+            }
+            std::thread::sleep(Duration::from_millis(1000));
+        }
+    });
+}
+
+fn on_menu(app: &AppHandle, id: &str) {
+    match id {
+        "quit" => app.exit(0),
+        "sound" => open("ms-settings:sound"),
+        "mixer" => open("ms-settings:apps-volume"),
+        "startup" => {
+            if let Ok(exe) = std::env::current_exe() {
+                let _ = startup::set_enabled(!startup::is_enabled(), &exe);
+            }
+            refresh_tray(app);
+        }
+        _ => {
+            if let Some(device) = id.strip_prefix("device:") {
+                let _ = app.state::<App>().audio.set_default_device(device);
+                refresh_tray(app);
+                let _ = app.emit("devices-changed", ());
+            }
+        }
+    }
 }
 
 fn main() {
@@ -178,13 +348,20 @@ fn main() {
         }
     };
     tauri::Builder::default()
+        // A second launch opens the running instance's flyout instead.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            show(app, None);
+        }))
         .manage(App {
             audio,
             hidden_at: Mutex::new(None),
             pinned: AtomicBool::new(std::env::args().any(|a| a == "--pinned")),
+            icons: Mutex::new(HashMap::new()),
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
+            set_default_device,
+            app_icon,
             set_device_volume,
             set_device_mute,
             set_app_volume,
@@ -195,22 +372,15 @@ fn main() {
             fit_flyout
         ])
         .setup(|app| {
-            let sound = MenuItem::with_id(app, "sound", "Sound settings", true, None::<&str>)?;
-            let mixer = MenuItem::with_id(app, "mixer", "Volume mixer", true, None::<&str>)?;
-            let quit = MenuItem::with_id(app, "quit", "Exit", true, None::<&str>)?;
-            let separator = PredefinedMenuItem::separator(app)?;
-            let menu = Menu::with_items(app, &[&mixer, &sound, &separator, &quit])?;
+            let handle = app.handle().clone();
+            let devices = app.state::<App>().audio.devices().unwrap_or_default();
+            let menu = build_menu(&handle, &devices)?;
             TrayIconBuilder::with_id("main")
                 .icon(app.default_window_icon().cloned().expect("bundled icon"))
-                .tooltip("BetterTrumpet")
+                .tooltip(tooltip(&devices))
                 .menu(&menu)
                 .show_menu_on_left_click(false)
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "quit" => app.exit(0),
-                    "sound" => open("ms-settings:sound"),
-                    "mixer" => open("ms-settings:apps-volume"),
-                    _ => {}
-                })
+                .on_menu_event(|app, event| on_menu(app, event.id.as_ref()))
                 .on_tray_icon_event(|tray, event| {
                     if let TrayIconEvent::Click {
                         button: MouseButton::Left,
@@ -223,14 +393,10 @@ fn main() {
                     }
                 })
                 .build(app)?;
+            watch_devices(handle);
             // `--show` opens the flyout at startup (testing, shortcuts).
             if std::env::args().any(|a| a == "--show") {
-                if let Some(window) = app.get_webview_window(FLYOUT) {
-                    place_near_taskbar(&window, None);
-                    let _ = window.show();
-                    let _ = window.set_focus();
-                    let _ = window.emit("flyout-shown", ());
-                }
+                show(app.handle(), None);
             }
             Ok(())
         })

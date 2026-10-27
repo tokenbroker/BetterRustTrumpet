@@ -69,6 +69,8 @@ function createDevice(device) {
   const input = master.querySelector("input");
   bindSlider(input, master.querySelector(".value"), (v) =>
     invoke("set_device_volume", { deviceId: device.id, volume: v }));
+  el.querySelector(".make-default").addEventListener("click", () =>
+    invoke("set_default_device", { deviceId: device.id }).then(refresh).catch(showError));
   master.querySelector(".mute").addEventListener("click", () =>
     invoke("set_device_mute", { deviceId: device.id, muted: !master.dataset.muted })
       .then(refresh).catch(showError));
@@ -79,7 +81,20 @@ function createApp(deviceId, app) {
   const el = appTemplate.content.firstElementChild.cloneNode(true);
   const input = el.querySelector("input");
   input.setAttribute("aria-label", `${app.displayName} volume`);
-  el.querySelector(".initial").textContent = (app.displayName.trim()[0] || "?").toUpperCase();
+  if (app.isSystemSounds) {
+    el.querySelector(".initial").innerHTML = SPEAKER;
+  } else {
+    el.querySelector(".initial").textContent = (app.displayName.trim()[0] || "?").toUpperCase();
+  }
+  if (app.executable) {
+    invoke("app_icon", { path: app.executable }).then((url) => {
+      if (!url) return;
+      const img = el.querySelector(".app-icon");
+      img.src = url;
+      img.hidden = false;
+      el.querySelector(".initial").hidden = true;
+    }).catch(() => {});
+  }
   el.querySelector(".mute").setAttribute("aria-label", `Mute ${app.displayName}`);
   bindSlider(input, el.querySelector(".value"), (v) =>
     invoke("set_app_volume", { deviceId, appKey: app.key, volume: v }));
@@ -103,6 +118,7 @@ function render(snapshot) {
     if (devicesEl.children[index] !== view.el) devicesEl.insertBefore(view.el, devicesEl.children[index] || null);
     view.el.querySelector(".device-name").textContent = device.name;
     view.el.querySelector(".default-badge").hidden = !device.isDefault;
+    view.el.querySelector(".make-default").hidden = device.isDefault;
     const master = view.el.querySelector(".master");
     update(master, device.volume, device.muted, device.peak);
     master.querySelector(".mute").innerHTML = device.muted ? MUTED : SPEAKER;
@@ -154,6 +170,7 @@ function stop() {
 }
 
 listen("flyout-shown", start);
+listen("devices-changed", refresh);
 listen("flyout-hidden", stop);
 const pinEl = document.getElementById("pin");
 function showPin(pinned) {

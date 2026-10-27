@@ -11,6 +11,9 @@ license-file = "../../../LICENSE"
 serde.workspace = true
 thiserror.workspace = true
 
+[target.'cfg(windows)'.dependencies.windows-core]
+version = "0.62.2"
+
 [target.'cfg(windows)'.dependencies]
 windows = { workspace = true, features = [
     "Win32_Foundation",
@@ -22,7 +25,11 @@ windows = { workspace = true, features = [
     "Win32_System_Variant",
     "Win32_UI_Shell_PropertiesSystem",
     "Win32_Devices_FunctionDiscovery",
+    "Win32_Storage_FileSystem",
 ] }
 
 [[example]]
 name = "sessions"
+
+[[example]]
+name = "reassert_default"

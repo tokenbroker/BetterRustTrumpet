@@ -1,6 +1,6 @@
 //! COM side of the engine. Everything here runs on the worker thread.
 use crate::{AppSession, AudioError, Device, Snapshot};
-use std::{sync::mpsc, thread};
+use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::mpsc, thread};
 use windows::{
     Win32::{
         Devices::FunctionDiscovery::PKEY_Device_FriendlyName,
@@ -8,9 +8,10 @@ use windows::{
         Media::Audio::{
             AudioSessionStateExpired, DEVICE_STATE_ACTIVE, Endpoints::IAudioEndpointVolume,
             Endpoints::IAudioMeterInformation, IAudioSessionControl2, IAudioSessionManager2,
-            IMMDevice, IMMDeviceEnumerator, ISimpleAudioVolume, MMDeviceEnumerator, eMultimedia,
-            eRender,
+            IMMDevice, IMMDeviceEnumerator, ISimpleAudioVolume, MMDeviceEnumerator, eConsole,
+            eMultimedia, eRender,
         },
+        Storage::FileSystem::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW},
         System::{
             Com::{
                 CLSCTX_ALL, COINIT_MULTITHREADED, CoCreateInstance, CoInitializeEx, CoTaskMemFree,
@@ -22,8 +23,44 @@ use windows::{
             },
         },
     },
-    core::{HSTRING, Interface, PWSTR},
+    core::{GUID, HSTRING, Interface, PCWSTR, PWSTR},
 };
+
+#[allow(non_snake_case)]
+mod policy {
+    use windows::{
+        Win32::Media::Audio::ERole,
+        core::{HRESULT, IUnknown, IUnknown_Vtbl, PCWSTR, interface},
+    };
+    /// The undocumented policy-config interface EarTrumpet uses to change the
+    /// default endpoint (Windows 7+). Only `SetDefaultEndpoint` is called; the
+    /// preceding slots exist to keep the vtable layout.
+    #[interface("f8679f50-850a-41cf-9c72-430f290290c8")]
+    pub unsafe trait IPolicyConfig: IUnknown {
+        fn GetMixFormat(&self) -> HRESULT;
+        fn GetDeviceFormat(&self) -> HRESULT;
+        fn ResetDeviceFormat(&self) -> HRESULT;
+        fn SetDeviceFormat(&self) -> HRESULT;
+        fn GetProcessingPeriod(&self) -> HRESULT;
+        fn SetProcessingPeriod(&self) -> HRESULT;
+        fn GetShareMode(&self) -> HRESULT;
+        fn SetShareMode(&self) -> HRESULT;
+        fn GetPropertyValue(&self) -> HRESULT;
+        fn SetPropertyValue(&self) -> HRESULT;
+        fn SetDefaultEndpoint(&self, device_id: PCWSTR, role: ERole) -> HRESULT;
+        fn SetEndpointVisibility(&self) -> HRESULT;
+    }
+
+    /// # Safety
+    /// COM must be initialized on this thread and `id` must point at a
+    /// NUL-terminated endpoint ID that outlives the call.
+    pub unsafe fn set_default_endpoint(policy: &IPolicyConfig, id: PCWSTR, role: ERole) -> HRESULT {
+        // SAFETY: forwarded from the caller's contract above.
+        unsafe { policy.SetDefaultEndpoint(id, role) }
+    }
+}
+use policy::IPolicyConfig;
+const CLSID_POLICY_CONFIG: GUID = GUID::from_u128(0x870af99c_171d_4f9e_af0d_e63df40c2bc9);
 
 impl From<windows::core::Error> for AudioError {
     fn from(error: windows::core::Error) -> Self {
@@ -82,7 +119,14 @@ impl Engine {
         answer.recv().map_err(|_| AudioError::Stopped)?
     }
     pub fn snapshot(&self) -> Result<Snapshot, AudioError> {
-        self.call(Backend::snapshot)
+        self.call(|b| b.snapshot(true))
+    }
+    pub fn devices(&self) -> Result<Snapshot, AudioError> {
+        self.call(|b| b.snapshot(false))
+    }
+    pub fn set_default_device(&self, id: &str) -> Result<(), AudioError> {
+        let id = id.to_owned();
+        self.call(move |b| b.set_default(&id))
     }
     pub fn set_device_volume(&self, id: &str, volume: f32) -> Result<(), AudioError> {
         let id = id.to_owned();
@@ -175,6 +219,54 @@ fn process_image(pid: u32) -> Option<String> {
     }
 }
 
+/// The executable's FileDescription (what Task Manager shows), if any.
+fn file_description(path: &str) -> Option<String> {
+    let wide: Vec<u16> = path.encode_utf16().chain(Some(0)).collect();
+    let path = PCWSTR(wide.as_ptr());
+    // SAFETY: `path` is NUL-terminated and outlives every call; `data` is
+    // sized by GetFileVersionInfoSizeW; VerQueryValueW returns pointers into
+    // `data`, which stays alive while they are read, and lengths in units.
+    unsafe {
+        let size = GetFileVersionInfoSizeW(path, None);
+        if size == 0 {
+            return None;
+        }
+        let mut data = vec![0u8; size as usize];
+        GetFileVersionInfoW(path, None, size, data.as_mut_ptr().cast()).ok()?;
+        let query = |sub: &str| -> Option<(*const c_void, u32)> {
+            let sub: Vec<u16> = sub.encode_utf16().chain(Some(0)).collect();
+            let mut pointer = std::ptr::null_mut();
+            let mut length = 0u32;
+            VerQueryValueW(
+                data.as_ptr().cast(),
+                PCWSTR(sub.as_ptr()),
+                &mut pointer,
+                &mut length,
+            )
+            .as_bool()
+            .then_some((pointer as *const c_void, length))
+        };
+        let mut languages = vec![];
+        if let Some((pointer, bytes)) = query("\\VarFileInfo\\Translation") {
+            let pairs = std::slice::from_raw_parts(pointer as *const u16, bytes as usize / 2);
+            languages.extend(pairs.chunks_exact(2).map(|p| (p[0], p[1])));
+        }
+        languages.extend([(0x0409, 0x04b0), (0x0409, 0x04e4), (0x0000, 0x04b0)]);
+        for (language, codepage) in languages {
+            let sub = format!("\\StringFileInfo\\{language:04x}{codepage:04x}\\FileDescription");
+            if let Some((pointer, units)) = query(&sub) {
+                let text = std::slice::from_raw_parts(pointer as *const u16, units as usize);
+                let text = String::from_utf16_lossy(text);
+                let text = text.trim_end_matches('\0').trim();
+                if !text.is_empty() {
+                    return Some(text.to_owned());
+                }
+            }
+        }
+        None
+    }
+}
+
 fn file_stem(path: &str) -> String {
     let name = path.rsplit(['\\', '/']).next().unwrap_or(path);
     name.strip_suffix(".exe")
@@ -195,13 +287,39 @@ struct SessionInfo {
 
 struct Backend {
     enumerator: IMMDeviceEnumerator,
+    /// FileDescription per executable path; version resources rarely change.
+    descriptions: RefCell<HashMap<String, Option<String>>>,
 }
 
 impl Backend {
     fn new() -> Result<Self, AudioError> {
         // SAFETY: COM is initialized on this thread (Apartment::enter).
         let enumerator = unsafe { CoCreateInstance(&MMDeviceEnumerator, None, CLSCTX_ALL)? };
-        Ok(Self { enumerator })
+        Ok(Self {
+            enumerator,
+            descriptions: RefCell::new(HashMap::new()),
+        })
+    }
+    fn describe_executable(&self, path: &str) -> Option<String> {
+        self.descriptions
+            .borrow_mut()
+            .entry(path.to_owned())
+            .or_insert_with(|| file_description(path))
+            .clone()
+    }
+    /// Console and multimedia roles, as the original's CLI and profiles do.
+    fn set_default(&self, id: &str) -> Result<(), AudioError> {
+        self.device(id)?;
+        let id = HSTRING::from(id);
+        // SAFETY: COM is initialized on this thread; the HSTRING outlives the
+        // calls; the interface layout matches the shipped Windows component.
+        unsafe {
+            let policy: IPolicyConfig = CoCreateInstance(&CLSID_POLICY_CONFIG, None, CLSCTX_ALL)?;
+            for role in [eConsole, eMultimedia] {
+                policy::set_default_endpoint(&policy, PCWSTR(id.as_ptr()), role).ok()?;
+            }
+        }
+        Ok(())
     }
     fn device(&self, id: &str) -> Result<IMMDevice, AudioError> {
         // SAFETY: the enumerator is a live interface on this thread and the
@@ -226,14 +344,14 @@ impl Backend {
         apply: impl Fn(&ISimpleAudioVolume) -> windows::core::Result<()>,
     ) -> Result<(), AudioError> {
         let device = self.device(id)?;
-        for session in Self::device_sessions(&device)? {
+        for session in self.device_sessions(&device)? {
             if session.key == key {
                 apply(&session.volume)?;
             }
         }
         Ok(())
     }
-    fn device_sessions(device: &IMMDevice) -> Result<Vec<SessionInfo>, AudioError> {
+    fn device_sessions(&self, device: &IMMDevice) -> Result<Vec<SessionInfo>, AudioError> {
         let mut out = vec![];
         // SAFETY: all calls are on live interfaces owned by this thread;
         // returned strings are freed by take_string.
@@ -265,7 +383,9 @@ impl Backend {
                 let display_name = match (system, reported, &executable) {
                     (true, _, _) => "System sounds".to_owned(),
                     (_, Some(name), _) => name,
-                    (_, None, Some(path)) => file_stem(path),
+                    (_, None, Some(path)) => self
+                        .describe_executable(path)
+                        .unwrap_or_else(|| file_stem(path)),
                     (_, None, None) => format!("Process {pid}"),
                 };
                 out.push(SessionInfo {
@@ -281,7 +401,12 @@ impl Backend {
         }
         Ok(out)
     }
-    fn describe(&self, device: &IMMDevice, default_id: Option<&str>) -> Result<Device, AudioError> {
+    fn describe(
+        &self,
+        device: &IMMDevice,
+        default_id: Option<&str>,
+        with_apps: bool,
+    ) -> Result<Device, AudioError> {
         // SAFETY: live interfaces on this thread; GetId's string is freed by
         // take_string, the property value is converted then dropped.
         let (id, name, endpoint, meter) = unsafe {
@@ -293,7 +418,12 @@ impl Backend {
             (id, name, endpoint, meter)
         };
         let mut apps: Vec<AppSession> = vec![];
-        for session in Self::device_sessions(device)? {
+        let sessions = if with_apps {
+            self.device_sessions(device)?
+        } else {
+            vec![]
+        };
+        for session in sessions {
             // SAFETY: live session interfaces on this thread.
             let (volume, muted, peak) = unsafe {
                 (
@@ -343,7 +473,7 @@ impl Backend {
             apps,
         })
     }
-    fn snapshot(&self) -> Result<Snapshot, AudioError> {
+    fn snapshot(&self, with_apps: bool) -> Result<Snapshot, AudioError> {
         // SAFETY: live enumerator on this thread; strings freed by take_string.
         let (default_id, collection) = unsafe {
             let default_id = self
@@ -364,7 +494,7 @@ impl Backend {
         for i in 0..count {
             // SAFETY: index is within GetCount.
             let device = unsafe { collection.Item(i)? };
-            if let Ok(device) = self.describe(&device, default_id.as_deref()) {
+            if let Ok(device) = self.describe(&device, default_id.as_deref(), with_apps) {
                 devices.push(device);
             }
         }

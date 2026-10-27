@@ -16,6 +16,7 @@
       <header>
         <span class="device-name"></span>
         <span class="default-badge" hidden>Default</span>
+        <button class="make-default" type="button" hidden>Set default</button>
       </header>
       <div class="row master">
         <button class="mute" type="button" aria-label="Mute device"></button>
@@ -30,7 +31,7 @@
   </template>
   <template id="app-template">
     <div class="row app">
-      <button class="mute icon" type="button"><span class="initial"></span></button>
+      <button class="mute icon" type="button"><span class="initial"></span><img class="app-icon" alt="" hidden /></button>
       <div class="slider">
         <span class="app-name"></span>
         <input type="range" min="0" max="100" step="1" />

@@ -83,6 +83,24 @@ impl AudioEngine {
         #[cfg(not(windows))]
         Err(AudioError::Unsupported)
     }
+    /// Devices only (no app sessions): cheap enough for background polling.
+    pub fn devices(&self) -> Result<Snapshot, AudioError> {
+        #[cfg(windows)]
+        return self.inner.devices();
+        #[cfg(not(windows))]
+        Err(AudioError::Unsupported)
+    }
+    /// Makes `device_id` the default output for the console and multimedia
+    /// roles, as the original does.
+    pub fn set_default_device(&self, device_id: &str) -> Result<(), AudioError> {
+        #[cfg(windows)]
+        return self.inner.set_default_device(device_id);
+        #[cfg(not(windows))]
+        {
+            let _ = device_id;
+            Err(AudioError::Unsupported)
+        }
+    }
     pub fn set_device_volume(&self, device_id: &str, volume: f32) -> Result<(), AudioError> {
         #[cfg(windows)]
         return self

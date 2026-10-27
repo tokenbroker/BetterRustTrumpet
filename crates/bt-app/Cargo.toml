@@ -19,11 +19,12 @@ bt-audio = { path = "../bt-audio" }
 serde.workspace = true
 serde_json.workspace = true
 tauri = { version = "2", features = ["tray-icon", "image-ico"] }
+tauri-plugin-single-instance = "2"
 
 [target.'cfg(windows)'.dependencies]
 bt-core = { path = "../bt-core" }
 bt-storage = { path = "../bt-storage" }
-windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry", "Win32_Security", "Wdk_System_Registry", "Wdk_System_SystemServices", "Win32_System_Environment", "Win32_System_Com", "Win32_Storage_Packaging_Appx", "Foundation", "Foundation_Collections", "Management_Core", "Storage"] }
+windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry", "Win32_Security", "Wdk_System_Registry", "Wdk_System_SystemServices", "Win32_System_Environment", "Win32_System_Com", "Win32_Storage_Packaging_Appx", "Foundation", "Foundation_Collections", "Management_Core", "Storage", "Win32_Graphics_Gdi", "Win32_UI_Shell", "Win32_UI_WindowsAndMessaging"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"
