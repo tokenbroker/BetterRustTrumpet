@@ -1929,6 +1929,1078 @@
       }
     }
   ],
+  "themes": [
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":123}",
+      "result": {
+        "value": "{\"Name\":\"123\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":true}",
+      "result": {
+        "value": "{\"Name\":\"True\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1.50}",
+      "result": {
+        "value": "{\"Name\":\"1.5\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":null}",
+      "result": {
+        "value": "{\"Name\":null,\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":{}}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"2026-10-26T15:35:33Z\"}",
+      "result": {
+        "value": "{\"Name\":\"10/26/2026 15:35:33\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"2026-10-26T15:35:33.123+02:00\"}",
+      "result": {
+        "value": "{\"Name\":\"10/26/2026 08:35:33\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":NaN}",
+      "result": {
+        "value": "{\"Name\":\"NaN\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":0x1F}",
+      "result": {
+        "value": "{\"Name\":\"31\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":99999999999999999999}",
+      "result": {
+        "errorType": "InvalidOperationException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":null}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":null,\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":false}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"False\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":[]}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":null}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Text\":null}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Glow\":null}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":123456}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#123456\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":true}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":null}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"#abcdef\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#ABCDEF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"###112233\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"#12\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\" 112233\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"0x0011\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"+10011\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#010011\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"-10011\"}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":null}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":0.5}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":true}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":false}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.55\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.55}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,234.5\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,2,3\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"NaN\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":NaN}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":Infinity}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":-Infinity}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"Infinity\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"-Infinity\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"nan\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\" +NaN \"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.5\\u0000\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"   \"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1e400\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":{}}",
+      "result": {
+        "errorType": "InvalidCastException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":[]}",
+      "result": {
+        "errorType": "InvalidCastException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"2026-10-26T15:35:33Z\"}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":99999999999999999999}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Unknown\":{\"x\":\"9999-12-31T24:00:00\"}}",
+      "result": {
+        "errorType": "ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"name\":\"lower\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"first\",\"Name\":\"last\"}",
+      "result": {
+        "value": "{\"Name\":\"last\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Unknown\":new Foo(1)}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "null",
+      "result": {
+        "errorType": "RuntimeBinderException"
+      }
+    },
+    {
+      "input": "",
+      "result": {
+        "errorType": "RuntimeBinderException"
+      }
+    },
+    {
+      "input": "[]",
+      "result": {
+        "errorType": "RuntimeBinderException"
+      }
+    },
+    {
+      "input": "5",
+      "result": {
+        "errorType": "RuntimeBinderException"
+      }
+    },
+    {
+      "input": "{}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"x\"}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{Name:'x',Thumb:'112233',Fill:'445566',Background:'778899',Peak:'AABBCC',}",
+      "result": {
+        "value": "{\"Name\":\"x\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"} trailing",
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":new Date(0)}",
+      "result": {
+        "value": "{\"Name\":\"01/01/1970 00:00:00\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":new Foo(1)}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":new Date(0)}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":new Date(0)}",
+      "result": {
+        "errorType": "ArgumentException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":undefined}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":null,\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":undefined}",
+      "result": {
+        "errorType": "NullReferenceException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":undefined}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1e20}",
+      "result": {
+        "value": "{\"Name\":\"1E+20\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1e-5}",
+      "result": {
+        "value": "{\"Name\":\"1E-05\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":-0.0}",
+      "result": {
+        "value": "{\"Name\":\"0\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":Infinity}",
+      "result": {
+        "value": "{\"Name\":\"Infinity\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"0x0101\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"110x01\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"1101+1\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#110101\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\".5\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,2.3\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1.2,3\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1e-100000\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.12345678912345678\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.12345678912345678}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\" 0.5 \"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.5\\u00a0\"}",
+      "result": {
+        "errorType": "FormatException"
+      }
+    },
+    {
+      "input": "{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"-NaN\"}",
+      "result": {
+        "value": "{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}"
+      }
+    }
+  ],
+  "themeLists": [
+    {
+      "input": "null",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "{}",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[1,null,{}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"},{},{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null},{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"},{\"Unknown\":\"9999-12-31T24:00:00\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"},NaN]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"},undefined]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"}] trailing",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":123}]",
+      "result": {
+        "value": "[{\"Name\":\"123\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":true}]",
+      "result": {
+        "value": "[{\"Name\":\"True\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1.50}]",
+      "result": {
+        "value": "[{\"Name\":\"1.5\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":null}]",
+      "result": {
+        "value": "[{\"Name\":null,\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":{}}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"2026-10-26T15:35:33Z\"}]",
+      "result": {
+        "value": "[{\"Name\":\"10/26/2026 15:35:33\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"2026-10-26T15:35:33.123+02:00\"}]",
+      "result": {
+        "value": "[{\"Name\":\"10/26/2026 08:35:33\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":NaN}]",
+      "result": {
+        "value": "[{\"Name\":\"NaN\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":0x1F}]",
+      "result": {
+        "value": "[{\"Name\":\"31\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":99999999999999999999}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":null}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":null,\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":false}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"False\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":[]}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":null}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Text\":null}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Glow\":null}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":123456}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#123456\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":true}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":null}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"#abcdef\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#ABCDEF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"###112233\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"#12\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\" 112233\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"0x0011\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"+10011\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#010011\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"-10011\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":null}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":0.5}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":true}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":false}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.55\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.55}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,234.5\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,2,3\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"NaN\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":NaN}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":Infinity}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":-Infinity}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"Infinity\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"-Infinity\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"nan\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\" +NaN \"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.5\\u0000\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"   \"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1e400\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":{}}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":[]}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"2026-10-26T15:35:33Z\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":99999999999999999999}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Unknown\":{\"x\":\"9999-12-31T24:00:00\"}}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"name\":\"lower\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":\"first\",\"Name\":\"last\"}]",
+      "result": {
+        "value": "[{\"Name\":\"last\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Unknown\":new Foo(1)}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[null]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[[]]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[5]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"x\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{Name:'x',Thumb:'112233',Fill:'445566',Background:'778899',Peak:'AABBCC',}]",
+      "result": {
+        "value": "[{\"Name\":\"x\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\"} trailing]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":new Date(0)}]",
+      "result": {
+        "value": "[{\"Name\":\"01/01/1970 00:00:00\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":new Foo(1)}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":new Date(0)}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#FFFFFF\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":new Date(0)}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Category\":undefined}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":null,\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":undefined}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":undefined}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1e20}]",
+      "result": {
+        "value": "[{\"Name\":\"1E+20\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":1e-5}]",
+      "result": {
+        "value": "[{\"Name\":\"1E-05\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":-0.0}]",
+      "result": {
+        "value": "[{\"Name\":\"0\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Name\":Infinity}]",
+      "result": {
+        "value": "[{\"Name\":\"Infinity\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"0x0101\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"110x01\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Thumb\":\"1101+1\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#110101\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":null}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\".5\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1,2.3\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":1.0}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1.2,3\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"1e-100000\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.05}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.12345678912345678\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.12345678912345678}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\" 0.5 \"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":0.5}]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"0.5\\u00a0\"}]",
+      "result": {
+        "value": "[]"
+      }
+    },
+    {
+      "input": "[{\"Name\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"Opacity\":\"-NaN\"}]",
+      "result": {
+        "value": "[{\"Name\":\"Custom\",\"Category\":\"Custom\",\"Thumb\":\"#112233\",\"Fill\":\"#445566\",\"Background\":\"#778899\",\"Peak\":\"#AABBCC\",\"WindowBg\":\"#000000\",\"Text\":\"#FFFFFF\",\"Glow\":\"#445566\",\"Opacity\":\"NaN\"}]"
+      }
+    }
+  ],
   "todayTicks": 639285696000000000,
   "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
   "runtime": "8.0.31"

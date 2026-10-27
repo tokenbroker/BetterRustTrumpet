@@ -1,5 +1,6 @@
 //! Actual .NET 8/Newtonsoft fixtures produced by capture_model_fixtures.py,
 //! using linked original Hotkey/Theme source and extracted profile/rule DTOs.
+mod support;
 use bt_core::{
     models::*,
     themes::{BUILTIN_THEMES, CATEGORIES, Theme},
@@ -80,7 +81,7 @@ fn all_twelve_palettes_match_actual_csharp_color_exports() {
 fn theme_import_legacy_defaults_clamps_and_failures_match_csharp() {
     for case in reference()["themeImports"].as_array().unwrap() {
         let input = case["input"].as_str().unwrap();
-        let result = Theme::from_json(input);
+        let result = Theme::from_json(input, &support::Central);
         if case["result"].get("errorType").is_some() {
             assert!(result.is_err(), "C# rejected: {input}");
         } else {

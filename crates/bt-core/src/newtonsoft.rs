@@ -469,7 +469,7 @@ impl<Z: LocalZone + ?Sized> Reader<'_, Z> {
                 check_read(arg, self.zone)?;
             }
         } else if name == "Date" {
-            constructor_date(&args, commented)?;
+            return constructor_date(&args, commented).map(Token::Date);
         }
         Ok(Token::Constructor)
     }
@@ -485,7 +485,7 @@ fn radix(digits: &str, radix: u32) -> Result<i64, Error> {
         .map_err(|_| Error)
 }
 
-fn constructor_date(args: &[Token], commented: bool) -> Result<(), Error> {
+fn constructor_date(args: &[Token], commented: bool) -> Result<Date, Error> {
     if commented || args.is_empty() || args.len() > 7 {
         return Err(Error);
     }
@@ -497,7 +497,10 @@ fn constructor_date(args: &[Token], commented: bool) -> Result<(), Error> {
         *slot = *value;
     }
     if args.len() == 1 {
-        return javascript_ticks(values[0]).map(|_| ());
+        return javascript_ticks(values[0]).map(|ticks| Date {
+            ticks,
+            kind: DateKind::Utc,
+        });
     }
     let part = |i: usize, default: i32| {
         if i < args.len() {
@@ -519,7 +522,13 @@ fn constructor_date(args: &[Token], commented: bool) -> Result<(), Error> {
     {
         return Err(Error);
     }
-    Ok(())
+    let ticks = days_from_civil(year, month, day) * TICKS_PER_DAY
+        + i64::from(hour * 3600 + minute * 60 + second) * 10_000_000
+        + i64::from(millisecond) * 10_000;
+    Ok(Date {
+        ticks,
+        kind: DateKind::Unspecified,
+    })
 }
 
 /// Parses a settings document (`Dictionary<string, object>`). `Ok(None)` is a
@@ -559,6 +568,30 @@ pub fn parse_object_document(
 }
 
 // ---- typed mode (DeserializeObject<T>) -----------------------------------------
+
+/// Untyped dynamic/JToken document, with date parsing and duplicate-property
+/// replacement. Used by ColorTheme.FromJson and List<dynamic> theme storage.
+pub fn parse_dynamic_document(
+    text: &str,
+    zone: &(impl LocalZone + ?Sized),
+) -> Result<Option<Token>, Error> {
+    let mut reader = Reader {
+        chars: text.chars().collect(),
+        pos: 0,
+        zone,
+        raw: false,
+    };
+    reader.skip()?;
+    if reader.peek().is_none() {
+        return Ok(None);
+    }
+    let value = reader.value(Context::Root)?;
+    reader.skip()?;
+    if reader.peek().is_some() {
+        return Err(Error);
+    }
+    Ok(Some(value))
+}
 
 /// Parses a `DeserializeObject<T>` document in typed mode. `Ok(None)` is a
 /// null or empty document; callers reject roots of the wrong shape.

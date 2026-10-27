@@ -223,10 +223,19 @@ fn allow_hyphen(culture: &NumberCulture<'_>) -> bool {
 
 /// `float.Parse(text, NumberStyles.Float | NumberStyles.AllowThousands, culture)`.
 pub fn parse_float(text: &str, culture: &NumberCulture<'_>) -> Option<f32> {
-    numeric_float(text, culture).or_else(|| symbol_float(text, culture))
+    numeric_text(text, culture)
+        .and_then(|s| s.parse().ok())
+        .or_else(|| symbol_float(text, culture))
 }
 
-fn numeric_float(text: &str, culture: &NumberCulture<'_>) -> Option<f32> {
+/// Same NumberStyles grammar at double precision (theme opacity conversion).
+pub fn parse_double(text: &str, culture: &NumberCulture<'_>) -> Option<f64> {
+    numeric_text(text, culture)
+        .and_then(|s| s.parse().ok())
+        .or_else(|| symbol_float(text, culture).map(f64::from))
+}
+
+fn numeric_text(text: &str, culture: &NumberCulture<'_>) -> Option<String> {
     let mut rest = text.trim_start_matches(number_white);
     let mut negative = false;
     if !culture.positive_sign.is_empty() && rest.starts_with(culture.positive_sign) {
@@ -306,9 +315,7 @@ fn numeric_float(text: &str, culture: &NumberCulture<'_>) -> Option<f32> {
     } else {
         integral
     };
-    format!("{sign}{integral}.{fraction}{exponent}")
-        .parse()
-        .ok()
+    Some(format!("{sign}{integral}.{fraction}{exponent}"))
 }
 
 fn symbol_float(text: &str, culture: &NumberCulture<'_>) -> Option<f32> {

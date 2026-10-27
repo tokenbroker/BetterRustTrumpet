@@ -1,5 +1,9 @@
 //! ColorTheme.cs file format and the exact ThemeRegistry.cs palette values.
-use serde::{Deserialize, Serialize};
+use crate::{
+    colors::{self, NumberCulture},
+    newtonsoft::{self, LocalZone, Token},
+};
+use serde::Serialize;
 use serde_json::Value;
 use thiserror::Error;
 
@@ -31,6 +35,8 @@ impl Rgb {
 pub enum ThemeError {
     #[error("invalid theme JSON: {0}")]
     Json(#[from] serde_json::Error),
+    #[error("invalid Newtonsoft theme value")]
+    Legacy(#[from] newtonsoft::Error),
     #[error("missing theme color: {0}")]
     MissingColor(&'static str),
     #[error("invalid six-digit theme color: {0}")]
@@ -54,79 +60,98 @@ pub enum Channel {
 #[derive(Clone, Debug, PartialEq)]
 pub struct Theme {
     pub name: Option<String>,
-    pub category: String,
+    pub category: Option<String>,
     pub colors: [Rgb; 7],
     pub opacity: Option<f64>,
     pub is_custom: bool,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 #[serde(rename_all = "PascalCase")]
 struct ThemeFile {
-    #[serde(default)]
     name: Option<String>,
-    #[serde(default)]
     category: Option<String>,
-    #[serde(default)]
     thumb: Option<String>,
-    #[serde(default)]
     fill: Option<String>,
-    #[serde(default)]
     background: Option<String>,
-    #[serde(default)]
     peak: Option<String>,
-    #[serde(default, rename = "WindowBg")]
+    #[serde(rename = "WindowBg")]
     window_bg: Option<String>,
-    #[serde(default)]
     text: Option<String>,
-    #[serde(default)]
     glow: Option<String>,
-    #[serde(default)]
     opacity: Option<Value>,
 }
 
 impl Theme {
-    pub fn from_json(json: &str) -> Result<Self, ThemeError> {
-        let file: ThemeFile = serde_json::from_str(json)?;
-        let required = |value: Option<&str>, key| {
-            value
-                .ok_or(ThemeError::MissingColor(key))
-                .and_then(Rgb::parse_legacy_hex)
+    pub fn from_json(json: &str, zone: &dyn LocalZone) -> Result<Self, ThemeError> {
+        let token = newtonsoft::parse_dynamic_document(json, zone)?.ok_or(newtonsoft::Error)?;
+        Self::from_token(&token)
+    }
+
+    fn from_token(token: &Token) -> Result<Self, ThemeError> {
+        let Token::Object(members) = token else {
+            return Err(newtonsoft::Error.into());
         };
-        let opacity = file
-            .opacity
-            .map(|value| {
-                let number = match value {
-                    Value::Number(n) => n.as_f64(),
-                    Value::String(s) => s.trim().parse::<f64>().ok(),
-                    Value::Bool(b) => Some(if b { 1.0 } else { 0.0 }),
-                    _ => None,
-                }
-                .ok_or(ThemeError::InvalidOpacity)?;
-                Ok::<_, ThemeError>(number.clamp(0.05, 1.0))
-            })
-            .transpose()?;
-        let thumb = required(file.thumb.as_deref(), "Thumb")?;
-        let fill = required(file.fill.as_deref(), "Fill")?;
+        // Dynamic JObject lookup is case-sensitive; explicit null is a JValue,
+        // so C#'s ?? fallback only applies when the property is absent.
+        let get = |name| {
+            members
+                .iter()
+                .rev()
+                .find(|(key, _)| key == name)
+                .map(|(_, value)| value)
+        };
+        let string = |name| {
+            get(name)
+                .map(dynamic_string)
+                .transpose()
+                .map(Option::flatten)
+        };
+        let color = |name: &'static str, fallback: Option<&str>| {
+            let text = if get(name).is_none() {
+                fallback.map(str::to_owned)
+            } else {
+                string(name)?
+            };
+            text.ok_or(ThemeError::MissingColor(name))
+                .and_then(|s| Rgb::parse_legacy_hex(&s))
+        };
+        let opacity = match get("Opacity") {
+            None | Some(Token::Null | Token::Undefined) => None,
+            Some(token) => Some(dynamic_double(token)?.clamp(0.05, 1.0)),
+        };
+        let fill_text = string("Fill")?;
         Ok(Self {
-            name: file.name,
-            category: file.category.unwrap_or_else(|| "Custom".into()),
+            name: string("Name")?,
+            category: if get("Category").is_none() {
+                Some("Custom".into())
+            } else {
+                string("Category")?
+            },
             colors: [
-                thumb,
-                fill,
-                required(file.background.as_deref(), "Background")?,
-                required(file.peak.as_deref(), "Peak")?,
-                Rgb::parse_legacy_hex(file.window_bg.as_deref().unwrap_or("#000000"))?,
-                Rgb::parse_legacy_hex(file.text.as_deref().unwrap_or("#FFFFFF"))?,
-                file.glow
-                    .as_deref()
-                    .map(Rgb::parse_legacy_hex)
-                    .transpose()?
-                    .unwrap_or(fill),
+                color("Thumb", None)?,
+                color("Fill", None)?,
+                color("Background", None)?,
+                color("Peak", None)?,
+                color("WindowBg", Some("#000000"))?,
+                color("Text", Some("#FFFFFF"))?,
+                color("Glow", fill_text.as_deref())?,
             ],
             opacity,
             is_custom: true,
         })
+    }
+
+    /// LoadCustomThemes parses the complete list first, then catches each
+    /// individual FromJson failure so valid neighbours survive.
+    pub fn load_custom(json: &str, zone: &dyn LocalZone) -> Vec<Self> {
+        let Ok(Some(Token::Array(items))) = newtonsoft::parse_dynamic_document(json, zone) else {
+            return vec![];
+        };
+        items
+            .iter()
+            .filter_map(|item| Self::from_token(item).ok())
+            .collect()
     }
 
     pub fn to_json(&self) -> Result<String, ThemeError> {
@@ -144,7 +169,7 @@ impl Theme {
         });
         Ok(serde_json::to_string_pretty(&ThemeFile {
             name: self.name.clone(),
-            category: Some(self.category.clone()),
+            category: self.category.clone(),
             thumb: color(Channel::Thumb),
             fill: color(Channel::Fill),
             background: color(Channel::Background),
@@ -154,6 +179,45 @@ impl Theme {
             glow: color(Channel::Glow),
             opacity,
         })?)
+    }
+}
+
+// JToken explicit string casts use invariant Convert.ToString, unlike typed
+// JsonReader.ReadAsString (notably True/False, round-trip floats and DateTime).
+fn dynamic_string(token: &Token) -> Result<Option<String>, newtonsoft::Error> {
+    Ok(match token {
+        Token::Null | Token::Undefined => None,
+        Token::String(s) => Some(s.clone()),
+        Token::Integer(i) => Some(i.to_string()),
+        Token::Bool(b) => Some(if *b { "True" } else { "False" }.into()),
+        Token::Float(f) => {
+            let text = newtonsoft::format_double(*f);
+            Some(text.strip_suffix(".0").unwrap_or(&text).to_owned())
+        }
+        Token::Date(d) => {
+            let iso = newtonsoft::format_date(d);
+            Some(format!(
+                "{}/{}/{} {}",
+                &iso[5..7],
+                &iso[8..10],
+                &iso[..4],
+                &iso[11..19]
+            ))
+        }
+        _ => return Err(newtonsoft::Error),
+    })
+}
+
+fn dynamic_double(token: &Token) -> Result<f64, ThemeError> {
+    match token {
+        Token::String(s) => {
+            colors::parse_double(s, &NumberCulture::INVARIANT).ok_or(ThemeError::InvalidOpacity)
+        }
+        Token::Bool(b) => Ok(if *b { 1.0 } else { 0.0 }),
+        Token::Integer(i) => Ok(*i as f64),
+        Token::BigInteger(s) => s.parse().map_err(|_| ThemeError::InvalidOpacity),
+        Token::Float(f) => Ok(*f),
+        _ => Err(ThemeError::InvalidOpacity),
     }
 }
 
@@ -169,7 +233,7 @@ impl BuiltinTheme {
     pub fn to_theme(self) -> Theme {
         Theme {
             name: Some(self.name.into()),
-            category: self.category.into(),
+            category: Some(self.category.into()),
             colors: self.colors,
             opacity: self.opacity,
             is_custom: false,
