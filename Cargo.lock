@@ -319,6 +319,7 @@ version = "0.1.0"
 dependencies = [
  "bt-audio",
  "bt-core",
+ "bt-media",
  "bt-storage",
  "serde",
  "serde_json",
@@ -347,6 +348,15 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror 2.0.21",
+]
+
+[[package]]
+name = "bt-media"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "thiserror 2.0.21",
+ "windows 0.62.2",
 ]
 
 [[package]]

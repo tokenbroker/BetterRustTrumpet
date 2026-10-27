@@ -1,7 +1,12 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Flyout: core events plus the app's own audio commands.",
-  "windows": ["flyout"],
-  "permissions": ["core:default"]
+  "description": "Flyout and media popup: core events plus the app's own commands.",
+  "windows": [
+    "flyout",
+    "media"
+  ],
+  "permissions": [
+    "core:default"
+  ]
 }

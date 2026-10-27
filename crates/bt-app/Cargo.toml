@@ -16,6 +16,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 bt-audio = { path = "../bt-audio" }
+bt-media = { path = "../bt-media" }
 serde.workspace = true
 serde_json.workspace = true
 tauri = { version = "2", features = ["tray-icon", "image-ico"] }

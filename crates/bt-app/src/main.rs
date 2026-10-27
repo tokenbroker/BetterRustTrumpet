@@ -8,11 +8,12 @@
 
 use bt_app::win32::{icons, startup};
 use bt_audio::{AudioEngine, Snapshot};
+use bt_media::{Command as MediaCommand, MediaEngine, NowPlaying};
 use std::{
     collections::HashMap,
     sync::{
         Mutex,
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicU64, Ordering},
     },
     time::{Duration, Instant},
 };
@@ -24,6 +25,11 @@ use tauri::{
 };
 
 const FLYOUT: &str = "flyout";
+const MEDIA: &str = "media";
+/// The original's default MediaPopupHoverDelay (seconds).
+const MEDIA_HOVER_DELAY: Duration = Duration::from_millis(2000);
+/// Grace period so the pointer can travel from the tray icon to the popup.
+const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(450);
 /// Logical flyout width (tauri.conf.json uses the same value).
 const FLYOUT_WIDTH: f64 = 380.0;
 
@@ -36,6 +42,12 @@ struct App {
     pinned: AtomicBool,
     /// Icon data URLs per executable path.
     icons: Mutex<HashMap<String, Option<String>>>,
+    /// `None` when Windows media sessions are unavailable.
+    media: Option<MediaEngine>,
+    tray_hover: AtomicBool,
+    popup_hover: AtomicBool,
+    /// Bumped on every tray enter so stale hover timers do nothing.
+    hover_generation: AtomicU64,
 }
 
 fn error(e: impl std::fmt::Display) -> String {
@@ -57,6 +69,45 @@ async fn set_default_device(handle: AppHandle, device_id: String) -> Result<(), 
     refresh_tray(&handle);
     result
 }
+#[tauri::command]
+async fn now_playing(app: State<'_, App>) -> Result<Option<NowPlaying>, String> {
+    match &app.media {
+        Some(media) => media.now_playing().map_err(error),
+        None => Ok(None),
+    }
+}
+#[tauri::command]
+async fn media_command(
+    app: State<'_, App>,
+    command: String,
+    position_ms: Option<i64>,
+) -> Result<(), String> {
+    let command = match command.as_str() {
+        "playPause" => MediaCommand::PlayPause,
+        "next" => MediaCommand::Next,
+        "previous" => MediaCommand::Previous,
+        "shuffle" => MediaCommand::ToggleShuffle,
+        "repeat" => MediaCommand::CycleRepeat,
+        "seek" => MediaCommand::Seek(position_ms.unwrap_or(0)),
+        other => return Err(format!("unknown media command {other}")),
+    };
+    match &app.media {
+        Some(media) => media.send(command).map_err(error),
+        None => Err("media sessions are unavailable".into()),
+    }
+}
+/// The media popup reports pointer enter/leave so it stays while hovered.
+#[tauri::command]
+fn media_hover(handle: AppHandle, hovering: bool) {
+    handle
+        .state::<App>()
+        .popup_hover
+        .store(hovering, Ordering::Relaxed);
+    if !hovering {
+        schedule_media_hide(handle);
+    }
+}
+
 /// PNG data URL of an executable's icon (cached; `None` when it has none).
 #[tauri::command]
 async fn app_icon(app: State<'_, App>, path: String) -> Result<Option<String>, String> {
@@ -179,7 +230,63 @@ fn place_near_taskbar(window: &WebviewWindow, tray: Option<Rect>) {
     let _ = window.set_position(PhysicalPosition::new(x, y));
 }
 
+fn hide_media(app: &AppHandle) {
+    if let Some(window) = app.get_webview_window(MEDIA) {
+        if window.is_visible().unwrap_or(false) {
+            let _ = window.hide();
+            let _ = window.emit("media-hidden", ());
+        }
+    }
+}
+
+/// Hides the popup unless the pointer returns to the tray or popup in time.
+fn schedule_media_hide(app: AppHandle) {
+    std::thread::spawn(move || {
+        std::thread::sleep(MEDIA_HIDE_GRACE);
+        let state = app.state::<App>();
+        if !state.tray_hover.load(Ordering::Relaxed) && !state.popup_hover.load(Ordering::Relaxed) {
+            hide_media(&app);
+        }
+    });
+}
+
+/// After the hover delay, shows the media popup if the pointer is still on
+/// the tray icon, the flyout is closed and something is playing or paused.
+fn schedule_media_show(app: AppHandle, tray: Rect) {
+    let generation = app
+        .state::<App>()
+        .hover_generation
+        .fetch_add(1, Ordering::Relaxed)
+        + 1;
+    std::thread::spawn(move || {
+        std::thread::sleep(MEDIA_HOVER_DELAY);
+        let state = app.state::<App>();
+        if state.hover_generation.load(Ordering::Relaxed) != generation
+            || !state.tray_hover.load(Ordering::Relaxed)
+        {
+            return;
+        }
+        let flyout_open = app
+            .get_webview_window(FLYOUT)
+            .is_some_and(|w| w.is_visible().unwrap_or(false));
+        let playing = state
+            .media
+            .as_ref()
+            .and_then(|m| m.now_playing().ok().flatten())
+            .is_some();
+        if flyout_open || !playing {
+            return;
+        }
+        if let Some(window) = app.get_webview_window(MEDIA) {
+            place_near_taskbar(&window, Some(tray));
+            let _ = window.show();
+            let _ = window.emit("media-shown", ());
+        }
+    });
+}
+
 fn show(app: &AppHandle, tray: Option<Rect>) {
+    hide_media(app);
     let Some(window) = app.get_webview_window(FLYOUT) else {
         return;
     };
@@ -357,11 +464,18 @@ fn main() {
             hidden_at: Mutex::new(None),
             pinned: AtomicBool::new(std::env::args().any(|a| a == "--pinned")),
             icons: Mutex::new(HashMap::new()),
+            media: MediaEngine::start().ok(),
+            tray_hover: AtomicBool::new(false),
+            popup_hover: AtomicBool::new(false),
+            hover_generation: AtomicU64::new(0),
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
             set_default_device,
             app_icon,
+            now_playing,
+            media_command,
+            media_hover,
             set_device_volume,
             set_device_mute,
             set_app_volume,
@@ -382,14 +496,28 @@ fn main() {
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| on_menu(app, event.id.as_ref()))
                 .on_tray_icon_event(|tray, event| {
-                    if let TrayIconEvent::Click {
-                        button: MouseButton::Left,
-                        button_state: MouseButtonState::Up,
-                        rect,
-                        ..
-                    } = event
-                    {
-                        toggle(tray.app_handle(), rect);
+                    let app = tray.app_handle();
+                    match event {
+                        TrayIconEvent::Click {
+                            button: MouseButton::Left,
+                            button_state: MouseButtonState::Up,
+                            rect,
+                            ..
+                        } => {
+                            hide_media(app);
+                            toggle(app, rect);
+                        }
+                        TrayIconEvent::Enter { rect, .. } => {
+                            app.state::<App>().tray_hover.store(true, Ordering::Relaxed);
+                            schedule_media_show(app.clone(), rect);
+                        }
+                        TrayIconEvent::Leave { .. } => {
+                            app.state::<App>()
+                                .tray_hover
+                                .store(false, Ordering::Relaxed);
+                            schedule_media_hide(app.clone());
+                        }
+                        _ => {}
                     }
                 })
                 .build(app)?;
@@ -401,6 +529,9 @@ fn main() {
             Ok(())
         })
         .on_window_event(|window, event| {
+            if window.label() != FLYOUT {
+                return;
+            }
             if let WindowEvent::Focused(false) = event {
                 if window.state::<App>().pinned.load(Ordering::Relaxed) {
                     return;

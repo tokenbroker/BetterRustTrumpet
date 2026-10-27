@@ -1,0 +1,22 @@
+[package]
+name = "bt-media"
+description = "Windows media session (now playing) for the BetterTrumpet Rust port"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file = "../../../LICENSE"
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = [
+    "Foundation",
+    "Foundation_Collections",
+    "Media",
+    "Media_Control",
+    "Storage_Streams",
+    "Win32_System_Com",
+] }
