@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BetterTrumpet tooltip</title>
+  <style>
+    /* The original's tray hover tooltip above the media popup: 12px
+       semibold white on #E81C1C1E, 1px #46FFFFFF border, radius 8. */
+    html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+    body { display: flex; align-items: flex-end; justify-content: center; padding: 0 0 6px; box-sizing: border-box; }
+    #tip {
+      font: 600 12px/1.35 "Segoe UI Variable Text", "Segoe UI", sans-serif; color: #fff;
+      white-space: nowrap; padding: 6px 10px; border-radius: 8px;
+      background: rgba(28, 28, 30, 0.91); border: 1px solid rgba(255, 255, 255, 0.27);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+    }
+    #tip.in { animation: tip-fade 200ms ease-out both; }
+    @keyframes tip-fade { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <div id="tip"></div>
+  <script src="tip.js"></script>
+</body>
+</html>

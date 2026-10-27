@@ -157,7 +157,21 @@ impl Backend {
         let timeline = session.GetTimelineProperties()?;
         let start = timeline.StartTime()?.Duration;
         let end = timeline.EndTime()?.Duration;
-        let position = timeline.Position()?.Duration;
+        let mut position = timeline.Position()?.Duration;
+        let playing = info.PlaybackStatus()? == Status::Playing;
+        if playing {
+            // DateTime ticks are 100 ns since 1601-01-01 UTC.
+            let now = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_or(0, |d| d.as_nanos() as i64 / 100)
+                + 116_444_736_000_000_000;
+            if let Ok(updated) = timeline.LastUpdatedTime() {
+                if updated.UniversalTime > 0 && now > updated.UniversalTime {
+                    position += now - updated.UniversalTime;
+                }
+            }
+            position = position.min(end);
+        }
         let shuffle = info.IsShuffleActive().ok().and_then(|v| v.Value().ok());
         let repeat =
             info.AutoRepeatMode()
@@ -191,11 +205,13 @@ impl Backend {
             title,
             artist,
             album,
-            playing: info.PlaybackStatus()? == Status::Playing,
+            playing,
             can_play_pause: controls.IsPlayPauseToggleEnabled()?,
             can_next: controls.IsNextEnabled()?,
             can_previous: controls.IsPreviousEnabled()?,
             can_seek: controls.IsPlaybackPositionEnabled()?,
+            can_shuffle: controls.IsShuffleEnabled().unwrap_or(false),
+            can_repeat: controls.IsRepeatEnabled().unwrap_or(false),
             shuffle,
             repeat,
             position_ms: (position - start).max(0) / TICKS_PER_MS,

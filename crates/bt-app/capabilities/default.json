@@ -1,10 +1,11 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Flyout and media popup: core events plus the app's own commands.",
+  "description": "Flyout, media popup and its tooltip: core events plus the app's own commands.",
   "windows": [
     "flyout",
-    "media"
+    "media",
+    "tip"
   ],
   "permissions": [
     "core:default"

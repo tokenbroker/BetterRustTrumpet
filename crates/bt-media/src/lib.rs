@@ -40,8 +40,14 @@ pub struct NowPlaying {
     pub can_next: bool,
     pub can_previous: bool,
     pub can_seek: bool,
+    /// The app supports shuffle / repeat (the original hides the buttons
+    /// otherwise).
+    pub can_shuffle: bool,
+    pub can_repeat: bool,
     pub shuffle: Option<bool>,
     pub repeat: Option<Repeat>,
+    /// Current position: the app's last report advanced by the time since,
+    /// while playing (apps update the timeline only occasionally).
     pub position_ms: i64,
     pub duration_ms: i64,
     /// `data:` URL of the cover art, when the app provides one.

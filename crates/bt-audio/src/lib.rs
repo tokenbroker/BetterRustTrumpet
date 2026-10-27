@@ -56,6 +56,10 @@ pub struct AppSession {
 pub struct Device {
     pub id: String,
     pub name: String,
+    /// Device description and enumerator ("Headset Earphone", "USB"), which
+    /// the original's tray tooltip shows; empty when Windows has none.
+    pub description: String,
+    pub enumerator: String,
     pub is_default: bool,
     pub volume: f32,
     pub muted: bool,

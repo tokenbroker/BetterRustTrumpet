@@ -5,3 +5,4 @@ pub mod registry;
 pub mod startup;
 pub mod webview;
 pub mod wheel;
+pub mod window;

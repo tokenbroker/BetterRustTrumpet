@@ -28,15 +28,21 @@ use tauri::{
 
 const FLYOUT: &str = "flyout";
 const MEDIA: &str = "media";
+const TIP: &str = "tip";
 /// The original's default MediaPopupHoverDelay (seconds).
 const MEDIA_HOVER_DELAY: Duration = Duration::from_millis(2000);
-/// Grace period so the pointer can travel from the tray icon to the popup.
-const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(450);
+/// The original's popup hide timer after the pointer leaves.
+const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(800);
 /// Logical flyout width (tauri.conf.json uses the same value).
 const FLYOUT_WIDTH: f64 = 380.0;
-/// Logical media popup window size: a 340x168 card plus an 8 DIP shadow
-/// margin on each side (tauri.conf.json uses the same value).
-const MEDIA_SIZE: (f64, f64) = (356.0, 184.0);
+/// The original's media popup window: 300 wide, 185 collapsed and 405
+/// expanded, including the card's 8 DIP shadow margin on each side.
+const MEDIA_WIDTH: f64 = 300.0;
+const MEDIA_COLLAPSED: f64 = 185.0;
+const MEDIA_EXPANDED: f64 = 405.0;
+/// Tooltip window shown above the popup; the tip is drawn bottom-centred in
+/// it and the window ignores the pointer (tauri.conf.json matches).
+const TIP_SIZE: (f64, f64) = (480.0, 40.0);
 /// The original's SlideOut storyboard length, plus a frame.
 const MEDIA_FADE_OUT: Duration = Duration::from_millis(165);
 
@@ -59,6 +65,10 @@ struct App {
     media_generation: AtomicU64,
     /// The popup is fading out.
     media_hiding: AtomicBool,
+    /// Expanded (cover art shown); kept for the session.
+    media_expanded: AtomicBool,
+    /// Tray icon bounds the popup was last placed against.
+    media_tray: Mutex<Option<Rect>>,
     /// Registered shortcut labels for the tray menu ("action: keys").
     shortcuts: Mutex<Vec<String>>,
 }
@@ -274,6 +284,7 @@ fn hide_media(app: &AppHandle) {
     }
     let generation = state.media_generation.load(Ordering::Relaxed);
     let _ = window.emit("media-hiding", ());
+    present_tooltip(app);
     std::thread::spawn(move || {
         std::thread::sleep(MEDIA_FADE_OUT);
         let state = window.state::<App>();
@@ -298,21 +309,39 @@ fn show_media(app: &AppHandle, tray: Rect) {
         return;
     }
     state.media_generation.fetch_add(1, Ordering::Relaxed);
-    place_media(app, &window, tray);
+    if let Ok(mut last) = state.media_tray.lock() {
+        *last = Some(tray);
+    }
+    place_media(app, &window);
     set_active(&window, true);
     let _ = window.show();
     // Showing can move the window to the taskbar's monitor and change its
     // DPI, so place it again once it is there.
-    place_media(app, &window, tray);
-    let _ = window.emit("media-shown", ());
+    place_media(app, &window);
+    let expanded = state.media_expanded.load(Ordering::Relaxed);
+    let _ = window.emit("media-shown", expanded);
+    present_tooltip(app);
 }
 
-/// Window = card + 8 DIP shadow margin; its bottom sits 5 DIP above the icon,
-/// horizontally centred on it and kept 10 DIP inside the work area.
-fn place_media(app: &AppHandle, window: &WebviewWindow, tray: Rect) {
-    let Ok(monitors) = app.available_monitors() else {
-        return;
-    };
+/// Whether the popup is up (shown and not fading out).
+fn media_showing(app: &AppHandle) -> bool {
+    app.get_webview_window(MEDIA)
+        .is_some_and(|w| w.is_visible().unwrap_or(false))
+        && !app.state::<App>().media_hiding.load(Ordering::Relaxed)
+}
+
+/// Where the tray icon is, in the physical pixels of its monitor.
+struct TrayPlace {
+    scale: f64,
+    /// Horizontal centre of the icon.
+    center_x: i32,
+    /// Top of the icon once an auto-hidden taskbar has slid in.
+    top: i32,
+    work: PhysicalRect<i32, u32>,
+}
+
+fn tray_place(app: &AppHandle, tray: Rect) -> Option<TrayPlace> {
+    let monitors = app.available_monitors().ok()?;
     // Tray rects are physical. The monitor nearest the icon's centre holds
     // it: an auto-hidden taskbar reports the icon partly below the screen.
     let probe = tray.position.to_physical::<i32>(1.0);
@@ -321,31 +350,218 @@ fn place_media(app: &AppHandle, window: &WebviewWindow, tray: Rect) {
         probe.x + probe_size.width / 2,
         probe.y + probe_size.height / 2,
     );
-    let Some(monitor) = monitors.iter().min_by_key(|m| {
+    let monitor = monitors.iter().min_by_key(|m| {
         let (p, s) = (m.position(), m.size());
         let dx = i64::from((p.x - cx).max(cx - (p.x + s.width as i32 - 1)).max(0));
         let dy = i64::from((p.y - cy).max(cy - (p.y + s.height as i32 - 1)).max(0));
         dx * dx + dy * dy
-    }) else {
-        return;
-    };
+    })?;
     let scale = monitor.scale_factor();
     let icon = tray.position.to_physical::<i32>(scale);
     let icon_size = tray.size.to_physical::<i32>(scale);
-    let icon_width = icon_size.width;
-    // Where the icon sits once an auto-hidden taskbar has slid in.
     let screen_bottom = monitor.position().y + monitor.size().height as i32;
-    let icon_top = icon.y.min(screen_bottom - icon_size.height);
-    let width = (MEDIA_SIZE.0 * scale).round() as i32;
-    let height = (MEDIA_SIZE.1 * scale).round() as i32;
+    Some(TrayPlace {
+        scale,
+        center_x: icon.x + icon_size.width / 2,
+        top: icon.y.min(screen_bottom - icon_size.height),
+        work: *monitor.work_area(),
+    })
+}
+
+/// Popup window height in DIPs for the current expanded state.
+fn media_height(app: &AppHandle) -> f64 {
+    if app.state::<App>().media_expanded.load(Ordering::Relaxed) {
+        MEDIA_EXPANDED
+    } else {
+        MEDIA_COLLAPSED
+    }
+}
+
+/// Window = card + 8 DIP shadow margin; its bottom sits 5 DIP above the icon,
+/// horizontally centred on it and kept 10 DIP inside the work area, as the
+/// original. Size and position change together so expanding (which grows
+/// the window upwards) does not flicker.
+fn place_media(app: &AppHandle, window: &WebviewWindow) {
+    let Some(tray) = app.state::<App>().media_tray.lock().ok().and_then(|t| *t) else {
+        return;
+    };
+    let Some(place) = tray_place(app, tray) else {
+        return;
+    };
+    let scale = place.scale;
+    let width = (MEDIA_WIDTH * scale).round() as i32;
+    let height = (media_height(app) * scale).round() as i32;
     let inset = (10.0 * scale) as i32;
-    let work = monitor.work_area();
+    let work = place.work;
     let left = work.position.x + inset;
     let right = work.position.x + work.size.width as i32 - width - inset;
-    let x = (icon.x + icon_width / 2 - width / 2).clamp(left, right.max(left));
-    let y = (icon_top - height - (5.0 * scale) as i32).max(work.position.y + inset);
-    let _ = window.set_size(tauri::PhysicalSize::new(width as u32, height as u32));
-    let _ = window.set_position(PhysicalPosition::new(x, y));
+    let x = (place.center_x - width / 2).clamp(left, right.max(left));
+    let y = (place.top - height - (5.0 * scale) as i32).max(work.position.y + inset);
+    set_bounds(window, x, y, width, height);
+}
+
+/// Moves and resizes a window in one step (physical pixels).
+fn set_bounds(window: &WebviewWindow, x: i32, y: i32, width: i32, height: i32) {
+    match window.hwnd() {
+        Ok(hwnd) => bt_app::win32::window::set_bounds(hwnd.0, x, y, width, height),
+        Err(_) => {
+            let _ = window.set_size(tauri::PhysicalSize::new(width as u32, height as u32));
+            let _ = window.set_position(PhysicalPosition::new(x, y));
+        }
+    }
+}
+
+/// The original's tray tooltip: "BetterTrumpet: 94% - Headset Earphone (USB)"
+/// from the device description and enumerator, under 64 characters.
+fn tooltip(devices: &Snapshot) -> String {
+    let Some(d) = devices.devices.iter().find(|d| d.is_default) else {
+        return "BetterTrumpet: No playback devices".into();
+    };
+    let state = if d.muted {
+        "Muted".to_string()
+    } else {
+        format!("{}%", (d.volume * 100.0).round() as i32)
+    };
+    let prefix = format!("BetterTrumpet: {state} - ");
+    let mut name = if d.enumerator.trim().is_empty() {
+        d.description.clone()
+    } else {
+        format!("{} ({})", d.description, d.enumerator)
+    };
+    if d.description.trim().is_empty() && d.enumerator.trim().is_empty() {
+        name = d.name.clone();
+    }
+    let room = 63usize.saturating_sub(prefix.chars().count());
+    prefix + &name.chars().take(room).collect::<String>()
+}
+
+/// Like the original's RefreshTrayTooltipPresentation: while the popup is up
+/// the native tooltip is blanked and the text shows above the popup instead
+/// (only while the pointer is on the icon); otherwise the native one is used.
+fn present_tooltip(app: &AppHandle) {
+    let Some(tray) = app.tray_by_id("main") else {
+        return;
+    };
+    let text = app
+        .state::<App>()
+        .audio
+        .devices()
+        .map(|d| tooltip(&d))
+        .unwrap_or_default();
+    let tip = app.get_webview_window(TIP);
+    if media_showing(app) {
+        let _ = tray.set_tooltip(Some(""));
+        let hovering = app.state::<App>().tray_hover.load(Ordering::Relaxed);
+        match tip {
+            Some(tip) if hovering => show_tip(app, &tip, &text),
+            Some(tip) => hide_tip(&tip),
+            None => {}
+        }
+    } else {
+        if let Some(tip) = tip {
+            hide_tip(&tip);
+        }
+        let _ = tray.set_tooltip(Some(text));
+    }
+}
+
+/// Above the popup: bottom 12 DIP over the popup window's top, centred on
+/// the tray icon and kept 4 DIP inside the work area.
+fn show_tip(app: &AppHandle, tip: &WebviewWindow, text: &str) {
+    let Some(tray) = app.state::<App>().media_tray.lock().ok().and_then(|t| *t) else {
+        return;
+    };
+    let Some(place) = tray_place(app, tray) else {
+        return;
+    };
+    let scale = place.scale;
+    let width = (TIP_SIZE.0 * scale).round() as i32;
+    let height = (TIP_SIZE.1 * scale).round() as i32;
+    let inset = (4.0 * scale) as i32;
+    let work = place.work;
+    let left = work.position.x + inset;
+    let right = work.position.x + work.size.width as i32 - width - inset;
+    let x = (place.center_x - width / 2).clamp(left, right.max(left));
+    // The tip sits 6 DIP above the window's bottom edge (room for its shadow).
+    let bottom = place.top - ((media_height(app) + 12.0 - 6.0) * scale).round() as i32;
+    let y = (bottom - height).max(work.position.y + inset);
+    let _ = tip.emit("tip-text", text);
+    if !tip.is_visible().unwrap_or(false) {
+        set_bounds(tip, x, y, width, height);
+        set_active(tip, true);
+        let _ = tip.show();
+        let _ = tip.emit("tip-shown", ());
+    } else {
+        set_bounds(tip, x, y, width, height);
+    }
+}
+
+fn hide_tip(tip: &WebviewWindow) {
+    if tip.is_visible().unwrap_or(false) {
+        let _ = tip.hide();
+        set_active(tip, false);
+    }
+}
+
+/// The popup's expand arrow: grows the window upwards for the cover art
+/// (bottom stays put), or shrinks it back once the collapse has played.
+#[tauri::command]
+fn media_expand(handle: AppHandle, expanded: bool) {
+    handle
+        .state::<App>()
+        .media_expanded
+        .store(expanded, Ordering::Relaxed);
+    if let Some(window) = handle.get_webview_window(MEDIA) {
+        place_media(&handle, &window);
+    }
+    if handle.state::<App>().tray_hover.load(Ordering::Relaxed) {
+        present_tooltip(&handle);
+    }
+}
+
+/// The audio session of the app that owns the current media session, for
+/// the popup's volume slider (the original's FindCurrentMediaApp).
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct MediaApp {
+    device_id: String,
+    app_key: String,
+    volume: f32,
+    muted: bool,
+}
+
+#[tauri::command]
+async fn media_app(app: State<'_, App>, source_app: String) -> Result<Option<MediaApp>, String> {
+    if source_app.trim().is_empty() {
+        return Ok(None);
+    }
+    let snapshot = app.audio.snapshot().map_err(error)?;
+    let source = source_app.to_lowercase();
+    let stem = |s: &str| {
+        let name = s.rsplit(['\\', '/']).next().unwrap_or(s);
+        name.strip_suffix(".exe").unwrap_or(name).to_string()
+    };
+    let source_stem = stem(&source);
+    for device in &snapshot.devices {
+        for session in device.apps.iter().filter(|a| !a.is_system_sounds) {
+            let exe = stem(
+                &session
+                    .executable
+                    .clone()
+                    .unwrap_or_default()
+                    .to_lowercase(),
+            );
+            if exe.len() >= 3 && (exe == source_stem || source.contains(&exe)) {
+                return Ok(Some(MediaApp {
+                    device_id: device.id.clone(),
+                    app_key: session.key.clone(),
+                    volume: session.volume,
+                    muted: session.muted,
+                }));
+            }
+        }
+    }
+    Ok(None)
 }
 
 /// Hides the popup unless the pointer returns to the tray or popup in time.
@@ -493,16 +709,6 @@ fn build_menu(app: &AppHandle, devices: &Snapshot) -> tauri::Result<Menu<tauri::
     Ok(menu)
 }
 
-fn tooltip(devices: &Snapshot) -> String {
-    let text = match devices.devices.iter().find(|d| d.is_default) {
-        Some(d) if d.muted => format!("BetterTrumpet\n{}: muted", d.name),
-        Some(d) => format!("BetterTrumpet\n{}: {:.0}%", d.name, d.volume * 100.0),
-        None => "BetterTrumpet\nNo output device".into(),
-    };
-    // Windows truncates tray tooltips at 127 characters.
-    text.chars().take(127).collect()
-}
-
 /// Rebuilds the tray menu and tooltip from the current devices.
 fn refresh_tray(app: &AppHandle) {
     let Some(tray) = app.tray_by_id("main") else {
@@ -514,7 +720,7 @@ fn refresh_tray(app: &AppHandle) {
     if let Ok(menu) = build_menu(app, &devices) {
         let _ = tray.set_menu(Some(menu));
     }
-    let _ = tray.set_tooltip(Some(tooltip(&devices)));
+    present_tooltip(app);
 }
 
 /// Keeps the tray menu and tooltip current from Windows' change
@@ -555,7 +761,7 @@ fn watch_devices(app: AppHandle) {
                 }
                 last_menu = key;
             }
-            let _ = tray.set_tooltip(Some(tooltip(&devices)));
+            present_tooltip(&app);
             if devices_changed {
                 let _ = app.emit("devices-changed", ());
             }
@@ -691,6 +897,8 @@ fn main() {
             hover_generation: AtomicU64::new(0),
             media_generation: AtomicU64::new(0),
             media_hiding: AtomicBool::new(false),
+            media_expanded: AtomicBool::new(false),
+            media_tray: Mutex::new(None),
             shortcuts: Mutex::new(vec![]),
         })
         .invoke_handler(tauri::generate_handler![
@@ -701,6 +909,8 @@ fn main() {
             media_command,
             media_hover,
             set_app_device,
+            media_expand,
+            media_app,
             set_device_volume,
             set_device_mute,
             set_app_volume,
@@ -714,6 +924,10 @@ fn main() {
         .setup(|app| {
             register_hotkeys(app);
             let handle = app.handle().clone();
+            // The tooltip never takes the pointer, like the original's.
+            if let Some(tip) = app.get_webview_window(TIP) {
+                let _ = tip.set_ignore_cursor_events(true);
+            }
             let devices = app.state::<App>().audio.devices().unwrap_or_default();
             let menu = build_menu(&handle, &devices)?;
             TrayIconBuilder::with_id("main")
@@ -737,7 +951,11 @@ fn main() {
                         TrayIconEvent::Enter { rect, .. } => {
                             app.state::<App>().tray_hover.store(true, Ordering::Relaxed);
                             wheel::install();
-                            schedule_media_show(app.clone(), rect);
+                            if media_showing(app) {
+                                present_tooltip(app);
+                            } else {
+                                schedule_media_show(app.clone(), rect);
+                            }
                         }
                         TrayIconEvent::Leave { .. } => {
                             app.state::<App>()
@@ -745,6 +963,7 @@ fn main() {
                                 .store(false, Ordering::Relaxed);
                             wheel::uninstall();
                             schedule_media_hide(app.clone());
+                            present_tooltip(app);
                         }
                         _ => {}
                     }

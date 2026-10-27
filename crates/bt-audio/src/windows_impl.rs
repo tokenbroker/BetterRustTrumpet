@@ -6,8 +6,8 @@ use crate::{
 use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::Arc, sync::mpsc, thread};
 use windows::{
     Win32::{
-        Devices::FunctionDiscovery::PKEY_Device_FriendlyName,
-        Foundation::CloseHandle,
+        Devices::FunctionDiscovery::{PKEY_Device_DeviceDesc, PKEY_Device_FriendlyName},
+        Foundation::{CloseHandle, PROPERTYKEY},
         Media::Audio::{
             AudioSessionStateExpired, DEVICE_STATE_ACTIVE, Endpoints::IAudioEndpointVolume,
             Endpoints::IAudioEndpointVolumeCallback, Endpoints::IAudioMeterInformation,
@@ -28,6 +28,12 @@ use windows::{
         },
     },
     core::{GUID, HSTRING, Interface, PCWSTR, PWSTR},
+};
+
+/// DEVPKEY_Device_EnumeratorName ("USB", "HDAUDIO"), as a property-store key.
+const DEVICE_ENUMERATOR_NAME: PROPERTYKEY = PROPERTYKEY {
+    fmtid: GUID::from_u128(0xa45c254e_df1c_4efd_8020_67d146a850e0),
+    pid: 24,
 };
 
 #[allow(non_snake_case)]
@@ -549,13 +555,21 @@ impl Backend {
     ) -> Result<Device, AudioError> {
         // SAFETY: live interfaces on this thread; GetId's string is freed by
         // take_string, the property value is converted then dropped.
-        let (id, name, endpoint, meter) = unsafe {
+        let (id, name, description, enumerator, endpoint, meter) = unsafe {
             let id = take_string(device.GetId()?)?;
             let store = device.OpenPropertyStore(STGM_READ)?;
             let name = store.GetValue(&PKEY_Device_FriendlyName)?.to_string();
+            let text = |key: &PROPERTYKEY| {
+                store
+                    .GetValue(key)
+                    .map(|v| v.to_string())
+                    .unwrap_or_default()
+            };
+            let description = text(&PKEY_Device_DeviceDesc);
+            let enumerator = text(&DEVICE_ENUMERATOR_NAME);
             let endpoint: IAudioEndpointVolume = device.Activate(CLSCTX_ALL, None)?;
             let meter: IAudioMeterInformation = device.Activate(CLSCTX_ALL, None)?;
-            (id, name, endpoint, meter)
+            (id, name, description, enumerator, endpoint, meter)
         };
         let mut apps: Vec<AppSession> = vec![];
         let sessions = if with_apps {
@@ -613,6 +627,8 @@ impl Backend {
             is_default: default_id == Some(id.as_str()),
             id,
             name,
+            description,
+            enumerator,
             volume,
             muted,
             peak,
