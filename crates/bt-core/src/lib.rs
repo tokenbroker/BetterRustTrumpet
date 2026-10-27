@@ -21,6 +21,7 @@ pub mod models;
 pub mod newtonsoft;
 pub mod numbers;
 pub mod overrides;
+pub mod package_snapshot;
 pub mod profiles;
 pub mod protocol;
 pub mod registry_snapshot;

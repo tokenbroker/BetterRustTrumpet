@@ -164,3 +164,47 @@ pub fn registry(
         }
     }
 }
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct MigratedPackage {
+    pub outcome: Outcome,
+    pub archive_path: PathBuf,
+    pub snapshot: bt_core::package_snapshot::PackageSnapshot,
+}
+
+/// Packaged (MSIX) migration, archived like the registry snapshot. An
+/// existing archive bypasses the native capture callback entirely.
+pub fn package(
+    destination_directory: &Path,
+    capture: impl FnOnce() -> io::Result<bt_core::package_snapshot::PackageSnapshot>,
+) -> Result<MigratedPackage, Error> {
+    use std::io::Read;
+    fn load(path: &Path, mut file: File) -> Result<MigratedPackage, Error> {
+        let mut bytes = Vec::new();
+        file.read_to_end(&mut bytes)?;
+        Ok(MigratedPackage {
+            outcome: Outcome::Existing,
+            archive_path: path.into(),
+            snapshot: migration::decode_package(&bytes)?,
+        })
+    }
+    let path = destination_directory.join("migration.v1.json");
+    match File::open(&path) {
+        Ok(file) => return load(&path, file),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    let snapshot = capture()?;
+    let encoded = migration::encode_package(&snapshot)?;
+    match install(&path, &encoded)? {
+        Outcome::Created => Ok(MigratedPackage {
+            outcome: Outcome::Created,
+            archive_path: path,
+            snapshot,
+        }),
+        Outcome::Existing => {
+            let file = File::open(&path)?;
+            load(&path, file)
+        }
+    }
+}
