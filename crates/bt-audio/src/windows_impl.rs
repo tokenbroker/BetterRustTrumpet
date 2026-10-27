@@ -1,15 +1,19 @@
 //! COM side of the engine. Everything here runs on the worker thread.
-use crate::{AppSession, AudioError, Device, Snapshot};
-use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::mpsc, thread};
+use crate::{
+    AppSession, AudioError, Device, Snapshot,
+    notify::{self, DeviceWatcher, Listener, PolicyFactory, VolumeWatcher},
+};
+use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::Arc, sync::mpsc, thread};
 use windows::{
     Win32::{
         Devices::FunctionDiscovery::PKEY_Device_FriendlyName,
         Foundation::CloseHandle,
         Media::Audio::{
             AudioSessionStateExpired, DEVICE_STATE_ACTIVE, Endpoints::IAudioEndpointVolume,
-            Endpoints::IAudioMeterInformation, IAudioSessionControl2, IAudioSessionManager2,
-            IMMDevice, IMMDeviceEnumerator, ISimpleAudioVolume, MMDeviceEnumerator, eConsole,
-            eMultimedia, eRender,
+            Endpoints::IAudioEndpointVolumeCallback, Endpoints::IAudioMeterInformation,
+            IAudioSessionControl2, IAudioSessionManager2, IMMDevice, IMMDeviceEnumerator,
+            IMMNotificationClient, ISimpleAudioVolume, MMDeviceEnumerator, eConsole, eMultimedia,
+            eRender,
         },
         Storage::FileSystem::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW},
         System::{
@@ -78,6 +82,7 @@ pub struct Engine {
 impl Engine {
     pub fn start() -> Result<Self, AudioError> {
         let (jobs, inbox) = mpsc::channel::<Job>();
+        let jobs_for_backend = jobs.clone();
         let (ready, started) = mpsc::channel();
         thread::Builder::new()
             .name("bt-audio-com".into())
@@ -89,7 +94,7 @@ impl Engine {
                         return;
                     }
                 };
-                match Backend::new() {
+                match Backend::new(jobs_for_backend) {
                     Ok(backend) => {
                         let _ = ready.send(Ok(()));
                         for job in inbox {
@@ -127,6 +132,13 @@ impl Engine {
     pub fn set_default_device(&self, id: &str) -> Result<(), AudioError> {
         let id = id.to_owned();
         self.call(move |b| b.set_default(&id))
+    }
+    pub fn watch(&self, listener: Listener) -> Result<(), AudioError> {
+        self.call(move |b| b.watch(listener))
+    }
+    pub fn set_app_device(&self, key: &str, device_id: Option<&str>) -> Result<(), AudioError> {
+        let (key, device_id) = (key.to_owned(), device_id.map(str::to_owned));
+        self.call(move |b| b.set_app_device(&key, device_id.as_deref()))
     }
     pub fn set_device_volume(&self, id: &str, volume: f32) -> Result<(), AudioError> {
         let id = id.to_owned();
@@ -287,18 +299,146 @@ struct SessionInfo {
 
 struct Backend {
     enumerator: IMMDeviceEnumerator,
+    jobs: mpsc::Sender<Job>,
+    listener: RefCell<Option<Listener>>,
+    device_client: RefCell<Option<IMMNotificationClient>>,
+    endpoint_watchers: RefCell<Vec<(IAudioEndpointVolume, IAudioEndpointVolumeCallback)>>,
+    /// Lazily created; `Some(None)` once creation has failed.
+    policy: RefCell<Option<Option<PolicyFactory>>>,
     /// FileDescription per executable path; version resources rarely change.
     descriptions: RefCell<HashMap<String, Option<String>>>,
 }
 
 impl Backend {
-    fn new() -> Result<Self, AudioError> {
+    fn new(jobs: mpsc::Sender<Job>) -> Result<Self, AudioError> {
         // SAFETY: COM is initialized on this thread (Apartment::enter).
         let enumerator = unsafe { CoCreateInstance(&MMDeviceEnumerator, None, CLSCTX_ALL)? };
         Ok(Self {
             enumerator,
+            jobs,
+            listener: RefCell::new(None),
+            device_client: RefCell::new(None),
+            endpoint_watchers: RefCell::new(vec![]),
+            policy: RefCell::new(None),
             descriptions: RefCell::new(HashMap::new()),
         })
+    }
+    fn watch(&self, listener: Listener) -> Result<(), AudioError> {
+        let jobs = self.jobs.clone();
+        let rewatch = Arc::new(move || {
+            let _ = jobs.send(Box::new(|b: &Backend| {
+                let _ = b.watch_endpoints();
+            }));
+        });
+        let client: IMMNotificationClient = DeviceWatcher {
+            listener: listener.clone(),
+            rewatch,
+        }
+        .into();
+        // SAFETY: live enumerator on this thread; the client stays alive in
+        // `device_client` until it is unregistered in Drop.
+        unsafe {
+            self.enumerator
+                .RegisterEndpointNotificationCallback(&client)?
+        };
+        *self.device_client.borrow_mut() = Some(client);
+        *self.listener.borrow_mut() = Some(listener);
+        self.watch_endpoints()
+    }
+    /// (Re)registers volume callbacks for every active output.
+    fn watch_endpoints(&self) -> Result<(), AudioError> {
+        let Some(listener) = self.listener.borrow().clone() else {
+            return Ok(());
+        };
+        for (endpoint, callback) in self.endpoint_watchers.borrow_mut().drain(..) {
+            // SAFETY: unregistering a callback registered on this endpoint.
+            let _ = unsafe { endpoint.UnregisterControlChangeNotify(&callback) };
+        }
+        // SAFETY: live enumerator/collection on this thread.
+        let collection = unsafe {
+            self.enumerator
+                .EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE)?
+        };
+        let count = unsafe { collection.GetCount()? };
+        for i in 0..count {
+            // SAFETY: index within GetCount; documented interface activation;
+            // the callback is kept alive in `endpoint_watchers`.
+            unsafe {
+                let device = collection.Item(i)?;
+                let endpoint: IAudioEndpointVolume = device.Activate(CLSCTX_ALL, None)?;
+                let callback: IAudioEndpointVolumeCallback = VolumeWatcher {
+                    listener: listener.clone(),
+                }
+                .into();
+                if endpoint.RegisterControlChangeNotify(&callback).is_ok() {
+                    self.endpoint_watchers
+                        .borrow_mut()
+                        .push((endpoint, callback));
+                }
+            }
+        }
+        Ok(())
+    }
+    fn with_policy<T>(&self, work: impl FnOnce(&PolicyFactory) -> T) -> Option<T> {
+        let mut policy = self.policy.borrow_mut();
+        // SAFETY: COM is initialized on this worker thread.
+        let factory = policy.get_or_insert_with(|| unsafe { PolicyFactory::create().ok() });
+        factory.as_ref().map(work)
+    }
+    /// The endpoint an app's process is routed to, if any.
+    fn routed_device(&self, pid: u32) -> Option<String> {
+        self.with_policy(|policy| {
+            let mut raw = std::ptr::null_mut();
+            // SAFETY: `raw` is writable; on success it holds an owned HSTRING
+            // handle, which is taken over (and freed) by the transmute.
+            unsafe {
+                if policy.get(pid, eRender, eMultimedia, &mut raw).is_err() || raw.is_null() {
+                    return None;
+                }
+                let id: HSTRING = std::mem::transmute(raw);
+                Some(notify::unpack_device_id(&id.to_string()))
+            }
+        })
+        .flatten()
+        .filter(|id| !id.is_empty())
+    }
+    /// Routes every process of `key` (on any output) to `device`, or back to
+    /// the default when `None`; console and multimedia roles, as the original.
+    fn set_app_device(&self, key: &str, device: Option<&str>) -> Result<(), AudioError> {
+        let mut pids = vec![];
+        // SAFETY: live enumerator/collection on this thread.
+        let collection = unsafe {
+            self.enumerator
+                .EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE)?
+        };
+        for i in 0..unsafe { collection.GetCount()? } {
+            // SAFETY: index within GetCount.
+            let endpoint = unsafe { collection.Item(i)? };
+            for session in self.device_sessions(&endpoint)? {
+                if session.key == key && session.pid != 0 && !pids.contains(&session.pid) {
+                    pids.push(session.pid);
+                }
+            }
+        }
+        let packed = device.map(|id| HSTRING::from(notify::pack_device_id(id)));
+        let result = self.with_policy(|policy| {
+            for &pid in &pids {
+                for role in [eMultimedia, eConsole] {
+                    // SAFETY: the handle is borrowed from `packed`, which
+                    // outlives the call (null clears the routing).
+                    let handle: *mut c_void = match &packed {
+                        Some(h) => unsafe { std::mem::transmute_copy(h) },
+                        None => std::ptr::null_mut(),
+                    };
+                    unsafe { policy.set(pid, eRender, role, handle) }.ok()?;
+                }
+            }
+            Ok::<(), windows::core::Error>(())
+        });
+        match result {
+            Some(r) => Ok(r?),
+            None => Err(AudioError::Com("per-app routing is unavailable".into())),
+        }
     }
     fn describe_executable(&self, path: &str) -> Option<String> {
         self.descriptions
@@ -436,6 +576,11 @@ impl Backend {
                     session.meter.GetPeakValue().unwrap_or(0.0),
                 )
             };
+            let routed = if session.system {
+                None
+            } else {
+                self.routed_device(session.pid)
+            };
             match apps.iter_mut().find(|a| a.key == session.key) {
                 Some(app) => {
                     app.process_ids.push(session.pid);
@@ -450,6 +595,7 @@ impl Backend {
                     volume,
                     muted,
                     peak,
+                    routed_device_id: routed,
                 }),
             }
         }
@@ -500,5 +646,22 @@ impl Backend {
         }
         devices.sort_by_key(|d| !d.is_default);
         Ok(Snapshot { devices })
+    }
+}
+
+impl Drop for Backend {
+    fn drop(&mut self) {
+        // SAFETY: unregistering callbacks registered on this thread, before
+        // the apartment is torn down.
+        unsafe {
+            if let Some(client) = self.device_client.borrow_mut().take() {
+                let _ = self
+                    .enumerator
+                    .UnregisterEndpointNotificationCallback(&client);
+            }
+            for (endpoint, callback) in self.endpoint_watchers.borrow_mut().drain(..) {
+                let _ = endpoint.UnregisterControlChangeNotify(&callback);
+            }
+        }
     }
 }

@@ -6,7 +6,9 @@
 //! "Start with Windows". Everything else in PARITY.md is still to come.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use bt_app::win32::{icons, startup};
+mod hotkeys;
+
+use bt_app::win32::{icons, startup, wheel};
 use bt_audio::{AudioEngine, Snapshot};
 use bt_media::{Command as MediaCommand, MediaEngine, NowPlaying};
 use std::{
@@ -20,7 +22,7 @@ use std::{
 use tauri::{
     AppHandle, Emitter, Manager, PhysicalPosition, PhysicalRect, Rect, State, WebviewWindow,
     WindowEvent,
-    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem},
+    menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 };
 
@@ -48,6 +50,8 @@ struct App {
     popup_hover: AtomicBool,
     /// Bumped on every tray enter so stale hover timers do nothing.
     hover_generation: AtomicU64,
+    /// Registered shortcut labels for the tray menu ("action: keys").
+    shortcuts: Mutex<Vec<String>>,
 }
 
 fn error(e: impl std::fmt::Display) -> String {
@@ -106,6 +110,18 @@ fn media_hover(handle: AppHandle, hovering: bool) {
     if !hovering {
         schedule_media_hide(handle);
     }
+}
+
+/// Routes an app to an output; `None` follows the default device again.
+#[tauri::command]
+async fn set_app_device(
+    app: State<'_, App>,
+    app_key: String,
+    device_id: Option<String>,
+) -> Result<(), String> {
+    app.audio
+        .set_app_device(&app_key, device_id.as_deref())
+        .map_err(error)
 }
 
 /// PNG data URL of an executable's icon (cached; `None` when it has none).
@@ -349,6 +365,25 @@ fn build_menu(app: &AppHandle, devices: &Snapshot) -> tauri::Result<Menu<tauri::
         startup::is_enabled(),
         None::<&str>,
     )?)?;
+    let shortcuts = app
+        .state::<App>()
+        .shortcuts
+        .lock()
+        .map(|s| s.clone())
+        .unwrap_or_default();
+    if !shortcuts.is_empty() {
+        let submenu = Submenu::with_id(app, "shortcuts", "Keyboard shortcuts", true)?;
+        for (i, label) in shortcuts.iter().enumerate() {
+            submenu.append(&MenuItem::with_id(
+                app,
+                format!("shortcut:{i}"),
+                label,
+                false,
+                None::<&str>,
+            )?)?;
+        }
+        menu.append(&submenu)?;
+    }
     menu.append(&MenuItem::with_id(
         app,
         "mixer",
@@ -392,37 +427,133 @@ fn refresh_tray(app: &AppHandle) {
     let _ = tray.set_tooltip(Some(tooltip(&devices)));
 }
 
-/// Keeps the tray menu and tooltip current. Devices only (no sessions), and
-/// the menu is rebuilt only when the device list or default changes.
+/// Keeps the tray menu and tooltip current from Windows' change
+/// notifications; bursts of events are coalesced into one refresh.
 fn watch_devices(app: AppHandle) {
+    let (signal, changes) = std::sync::mpsc::channel::<bt_audio::Change>();
+    let audio = app.state::<App>().audio.clone();
+    if audio
+        .watch(move |change| {
+            let _ = signal.send(change);
+        })
+        .is_err()
+    {
+        return;
+    }
     std::thread::spawn(move || {
         let mut last_menu = String::new();
-        let mut last_tip = String::new();
-        loop {
-            if let Ok(devices) = app.state::<App>().audio.devices() {
-                let key: String = devices
-                    .devices
-                    .iter()
-                    .map(|d| format!("{}|{}|{}\n", d.id, d.name, d.is_default))
-                    .collect::<String>()
-                    + &startup::is_enabled().to_string();
-                if let Some(tray) = app.tray_by_id("main") {
-                    if key != last_menu {
-                        if let Ok(menu) = build_menu(&app, &devices) {
-                            let _ = tray.set_menu(Some(menu));
-                        }
-                        last_menu = key;
-                    }
-                    let tip = tooltip(&devices);
-                    if tip != last_tip {
-                        let _ = tray.set_tooltip(Some(&tip));
-                        last_tip = tip;
-                    }
-                }
+        while let Ok(first) = changes.recv() {
+            let mut devices_changed = first == bt_audio::Change::Devices;
+            std::thread::sleep(Duration::from_millis(120));
+            while let Ok(more) = changes.try_recv() {
+                devices_changed |= more == bt_audio::Change::Devices;
             }
-            std::thread::sleep(Duration::from_millis(1000));
+            let Ok(devices) = audio.devices() else {
+                continue;
+            };
+            let Some(tray) = app.tray_by_id("main") else {
+                continue;
+            };
+            let key: String = devices
+                .devices
+                .iter()
+                .map(|d| format!("{}|{}|{}\n", d.id, d.name, d.is_default))
+                .collect();
+            if devices_changed && key != last_menu {
+                if let Ok(menu) = build_menu(&app, &devices) {
+                    let _ = tray.set_menu(Some(menu));
+                }
+                last_menu = key;
+            }
+            let _ = tray.set_tooltip(Some(tooltip(&devices)));
+            if devices_changed {
+                let _ = app.emit("devices-changed", ());
+            }
         }
     });
+}
+
+/// Adjusts every unmuted output by `delta` percent, like the original's
+/// absolute volume hotkeys.
+fn step_all_devices(app: &AppHandle, delta: f32) {
+    let audio = &app.state::<App>().audio;
+    if let Ok(devices) = audio.devices() {
+        for device in devices.devices.iter().filter(|d| !d.muted) {
+            let _ = audio.set_device_volume(&device.id, device.volume + delta / 100.0);
+        }
+    }
+}
+
+/// Mouse wheel over the tray icon: 2% per notch on the default output.
+fn start_tray_wheel(app: AppHandle) {
+    let (sender, deltas) = std::sync::mpsc::channel::<i16>();
+    let hover_app = app.clone();
+    wheel::start(move |delta| {
+        if hover_app.state::<App>().tray_hover.load(Ordering::Relaxed) {
+            let _ = sender.send(delta);
+        }
+    });
+    std::thread::spawn(move || {
+        while let Ok(delta) = deltas.recv() {
+            let audio = &app.state::<App>().audio;
+            if let Ok(devices) = audio.devices() {
+                if let Some(device) = devices.devices.iter().find(|d| d.is_default) {
+                    let step = f32::from(delta.signum()) * 0.02;
+                    let _ = audio.set_device_volume(&device.id, device.volume + step);
+                }
+            }
+        }
+    });
+}
+
+fn register_hotkeys(app: &tauri::App) {
+    use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+    let mut labels = vec![];
+    for binding in hotkeys::bindings() {
+        let action = binding.action;
+        let registered = app
+            .global_shortcut()
+            .on_shortcut(binding.shortcut, move |app, _, event| {
+                if event.state != ShortcutState::Pressed {
+                    return;
+                }
+                match action {
+                    hotkeys::Action::ToggleFlyout => {
+                        let visible = app
+                            .get_webview_window(FLYOUT)
+                            .is_some_and(|w| w.is_visible().unwrap_or(false));
+                        if visible {
+                            if let Some(w) = app.get_webview_window(FLYOUT) {
+                                hide(&w);
+                            }
+                        } else {
+                            show(app, None);
+                        }
+                    }
+                    hotkeys::Action::VolumeUp => step_all_devices(app, 2.0),
+                    hotkeys::Action::VolumeDown => step_all_devices(app, -2.0),
+                }
+            })
+            .is_ok();
+        let source = if binding.from_settings {
+            " (from BetterTrumpet)"
+        } else {
+            ""
+        };
+        let status = if registered {
+            ""
+        } else {
+            " — in use by another app"
+        };
+        labels.push(format!(
+            "{}: {}{source}{status}",
+            hotkeys::describe(action),
+            binding.label
+        ));
+    }
+    if let Ok(mut shortcuts) = app.state::<App>().shortcuts.lock() {
+        *shortcuts = labels;
+    }
 }
 
 fn on_menu(app: &AppHandle, id: &str) {
@@ -468,6 +599,7 @@ fn main() {
             tray_hover: AtomicBool::new(false),
             popup_hover: AtomicBool::new(false),
             hover_generation: AtomicU64::new(0),
+            shortcuts: Mutex::new(vec![]),
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
@@ -476,6 +608,7 @@ fn main() {
             now_playing,
             media_command,
             media_hover,
+            set_app_device,
             set_device_volume,
             set_device_mute,
             set_app_volume,
@@ -485,7 +618,9 @@ fn main() {
             is_pinned,
             fit_flyout
         ])
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .setup(|app| {
+            register_hotkeys(app);
             let handle = app.handle().clone();
             let devices = app.state::<App>().audio.devices().unwrap_or_default();
             let menu = build_menu(&handle, &devices)?;
@@ -521,7 +656,8 @@ fn main() {
                     }
                 })
                 .build(app)?;
-            watch_devices(handle);
+            watch_devices(handle.clone());
+            start_tray_wheel(handle);
             // `--show` opens the flyout at startup (testing, shortcuts).
             if std::env::args().any(|a| a == "--show") {
                 show(app.handle(), None);

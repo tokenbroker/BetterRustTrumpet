@@ -98,10 +98,28 @@ function createApp(deviceId, app) {
   el.querySelector(".mute").setAttribute("aria-label", `Mute ${app.displayName}`);
   bindSlider(input, el.querySelector(".value"), (v) =>
     invoke("set_app_volume", { deviceId, appKey: app.key, volume: v }));
+  const route = el.querySelector(".route");
+  if (app.isSystemSounds) route.hidden = true;
+  route.addEventListener("change", () =>
+    invoke("set_app_device", { appKey: app.key, deviceId: route.value || null })
+      .then(refresh).catch(showError));
   el.querySelector(".mute").addEventListener("click", () =>
     invoke("set_app_mute", { deviceId, appKey: app.key, muted: !el.dataset.muted })
       .then(refresh).catch(showError));
   return el;
+}
+
+// Output picker: "Default output" plus every device; rebuilt only when the
+// device list changes so an open dropdown is not disturbed.
+function updateRoute(select, devices, routed) {
+  const key = devices.map((d) => d.id + "\u0001" + d.name).join("\u0002");
+  if (select.dataset.key !== key) {
+    select.dataset.key = key;
+    select.replaceChildren(new Option("Default output", ""),
+      ...devices.map((d) => new Option(d.name, d.id)));
+  }
+  if (document.activeElement !== select) select.value = routed || "";
+  select.classList.toggle("routed", !!routed);
 }
 
 function render(snapshot) {
@@ -134,6 +152,7 @@ function render(snapshot) {
       }
       if (appsEl.children[appIndex] !== row) appsEl.insertBefore(row, appsEl.children[appIndex] || null);
       row.querySelector(".app-name").textContent = app.displayName;
+      updateRoute(row.querySelector(".route"), snapshot.devices, app.routedDeviceId);
       row.title = app.executable || app.displayName;
       update(row, app.volume, app.muted, app.peak);
     });

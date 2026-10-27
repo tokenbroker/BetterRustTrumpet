@@ -3,3 +3,4 @@ pub mod icons;
 pub mod package;
 pub mod registry;
 pub mod startup;
+pub mod wheel;
