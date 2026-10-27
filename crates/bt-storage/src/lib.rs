@@ -6,6 +6,7 @@ use bt_core::{
     legacy_store::{PORTABLE_MARKERS, PortableSnapshot},
     migration,
     newtonsoft::LocalZone,
+    registry_snapshot::RegistrySnapshot,
 };
 use std::{
     fs::{self, File},
@@ -86,6 +87,20 @@ pub fn portable(
         Err(error) => return Err(error.into()),
     };
     let encoded = migration::encode_portable(bytes.as_deref())?;
+    match install(&archive_path, &encoded)? {
+        Outcome::Created => Ok(MigratedPortable {
+            outcome: Outcome::Created,
+            archive_path,
+            snapshot: PortableSnapshot::capture(bytes, zone),
+        }),
+        Outcome::Existing => {
+            let file = File::open(&archive_path)?;
+            existing(archive_path, file, zone)
+        }
+    }
+}
+
+fn install(archive_path: &Path, encoded: &[u8]) -> Result<Outcome, Error> {
     let parent = archive_path
         .parent()
         .expect("fixed archive path has a parent");
@@ -93,21 +108,58 @@ pub fn portable(
     let mut staged = tempfile::Builder::new()
         .prefix(".bt-migration-")
         .tempfile_in(parent)?;
-    staged.write_all(&encoded)?;
+    staged.write_all(encoded)?;
     staged.flush()?;
     staged.as_file().sync_all()?;
     // tempfile uses a platform no-clobber installation. Ordinary rename would
     // replace an existing archive on Unix, losing a concurrent winner's data.
-    match staged.persist_noclobber(&archive_path) {
-        Ok(_) => Ok(MigratedPortable {
-            outcome: Outcome::Created,
-            archive_path,
-            snapshot: PortableSnapshot::capture(bytes, zone),
-        }),
-        Err(error) if error.error.kind() == io::ErrorKind::AlreadyExists => {
-            let file = File::open(&archive_path)?;
-            existing(archive_path, file, zone)
-        }
+    match staged.persist_noclobber(archive_path) {
+        Ok(_) => Ok(Outcome::Created),
+        Err(error) if error.error.kind() == io::ErrorKind::AlreadyExists => Ok(Outcome::Existing),
         Err(error) => Err(error.error.into()),
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct MigratedRegistry {
+    pub outcome: Outcome,
+    pub archive_path: PathBuf,
+    pub snapshot: RegistrySnapshot,
+}
+
+/// Installed migration. The app supplies its Rust-owned directory and a
+/// read-only native capture callback. Existing archives bypass that callback.
+pub fn registry(
+    destination_directory: &Path,
+    capture: impl FnOnce() -> io::Result<RegistrySnapshot>,
+) -> Result<MigratedRegistry, Error> {
+    use std::io::Read;
+    fn load(path: &Path, mut file: File) -> Result<MigratedRegistry, Error> {
+        let mut bytes = Vec::new();
+        file.read_to_end(&mut bytes)?;
+        Ok(MigratedRegistry {
+            outcome: Outcome::Existing,
+            archive_path: path.into(),
+            snapshot: migration::decode_registry(&bytes)?,
+        })
+    }
+    let path = destination_directory.join("migration.v1.json");
+    match File::open(&path) {
+        Ok(file) => return load(&path, file),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+        Err(error) => return Err(error.into()),
+    }
+    let snapshot = capture()?;
+    let encoded = migration::encode_registry(&snapshot)?;
+    match install(&path, &encoded)? {
+        Outcome::Created => Ok(MigratedRegistry {
+            outcome: Outcome::Created,
+            archive_path: path,
+            snapshot,
+        }),
+        Outcome::Existing => {
+            let file = File::open(&path)?;
+            load(&path, file)
+        }
     }
 }

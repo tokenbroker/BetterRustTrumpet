@@ -174,10 +174,14 @@ name = "bt-app"
 version = "0.1.0"
 dependencies = [
  "bt-audio",
+ "bt-core",
+ "bt-storage",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
+ "tempfile",
+ "windows 0.62.2",
 ]
 
 [[package]]

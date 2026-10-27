@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 pub const PORTABLE_FORMAT: &str = "BetterTrumpet.Rust.PortableMigration";
+pub const REGISTRY_FORMAT: &str = "BetterTrumpet.Rust.RegistryMigration";
 const VERSION: u32 = 1;
 
 #[derive(Debug, Error)]
@@ -13,6 +14,8 @@ pub enum Error {
     Json(#[from] serde_json::Error),
     #[error("unsupported migration archive format or version")]
     UnsupportedArchive,
+    #[error("invalid raw registry snapshot")]
+    InvalidRegistrySnapshot,
 }
 
 #[derive(Serialize)]
@@ -48,4 +51,42 @@ pub fn decode_portable(bytes: &[u8], zone: &dyn LocalZone) -> Result<PortableSna
         return Err(Error::UnsupportedArchive);
     }
     Ok(PortableSnapshot::capture(archive.original_bytes, zone))
+}
+
+#[derive(Deserialize)]
+struct RegistryArchive {
+    format: String,
+    version: u32,
+    snapshot: crate::registry_snapshot::RegistrySnapshot,
+}
+
+#[derive(Serialize)]
+struct RegistryArchiveRef<'a> {
+    format: &'a str,
+    version: u32,
+    snapshot: &'a crate::registry_snapshot::RegistrySnapshot,
+}
+
+pub fn encode_registry(
+    snapshot: &crate::registry_snapshot::RegistrySnapshot,
+) -> Result<Vec<u8>, Error> {
+    if !snapshot.is_valid() {
+        return Err(Error::InvalidRegistrySnapshot);
+    }
+    Ok(serde_json::to_vec_pretty(&RegistryArchiveRef {
+        format: REGISTRY_FORMAT,
+        version: VERSION,
+        snapshot,
+    })?)
+}
+
+pub fn decode_registry(bytes: &[u8]) -> Result<crate::registry_snapshot::RegistrySnapshot, Error> {
+    let archive: RegistryArchive = serde_json::from_slice(bytes)?;
+    if archive.format != REGISTRY_FORMAT || archive.version != VERSION {
+        return Err(Error::UnsupportedArchive);
+    }
+    if !archive.snapshot.is_valid() {
+        return Err(Error::InvalidRegistrySnapshot);
+    }
+    Ok(archive.snapshot)
 }

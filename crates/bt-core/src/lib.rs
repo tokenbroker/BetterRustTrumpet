@@ -22,6 +22,7 @@ pub mod newtonsoft;
 pub mod numbers;
 pub mod profiles;
 pub mod protocol;
+pub mod registry_snapshot;
 pub mod rules;
 pub mod settings;
 pub mod text;
