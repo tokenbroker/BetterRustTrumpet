@@ -1,4 +1,4 @@
-//! BetterTrumpet Rust port â€” preview tray app.
+//! BetterTrumpet Rust port — preview tray app.
 //!
 //! Daily-use features first: a tray flyout with every output device and its
 //! apps (volume, mute, peaks, names and icons), default-device switching from
@@ -34,6 +34,11 @@ const MEDIA_HOVER_DELAY: Duration = Duration::from_millis(2000);
 const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(450);
 /// Logical flyout width (tauri.conf.json uses the same value).
 const FLYOUT_WIDTH: f64 = 380.0;
+/// Logical media popup window size: a 340x168 card plus an 8 DIP shadow
+/// margin on each side (tauri.conf.json uses the same value).
+const MEDIA_SIZE: (f64, f64) = (356.0, 184.0);
+/// The original's SlideOut storyboard length, plus a frame.
+const MEDIA_FADE_OUT: Duration = Duration::from_millis(165);
 
 struct App {
     audio: AudioEngine,
@@ -50,6 +55,10 @@ struct App {
     popup_hover: AtomicBool,
     /// Bumped on every tray enter so stale hover timers do nothing.
     hover_generation: AtomicU64,
+    /// Bumped on every popup show so a pending fade-out does not hide it.
+    media_generation: AtomicU64,
+    /// The popup is fading out.
+    media_hiding: AtomicBool,
     /// Registered shortcut labels for the tray menu ("action: keys").
     shortcuts: Mutex<Vec<String>>,
 }
@@ -253,14 +262,90 @@ fn place_near_taskbar(window: &WebviewWindow, tray: Option<Rect>) {
     let _ = window.set_position(PhysicalPosition::new(x, y));
 }
 
+/// Plays the popup's fade-out, then hides it, unless it is shown again
+/// before the fade ends.
 fn hide_media(app: &AppHandle) {
-    if let Some(window) = app.get_webview_window(MEDIA) {
-        if window.is_visible().unwrap_or(false) {
+    let Some(window) = app.get_webview_window(MEDIA) else {
+        return;
+    };
+    let state = app.state::<App>();
+    if !window.is_visible().unwrap_or(false) || state.media_hiding.swap(true, Ordering::Relaxed) {
+        return;
+    }
+    let generation = state.media_generation.load(Ordering::Relaxed);
+    let _ = window.emit("media-hiding", ());
+    std::thread::spawn(move || {
+        std::thread::sleep(MEDIA_FADE_OUT);
+        let state = window.state::<App>();
+        if state.media_generation.load(Ordering::Relaxed) == generation {
             let _ = window.hide();
             let _ = window.emit("media-hidden", ());
             set_active(&window, false);
+            state.media_hiding.store(false, Ordering::Relaxed);
         }
+    });
+}
+
+/// Shows the popup with its slide-in, centred 5 DIP above the tray icon like
+/// the original. Does nothing if it is already showing.
+fn show_media(app: &AppHandle, tray: Rect) {
+    let Some(window) = app.get_webview_window(MEDIA) else {
+        return;
+    };
+    let state = app.state::<App>();
+    let hiding = state.media_hiding.swap(false, Ordering::Relaxed);
+    if window.is_visible().unwrap_or(false) && !hiding {
+        return;
     }
+    state.media_generation.fetch_add(1, Ordering::Relaxed);
+    place_media(app, &window, tray);
+    set_active(&window, true);
+    let _ = window.show();
+    // Showing can move the window to the taskbar's monitor and change its
+    // DPI, so place it again once it is there.
+    place_media(app, &window, tray);
+    let _ = window.emit("media-shown", ());
+}
+
+/// Window = card + 8 DIP shadow margin; its bottom sits 5 DIP above the icon,
+/// horizontally centred on it and kept 10 DIP inside the work area.
+fn place_media(app: &AppHandle, window: &WebviewWindow, tray: Rect) {
+    let Ok(monitors) = app.available_monitors() else {
+        return;
+    };
+    // Tray rects are physical. The monitor nearest the icon's centre holds
+    // it: an auto-hidden taskbar reports the icon partly below the screen.
+    let probe = tray.position.to_physical::<i32>(1.0);
+    let probe_size = tray.size.to_physical::<i32>(1.0);
+    let (cx, cy) = (
+        probe.x + probe_size.width / 2,
+        probe.y + probe_size.height / 2,
+    );
+    let Some(monitor) = monitors.iter().min_by_key(|m| {
+        let (p, s) = (m.position(), m.size());
+        let dx = i64::from((p.x - cx).max(cx - (p.x + s.width as i32 - 1)).max(0));
+        let dy = i64::from((p.y - cy).max(cy - (p.y + s.height as i32 - 1)).max(0));
+        dx * dx + dy * dy
+    }) else {
+        return;
+    };
+    let scale = monitor.scale_factor();
+    let icon = tray.position.to_physical::<i32>(scale);
+    let icon_size = tray.size.to_physical::<i32>(scale);
+    let icon_width = icon_size.width;
+    // Where the icon sits once an auto-hidden taskbar has slid in.
+    let screen_bottom = monitor.position().y + monitor.size().height as i32;
+    let icon_top = icon.y.min(screen_bottom - icon_size.height);
+    let width = (MEDIA_SIZE.0 * scale).round() as i32;
+    let height = (MEDIA_SIZE.1 * scale).round() as i32;
+    let inset = (10.0 * scale) as i32;
+    let work = monitor.work_area();
+    let left = work.position.x + inset;
+    let right = work.position.x + work.size.width as i32 - width - inset;
+    let x = (icon.x + icon_width / 2 - width / 2).clamp(left, right.max(left));
+    let y = (icon_top - height - (5.0 * scale) as i32).max(work.position.y + inset);
+    let _ = window.set_size(tauri::PhysicalSize::new(width as u32, height as u32));
+    let _ = window.set_position(PhysicalPosition::new(x, y));
 }
 
 /// Hides the popup unless the pointer returns to the tray or popup in time.
@@ -301,12 +386,7 @@ fn schedule_media_show(app: AppHandle, tray: Rect) {
         if flyout_open || !playing {
             return;
         }
-        if let Some(window) = app.get_webview_window(MEDIA) {
-            place_near_taskbar(&window, Some(tray));
-            set_active(&window, true);
-            let _ = window.show();
-            let _ = window.emit("media-shown", ());
-        }
+        show_media(&app, tray);
     });
 }
 
@@ -553,7 +633,7 @@ fn register_hotkeys(app: &tauri::App) {
         let status = if registered {
             ""
         } else {
-            " â€” in use by another app"
+            " — in use by another app"
         };
         labels.push(format!(
             "{}: {}{source}{status}",
@@ -609,6 +689,8 @@ fn main() {
             tray_hover: AtomicBool::new(false),
             popup_hover: AtomicBool::new(false),
             hover_generation: AtomicU64::new(0),
+            media_generation: AtomicU64::new(0),
+            media_hiding: AtomicBool::new(false),
             shortcuts: Mutex::new(vec![]),
         })
         .invoke_handler(tauri::generate_handler![
@@ -673,6 +755,17 @@ fn main() {
             // `--show` opens the flyout at startup (testing, shortcuts).
             if std::env::args().any(|a| a == "--show") {
                 show(app.handle(), None);
+            }
+            // `--media` opens the media popup once its page has loaded
+            // (testing its placement and animation without hovering).
+            if std::env::args().any(|a| a == "--media") {
+                let handle = app.handle().clone();
+                std::thread::spawn(move || {
+                    std::thread::sleep(Duration::from_millis(1500));
+                    if let Some(Ok(Some(rect))) = handle.tray_by_id("main").map(|t| t.rect()) {
+                        show_media(&handle, rect);
+                    }
+                });
             }
             Ok(())
         })

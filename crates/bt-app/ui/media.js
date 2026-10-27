@@ -82,5 +82,16 @@ function stop() {
   clearInterval(timer);
   timer = null;
 }
-listen("media-shown", start);
+// Restarts the card's enter ("in") or exit ("out") animation.
+function animate(name) {
+  const card = $("media");
+  card.classList.remove("in", "out");
+  void card.offsetWidth;
+  card.classList.add(name);
+}
+listen("media-shown", () => {
+  animate("in");
+  start();
+});
+listen("media-hiding", () => animate("out"));
 listen("media-hidden", stop);
