@@ -1,7 +1,10 @@
 //! COM side of the engine. Everything here runs on the worker thread.
 use crate::{
-    AppSession, AudioError, Device, Peaks, Snapshot,
-    notify::{self, DeviceWatcher, Listener, PolicyFactory, VolumeWatcher},
+    AppSession, AudioError, Device, Peaks, ProcessSession, Snapshot,
+    notify::{
+        self, DeviceWatcher, Listener, PolicyFactory, SessionCreatedWatcher, SessionWatcher,
+        VolumeWatcher,
+    },
 };
 use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::Arc, sync::mpsc, thread};
 use windows::{
@@ -11,7 +14,8 @@ use windows::{
         Media::Audio::{
             AudioSessionStateExpired, DEVICE_STATE_ACTIVE, Endpoints::IAudioEndpointVolume,
             Endpoints::IAudioEndpointVolumeCallback, Endpoints::IAudioMeterInformation,
-            IAudioSessionControl2, IAudioSessionManager2, IMMDevice, IMMDeviceEnumerator,
+            IAudioSessionControl, IAudioSessionControl2, IAudioSessionEvents,
+            IAudioSessionManager2, IAudioSessionNotification, IMMDevice, IMMDeviceEnumerator,
             IMMNotificationClient, ISimpleAudioVolume, MMDeviceEnumerator, eConsole, eMultimedia,
             eRender,
         },
@@ -171,17 +175,47 @@ impl Engine {
     pub fn set_app_volume(&self, id: &str, key: &str, volume: f32) -> Result<(), AudioError> {
         let (id, key) = (id.to_owned(), key.to_owned());
         self.call(move |b| {
-            b.sessions(&id, &key, |s| unsafe {
+            b.sessions(&id, &key, None, |s| unsafe {
                 // SAFETY: `s` is a live session volume interface on this thread;
                 // the context GUID may be null.
                 s.SetMasterVolume(volume, std::ptr::null())
             })
         })
     }
+    pub fn set_process_volume(
+        &self,
+        id: &str,
+        key: &str,
+        pid: u32,
+        volume: f32,
+    ) -> Result<(), AudioError> {
+        let (id, key) = (id.to_owned(), key.to_owned());
+        self.call(move |b| {
+            b.sessions(&id, &key, Some(pid), |s| unsafe {
+                // SAFETY: as above.
+                s.SetMasterVolume(volume, std::ptr::null())
+            })
+        })
+    }
+    pub fn set_process_mute(
+        &self,
+        id: &str,
+        key: &str,
+        pid: u32,
+        muted: bool,
+    ) -> Result<(), AudioError> {
+        let (id, key) = (id.to_owned(), key.to_owned());
+        self.call(move |b| {
+            b.sessions(&id, &key, Some(pid), |s| unsafe {
+                // SAFETY: as above.
+                s.SetMute(muted, std::ptr::null())
+            })
+        })
+    }
     pub fn set_app_mute(&self, id: &str, key: &str, muted: bool) -> Result<(), AudioError> {
         let (id, key) = (id.to_owned(), key.to_owned());
         self.call(move |b| {
-            b.sessions(&id, &key, |s| unsafe {
+            b.sessions(&id, &key, None, |s| unsafe {
                 // SAFETY: as above.
                 s.SetMute(muted, std::ptr::null())
             })
@@ -312,6 +346,9 @@ struct Backend {
     listener: RefCell<Option<Listener>>,
     device_client: RefCell<Option<IMMNotificationClient>>,
     endpoint_watchers: RefCell<Vec<(IAudioEndpointVolume, IAudioEndpointVolumeCallback)>>,
+    /// New-session callbacks per output, and every live session's events.
+    manager_watchers: RefCell<Vec<(IAudioSessionManager2, IAudioSessionNotification)>>,
+    session_watchers: RefCell<Vec<(IAudioSessionControl, IAudioSessionEvents)>>,
     /// Lazily created; `Some(None)` once creation has failed.
     policy: RefCell<Option<Option<PolicyFactory>>>,
     /// FileDescription per executable path; version resources rarely change.
@@ -325,6 +362,7 @@ struct MeterSource {
     device_id: String,
     /// `None` for the device itself.
     app_key: Option<String>,
+    process_id: Option<u32>,
     meter: IAudioMeterInformation,
 }
 
@@ -338,6 +376,8 @@ impl Backend {
             listener: RefCell::new(None),
             device_client: RefCell::new(None),
             endpoint_watchers: RefCell::new(vec![]),
+            manager_watchers: RefCell::new(vec![]),
+            session_watchers: RefCell::new(vec![]),
             policy: RefCell::new(None),
             descriptions: RefCell::new(HashMap::new()),
             meters: RefCell::new(vec![]),
@@ -374,6 +414,14 @@ impl Backend {
             // SAFETY: unregistering a callback registered on this endpoint.
             let _ = unsafe { endpoint.UnregisterControlChangeNotify(&callback) };
         }
+        for (manager, callback) in self.manager_watchers.borrow_mut().drain(..) {
+            // SAFETY: unregistering a callback registered on this manager.
+            let _ = unsafe { manager.UnregisterSessionNotification(&callback) };
+        }
+        let jobs = self.jobs.clone();
+        let rewatch: Arc<dyn Fn() + Send + Sync> = Arc::new(move || {
+            let _ = jobs.send(Box::new(|b: &Backend| b.watch_sessions()));
+        });
         // SAFETY: live enumerator/collection on this thread.
         let collection = unsafe {
             self.enumerator
@@ -395,9 +443,68 @@ impl Backend {
                         .borrow_mut()
                         .push((endpoint, callback));
                 }
+                // Windows only reports new sessions once the manager's
+                // sessions have been enumerated, so enumerate first.
+                let Ok(manager) = device.Activate::<IAudioSessionManager2>(CLSCTX_ALL, None) else {
+                    continue;
+                };
+                let _ = manager.GetSessionEnumerator();
+                let callback: IAudioSessionNotification = SessionCreatedWatcher {
+                    listener: listener.clone(),
+                    rewatch: rewatch.clone(),
+                }
+                .into();
+                if manager.RegisterSessionNotification(&callback).is_ok() {
+                    self.manager_watchers.borrow_mut().push((manager, callback));
+                }
             }
         }
+        self.watch_sessions();
         Ok(())
+    }
+    /// (Re)registers events on every live session of every active output.
+    fn watch_sessions(&self) {
+        let Some(listener) = self.listener.borrow().clone() else {
+            return;
+        };
+        for (control, callback) in self.session_watchers.borrow_mut().drain(..) {
+            // SAFETY: unregistering events registered on this session.
+            let _ = unsafe { control.UnregisterAudioSessionNotification(&callback) };
+        }
+        let managers: Vec<_> = self
+            .manager_watchers
+            .borrow()
+            .iter()
+            .map(|(m, _)| m.clone())
+            .collect();
+        for manager in managers {
+            // SAFETY: live manager on this thread; indices are within
+            // GetCount; each callback is kept alive in `session_watchers`.
+            unsafe {
+                let Ok(sessions) = manager.GetSessionEnumerator() else {
+                    continue;
+                };
+                let count = sessions.GetCount().unwrap_or(0);
+                for i in 0..count {
+                    let Ok(control) = sessions.GetSession(i) else {
+                        continue;
+                    };
+                    if control
+                        .GetState()
+                        .is_ok_and(|s| s == AudioSessionStateExpired)
+                    {
+                        continue;
+                    }
+                    let callback: IAudioSessionEvents = SessionWatcher {
+                        listener: listener.clone(),
+                    }
+                    .into();
+                    if control.RegisterAudioSessionNotification(&callback).is_ok() {
+                        self.session_watchers.borrow_mut().push((control, callback));
+                    }
+                }
+            }
+        }
     }
     fn with_policy<T>(&self, work: impl FnOnce(&PolicyFactory) -> T) -> Option<T> {
         let mut policy = self.policy.borrow_mut();
@@ -501,11 +608,12 @@ impl Backend {
         &self,
         id: &str,
         key: &str,
+        pid: Option<u32>,
         apply: impl Fn(&ISimpleAudioVolume) -> windows::core::Result<()>,
     ) -> Result<(), AudioError> {
         let device = self.device(id)?;
         for session in self.device_sessions(&device)? {
-            if session.key == key {
+            if session.key == key && pid.is_none_or(|p| p == session.pid) {
                 apply(&session.volume)?;
             }
         }
@@ -597,6 +705,7 @@ impl Backend {
             meters.push(MeterSource {
                 device_id: id.clone(),
                 app_key: Some(session.key.clone()),
+                process_id: Some(session.pid),
                 meter: session.meter.clone(),
             });
             let (volume, muted, peak) = unsafe {
@@ -615,10 +724,17 @@ impl Backend {
             } else {
                 self.routed_device(session.pid)
             };
+            let process = ProcessSession {
+                process_id: session.pid,
+                display_name: session.display_name.clone(),
+                volume,
+                muted,
+            };
             match apps.iter_mut().find(|a| a.key == session.key) {
                 Some(app) => {
                     app.process_ids.push(session.pid);
                     app.peak = app.peak.max(peak);
+                    app.sessions.push(process);
                 }
                 None => apps.push(AppSession {
                     key: session.key,
@@ -630,6 +746,7 @@ impl Backend {
                     muted,
                     peak,
                     routed_device_id: routed,
+                    sessions: vec![process],
                 }),
             }
         }
@@ -638,6 +755,7 @@ impl Backend {
         meters.push(MeterSource {
             device_id: id.clone(),
             app_key: None,
+            process_id: None,
             meter: meter.clone(),
         });
         // SAFETY: live endpoint interfaces on this thread.
@@ -715,10 +833,19 @@ impl Backend {
                     [values[0], *values.get(1).unwrap_or(&values[0])]
                 }
             };
-            match out
-                .iter_mut()
-                .find(|p| p.device_id == source.device_id && p.app_key == source.app_key)
-            {
+            if let Some(pid) = source.process_id {
+                out.push(Peaks {
+                    device_id: source.device_id.clone(),
+                    app_key: source.app_key.clone(),
+                    process_id: Some(pid),
+                    channels,
+                });
+            }
+            match out.iter_mut().find(|p| {
+                p.device_id == source.device_id
+                    && p.app_key == source.app_key
+                    && p.process_id.is_none()
+            }) {
                 Some(p) => {
                     p.channels[0] = p.channels[0].max(channels[0]);
                     p.channels[1] = p.channels[1].max(channels[1]);
@@ -726,6 +853,7 @@ impl Backend {
                 None => out.push(Peaks {
                     device_id: source.device_id.clone(),
                     app_key: source.app_key.clone(),
+                    process_id: None,
                     channels,
                 }),
             }
@@ -746,6 +874,12 @@ impl Drop for Backend {
             }
             for (endpoint, callback) in self.endpoint_watchers.borrow_mut().drain(..) {
                 let _ = endpoint.UnregisterControlChangeNotify(&callback);
+            }
+            for (manager, callback) in self.manager_watchers.borrow_mut().drain(..) {
+                let _ = manager.UnregisterSessionNotification(&callback);
+            }
+            for (control, callback) in self.session_watchers.borrow_mut().drain(..) {
+                let _ = control.UnregisterAudioSessionNotification(&callback);
             }
         }
     }

@@ -1,9 +1,9 @@
-//! Global hotkeys. Uses the user's existing BetterTrumpet bindings (read
-//! read-only from its registry settings) when present, otherwise defaults.
+//! Global hotkeys. Uses the user's existing BetterTrumpet bindings (from its
+//! settings, see `store`) when present, otherwise defaults.
+use crate::store::Store;
 use bt_core::{
-    legacy_xml::{Kind, Value},
     models::HotkeyData,
-    registry_values::{Read, Request},
+    settings::{Key, Value},
 };
 use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut};
 
@@ -188,31 +188,25 @@ fn defaults(action: Action) -> (Shortcut, String) {
     }
 }
 
-/// The user's BetterTrumpet hotkey for `name`, read-only from the registry.
-fn legacy(name: &str) -> Option<HotkeyData> {
-    use bt_app::win32::registry::{RegistryEnvironment, read_legacy_settings};
-    let snapshot = read_legacy_settings().ok()?;
-    match snapshot.read(
-        Some(name),
-        Request::Value(Kind::Hotkey),
-        &RegistryEnvironment,
-    ) {
-        Read::Value(Value::Hotkey(Some(h))) if h.key != 0 => Some(h),
+/// The user's BetterTrumpet hotkey for `key`, if one is set.
+fn legacy(store: &Store, key: Key) -> Option<HotkeyData> {
+    match store.get(key) {
+        Value::Hotkey(Some(h)) if h.key != 0 => Some(h),
         _ => None,
     }
 }
 
 /// Bindings for every supported action: the user's BetterTrumpet setting
 /// when it maps to a shortcut, otherwise this build's default.
-pub fn bindings() -> Vec<Binding> {
+pub fn bindings(store: &Store) -> Vec<Binding> {
     [
-        (Action::ToggleFlyout, "Hotkey"),
-        (Action::VolumeUp, "AbsoluteVolumeUpHotkey"),
-        (Action::VolumeDown, "AbsoluteVolumeDownHotkey"),
+        (Action::ToggleFlyout, Key::FlyoutHotkey),
+        (Action::VolumeUp, Key::AbsoluteVolumeUpHotkey),
+        (Action::VolumeDown, Key::AbsoluteVolumeDownHotkey),
     ]
     .into_iter()
     .map(
-        |(action, setting)| match legacy(setting).as_ref().and_then(from_hotkey) {
+        |(action, setting)| match legacy(store, setting).as_ref().and_then(from_hotkey) {
             Some((shortcut, label)) => Binding {
                 action,
                 shortcut,

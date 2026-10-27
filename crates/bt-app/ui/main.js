@@ -10,9 +10,10 @@ const $ = (id) => document.getElementById(id);
 const deviceTemplate = $("device-template");
 const appTemplate = $("app-template");
 
-// Settings the original exposes; defaults until settings are loaded.
+// The user's settings (flyout_config); defaults until they are loaded.
 const settings = {
-  peakMeterFps: 30, // PeakMeterFps
+  peakMeterFps: 30, // PeakMeterFps (20 in eco mode)
+  peakMeterStyle: 0, // PeakMeterStyle: Classic, Dotted, Blocks, Bars, Wave
   useVolumeTickSound: true, // UseVolumeTickSound
   useSmoothVolumeAnimation: true, // UseSmoothVolumeAnimation
   volumeAnimationSpeed: 0.08, // VolumeAnimationSpeed
@@ -20,11 +21,12 @@ const settings = {
 };
 const PEAK_SMOOTHING = 0.35;
 
+// Each device carries `hidden` and `hiddenApps`; each app `hidden`,
+// `appId`, `exeName`, its `rule` and its per-process `sessions`.
 let snapshot = { devices: [] };
-let expanded = false; // IsExpanded
+let expanded = false; // IsExpanded, from the settings on first show
+let configLoaded = false;
 let pinned = false;
-const hiddenApps = new Map(); // device id -> Set of app keys (this session)
-const hiddenDevices = new Set();
 const deviceViews = new Map(); // id -> view
 let visible = false;
 let refreshTimer = null;
@@ -33,10 +35,14 @@ let popup = null; // { kind, deviceId, appKey, view }
 
 // ---------- helpers ----------
 const percent = (v) => Math.round(v * 100);
+// Hidden app entries saved for a device (may include apps not running).
 function hiddenOn(deviceId) {
-  if (!hiddenApps.has(deviceId)) hiddenApps.set(deviceId, new Set());
-  return hiddenApps.get(deviceId);
+  return findDevice(deviceId)?.hiddenApps || [];
 }
+function entryOf(deviceId, app) {
+  return { deviceId, appId: app.appId, exeName: app.exeName, displayName: app.displayName };
+}
+const isLocked = (app) => app.rule?.volumeMode === "Lock";
 function exeName(app) {
   const path = app.executable || "";
   return path.split(/[\\/]/).pop() || app.displayName;
@@ -54,7 +60,7 @@ function sortApps(apps) {
 // others in reverse name order (they are inserted at the top in name order)
 // and the default at the bottom, nearest the taskbar.
 function shownDevices() {
-  const visibleDevices = snapshot.devices.filter((d) => !hiddenDevices.has(d.id));
+  const visibleDevices = snapshot.devices.filter((d) => !d.hidden);
   const def = visibleDevices.find((d) => d.isDefault);
   if (!expanded) return def ? [def] : visibleDevices.slice(0, 1);
   const others = visibleDevices.filter((d) => !d.isDefault)
@@ -167,7 +173,12 @@ function makeSlider(el, send) {
   return {
     el,
     get value() { return state.value; },
-    step(delta) { cancelAnimationFrame(state.anim); set(state.value + delta, true); state.busyUntil = performance.now() + 500; },
+    step(delta) {
+      if (el.classList.contains("disabled")) return;
+      cancelAnimationFrame(state.anim);
+      set(state.value + delta, true);
+      state.busyUntil = performance.now() + 500;
+    },
     // External value; ignored while the user is using the slider.
     update(value) {
       if (performance.now() < state.busyUntil) return;
@@ -176,11 +187,12 @@ function makeSlider(el, send) {
     },
     redraw: draw,
     setPeaks(channels, volume) { state.peaks = channels.map((c) => c * volume); },
-    // Each frame the drawn bars move 35% of the way to their target.
+    // Each frame the drawn bars move 35% of the way to their target. Only
+    // Classic draws the second (right channel) bar.
     animatePeaks() {
       const span = width() - 16;
       const bars = el.querySelectorAll(".peak");
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < (settings.peakMeterStyle === 0 ? 2 : 1); i++) {
         state.drawn[i] += (state.peaks[i] - state.drawn[i]) * PEAK_SMOOTHING;
         if (state.drawn[i] < 0.001) state.drawn[i] = 0;
         bars[i].style.width = `${Math.max(0, span * state.drawn[i])}px`;
@@ -204,8 +216,14 @@ function deviceGlyphs(device) {
 }
 
 function bindDeviceRow(row, deviceId) {
-  const slider = makeSlider(row.querySelector(".slider"), (value) =>
-    invoke("set_device_volume", { deviceId, volume: value / 100 }).catch(() => {}));
+  const slider = makeSlider(row.querySelector(".slider"), (value) => {
+    // The value before this change and the name make an undo step.
+    const device = findDevice(deviceId);
+    const previous = device ? percent(device.volume) : null;
+    if (device) device.volume = value / 100;
+    invoke("set_device_volume", { deviceId, volume: value / 100, previous, name: device?.name ?? "" })
+      .catch(() => {});
+  });
   slider.el.addEventListener("value", (e) => (row.querySelector(".device-value").textContent = e.detail));
   row.querySelector(".device-mute").addEventListener("click", (event) => {
     event.stopPropagation();
@@ -237,9 +255,12 @@ function updateDeviceRow(row, slider, device) {
 }
 
 // ---------- app rows ----------
-function createAppRow(deviceId, app, inPopup = false) {
+// `child` is one process's session, for the app popup's rows (the
+// original's ChildApps); those set that session only and record no undo.
+function createAppRow(deviceId, app, inPopup = false, child = null) {
   const el = appTemplate.content.firstElementChild.cloneNode(true);
-  const row = { key: app.key, el, deviceId };
+  const row = { key: app.key, el, deviceId, processId: child?.processId ?? null };
+  const name = child ? child.displayName : app.displayName;
   const letter = el.querySelector(".letter");
   if (app.isSystemSounds) {
     letter.classList.add("glyph");
@@ -259,15 +280,26 @@ function createAppRow(deviceId, app, inPopup = false) {
     }).catch(() => {});
   }
   const mute = el.querySelector(".app-mute");
-  if (settings.showAppTooltips) mute.title = app.displayName;
-  mute.setAttribute("aria-label", `${app.displayName}, toggle mute`);
-  row.slider = makeSlider(el.querySelector(".slider"), (value) =>
-    invoke("set_app_volume", { deviceId, appKey: app.key, volume: value / 100 }).catch(() => {}));
+  if (settings.showAppTooltips) mute.title = name;
+  mute.setAttribute("aria-label", `${name}, toggle mute`);
+  row.slider = makeSlider(el.querySelector(".slider"), (value) => {
+    if (child) {
+      invoke("set_process_volume", { deviceId, appKey: app.key, processId: child.processId, volume: value / 100 })
+        .catch(() => {});
+      return;
+    }
+    const current = findApp(deviceId, app.key);
+    const previous = current ? percent(current.volume) : null;
+    if (current) current.volume = value / 100;
+    invoke("set_app_volume", { deviceId, appKey: app.key, volume: value / 100, previous, name: app.displayName })
+      .catch(() => {});
+  });
   row.slider.el.addEventListener("value", (e) => (el.querySelector(".app-value").textContent = e.detail));
+  const toggleMute = () => (child ? toggleProcessMute(deviceId, app.key, child.processId) : toggleAppMute(deviceId, app.key));
   mute.addEventListener("click", (event) => {
     event.stopPropagation();
     if (event.ctrlKey) return;
-    toggleAppMute(deviceId, app.key);
+    toggleMute();
   });
   // Middle-click on the icon hides the app on this device.
   el.querySelector(".icon-cell").addEventListener("auxclick", (event) => {
@@ -278,7 +310,7 @@ function createAppRow(deviceId, app, inPopup = false) {
   });
   // Ctrl+click (not on the slider) solos the app on its device.
   el.addEventListener("click", (event) => {
-    if (event.ctrlKey && !event.target.closest(".slider")) solo(deviceId, app.key, el);
+    if (event.ctrlKey && !child && !event.target.closest(".slider")) solo(deviceId, app.key, el);
   });
   if (!inPopup) {
     el.addEventListener("contextmenu", (event) => {
@@ -287,14 +319,21 @@ function createAppRow(deviceId, app, inPopup = false) {
     });
   }
   el.addEventListener("keydown", (event) => rowKeys(event, row.slider,
-    () => toggleAppMute(deviceId, app.key), () => !inPopup && openAppPopup(deviceId, app.key)));
+    toggleMute, () => !inPopup && openAppPopup(deviceId, app.key)));
   return row;
 }
 
+// A Lock rule disables the slider (it would only snap back) and shows the
+// lock badge on the icon.
 function updateAppRow(row, app) {
-  row.slider.update(percent(app.volume));
+  const source = row.processId === null ? app : app.sessions?.find((s) => s.processId === row.processId);
+  if (!source) return;
+  row.slider.update(percent(source.volume));
   row.el.querySelector(".app-value").textContent = row.slider.value;
-  row.el.classList.toggle("muted", app.muted);
+  row.el.classList.toggle("muted", source.muted);
+  const locked = isLocked(app);
+  row.slider.el.classList.toggle("disabled", locked);
+  row.el.querySelector(".lock-badge").hidden = !locked;
 }
 
 // Right/+ and Left/- step 1, M or . toggle mute, Space opens the popup.
@@ -320,27 +359,36 @@ function toggleDeviceMute(deviceId) {
   if (!device) return;
   device.muted = !device.muted;
   render();
-  invoke("set_device_mute", { deviceId, muted: device.muted }).then(refresh).catch(() => {});
+  invoke("set_device_mute", { deviceId, muted: device.muted, name: device.name }).then(refresh).catch(() => {});
 }
 function toggleAppMute(deviceId, key) {
   const app = findApp(deviceId, key);
   if (!app) return;
   app.muted = !app.muted;
   render();
-  invoke("set_app_mute", { deviceId, appKey: key, muted: app.muted }).then(refresh).catch(() => {});
+  invoke("set_app_mute", { deviceId, appKey: key, muted: app.muted, name: app.displayName })
+    .then(refresh).catch(() => {});
+}
+function toggleProcessMute(deviceId, key, processId) {
+  const session = findApp(deviceId, key)?.sessions?.find((s) => s.processId === processId);
+  if (!session) return;
+  session.muted = !session.muted;
+  render();
+  invoke("set_process_mute", { deviceId, appKey: key, processId, muted: session.muted })
+    .then(refresh).catch(() => {});
 }
 // Mutes every other app on the device and unmutes this one; if it is
 // already soloed, unmutes everything.
 function solo(deviceId, key, el) {
   const device = findDevice(deviceId);
   if (!device) return;
-  const apps = device.apps.filter((a) => !hiddenOn(deviceId).has(a.key));
+  const apps = device.apps.filter((a) => !a.hidden);
   const soloed = apps.every((a) => (a.key === key ? !a.muted : a.muted)) && apps.length > 1;
   for (const a of apps) {
     const muted = soloed ? false : a.key !== key;
     if (a.muted !== muted) {
       a.muted = muted;
-      invoke("set_app_mute", { deviceId, appKey: a.key, muted }).catch(() => {});
+      invoke("set_app_mute", { deviceId, appKey: a.key, muted, name: a.displayName }).catch(() => {});
     }
   }
   el.classList.remove("solo-pulse");
@@ -348,10 +396,17 @@ function solo(deviceId, key, el) {
   el.classList.add("solo-pulse");
   render();
 }
+// Hidden entries are saved (HiddenAppEntriesJson), so they stay hidden
+// after a restart, as in the original.
 function hideApp(deviceId, key, el) {
+  const app = findApp(deviceId, key);
+  if (!app) return;
   const finish = () => {
-    hiddenOn(deviceId).add(key);
+    app.hidden = true;
+    const device = findDevice(deviceId);
+    device.hiddenApps = [...hiddenOn(deviceId), entryOf(deviceId, app)];
     render();
+    invoke("hide_app", { entry: entryOf(deviceId, app) }).then(refresh).catch(() => {});
   };
   if (el) {
     el.classList.add("hiding");
@@ -385,7 +440,7 @@ function deviceMenuItems(deviceId) {
   const items = [];
   const device = findDevice(deviceId);
   if (!device) return items;
-  const visibleCount = snapshot.devices.filter((d) => !hiddenDevices.has(d.id)).length;
+  const visibleCount = snapshot.devices.filter((d) => !d.hidden).length;
   if (!device.isDefault) {
     items.push({ text: "Set as default device", action: () => {
       invoke("set_default_device", { deviceId }).then(refresh).catch(() => {});
@@ -393,24 +448,33 @@ function deviceMenuItems(deviceId) {
     } });
     if (visibleCount > 1) {
       items.push({ text: "Hide this device", action: () => {
-        hiddenDevices.add(deviceId);
+        device.hidden = true;
         closePopup();
         render();
+        invoke("hide_device", { deviceId, name: device.name }).then(refresh).catch(() => {});
       } });
     }
   }
-  const hidden = [...hiddenOn(deviceId)];
-  if (hidden.length) items.push({ submenu: "Restore hidden app entries on this device", items: restoreItems(deviceId) });
+  if (hiddenOn(deviceId).length) {
+    items.push({ submenu: "Restore hidden app entries on this device", items: restoreItems(deviceId) });
+  }
   return items;
 }
 
 function restoreItems(deviceId) {
-  const hidden = [...hiddenOn(deviceId)];
-  const name = (key) => findApp(deviceId, key)?.displayName || key.split(/[\\/]/).pop();
+  const entryName = (e) => e.displayName || e.exeName || e.appId;
+  const restored = () => {
+    closePopup();
+    refresh();
+  };
   return [
-    ...hidden.map((key) => ({ text: name(key), action: () => { hiddenOn(deviceId).delete(key); render(); } })),
+    ...hiddenOn(deviceId).map((e) => ({
+      text: entryName(e),
+      action: () => invoke("unhide_app", { entry: { ...e, deviceId } }).then(restored).catch(() => {}),
+    })),
     { separator: true },
-    { text: "Restore all on this device", action: () => { hiddenOn(deviceId).clear(); render(); } },
+    { text: "Restore all on this device",
+      action: () => invoke("unhide_device_apps", { deviceId }).then(restored).catch(() => {}) },
   ];
 }
 
@@ -441,20 +505,76 @@ function showPopup(title, tools, body, anchor, offset) {
   pop.style.top = `${top}px`;
 }
 
+// The rule buttons (FocusedAppItemViewModel), left to right: Lock, Launch
+// volume, Focus lost, Hard mute. Each takes effect and closes the popup.
+function ruleTools(deviceId, app) {
+  const rule = app.rule || { volumeMode: "None", volumePercent: 0, hardMuted: false, focusLostEnabled: false };
+  const change = (kind, value = 0) => {
+    closePopup();
+    invoke("app_rule", { change: {
+      deviceId, appKey: app.key, exeName: app.exeName, displayName: app.displayName,
+      iconPath: app.executable || null, kind, value,
+    } }).then(refresh).catch(() => {});
+  };
+  const active = (button, on) => button.classList.toggle("active", on);
+  const current = percent(findApp(deviceId, app.key)?.volume ?? app.volume);
+  const locked = rule.volumeMode === "Lock";
+  // Lock is direct: set the slider, then lock it there.
+  const lock = tool("", locked ? "Unlock this app's volume" : "Lock volume at the current level",
+    () => change(locked ? "none" : "lock", current));
+  active(lock, locked);
+  // Launch is a menu: picking the value is the action.
+  const launch = tool("", "Set launch volume", async (_, button) => {
+    const isLaunch = rule.volumeMode === "Launch";
+    await menuBelow(button, await buildItems([
+      ...[10, 20, 30, 50, 75].map((v) => ({
+        text: `${v}%`, checked: isLaunch && rule.volumePercent === v, action: () => change("launch", v),
+      })),
+      { separator: true },
+      { text: `Current volume (${current}%)`, action: () => change("launch", current) },
+      { separator: true },
+      { text: "No volume rule", checked: rule.volumeMode === "None", action: () => change("none") },
+    ]));
+  });
+  active(launch, rule.volumeMode === "Launch");
+  const focus = tool("", "Focus lost behavior", async (_, button) => {
+    await menuBelow(button, await buildItems([{
+      text: rule.focusLostEnabled ? "Exclude this app when focus is lost" : "Include this app when focus is lost",
+      checked: rule.focusLostEnabled, action: () => change("focusLost"),
+    }]));
+  });
+  active(focus, rule.focusLostEnabled);
+  const hard = tool("", "Hard mute this app", async (_, button) => {
+    await menuBelow(button, await buildItems([{
+      text: rule.hardMuted ? "Stop keeping muted" : "Keep muted (survives restart)",
+      checked: rule.hardMuted, action: () => change("hardMute"),
+    }]));
+  });
+  active(hard, rule.hardMuted);
+  return [lock, launch, focus, hard];
+}
+
 function openAppPopup(deviceId, key) {
   const device = findDevice(deviceId);
   const app = findApp(deviceId, key);
   const view = deviceViews.get(deviceId);
   const anchor = view?.apps.get(key)?.el;
   if (!device || !app || !anchor) return;
-  const row = createAppRow(deviceId, app, true);
-  updateAppRow(row, app);
-  const tools = [
-    tool("", "Hide this app entry", () => {
-      closePopup();
-      hideApp(deviceId, key, anchor);
-    }),
-  ];
+  // One row per process session, like the original's ChildApps.
+  const sessions = app.sessions?.length ? app.sessions : [null];
+  const rows = sessions.map((session) => {
+    const row = createAppRow(deviceId, app, true, session);
+    updateAppRow(row, app);
+    return row;
+  });
+  const body = document.createElement("div");
+  body.className = "apps";
+  body.replaceChildren(...rows.map((r) => r.el));
+  const tools = app.exeName ? ruleTools(deviceId, app) : [];
+  tools.push(tool("", "Hide this app entry", () => {
+    closePopup();
+    hideApp(deviceId, key, anchor);
+  }));
   if (!app.isSystemSounds) {
     tools.push(tool("", "Assign this app to a playback device", async (_, button) => {
       const current = findApp(deviceId, key)?.routedDeviceId || null;
@@ -468,10 +588,10 @@ function openAppPopup(deviceId, key) {
     }));
   }
   tools.push(tool("", "Close", () => closePopup(), "close"));
-  popup = { kind: "app", deviceId, key, row };
-  // Shifted up by 48 + 6 + 1 so its row lies over the original row.
-  showPopup(app.displayName, tools, row.el, anchor, 48 + 6 + 1);
-  row.slider.redraw();
+  popup = { kind: "app", deviceId, key, rows };
+  // Shifted up by 48 + 6 + 1 so its first row lies over the original row.
+  showPopup(app.displayName, tools, body, anchor, 48 + 6 + 1);
+  rows.forEach((r) => r.slider.redraw());
 }
 
 function openDevicePopup(deviceId) {
@@ -510,12 +630,16 @@ function closePopup(immediate = false) {
 $("dismiss").addEventListener("click", () => closePopup());
 
 // ---------- header ----------
-$("expand").addEventListener("click", () => {
-  expanded = !expanded;
+function showExpanded() {
   document.body.classList.toggle("expanded", expanded);
   $("expand").setAttribute("aria-label", expanded
     ? "Collapse to show only the default playback device"
     : "Expand to show all playback devices");
+}
+$("expand").addEventListener("click", () => {
+  expanded = !expanded;
+  showExpanded();
+  invoke("set_expanded", { expanded }).catch(() => {});
   render(true);
 });
 // The original's header menu: its handler never matches, so it does nothing.
@@ -543,11 +667,11 @@ function render(cascade = false) {
   const container = $("devices");
   $("no-devices").hidden = snapshot.devices.length > 0;
   $("list-wrap").hidden = snapshot.devices.length === 0;
-  const visibleCount = snapshot.devices.filter((d) => !hiddenDevices.has(d.id)).length;
+  const visibleCount = snapshot.devices.filter((d) => !d.hidden).length;
   $("header").hidden = shown.length === 0;
   $("expand").disabled = visibleCount <= 1;
   $("header-name").textContent = shown[0]?.name || "";
-  $("restore").hidden = !shown[0] || hiddenOn(shown[0].id).size === 0;
+  $("restore").hidden = !shown[0] || hiddenOn(shown[0].id).length === 0;
 
   const keep = new Set(shown.map((d) => d.id));
   for (const [id, view] of deviceViews) {
@@ -570,7 +694,7 @@ function render(cascade = false) {
     updateDeviceRow(view.el.querySelector(".device-row"), view.slider, device);
 
     const appsEl = view.el.querySelector(".apps");
-    const apps = sortApps(device.apps.filter((a) => !hiddenOn(device.id).has(a.key)));
+    const apps = sortApps(device.apps.filter((a) => !a.hidden));
     const keepApps = new Set(apps.map((a) => a.key));
     for (const [key, row] of view.apps) {
       if (!keepApps.has(key)) {
@@ -591,7 +715,7 @@ function render(cascade = false) {
   if (popup) {
     const app = popup.kind === "app" ? findApp(popup.deviceId, popup.key) : null;
     const device = findDevice(popup.deviceId);
-    if (popup.kind === "app" && app) updateAppRow(popup.row, app);
+    if (popup.kind === "app" && app) popup.rows.forEach((r) => updateAppRow(r, app));
     else if (popup.kind === "device" && device) updateDeviceRow(popup.row, popup.slider, device);
     else closePopup(true);
   }
@@ -649,10 +773,14 @@ async function readPeaks() {
       if (popup?.kind === "device" && popup.deviceId === p.deviceId) popup.slider.setPeaks(p.channels, device.volume);
     } else {
       const app = device.apps.find((a) => a.key === p.appKey);
-      const row = view.apps.get(p.appKey);
-      if (app && row) row.slider.setPeaks(p.channels, app.volume);
-      if (app && popup?.kind === "app" && popup.deviceId === p.deviceId && popup.key === p.appKey) {
-        popup.row.slider.setPeaks(p.channels, app.volume);
+      if (!app) continue;
+      const inPopup = popup?.kind === "app" && popup.deviceId === p.deviceId && popup.key === p.appKey;
+      if (p.processId === null || p.processId === undefined) {
+        view.apps.get(p.appKey)?.slider.setPeaks(p.channels, app.volume);
+      } else if (inPopup) {
+        const session = app.sessions?.find((s) => s.processId === p.processId);
+        const row = popup.rows.find((r) => r.processId === p.processId);
+        if (session && row) row.slider.setPeaks(p.channels, session.volume);
       }
     }
   }
@@ -660,20 +788,59 @@ async function readPeaks() {
     view.slider.animatePeaks();
     for (const row of view.apps.values()) row.slider.animatePeaks();
   }
-  if (popup) (popup.slider || popup.row.slider).animatePeaks();
+  if (popup?.slider) popup.slider.animatePeaks();
+  popup?.rows?.forEach((r) => r.slider.animatePeaks());
 }
 
 // ---------- show / hide ----------
-async function applyTheme() {
+// The original's flyout colours for the system theme (App.xaml): dark,
+// light (SystemUsesLightTheme), or accent ("Show accent colour on Start
+// and taskbar"), plus UseCustomSliderColors and the peak meter style.
+const rgba = (hex, alpha) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+async function applyConfig() {
+  let config;
   try {
-    const theme = await invoke("flyout_theme");
-    const root = document.documentElement.style;
-    root.setProperty("--accent", theme.accent);
-    const [r, g, b] = [1, 3, 5].map((i) => parseInt(theme.accent.slice(i, i + 2), 16));
-    root.setProperty("--accent-30", `rgba(${r}, ${g}, ${b}, ${theme.transparency ? 0.3 : 0.5})`);
-    document.body.classList.toggle("opaque", !theme.transparency);
+    config = await invoke("flyout_config");
   } catch {
-    // Keep the defaults.
+    return; // Keep the defaults.
+  }
+  for (const key of Object.keys(settings)) {
+    if (config[key] !== undefined) settings[key] = config[key];
+  }
+  if (!configLoaded) {
+    configLoaded = true;
+    expanded = config.isExpanded;
+    showExpanded();
+  }
+  const accentMode = config.accentOnTaskbar && !config.light;
+  const root = document.documentElement.style;
+  const body = document.body.classList;
+  body.toggle("light", config.light);
+  body.toggle("accent-mode", accentMode);
+  body.toggle("opaque", !config.transparency);
+  root.setProperty("--accent", config.accent);
+  root.setProperty("--accent-dark1", config.accentDark1);
+  root.setProperty("--accent-30", rgba(config.accent, config.transparency ? 0.3 : 0.5));
+  root.setProperty("--accent-22", rgba(config.accent, 0.22));
+  // FlyoutThemeTrackRightBackground: accent mode, light, dark.
+  root.setProperty("--track-rest", accentMode ? "rgba(255, 255, 255, 0.5)"
+    : config.light ? "rgba(0, 0, 0, 0.224)" : "rgba(255, 255, 255, 0.224)");
+  // Custom colours; an unset one falls back to the original's defaults
+  // (#0078D7 for thumb, fill and peaks, #505050 for the track).
+  const custom = config.customColors;
+  const set = (name, value) => (value ? root.setProperty(name, value) : root.removeProperty(name));
+  set("--thumb", custom && (custom.thumb || "rgb(0, 120, 215)"));
+  set("--fill", custom && (custom.fill || "rgb(0, 120, 215)"));
+  set("--track", custom && (custom.track || "rgb(80, 80, 80)"));
+  set("--peak", custom && (custom.peak || "rgb(0, 120, 215)"));
+  body.toggle("custom-colors", !!custom);
+  for (let i = 0; i <= 4; i++) body.toggle(`peak-style-${i}`, settings.peakMeterStyle === i);
+  if (visible) {
+    clearInterval(peakTimer);
+    peakTimer = setInterval(readPeaks, 1000 / settings.peakMeterFps);
   }
 }
 
@@ -682,7 +849,7 @@ async function start() {
   closePopup(true);
   const rootEl = $("root");
   rootEl.classList.remove("closing", "opening");
-  await applyTheme();
+  await applyConfig();
   await refresh();
   void rootEl.offsetWidth;
   rootEl.classList.add("opening");
@@ -720,6 +887,12 @@ document.addEventListener("pointerdown", () => document.body.classList.remove("k
 document.addEventListener("keydown", (event) => {
   if (["Tab", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
     document.body.classList.add("keyboard");
+  }
+  // Ctrl+Z / Ctrl+Y undo and redo the last volume or mute change.
+  if (event.ctrlKey && !event.altKey && (event.key === "z" || event.key === "y")) {
+    invoke(event.key === "z" ? "undo" : "redo").then((applied) => applied && refresh()).catch(() => {});
+    event.preventDefault();
+    return;
   }
   if (event.key === "Escape") {
     if (popup) closePopup();

@@ -20,6 +20,8 @@ pub enum Change {
     Devices,
     /// An endpoint's volume or mute changed.
     Volume,
+    /// An app session appeared, ended, or its volume or mute changed.
+    Sessions,
 }
 
 #[derive(Clone, Debug, Error)]
@@ -49,6 +51,18 @@ pub struct AppSession {
     pub peak: f32,
     /// Output the app is routed to, when not following the default.
     pub routed_device_id: Option<String>,
+    /// Each process's own session (the original's child rows).
+    pub sessions: Vec<ProcessSession>,
+}
+
+/// One process's session within an app.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProcessSession {
+    pub process_id: u32,
+    pub display_name: String,
+    pub volume: f32,
+    pub muted: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -73,6 +87,8 @@ pub struct Device {
 pub struct Peaks {
     pub device_id: String,
     pub app_key: Option<String>,
+    /// One process of the app; `None` for the whole app (loudest session).
+    pub process_id: Option<u32>,
     pub channels: [f32; 2],
 }
 
@@ -136,7 +152,7 @@ impl AudioEngine {
         }
     }
     /// Calls `listener` from a system thread whenever devices, the default
-    /// device or an endpoint's volume/mute change.
+    /// device, an endpoint's volume/mute or an app session change.
     pub fn watch(
         &self,
         listener: impl Fn(Change) + Send + Sync + 'static,
@@ -146,6 +162,7 @@ impl AudioEngine {
             listener(match c {
                 notify::Change::Devices => Change::Devices,
                 notify::Change::Volume => Change::Volume,
+                notify::Change::Sessions => Change::Sessions,
             })
         }));
         #[cfg(not(windows))]
@@ -198,6 +215,44 @@ impl AudioEngine {
         #[cfg(not(windows))]
         {
             let _ = (device_id, app_key, volume);
+            Err(AudioError::Unsupported)
+        }
+    }
+    /// One process's session of an app (the popup's child rows).
+    pub fn set_process_volume(
+        &self,
+        device_id: &str,
+        app_key: &str,
+        process_id: u32,
+        volume: f32,
+    ) -> Result<(), AudioError> {
+        #[cfg(windows)]
+        return self.inner.set_process_volume(
+            device_id,
+            app_key,
+            process_id,
+            volume.clamp(0.0, 1.0),
+        );
+        #[cfg(not(windows))]
+        {
+            let _ = (device_id, app_key, process_id, volume);
+            Err(AudioError::Unsupported)
+        }
+    }
+    pub fn set_process_mute(
+        &self,
+        device_id: &str,
+        app_key: &str,
+        process_id: u32,
+        muted: bool,
+    ) -> Result<(), AudioError> {
+        #[cfg(windows)]
+        return self
+            .inner
+            .set_process_mute(device_id, app_key, process_id, muted);
+        #[cfg(not(windows))]
+        {
+            let _ = (device_id, app_key, process_id, muted);
             Err(AudioError::Unsupported)
         }
     }

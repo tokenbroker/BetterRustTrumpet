@@ -6,11 +6,19 @@
 //! "Start with Windows". Everything else in PARITY.md is still to come.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod flyout;
 mod hotkeys;
+mod rules;
+mod store;
 
 use bt_app::win32::{icons, startup, webview, wheel};
 use bt_audio::{AudioEngine, Snapshot};
+use bt_core::{
+    settings::{Key, Value},
+    undo::UndoHistory,
+};
 use bt_media::{Command as MediaCommand, MediaEngine, NowPlaying};
+use flyout::{record_volume, undo_target};
 use std::{
     collections::HashMap,
     sync::{
@@ -19,6 +27,7 @@ use std::{
     },
     time::{Duration, Instant},
 };
+use store::Store;
 use tauri::{
     AppHandle, Emitter, Manager, PhysicalPosition, PhysicalRect, Rect, State, WebviewWindow,
     WindowEvent,
@@ -29,8 +38,6 @@ use tauri::{
 const FLYOUT: &str = "flyout";
 const MEDIA: &str = "media";
 const TIP: &str = "tip";
-/// The original's default MediaPopupHoverDelay (seconds).
-const MEDIA_HOVER_DELAY: Duration = Duration::from_millis(2000);
 /// The original's popup hide timer after the pointer leaves.
 const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(800);
 /// The original's flyout width (`WindowAndItemSize`); tauri.conf.json matches.
@@ -76,6 +83,11 @@ struct App {
     media_tray: Mutex<Option<Rect>>,
     /// Registered shortcut labels for the tray menu ("action: keys").
     shortcuts: Mutex<Vec<String>>,
+    /// The user's BetterTrumpet settings plus this app's changes.
+    store: Mutex<Store>,
+    /// Volume and mute changes for Ctrl+Z / Ctrl+Y (VolumeUndoService).
+    undo: Mutex<UndoHistory>,
+    launch: Mutex<rules::LaunchTracker>,
 }
 
 fn error(e: impl std::fmt::Display) -> String {
@@ -83,9 +95,12 @@ fn error(e: impl std::fmt::Display) -> String {
 }
 
 // Audio commands are async so they run off the UI thread.
+/// Devices and apps with their hidden state and app rules.
 #[tauri::command]
-async fn snapshot(app: State<'_, App>) -> Result<Snapshot, String> {
-    app.audio.snapshot().map_err(error)
+async fn snapshot(app: State<'_, App>) -> Result<serde_json::Value, String> {
+    let snapshot = app.audio.snapshot().map_err(error)?;
+    let mut store = app.store.lock().map_err(error)?;
+    Ok(rules::annotate(&snapshot, &mut store))
 }
 #[tauri::command]
 async fn set_default_device(handle: AppHandle, device_id: String) -> Result<(), String> {
@@ -101,20 +116,6 @@ async fn set_default_device(handle: AppHandle, device_id: String) -> Result<(), 
 #[tauri::command]
 async fn peaks(app: State<'_, App>) -> Result<Vec<bt_audio::Peaks>, String> {
     app.audio.peaks().map_err(error)
-}
-
-/// The Windows colours the original flyout uses.
-#[derive(serde::Serialize)]
-struct FlyoutTheme {
-    accent: String,
-    transparency: bool,
-}
-#[tauri::command]
-fn flyout_theme() -> FlyoutTheme {
-    FlyoutTheme {
-        accent: bt_app::win32::theme::accent(),
-        transparency: bt_app::win32::theme::transparency(),
-    }
 }
 
 #[tauri::command]
@@ -178,46 +179,6 @@ async fn app_icon(app: State<'_, App>, path: String) -> Result<Option<String>, S
     app.icons.lock().map_err(error)?.insert(path, url.clone());
     Ok(url)
 }
-#[tauri::command]
-async fn set_device_volume(
-    app: State<'_, App>,
-    device_id: String,
-    volume: f32,
-) -> Result<(), String> {
-    app.audio
-        .set_device_volume(&device_id, volume)
-        .map_err(error)
-}
-#[tauri::command]
-async fn set_device_mute(
-    app: State<'_, App>,
-    device_id: String,
-    muted: bool,
-) -> Result<(), String> {
-    app.audio.set_device_mute(&device_id, muted).map_err(error)
-}
-#[tauri::command]
-async fn set_app_volume(
-    app: State<'_, App>,
-    device_id: String,
-    app_key: String,
-    volume: f32,
-) -> Result<(), String> {
-    app.audio
-        .set_app_volume(&device_id, &app_key, volume)
-        .map_err(error)
-}
-#[tauri::command]
-async fn set_app_mute(
-    app: State<'_, App>,
-    device_id: String,
-    app_key: String,
-    muted: bool,
-) -> Result<(), String> {
-    app.audio
-        .set_app_mute(&device_id, &app_key, muted)
-        .map_err(error)
-}
 /// Toggles pinning and returns the new state.
 #[tauri::command]
 fn toggle_pin(app: State<'_, App>) -> bool {
@@ -261,8 +222,7 @@ fn fit_flyout(window: WebviewWindow, height: f64) -> Result<(), String> {
 /// meanwhile.
 fn hide(window: &WebviewWindow) {
     let state = window.state::<App>();
-    if !window.is_visible().unwrap_or(false) || state.flyout_hiding.swap(true, Ordering::Relaxed)
-    {
+    if !window.is_visible().unwrap_or(false) || state.flyout_hiding.swap(true, Ordering::Relaxed) {
         return;
     }
     let generation = state.flyout_generation.load(Ordering::Relaxed);
@@ -560,10 +520,13 @@ fn hide_tip(tip: &WebviewWindow) {
 /// (bottom stays put), or shrinks it back once the collapse has played.
 #[tauri::command]
 fn media_expand(handle: AppHandle, expanded: bool) {
-    handle
-        .state::<App>()
-        .media_expanded
-        .store(expanded, Ordering::Relaxed);
+    let state = handle.state::<App>();
+    state.media_expanded.store(expanded, Ordering::Relaxed);
+    if let Ok(mut store) = state.store.lock() {
+        if store.bool(Key::MediaPopupRememberExpanded) {
+            store.set(Key::MediaPopupIsExpanded, Value::Bool(expanded));
+        }
+    }
     if let Some(window) = handle.get_webview_window(MEDIA) {
         place_media(&handle, &window);
     }
@@ -628,16 +591,33 @@ fn schedule_media_hide(app: AppHandle) {
     });
 }
 
-/// After the hover delay, shows the media popup if the pointer is still on
-/// the tray icon, the flyout is closed and something is playing or paused.
+/// After MediaPopupHoverDelay, shows the media popup if it is enabled, the
+/// pointer is still on the tray icon, the flyout is closed and something is
+/// playing (or paused, unless MediaPopupShowOnlyWhenPlaying).
 fn schedule_media_show(app: AppHandle, tray: Rect) {
+    let (enabled, delay, only_playing) = match app.state::<App>().store.lock() {
+        Ok(store) => (
+            store.bool(Key::MediaPopupEnabled),
+            store.float(Key::MediaPopupHoverDelay),
+            store.bool(Key::MediaPopupShowOnlyWhenPlaying),
+        ),
+        Err(_) => return,
+    };
+    if !enabled {
+        return;
+    }
+    let delay = Duration::from_secs_f64(if delay.is_finite() {
+        delay.clamp(0.0, 10.0)
+    } else {
+        2.0
+    });
     let generation = app
         .state::<App>()
         .hover_generation
         .fetch_add(1, Ordering::Relaxed)
         + 1;
     std::thread::spawn(move || {
-        std::thread::sleep(MEDIA_HOVER_DELAY);
+        std::thread::sleep(delay);
         let state = app.state::<App>();
         if state.hover_generation.load(Ordering::Relaxed) != generation
             || !state.tray_hover.load(Ordering::Relaxed)
@@ -651,7 +631,7 @@ fn schedule_media_show(app: AppHandle, tray: Rect) {
             .media
             .as_ref()
             .and_then(|m| m.now_playing().ok().flatten())
-            .is_some();
+            .is_some_and(|now| now.playing || !only_playing);
         if flyout_open || !playing {
             return;
         }
@@ -668,6 +648,7 @@ fn show(app: &AppHandle, tray: Option<Rect>) {
     state.flyout_generation.fetch_add(1, Ordering::Relaxed);
     state.flyout_hiding.store(false, Ordering::Relaxed);
     place_flyout(app, &window, tray);
+    flyout::apply_backdrop(&window);
     set_active(&window, true);
     let _ = window.show();
     let _ = window.set_focus();
@@ -796,9 +777,14 @@ fn watch_devices(app: AppHandle) {
         let mut last_menu = String::new();
         while let Ok(first) = changes.recv() {
             let mut devices_changed = first == bt_audio::Change::Devices;
+            let mut sessions_changed = first == bt_audio::Change::Sessions;
             std::thread::sleep(Duration::from_millis(120));
             while let Ok(more) = changes.try_recv() {
                 devices_changed |= more == bt_audio::Change::Devices;
+                sessions_changed |= more == bt_audio::Change::Sessions;
+            }
+            if sessions_changed || devices_changed {
+                enforce_rules(&app);
             }
             let Ok(devices) = audio.devices() else {
                 continue;
@@ -828,12 +814,39 @@ fn watch_devices(app: AppHandle) {
     });
 }
 
+/// Applies the app rules (Lock, Launch, hard mute) when there are any; the
+/// session events that call this are what keep them enforced.
+fn enforce_rules(app: &AppHandle) {
+    let state = app.state::<App>();
+    let Ok(mut store) = state.store.lock() else {
+        return;
+    };
+    if !rules::any_active(&mut store) {
+        return;
+    }
+    let Ok(snapshot) = state.audio.snapshot() else {
+        return;
+    };
+    if let Ok(mut tracker) = state.launch.lock() {
+        rules::enforce(&state.audio, &mut store, &mut tracker, &snapshot);
+    }
+}
+
 /// Adjusts every unmuted output by `delta` percent, like the original's
 /// absolute volume hotkeys.
 fn step_all_devices(app: &AppHandle, delta: f32) {
-    let audio = &app.state::<App>().audio;
+    let state = app.state::<App>();
+    let audio = &state.audio;
     if let Ok(devices) = audio.devices() {
         for device in devices.devices.iter().filter(|d| !d.muted) {
+            let old = (device.volume * 100.0).round() as i32;
+            let new = (old + delta as i32).clamp(0, 100);
+            record_volume(
+                &state,
+                undo_target(&device.id, &device.name, true),
+                old,
+                new,
+            );
             let _ = audio.set_device_volume(&device.id, device.volume + delta / 100.0);
         }
     }
@@ -850,10 +863,15 @@ fn start_tray_wheel(app: AppHandle) {
     });
     std::thread::spawn(move || {
         while let Ok(delta) = deltas.recv() {
-            let audio = &app.state::<App>().audio;
+            let state = app.state::<App>();
+            let audio = &state.audio;
             if let Ok(devices) = audio.devices() {
                 if let Some(device) = devices.devices.iter().find(|d| d.is_default) {
                     let step = f32::from(delta.signum()) * 0.02;
+                    let old = (device.volume * 100.0).round() as i32;
+                    let new = (old + i32::from(delta.signum()) * 2).clamp(0, 100);
+                    let target = undo_target(&device.id, &device.name, true);
+                    record_volume(&state, target, old, new);
                     let _ = audio.set_device_volume(&device.id, device.volume + step);
                 }
             }
@@ -864,7 +882,11 @@ fn start_tray_wheel(app: AppHandle) {
 fn register_hotkeys(app: &tauri::App) {
     use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
     let mut labels = vec![];
-    for binding in hotkeys::bindings() {
+    let bindings = match app.state::<App>().store.lock() {
+        Ok(store) => hotkeys::bindings(&store),
+        Err(_) => return,
+    };
+    for binding in bindings {
         let action = binding.action;
         let registered = app
             .global_shortcut()
@@ -940,6 +962,9 @@ fn main() {
             std::process::exit(1);
         }
     };
+    let store = Store::open();
+    let media_expanded =
+        store.bool(Key::MediaPopupRememberExpanded) && store.bool(Key::MediaPopupIsExpanded);
     tauri::Builder::default()
         // A second launch opens the running instance's flyout instead.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
@@ -958,14 +983,31 @@ fn main() {
             flyout_generation: AtomicU64::new(0),
             flyout_hiding: AtomicBool::new(false),
             media_hiding: AtomicBool::new(false),
-            media_expanded: AtomicBool::new(false),
+            media_expanded: AtomicBool::new(media_expanded),
             media_tray: Mutex::new(None),
             shortcuts: Mutex::new(vec![]),
+            store: Mutex::new(store),
+            undo: Mutex::new(UndoHistory::default()),
+            launch: Mutex::new(rules::LaunchTracker::default()),
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
             peaks,
-            flyout_theme,
+            flyout::flyout_config,
+            flyout::set_expanded,
+            flyout::hide_app,
+            flyout::unhide_app,
+            flyout::unhide_device_apps,
+            flyout::hide_device,
+            flyout::app_rule,
+            flyout::undo,
+            flyout::redo,
+            flyout::set_device_volume,
+            flyout::set_device_mute,
+            flyout::set_app_volume,
+            flyout::set_app_mute,
+            flyout::set_process_volume,
+            flyout::set_process_mute,
             set_default_device,
             app_icon,
             now_playing,
@@ -974,10 +1016,6 @@ fn main() {
             set_app_device,
             media_expand,
             media_app,
-            set_device_volume,
-            set_device_mute,
-            set_app_volume,
-            set_app_mute,
             hide_flyout,
             toggle_pin,
             is_pinned,
@@ -991,19 +1029,10 @@ fn main() {
             if let Some(tip) = app.get_webview_window(TIP) {
                 let _ = tip.set_ignore_cursor_events(true);
             }
-            // The original's flyout backdrop: DWM acrylic tinted #B3000000
-            // (ApplicationBackgroundDarkTheme at 0.7), when transparency
-            // effects are on; otherwise the page paints a solid colour.
+            // The original's flyout backdrop (refreshed on every show, so
+            // theme changes apply like the original's).
             if let Some(flyout) = app.get_webview_window(FLYOUT) {
-                if bt_app::win32::theme::transparency() {
-                    use tauri::window::{Color, Effect, EffectsBuilder};
-                    let _ = flyout.set_effects(
-                        EffectsBuilder::new()
-                            .effect(Effect::Acrylic)
-                            .color(Color(0, 0, 0, 179))
-                            .build(),
-                    );
-                }
+                flyout::apply_backdrop(&flyout);
             }
             let devices = app.state::<App>().audio.devices().unwrap_or_default();
             let menu = build_menu(&handle, &devices)?;
@@ -1047,6 +1076,9 @@ fn main() {
                 })
                 .build(app)?;
             watch_devices(handle.clone());
+            // Launch rules for apps already playing, plus Lock and hard mute.
+            let rules_handle = handle.clone();
+            std::thread::spawn(move || enforce_rules(&rules_handle));
             start_tray_wheel(handle);
             // `--show` opens the flyout at startup (testing, shortcuts).
             if std::env::args().any(|a| a == "--show") {

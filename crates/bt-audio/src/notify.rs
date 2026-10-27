@@ -6,12 +6,15 @@ use windows::{
     Win32::{
         Foundation::PROPERTYKEY,
         Media::Audio::{
-            AUDIO_VOLUME_NOTIFICATION_DATA, DEVICE_STATE, EDataFlow, ERole,
+            AUDIO_VOLUME_NOTIFICATION_DATA, AudioSessionDisconnectReason, AudioSessionState,
+            DEVICE_STATE, EDataFlow, ERole,
             Endpoints::{IAudioEndpointVolumeCallback, IAudioEndpointVolumeCallback_Impl},
-            IMMNotificationClient, IMMNotificationClient_Impl,
+            IAudioSessionControl, IAudioSessionEvents, IAudioSessionEvents_Impl,
+            IAudioSessionNotification, IAudioSessionNotification_Impl, IMMNotificationClient,
+            IMMNotificationClient_Impl,
         },
     },
-    core::{HRESULT, IUnknown, IUnknown_Vtbl, PCWSTR, implement, interface},
+    core::{BOOL, GUID, HRESULT, IUnknown, IUnknown_Vtbl, PCWSTR, Ref, implement, interface},
 };
 
 /// What changed; the app re-reads state rather than trusting payloads.
@@ -21,6 +24,8 @@ pub enum Change {
     Devices,
     /// An endpoint's volume or mute changed.
     Volume,
+    /// An app session appeared, ended, or its volume or mute changed.
+    Sessions,
 }
 
 pub type Listener = Arc<dyn Fn(Change) + Send + Sync>;
@@ -72,6 +77,61 @@ pub struct VolumeWatcher {
 impl IAudioEndpointVolumeCallback_Impl for VolumeWatcher_Impl {
     fn OnNotify(&self, _: *mut AUDIO_VOLUME_NOTIFICATION_DATA) -> windows::core::Result<()> {
         (self.listener)(Change::Volume);
+        Ok(())
+    }
+}
+
+/// New sessions on one device; their own events are registered by the
+/// worker (`rewatch`), never from inside this callback.
+#[implement(IAudioSessionNotification)]
+pub struct SessionCreatedWatcher {
+    pub listener: Listener,
+    pub rewatch: Arc<dyn Fn() + Send + Sync>,
+}
+
+impl IAudioSessionNotification_Impl for SessionCreatedWatcher_Impl {
+    fn OnSessionCreated(&self, _: Ref<IAudioSessionControl>) -> windows::core::Result<()> {
+        (self.rewatch)();
+        (self.listener)(Change::Sessions);
+        Ok(())
+    }
+}
+
+/// One session's volume, mute and lifetime changes.
+#[implement(IAudioSessionEvents)]
+pub struct SessionWatcher {
+    pub listener: Listener,
+}
+
+impl IAudioSessionEvents_Impl for SessionWatcher_Impl {
+    fn OnDisplayNameChanged(&self, _: &PCWSTR, _: *const GUID) -> windows::core::Result<()> {
+        Ok(())
+    }
+    fn OnIconPathChanged(&self, _: &PCWSTR, _: *const GUID) -> windows::core::Result<()> {
+        Ok(())
+    }
+    fn OnSimpleVolumeChanged(&self, _: f32, _: BOOL, _: *const GUID) -> windows::core::Result<()> {
+        (self.listener)(Change::Sessions);
+        Ok(())
+    }
+    fn OnChannelVolumeChanged(
+        &self,
+        _: u32,
+        _: *const f32,
+        _: u32,
+        _: *const GUID,
+    ) -> windows::core::Result<()> {
+        Ok(())
+    }
+    fn OnGroupingParamChanged(&self, _: *const GUID, _: *const GUID) -> windows::core::Result<()> {
+        Ok(())
+    }
+    fn OnStateChanged(&self, _: AudioSessionState) -> windows::core::Result<()> {
+        (self.listener)(Change::Sessions);
+        Ok(())
+    }
+    fn OnSessionDisconnected(&self, _: AudioSessionDisconnectReason) -> windows::core::Result<()> {
+        (self.listener)(Change::Sessions);
         Ok(())
     }
 }
