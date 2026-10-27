@@ -6,43 +6,61 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main id="flyout" aria-label="Volume mixer">
-    <p id="pin" hidden>Pinned &middot; Ctrl+P to unpin</p>
-    <div id="devices"></div>
-    <p id="status" hidden></p>
-  </main>
+  <!-- The original's FlyoutWindow / DeviceView / AppItemView layout. -->
+  <div id="root">
+    <div id="scroller">
+      <div id="no-devices" hidden>It doesn't look like you have any playback devices.</div>
+      <div id="list-wrap">
+        <div id="devices"></div>
+        <div id="header" hidden>
+          <button id="expand" type="button" aria-label="Expand to show all playback devices">
+            <span id="header-name"></span>
+            <span id="chevron" class="glyph" aria-hidden="true">&#xE010;</span>
+          </button>
+          <button id="restore" class="header-button glyph" type="button" title="Restore hidden app entries on this device" hidden>&#xE18B;</button>
+          <button id="pin" class="header-button glyph" type="button" title="Pin window" aria-label="Pin window">&#xE840;</button>
+        </div>
+      </div>
+    </div>
+    <div id="dismiss" hidden></div>
+    <div id="popup" hidden>
+      <div class="popup-header">
+        <span id="popup-title"></span>
+        <div id="popup-toolbar"></div>
+      </div>
+      <div id="popup-body"></div>
+    </div>
+  </div>
+
   <template id="device-template">
     <section class="device">
-      <header>
-        <span class="device-name"></span>
-        <span class="default-badge" hidden>Default</span>
-        <button class="make-default" type="button" hidden>Set default</button>
-      </header>
-      <div class="row master">
-        <button class="mute" type="button" aria-label="Mute device"></button>
-        <div class="slider">
-          <input type="range" min="0" max="100" step="1" aria-label="Device volume" />
-          <div class="peak"><div class="peak-fill"></div></div>
+      <div class="device-block">
+        <div class="device-title"></div>
+        <div class="device-row row" tabindex="0">
+          <button class="mute device-mute" type="button" title="Toggle mute">
+            <span class="glyph ghost" aria-hidden="true"></span>
+            <span class="glyph level" aria-hidden="true"></span>
+          </button>
+          <div class="slider"><div class="rail"></div><div class="fill"></div><div class="thumb"></div><div class="peak p1"></div><div class="peak p2"></div></div>
+          <div class="value device-value"></div>
         </div>
-        <span class="value"></span>
       </div>
       <div class="apps"></div>
     </section>
   </template>
+
   <template id="app-template">
-    <div class="row app">
-      <button class="mute icon" type="button"><span class="initial"></span><img class="app-icon" alt="" hidden /></button>
-      <div class="slider">
-        <div class="app-line">
-          <span class="app-name"></span>
-          <select class="route" aria-label="Output device"></select>
-        </div>
-        <input type="range" min="0" max="100" step="1" />
-        <div class="peak"><div class="peak-fill"></div></div>
+    <div class="app row" tabindex="0">
+      <div class="icon-cell">
+        <img class="app-icon" alt="" hidden />
+        <div class="letter"></div>
+        <button class="mute app-mute" type="button"><span class="glyph" aria-hidden="true">&#xE74F;</span></button>
       </div>
-      <span class="value"></span>
+      <div class="slider"><div class="rail"></div><div class="fill"></div><div class="thumb"></div><div class="peak p1"></div><div class="peak p2"></div></div>
+      <div class="value app-value"></div>
     </div>
   </template>
+
   <script src="main.js"></script>
 </body>
 </html>

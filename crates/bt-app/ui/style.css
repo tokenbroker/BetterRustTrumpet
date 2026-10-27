@@ -1,112 +1,130 @@
-/* Sage Glass tokens from designglobal.md: indigo atmosphere, black shell,
-   one desaturated violet accent. */
+/* The original flyout, dark system theme (App.xaml, Mutable.xaml,
+   FlyoutWindow/DeviceView/AppItemView). --accent is the Windows accent. */
 :root {
-  --shell: #050706;
-  --text: #f4f7f5;
-  --text-muted: rgba(244, 247, 245, 0.58);
-  --accent: #9b7bea;
-  --accent-strong: #b196f1;
-  --card: rgba(22, 18, 32, 0.68);
-  --stroke: rgba(255, 255, 255, 0.1);
-  --radius-control: 14px;
-  --radius-card: 18px;
+  --accent: #0078d7;
+  --accent-30: rgba(0, 120, 215, 0.3);
+  --text: #fff;
+  --track-rest: rgba(255, 255, 255, 0.224); /* #39FFFFFF */
+  --muted-opacity: 0.4;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body {
-  margin: 0;
-  background: var(--shell);
-  color: var(--text);
-  font: 13px/1.35 "Segoe UI Variable Text", "Segoe UI", sans-serif;
-  user-select: none;
-  overflow: hidden;
+  margin: 0; height: 100%; overflow: hidden; background: transparent;
+  color: var(--text); font: 15px/1.2 "Segoe UI", sans-serif; user-select: none;
 }
-html, body { height: 100%; }
-body { background: linear-gradient(145deg, #47336f 0%, #3b2d8c 35%, #202064 70%, #11123f 100%); }
-/* No min-height here: its height is measured to size the window, so it must
-   reflect content only. Overflow scrolls when the content is capped. */
-#flyout { padding: 8px; }
-body { overflow-y: auto; }
-#devices { display: flex; flex-direction: column; gap: 8px; }
-.device {
-  background: var(--card);
-  border: 1px solid var(--stroke);
-  border-radius: var(--radius-card);
-  padding: 10px 12px 6px;
-}
-.device header {
-  display: flex; align-items: center; gap: 8px;
-  font-weight: 600; margin-bottom: 4px;
-}
-.device-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.default-badge {
-  font-size: 11px; font-weight: 500; color: var(--accent-strong);
-  background: rgba(155, 123, 234, 0.16); border-radius: 999px; padding: 1px 8px;
-}
-.apps { border-top: 1px solid var(--stroke); margin-top: 6px; padding-top: 2px; }
-.apps:empty { display: none; }
-.row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
-.slider { flex: 1; position: relative; min-width: 0; }
-.app-name {
-  display: block; font-size: 12px; color: var(--text-muted);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px;
-}
-.value { width: 30px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-muted); }
-input[type="range"] {
-  -webkit-appearance: none; appearance: none; width: 100%; height: 18px;
-  background: transparent; margin: 0; cursor: pointer;
-  --fill: 50%;
-}
-input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px; border-radius: 999px;
-  background: linear-gradient(to right, var(--accent) var(--fill), rgba(255,255,255,.16) var(--fill));
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 16px; height: 16px; margin-top: -6px;
-  border-radius: 50%; background: var(--text); border: 3px solid var(--accent);
-}
-input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-.peak { height: 2px; margin: 1px 0 0; border-radius: 999px; background: rgba(255,255,255,.06); overflow: hidden; }
-.peak-fill { height: 100%; width: 0; background: var(--accent-strong); opacity: .8; transition: width 60ms linear; }
-.mute {
-  width: 30px; height: 30px; flex: none; border-radius: var(--radius-control);
-  border: 1px solid var(--stroke); background: rgba(255,255,255,.06); color: var(--text);
-  cursor: pointer; display: grid; place-items: center; padding: 0;
-}
-.mute:hover { background: rgba(255,255,255,.12); }
-.mute:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.mute svg { width: 16px; height: 16px; fill: currentColor; }
-.icon .initial { font-weight: 600; font-size: 13px; }
-.muted .mute { color: #ff8f8f; border-color: rgba(255,143,143,.35); }
-.muted input[type="range"]::-webkit-slider-runnable-track {
-  background: linear-gradient(to right, rgba(244,247,245,.35) var(--fill), rgba(255,255,255,.10) var(--fill));
-}
-.muted .icon .initial { text-decoration: line-through; }
-#status { margin: 12px; color: var(--text-muted); text-align: center; }
-#pin { margin: 0 4px 6px; font-size: 11px; color: var(--accent-strong); }
-.make-default {
-  font: inherit; font-size: 11px; font-weight: 500; cursor: pointer;
-  color: var(--text-muted); background: transparent;
-  border: 1px solid var(--stroke); border-radius: 999px; padding: 1px 8px;
-}
-.make-default:hover { color: var(--text); border-color: var(--accent); }
-.make-default:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.app-icon { width: 20px; height: 20px; display: block; }
-.app-icon[hidden], .initial[hidden] { display: none; }
-.initial svg { width: 16px; height: 16px; fill: currentColor; display: block; }
-.muted .app-icon { opacity: .4; filter: grayscale(1); }
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.3); }
-.app-line { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; min-width: 0; }
-.app-line .app-name { flex: 1; margin-bottom: 0; }
-.route {
-  max-width: 120px; font: inherit; font-size: 11px; color: var(--text-muted);
-  background: transparent; border: 1px solid transparent; border-radius: 8px;
-  padding: 0 4px; cursor: pointer; text-overflow: ellipsis;
-}
-.route:hover, .route:focus { border-color: var(--stroke); color: var(--text); }
-.route.routed { color: var(--accent-strong); }
-.route option { background: #221d31; color: var(--text); }
-.route[hidden] { display: none; }
+/* Transparency effects off: the solid DarkChromeLow background. */
+body.opaque { background: #171717; }
+.glyph { font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets"; font-weight: normal; line-height: 1; }
+button { font: inherit; color: inherit; background: transparent; border: none; padding: 0; margin: 0; cursor: default; }
+
+#root { position: absolute; inset: 0; transform-origin: 50% 100%; }
+/* Open: scale 0.92 -> 1 (220 ms, BackEase 0.35) and fade (165 ms). */
+#root.opening { animation: root-scale 220ms cubic-bezier(0.3, 1.3, 0.6, 1) both, root-fade 165ms cubic-bezier(0.5, 1, 0.89, 1) both; }
+/* Close: 8 DIP toward the taskbar and fade, 105 ms, CubicEase EaseIn. */
+#root.closing { animation: root-close 105ms cubic-bezier(0.32, 0, 0.67, 0) both; }
+@keyframes root-scale { from { scale: 0.92; } to { scale: 1; } }
+@keyframes root-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes root-close { to { opacity: 0; translate: 0 8px; } }
+/* Row cascade: opacity and +10 -> 0, 260 ms CubicEase EaseOut, staggered. */
+.cascade { animation: row-in 260ms cubic-bezier(0.215, 0.61, 0.355, 1) both; animation-delay: var(--delay, 0ms); }
+@keyframes row-in { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+
+#scroller { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; }
+#list-wrap { position: relative; }
+#no-devices { margin: 24px; text-align: center; font-size: 13px; white-space: normal; }
+
+/* Overlay scrollbar: a 2 px line that widens on hover. */
+#scroller::-webkit-scrollbar { width: 16px; }
+#scroller::-webkit-scrollbar-track { background: transparent; }
+#scroller::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.4); border: 7px solid transparent; background-clip: content-box; border-radius: 8px; }
+#scroller:hover::-webkit-scrollbar-thumb { border-width: 4px; }
+
+/* Header overlay on the top device's 48 px title row. */
+#header { position: absolute; left: 0; right: 0; top: 0; height: 48px; }
+#expand { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; text-align: left; }
+#expand:not(:disabled):hover { background: rgba(255, 255, 255, 0.125); }
+#expand:not(:disabled):active { background: rgba(255, 255, 255, 0.184); }
+#header-name { margin: 0 88px 0 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 15px; }
+#chevron { font-size: 12px; margin: 0 12px; transition: rotate 220ms cubic-bezier(0.215, 0.61, 0.355, 1); }
+#expand:disabled #chevron { visibility: hidden; }
+body.expanded #chevron { rotate: 180deg; }
+.header-button { position: absolute; top: 0; width: 30px; height: 48px; font-size: 11px; }
+.header-button:hover { background: rgba(255, 255, 255, 0.125); }
+.header-button[hidden] { display: none; }
+#pin { right: 24px; }
+#restore { right: 54px; }
+body.scrollbar #pin { right: 40px; }
+body.scrollbar #restore { right: 70px; }
+body.scrollbar #header-name { margin-right: 104px; }
+
+/* DeviceView: accent at 30% behind the title and slider rows. */
+.device-block { background: var(--accent-30); }
+.device-title { height: 48px; line-height: 48px; padding: 0 12px; font-size: 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.device-title.hidden-title { visibility: hidden; }
+.row { display: grid; grid-template-columns: 72px 1fr 68px; align-items: center; outline: none; }
+/* Focus outline (2 px Text over 3 px background) only once the keyboard is
+   used; opening focuses the first device without one, as the original. */
+body.keyboard .row:focus { box-shadow: inset 0 0 0 2px var(--text), inset 0 0 0 3px #000; }
+.device-row { height: 60px; }
+.apps { padding: 6px 0; }
+.app { height: 52px; }
+
+/* Mute buttons: 28x28 at margin-left 5; glyph alpha 0.9 (0.95 hover);
+   a press squish to 0.8 that springs back. */
+.mute { width: 28px; height: 28px; margin-left: 5px; justify-self: center; position: relative; display: grid; place-items: center; }
+.mute:active { scale: 0.8; transition: scale 80ms; }
+.mute { transition: scale 220ms cubic-bezier(0.34, 1.8, 0.64, 1); }
+.device-mute .glyph { position: absolute; font-size: 24px; color: rgba(255, 255, 255, 0.9); }
+.device-mute:hover .glyph { color: rgba(255, 255, 255, 0.95); }
+.device-mute .ghost { opacity: 0.4; }
+
+/* App icon cell: 28x28 icon or accent square with the first letter. */
+.icon-cell { width: 28px; height: 28px; margin-left: 5px; justify-self: center; position: relative; }
+.app-icon { width: 28px; height: 28px; display: block; }
+.app-icon[hidden] { display: none; }
+.letter { width: 28px; height: 28px; background: var(--accent); display: grid; place-items: center; font-size: 16px; font-weight: 600; padding-bottom: 1px; }
+.letter[hidden] { display: none; }
+.app-mute { position: absolute; inset: 0; width: 28px; height: 28px; margin: 0; opacity: 0; }
+.app-mute .glyph { font-size: 24px; opacity: 0.8; }
+.app.muted .app-mute { opacity: 1; }
+.app .icon-cell img, .app .icon-cell .letter, .app .slider, .app .value { transition: opacity 185ms cubic-bezier(0.215, 0.61, 0.355, 1); }
+.app-mute { transition: opacity 185ms cubic-bezier(0.215, 0.61, 0.355, 1); }
+.app.muted .icon-cell img, .app.muted .icon-cell .letter, .app.muted .slider, .app.muted .value { opacity: var(--muted-opacity); }
+.app.hiding { animation: app-hide 140ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+@keyframes app-hide { to { opacity: 0; translate: -12px 0; scale: 0.985; } }
+.app.solo-pulse { animation: solo 300ms both; }
+@keyframes solo { 27% { scale: 0.988 0.985; } 100% { scale: 1; } }
+
+/* Values: device 24 px, app 18 px, no percent sign. */
+.value { text-align: center; margin-left: -1px; }
+.device-value { font-size: 24px; }
+.app-value { font-size: 18px; }
+
+/* VolumeSlider: 32 high; 4 px track (accent fill, #39FFFFFF rest); 16 px
+   accent thumb; Classic peak meter = two 4 px bars at 0.6 over both. */
+.slider { position: relative; height: 32px; touch-action: none; }
+.slider .rail { position: absolute; left: 0; right: 0; top: 14px; height: 4px; border-radius: 2px; background: var(--track-rest); }
+.slider .fill { position: absolute; left: 0; top: 14px; height: 4px; border-radius: 2px; background: var(--accent); width: 8px; }
+.slider .thumb { position: absolute; top: 8px; left: 0; width: 16px; height: 16px; border-radius: 8px; background: var(--accent); }
+.slider .peak { position: absolute; left: 0; height: 4px; border-radius: 2px; background: var(--accent); opacity: 0.6; width: 0; pointer-events: none; }
+.slider .p1 { top: 12.5px; }
+.slider .p2 { top: 15px; }
+.slider.disabled { opacity: 0.5; }
+
+/* Row popup (AppPopup + DialogChrome) over a blurred, dimmed flyout. */
+#dismiss { position: absolute; inset: 0; background: rgba(21, 21, 21, 0.72); backdrop-filter: blur(10px); animation: fade-in 150ms both; }
+#dismiss.out { animation: fade-out 150ms both; }
+#dismiss[hidden], #popup[hidden] { display: none; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+#popup { position: absolute; left: 0; right: 0; background: #151515; border: 1px solid var(--accent); animation: fade-in 150ms both; }
+.popup-header { height: 48px; display: flex; align-items: center; background: var(--accent-30); }
+#popup-title { flex: 1; margin: 0 12px; font-size: 15px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+#popup-toolbar { display: flex; }
+.tool { width: 48px; height: 48px; font-size: 16px; display: grid; place-items: center; }
+.tool.close { font-size: 10px; }
+.tool:hover { background: rgba(255, 255, 255, 0.12); }
+.tool:active { background: rgba(255, 255, 255, 0.2); }
+#popup-body { padding: 6px 0; }
+#popup-body .device-row { height: 60px; }

@@ -1,6 +1,6 @@
 //! COM side of the engine. Everything here runs on the worker thread.
 use crate::{
-    AppSession, AudioError, Device, Snapshot,
+    AppSession, AudioError, Device, Peaks, Snapshot,
     notify::{self, DeviceWatcher, Listener, PolicyFactory, VolumeWatcher},
 };
 use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::Arc, sync::mpsc, thread};
@@ -134,6 +134,9 @@ impl Engine {
     }
     pub fn devices(&self) -> Result<Snapshot, AudioError> {
         self.call(|b| b.snapshot(false))
+    }
+    pub fn peaks(&self) -> Result<Vec<Peaks>, AudioError> {
+        self.call(|b| Ok(b.peaks()))
     }
     pub fn set_default_device(&self, id: &str) -> Result<(), AudioError> {
         let id = id.to_owned();
@@ -313,6 +316,16 @@ struct Backend {
     policy: RefCell<Option<Option<PolicyFactory>>>,
     /// FileDescription per executable path; version resources rarely change.
     descriptions: RefCell<HashMap<String, Option<String>>>,
+    /// Meters found by the last full snapshot, read cheaply by `peaks`.
+    meters: RefCell<Vec<MeterSource>>,
+}
+
+/// A device's or app session's meter, as found by the last full snapshot.
+struct MeterSource {
+    device_id: String,
+    /// `None` for the device itself.
+    app_key: Option<String>,
+    meter: IAudioMeterInformation,
 }
 
 impl Backend {
@@ -327,6 +340,7 @@ impl Backend {
             endpoint_watchers: RefCell::new(vec![]),
             policy: RefCell::new(None),
             descriptions: RefCell::new(HashMap::new()),
+            meters: RefCell::new(vec![]),
         })
     }
     fn watch(&self, listener: Listener) -> Result<(), AudioError> {
@@ -552,6 +566,7 @@ impl Backend {
         device: &IMMDevice,
         default_id: Option<&str>,
         with_apps: bool,
+        meters: &mut Vec<MeterSource>,
     ) -> Result<Device, AudioError> {
         // SAFETY: live interfaces on this thread; GetId's string is freed by
         // take_string, the property value is converted then dropped.
@@ -579,6 +594,11 @@ impl Backend {
         };
         for session in sessions {
             // SAFETY: live session interfaces on this thread.
+            meters.push(MeterSource {
+                device_id: id.clone(),
+                app_key: Some(session.key.clone()),
+                meter: session.meter.clone(),
+            });
             let (volume, muted, peak) = unsafe {
                 (
                     session.volume.GetMasterVolume().unwrap_or(0.0),
@@ -615,6 +635,11 @@ impl Backend {
         }
         // System sounds last, others by name, like the original's sort.
         apps.sort_by_key(|a| (a.is_system_sounds, a.display_name.to_lowercase()));
+        meters.push(MeterSource {
+            device_id: id.clone(),
+            app_key: None,
+            meter: meter.clone(),
+        });
         // SAFETY: live endpoint interfaces on this thread.
         let (volume, muted, peak) = unsafe {
             (
@@ -651,17 +676,61 @@ impl Backend {
             )
         };
         let mut devices = vec![];
+        let mut meters = vec![];
         // SAFETY: live collection on this thread.
         let count = unsafe { collection.GetCount()? };
         for i in 0..count {
             // SAFETY: index is within GetCount.
             let device = unsafe { collection.Item(i)? };
-            if let Ok(device) = self.describe(&device, default_id.as_deref(), with_apps) {
+            if let Ok(device) =
+                self.describe(&device, default_id.as_deref(), with_apps, &mut meters)
+            {
                 devices.push(device);
             }
         }
+        if with_apps {
+            *self.meters.borrow_mut() = meters;
+        }
         devices.sort_by_key(|d| !d.is_default);
         Ok(Snapshot { devices })
+    }
+}
+
+impl Backend {
+    /// Left/right peaks of every meter the last full snapshot found; an app
+    /// with several sessions reports the loudest per channel. Mono meters
+    /// report the same value twice.
+    fn peaks(&self) -> Vec<Peaks> {
+        let mut out: Vec<Peaks> = vec![];
+        for source in self.meters.borrow().iter() {
+            // SAFETY: a live meter interface on this thread; the buffer holds
+            // as many floats as the channel count passed with it.
+            let channels = unsafe {
+                let count = source.meter.GetMeteringChannelCount().unwrap_or(0);
+                let mut values = vec![0f32; count.max(1) as usize];
+                if count == 0 || source.meter.GetChannelsPeakValues(&mut values).is_err() {
+                    let peak = source.meter.GetPeakValue().unwrap_or(0.0);
+                    [peak, peak]
+                } else {
+                    [values[0], *values.get(1).unwrap_or(&values[0])]
+                }
+            };
+            match out
+                .iter_mut()
+                .find(|p| p.device_id == source.device_id && p.app_key == source.app_key)
+            {
+                Some(p) => {
+                    p.channels[0] = p.channels[0].max(channels[0]);
+                    p.channels[1] = p.channels[1].max(channels[1]);
+                }
+                None => out.push(Peaks {
+                    device_id: source.device_id.clone(),
+                    app_key: source.app_key.clone(),
+                    channels,
+                }),
+            }
+        }
+        out
     }
 }
 

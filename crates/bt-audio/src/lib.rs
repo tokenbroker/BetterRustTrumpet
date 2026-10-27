@@ -67,6 +67,15 @@ pub struct Device {
     pub apps: Vec<AppSession>,
 }
 
+/// Left/right peak levels of a device (`app_key` = `None`) or an app.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Peaks {
+    pub device_id: String,
+    pub app_key: Option<String>,
+    pub channels: [f32; 2],
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Snapshot {
@@ -104,6 +113,14 @@ impl AudioEngine {
     pub fn devices(&self) -> Result<Snapshot, AudioError> {
         #[cfg(windows)]
         return self.inner.devices();
+        #[cfg(not(windows))]
+        Err(AudioError::Unsupported)
+    }
+    /// Current left/right peaks for the devices and apps found by the last
+    /// [`snapshot`](Self::snapshot); far cheaper than a snapshot, for meters.
+    pub fn peaks(&self) -> Result<Vec<Peaks>, AudioError> {
+        #[cfg(windows)]
+        return self.inner.peaks();
         #[cfg(not(windows))]
         Err(AudioError::Unsupported)
     }

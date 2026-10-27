@@ -33,8 +33,10 @@ const TIP: &str = "tip";
 const MEDIA_HOVER_DELAY: Duration = Duration::from_millis(2000);
 /// The original's popup hide timer after the pointer leaves.
 const MEDIA_HIDE_GRACE: Duration = Duration::from_millis(800);
-/// Logical flyout width (tauri.conf.json uses the same value).
-const FLYOUT_WIDTH: f64 = 380.0;
+/// The original's flyout width (`WindowAndItemSize`); tauri.conf.json matches.
+const FLYOUT_WIDTH: f64 = 360.0;
+/// The original's close animation (105 ms), plus a frame.
+const FLYOUT_FADE_OUT: Duration = Duration::from_millis(120);
 /// The original's media popup window: 300 wide, 185 collapsed and 405
 /// expanded, including the card's 8 DIP shadow margin on each side.
 const MEDIA_WIDTH: f64 = 300.0;
@@ -63,6 +65,9 @@ struct App {
     hover_generation: AtomicU64,
     /// Bumped on every popup show so a pending fade-out does not hide it.
     media_generation: AtomicU64,
+    /// The same for the flyout's close animation.
+    flyout_generation: AtomicU64,
+    flyout_hiding: AtomicBool,
     /// The popup is fading out.
     media_hiding: AtomicBool,
     /// Expanded (cover art shown); kept for the session.
@@ -92,6 +97,26 @@ async fn set_default_device(handle: AppHandle, device_id: String) -> Result<(), 
     refresh_tray(&handle);
     result
 }
+/// Left/right meter levels for the flyout (cheap; read at its meter rate).
+#[tauri::command]
+async fn peaks(app: State<'_, App>) -> Result<Vec<bt_audio::Peaks>, String> {
+    app.audio.peaks().map_err(error)
+}
+
+/// The Windows colours the original flyout uses.
+#[derive(serde::Serialize)]
+struct FlyoutTheme {
+    accent: String,
+    transparency: bool,
+}
+#[tauri::command]
+fn flyout_theme() -> FlyoutTheme {
+    FlyoutTheme {
+        accent: bt_app::win32::theme::accent(),
+        transparency: bt_app::win32::theme::transparency(),
+    }
+}
+
 #[tauri::command]
 async fn now_playing(app: State<'_, App>) -> Result<Option<NowPlaying>, String> {
     match &app.media {
@@ -206,7 +231,8 @@ fn is_pinned(app: State<'_, App>) -> bool {
 fn hide_flyout(window: WebviewWindow) {
     hide(&window);
 }
-/// The flyout reports its content height so the window hugs it.
+/// The flyout reports its content height so the window hugs it, capped at
+/// the work area minus the 12 DIP margins, as the original.
 #[tauri::command]
 fn fit_flyout(window: WebviewWindow, height: f64) -> Result<(), String> {
     // Work in inner (client) pixels throughout: set_size sets the inner size,
@@ -218,24 +244,47 @@ fn fit_flyout(window: WebviewWindow, height: f64) -> Result<(), String> {
         .current_monitor()
         .ok()
         .flatten()
-        .map_or(900.0, |m| m.work_area().size.height as f64 * 0.8);
+        .map_or(900.0, |m| m.work_area().size.height as f64 - 24.0 * scale);
     let width = (FLYOUT_WIDTH * scale).round() as u32;
-    let height = (height * scale).clamp(120.0 * scale, max).round() as u32;
+    let height = (height * scale).ceil().clamp(48.0 * scale, max).round() as u32;
     if current.width.abs_diff(width) > 1 || current.height.abs_diff(height) > 1 {
         window
             .set_size(tauri::PhysicalSize::new(width, height))
             .map_err(error)?;
-        place_near_taskbar(&window, None);
+        place_flyout(window.app_handle(), &window, None);
     }
     Ok(())
 }
 
+/// Plays the original's close animation (8 DIP toward the taskbar and a
+/// fade, 105 ms), then hides and suspends the page, unless it is shown again
+/// meanwhile.
 fn hide(window: &WebviewWindow) {
-    if window.is_visible().unwrap_or(false) {
-        let _ = window.hide();
-        let _ = window.emit("flyout-hidden", ());
-        set_active(window, false);
+    let state = window.state::<App>();
+    if !window.is_visible().unwrap_or(false) || state.flyout_hiding.swap(true, Ordering::Relaxed)
+    {
+        return;
     }
+    let generation = state.flyout_generation.load(Ordering::Relaxed);
+    let _ = window.emit("flyout-hiding", ());
+    let window = window.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(FLYOUT_FADE_OUT);
+        let state = window.state::<App>();
+        if state.flyout_generation.load(Ordering::Relaxed) == generation {
+            let _ = window.hide();
+            let _ = window.emit("flyout-hidden", ());
+            set_active(&window, false);
+            state.flyout_hiding.store(false, Ordering::Relaxed);
+        }
+    });
+}
+
+/// Whether the flyout is up (shown and not closing).
+fn flyout_showing(app: &AppHandle) -> bool {
+    app.get_webview_window(FLYOUT)
+        .is_some_and(|w| w.is_visible().unwrap_or(false))
+        && !app.state::<App>().flyout_hiding.load(Ordering::Relaxed)
 }
 
 /// Resumes (`true`) or suspends (`false`) a window's page; hidden pages run
@@ -244,31 +293,35 @@ fn set_active(window: &WebviewWindow, active: bool) {
     let _ = window.with_webview(move |webview| webview::set_active(webview, active));
 }
 
-/// Bottom-right of the work area, horizontally centred on the tray icon when
-/// its bounds are known (taskbar at the bottom; other edges come later).
-fn place_near_taskbar(window: &WebviewWindow, tray: Option<Rect>) {
-    let Ok(Some(monitor)) = window
-        .current_monitor()
-        .or_else(|_| window.primary_monitor())
-    else {
-        return;
-    };
-    let work: PhysicalRect<i32, u32> = *monitor.work_area();
+/// The original's placement for a bottom taskbar: the bottom-right corner
+/// of the tray icon's monitor, 12 DIP in from the work area. With an
+/// auto-hidden taskbar the work area is the whole screen, so the bottom is
+/// taken from where the taskbar slides in (the original subtracts it too).
+fn place_flyout(app: &AppHandle, window: &WebviewWindow, tray: Option<Rect>) {
+    let tray = tray.or_else(|| app.tray_by_id("main").and_then(|t| t.rect().ok().flatten()));
     let Ok(size) = window.outer_size() else {
         return;
     };
-    let margin = (12.0 * monitor.scale_factor()) as i32;
+    let (scale, work, top) = match tray.and_then(|t| tray_place(app, t)) {
+        Some(place) => (place.scale, place.work, Some(place.top)),
+        None => {
+            let Ok(Some(monitor)) = window
+                .current_monitor()
+                .or_else(|_| window.primary_monitor())
+            else {
+                return;
+            };
+            (monitor.scale_factor(), *monitor.work_area(), None)
+        }
+    };
+    let margin = (12.0 * scale) as i32;
     let right = work.position.x + work.size.width as i32;
-    let bottom = work.position.y + work.size.height as i32;
-    let mut x = right - size.width as i32 - margin;
-    if let Some(rect) = tray {
-        let scale = monitor.scale_factor();
-        let position = rect.position.to_physical::<i32>(scale);
-        let width = rect.size.to_physical::<i32>(scale).width;
-        x = (position.x + width / 2 - size.width as i32 / 2)
-            .clamp(work.position.x + margin, right - size.width as i32 - margin);
+    let mut bottom = work.position.y + work.size.height as i32;
+    if let Some(top) = top {
+        bottom = bottom.min(top);
     }
-    let y = bottom - size.height as i32 - margin;
+    let x = right - size.width as i32 - margin;
+    let y = (bottom - size.height as i32 - margin).max(work.position.y + margin);
     let _ = window.set_position(PhysicalPosition::new(x, y));
 }
 
@@ -611,7 +664,10 @@ fn show(app: &AppHandle, tray: Option<Rect>) {
     let Some(window) = app.get_webview_window(FLYOUT) else {
         return;
     };
-    place_near_taskbar(&window, tray);
+    let state = app.state::<App>();
+    state.flyout_generation.fetch_add(1, Ordering::Relaxed);
+    state.flyout_hiding.store(false, Ordering::Relaxed);
+    place_flyout(app, &window, tray);
     set_active(&window, true);
     let _ = window.show();
     let _ = window.set_focus();
@@ -622,7 +678,7 @@ fn toggle(app: &AppHandle, tray: Rect) {
     let Some(window) = app.get_webview_window(FLYOUT) else {
         return;
     };
-    if window.is_visible().unwrap_or(false) {
+    if flyout_showing(app) {
         hide(&window);
         return;
     }
@@ -632,7 +688,7 @@ fn toggle(app: &AppHandle, tray: Rect) {
         .lock()
         .ok()
         .and_then(|t| *t)
-        .is_some_and(|t| t.elapsed() < Duration::from_millis(250));
+        .is_some_and(|t| t.elapsed() < Duration::from_millis(300));
     if recently_hidden {
         return;
     }
@@ -764,6 +820,9 @@ fn watch_devices(app: AppHandle) {
             present_tooltip(&app);
             if devices_changed {
                 let _ = app.emit("devices-changed", ());
+            } else if flyout_showing(&app) {
+                // Volume/mute changed elsewhere: the open flyout follows now.
+                let _ = app.emit("volume-changed", ());
             }
         }
     });
@@ -896,6 +955,8 @@ fn main() {
             popup_hover: AtomicBool::new(false),
             hover_generation: AtomicU64::new(0),
             media_generation: AtomicU64::new(0),
+            flyout_generation: AtomicU64::new(0),
+            flyout_hiding: AtomicBool::new(false),
             media_hiding: AtomicBool::new(false),
             media_expanded: AtomicBool::new(false),
             media_tray: Mutex::new(None),
@@ -903,6 +964,8 @@ fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             snapshot,
+            peaks,
+            flyout_theme,
             set_default_device,
             app_icon,
             now_playing,
@@ -927,6 +990,20 @@ fn main() {
             // The tooltip never takes the pointer, like the original's.
             if let Some(tip) = app.get_webview_window(TIP) {
                 let _ = tip.set_ignore_cursor_events(true);
+            }
+            // The original's flyout backdrop: DWM acrylic tinted #B3000000
+            // (ApplicationBackgroundDarkTheme at 0.7), when transparency
+            // effects are on; otherwise the page paints a solid colour.
+            if let Some(flyout) = app.get_webview_window(FLYOUT) {
+                if bt_app::win32::theme::transparency() {
+                    use tauri::window::{Color, Effect, EffectsBuilder};
+                    let _ = flyout.set_effects(
+                        EffectsBuilder::new()
+                            .effect(Effect::Acrylic)
+                            .color(Color(0, 0, 0, 179))
+                            .build(),
+                    );
+                }
             }
             let devices = app.state::<App>().audio.devices().unwrap_or_default();
             let menu = build_menu(&handle, &devices)?;
