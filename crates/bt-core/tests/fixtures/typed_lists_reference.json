@@ -1,4 +1,1969 @@
 {
+  "appLifecycle": {
+    "scenarios": [
+      {
+        "initial": null,
+        "legacy": null,
+        "steps": [
+          {
+            "op": [
+              "hard",
+              "",
+              true
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "hard",
+              "absent.exe",
+              false
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "focus",
+              "absent.exe",
+              false
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "volume",
+              "absent.exe",
+              0,
+              50
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "add",
+              " App.EXE ",
+              " alpha ",
+              " icon ",
+              true
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "add",
+              "app.exe",
+              "",
+              "icon",
+              false
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "hard",
+              "app.exe",
+              false,
+              "alpha",
+              "icon",
+              false
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "focus",
+              "app.exe",
+              true
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "app.exe",
+              2,
+              105
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":2,\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 2,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "app.exe",
+              2,
+              200
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":2,\"VolumePercent\":100,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 2,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "app.exe",
+              0,
+              50
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "app.exe",
+              0,
+              90
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "alpha",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "add",
+              "app.exe",
+              "beta",
+              "",
+              true
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"icon\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "beta",
+                "IconPath": "icon",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "hard",
+              "app.exe",
+              true,
+              "",
+              "new",
+              true
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"new\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "beta",
+                "IconPath": "new",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "hard",
+              "app.exe",
+              true,
+              "",
+              "",
+              false
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"new\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "beta",
+                "IconPath": "new",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "clone",
+              "app.exe"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"new\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "beta",
+                "IconPath": "new",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "remove",
+              "missing"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"app.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"new\",\"IsDesktopApp\":true,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":true,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "app.exe",
+                "DisplayName": "beta",
+                "IconPath": "new",
+                "IsDesktopApp": true,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": true,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "remove",
+              " APP.EXE "
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "clear"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "set",
+              ""
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "set",
+              "[]"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          }
+        ]
+      },
+      {
+        "initial": "[{\"ExeName\":\"p.exe\",\"VolumeMode\":0,\"VolumePercent\":75,\"DisplayName\":\"alpha\"}]",
+        "legacy": null,
+        "steps": [
+          {
+            "op": [
+              "volume",
+              "p.exe",
+              0,
+              3
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"p.exe\",\"VolumeMode\":0,\"VolumePercent\":75,\"DisplayName\":\"alpha\"}]",
+            "sorted": [
+              {
+                "ExeName": "p.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 75,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "p.exe",
+              99,
+              120
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"p.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":100,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "p.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 99,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "volume",
+              "new.exe",
+              99,
+              -50
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"p.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":100,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "p.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 99,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 99,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[{\"ExeName\":\"p.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":100,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"p.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":100,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":99,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "p.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 99,
+                "VolumePercent": 100,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 99,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "set",
+              "[{\"ExeName\":\"NEW.EXE\",\"VolumeMode\":99,\"VolumePercent\":75}]"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"NEW.EXE\",\"VolumeMode\":99,\"VolumePercent\":75}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 75,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "hardGet",
+              " NEW.EXE "
+            ],
+            "result": false,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"NEW.EXE\",\"VolumeMode\":99,\"VolumePercent\":75}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 75,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "hard",
+              "new.exe",
+              false,
+              "beta"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"new.exe\",\"DisplayName\":\"beta\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":75,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "beta",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 75,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "clear"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "clear"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          }
+        ]
+      },
+      {
+        "initial": "broken",
+        "legacy": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\"}]",
+        "steps": [
+          {
+            "op": [
+              "hard",
+              "another.exe",
+              true
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 2,
+            "writes": 2,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"another.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "another.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"another.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"another.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "another.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              }
+            ]
+          },
+          {
+            "op": [
+              "set",
+              "[]"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 2,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "remove",
+              "old.exe"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "set",
+              "[null]"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 2,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"}]",
+            "sorted": [
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "initial": "[]",
+        "legacy": "[null]",
+        "steps": [
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[]",
+            "events": 0,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "set",
+              "{}"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 2,
+            "stored": "[]",
+            "sorted": []
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[]",
+            "sorted": []
+          }
+        ]
+      },
+      {
+        "initial": "[{\"ExeName\":\"one.exe\",\"DisplayName\":\"zeta\"},{\"ExeName\":\"two.exe\",\"DisplayName\":\"alpha\"}]",
+        "legacy": null,
+        "steps": [
+          {
+            "op": [
+              "get",
+              "one.exe"
+            ],
+            "result": {
+              "ExeName": "one.exe",
+              "DisplayName": "zeta",
+              "IconPath": "",
+              "IsDesktopApp": false,
+              "IsPinned": true,
+              "HardMuted": false,
+              "FocusLostEnabled": false,
+              "VolumeMode": 0,
+              "VolumePercent": 0,
+              "CreatedAtUtc": "0001-01-01T00:00:00"
+            },
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"one.exe\",\"DisplayName\":\"zeta\"},{\"ExeName\":\"two.exe\",\"DisplayName\":\"alpha\"}]",
+            "sorted": [
+              {
+                "ExeName": "two.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "one.exe",
+                "DisplayName": "zeta",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "get",
+              "missing"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"one.exe\",\"DisplayName\":\"zeta\"},{\"ExeName\":\"two.exe\",\"DisplayName\":\"alpha\"}]",
+            "sorted": [
+              {
+                "ExeName": "two.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "one.exe",
+                "DisplayName": "zeta",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "get",
+              null
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"one.exe\",\"DisplayName\":\"zeta\"},{\"ExeName\":\"two.exe\",\"DisplayName\":\"alpha\"}]",
+            "sorted": [
+              {
+                "ExeName": "two.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "one.exe",
+                "DisplayName": "zeta",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "add",
+              "new.exe",
+              "alpha"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[{\"ExeName\":\"one.exe\",\"DisplayName\":\"zeta\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"two.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":false,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "two.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              },
+              {
+                "ExeName": "one.exe",
+                "DisplayName": "zeta",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": false,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "clear"
+            ],
+            "result": null,
+            "events": 1,
+            "operationWrites": 1,
+            "writes": 1,
+            "stored": "[]",
+            "sorted": []
+          }
+        ]
+      },
+      {
+        "initial": null,
+        "legacy": "[{\"ExeName\":\"old.exe\"}]",
+        "steps": [
+          {
+            "op": [
+              "legacyImport",
+              "[{\"ExeName\":\"new.exe\",\"DisplayName\":\"beta\"},{\"ExeName\":\"NEW.EXE\",\"DisplayName\":\"alpha\"},null]"
+            ],
+            "result": null,
+            "events": 2,
+            "operationWrites": 3,
+            "writes": 3,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "legacyImport",
+              "[{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\"}]"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "legacyImport",
+              "[{\"ExeName\":\"x.exe\"},{\"ExeName\":\"y.exe\",\"HardMutedAtUtc\":\"bad\"}]"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "legacyImport",
+              "null"
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "legacyImport",
+              " "
+            ],
+            "result": null,
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          },
+          {
+            "op": [
+              "json"
+            ],
+            "result": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "events": 0,
+            "operationWrites": 0,
+            "writes": 0,
+            "stored": "[{\"ExeName\":\"old.exe\",\"DisplayName\":\"\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"0001-01-01T00:00:00\"},{\"ExeName\":\"new.exe\",\"DisplayName\":\"alpha\",\"IconPath\":\"\",\"IsDesktopApp\":false,\"IsPinned\":true,\"HardMuted\":true,\"FocusLostEnabled\":false,\"VolumeMode\":0,\"VolumePercent\":0,\"CreatedAtUtc\":\"2030-01-02T03:04:05.1234567Z\"}]",
+            "sorted": [
+              {
+                "ExeName": "new.exe",
+                "DisplayName": "alpha",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "2030-01-02T03:04:05.1234567Z"
+              },
+              {
+                "ExeName": "old.exe",
+                "DisplayName": "",
+                "IconPath": "",
+                "IsDesktopApp": false,
+                "IsPinned": true,
+                "HardMuted": true,
+                "FocusLostEnabled": false,
+                "VolumeMode": 0,
+                "VolumePercent": 0,
+                "CreatedAtUtc": "0001-01-01T00:00:00"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "now": "2030-01-02T03:04:05.1234567Z",
+    "culture": "en-US",
+    "comparisons": [
+      [
+        "app.exe",
+        "app.exe",
+        0
+      ],
+      [
+        "app.exe",
+        "alpha",
+        1
+      ],
+      [
+        "app.exe",
+        "beta",
+        -1
+      ],
+      [
+        "app.exe",
+        "p.exe",
+        -1
+      ],
+      [
+        "app.exe",
+        "new.exe",
+        -1
+      ],
+      [
+        "app.exe",
+        "",
+        1
+      ],
+      [
+        "app.exe",
+        "old.exe",
+        -1
+      ],
+      [
+        "app.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "app.exe",
+        "one.exe",
+        -1
+      ],
+      [
+        "app.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "app.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "app.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "alpha",
+        0
+      ],
+      [
+        "alpha",
+        "beta",
+        -1
+      ],
+      [
+        "alpha",
+        "p.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "new.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "",
+        1
+      ],
+      [
+        "alpha",
+        "old.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "another.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "one.exe",
+        -1
+      ],
+      [
+        "alpha",
+        "zeta",
+        -1
+      ],
+      [
+        "alpha",
+        "two.exe",
+        -1
+      ],
+      [
+        "beta",
+        "app.exe",
+        1
+      ],
+      [
+        "beta",
+        "alpha",
+        1
+      ],
+      [
+        "beta",
+        "beta",
+        0
+      ],
+      [
+        "beta",
+        "p.exe",
+        -1
+      ],
+      [
+        "beta",
+        "new.exe",
+        -1
+      ],
+      [
+        "beta",
+        "",
+        1
+      ],
+      [
+        "beta",
+        "old.exe",
+        -1
+      ],
+      [
+        "beta",
+        "another.exe",
+        1
+      ],
+      [
+        "beta",
+        "one.exe",
+        -1
+      ],
+      [
+        "beta",
+        "zeta",
+        -1
+      ],
+      [
+        "beta",
+        "two.exe",
+        -1
+      ],
+      [
+        "p.exe",
+        "app.exe",
+        1
+      ],
+      [
+        "p.exe",
+        "alpha",
+        1
+      ],
+      [
+        "p.exe",
+        "beta",
+        1
+      ],
+      [
+        "p.exe",
+        "p.exe",
+        0
+      ],
+      [
+        "p.exe",
+        "new.exe",
+        1
+      ],
+      [
+        "p.exe",
+        "",
+        1
+      ],
+      [
+        "p.exe",
+        "old.exe",
+        1
+      ],
+      [
+        "p.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "p.exe",
+        "one.exe",
+        1
+      ],
+      [
+        "p.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "p.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "new.exe",
+        "app.exe",
+        1
+      ],
+      [
+        "new.exe",
+        "alpha",
+        1
+      ],
+      [
+        "new.exe",
+        "beta",
+        1
+      ],
+      [
+        "new.exe",
+        "p.exe",
+        -1
+      ],
+      [
+        "new.exe",
+        "new.exe",
+        0
+      ],
+      [
+        "new.exe",
+        "",
+        1
+      ],
+      [
+        "new.exe",
+        "old.exe",
+        -1
+      ],
+      [
+        "new.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "new.exe",
+        "one.exe",
+        -1
+      ],
+      [
+        "new.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "new.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "",
+        "app.exe",
+        -1
+      ],
+      [
+        "",
+        "alpha",
+        -1
+      ],
+      [
+        "",
+        "beta",
+        -1
+      ],
+      [
+        "",
+        "p.exe",
+        -1
+      ],
+      [
+        "",
+        "new.exe",
+        -1
+      ],
+      [
+        "",
+        "",
+        0
+      ],
+      [
+        "",
+        "old.exe",
+        -1
+      ],
+      [
+        "",
+        "another.exe",
+        -1
+      ],
+      [
+        "",
+        "one.exe",
+        -1
+      ],
+      [
+        "",
+        "zeta",
+        -1
+      ],
+      [
+        "",
+        "two.exe",
+        -1
+      ],
+      [
+        "old.exe",
+        "app.exe",
+        1
+      ],
+      [
+        "old.exe",
+        "alpha",
+        1
+      ],
+      [
+        "old.exe",
+        "beta",
+        1
+      ],
+      [
+        "old.exe",
+        "p.exe",
+        -1
+      ],
+      [
+        "old.exe",
+        "new.exe",
+        1
+      ],
+      [
+        "old.exe",
+        "",
+        1
+      ],
+      [
+        "old.exe",
+        "old.exe",
+        0
+      ],
+      [
+        "old.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "old.exe",
+        "one.exe",
+        -1
+      ],
+      [
+        "old.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "old.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "app.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "alpha",
+        1
+      ],
+      [
+        "another.exe",
+        "beta",
+        -1
+      ],
+      [
+        "another.exe",
+        "p.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "new.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "",
+        1
+      ],
+      [
+        "another.exe",
+        "old.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "another.exe",
+        0
+      ],
+      [
+        "another.exe",
+        "one.exe",
+        -1
+      ],
+      [
+        "another.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "another.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "one.exe",
+        "app.exe",
+        1
+      ],
+      [
+        "one.exe",
+        "alpha",
+        1
+      ],
+      [
+        "one.exe",
+        "beta",
+        1
+      ],
+      [
+        "one.exe",
+        "p.exe",
+        -1
+      ],
+      [
+        "one.exe",
+        "new.exe",
+        1
+      ],
+      [
+        "one.exe",
+        "",
+        1
+      ],
+      [
+        "one.exe",
+        "old.exe",
+        1
+      ],
+      [
+        "one.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "one.exe",
+        "one.exe",
+        0
+      ],
+      [
+        "one.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "one.exe",
+        "two.exe",
+        -1
+      ],
+      [
+        "zeta",
+        "app.exe",
+        1
+      ],
+      [
+        "zeta",
+        "alpha",
+        1
+      ],
+      [
+        "zeta",
+        "beta",
+        1
+      ],
+      [
+        "zeta",
+        "p.exe",
+        1
+      ],
+      [
+        "zeta",
+        "new.exe",
+        1
+      ],
+      [
+        "zeta",
+        "",
+        1
+      ],
+      [
+        "zeta",
+        "old.exe",
+        1
+      ],
+      [
+        "zeta",
+        "another.exe",
+        1
+      ],
+      [
+        "zeta",
+        "one.exe",
+        1
+      ],
+      [
+        "zeta",
+        "zeta",
+        0
+      ],
+      [
+        "zeta",
+        "two.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "app.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "alpha",
+        1
+      ],
+      [
+        "two.exe",
+        "beta",
+        1
+      ],
+      [
+        "two.exe",
+        "p.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "new.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "",
+        1
+      ],
+      [
+        "two.exe",
+        "old.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "another.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "one.exe",
+        1
+      ],
+      [
+        "two.exe",
+        "zeta",
+        -1
+      ],
+      [
+        "two.exe",
+        "two.exe",
+        0
+      ]
+    ]
+  },
   "apps": [
     {
       "input": {

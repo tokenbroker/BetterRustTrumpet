@@ -1,6 +1,8 @@
 //! Portable BetterTrumpet behavior. Keep Windows APIs and UI dependencies out.
 #![forbid(unsafe_code)]
 
+pub mod app_rules;
+
 pub mod cli;
 pub mod cli_responses;
 pub mod cli_rules;
