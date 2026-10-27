@@ -22,6 +22,12 @@ round-trip double formatting follows the .NET runtime's number formatting.
 [dotnet/wpf](https://github.com/dotnet/wpf), Copyright (c) .NET Foundation
 and Contributors, under the MIT license below.
 
+`bt-core/src/registry_values.rs` adapts .NET 8 RegistryKey.GetValue's
+native-value and multi-string projection rules from
+[RegistryKey.cs](https://github.com/dotnet/runtime/blob/v8.0.31/src/libraries/Microsoft.Win32.Registry/src/Microsoft/Win32/RegistryKey.cs),
+Copyright (c) .NET Foundation and Contributors, under the same MIT license.
+Additional Win32 normalization behavior is pinned by native fixture captures.
+
 The MIT License (MIT)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

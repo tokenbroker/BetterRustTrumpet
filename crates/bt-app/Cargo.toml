@@ -23,7 +23,7 @@ tauri = { version = "2", features = ["tray-icon", "image-ico"] }
 [target.'cfg(windows)'.dependencies]
 bt-core = { path = "../bt-core" }
 bt-storage = { path = "../bt-storage" }
-windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry", "Win32_Security", "Wdk_System_Registry"] }
+windows = { workspace = true, features = ["Win32_Foundation", "Win32_System_Registry", "Win32_Security", "Wdk_System_Registry", "Wdk_System_SystemServices", "Win32_System_Environment"] }
 
 [dev-dependencies]
 tempfile = "3.27.0"

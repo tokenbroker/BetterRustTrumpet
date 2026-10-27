@@ -190,6 +190,76 @@ fn native_capture_persists_and_reloads_without_touching_the_registry_source() {
     .unwrap();
     assert_eq!(second.outcome, bt_storage::Outcome::Existing);
     assert_eq!(second.snapshot, first.snapshot);
+    assert_eq!(
+        second.snapshot.read(
+            Some("unknown.addon"),
+            bt_core::registry_values::Request::Value(bt_core::legacy_xml::Kind::String),
+            &RegistryEnvironment
+        ),
+        bt_core::registry_values::Read::StringUtf16(vec![97])
+    );
+    assert_eq!(
+        second.snapshot.read(
+            Some("unknown.addon"),
+            bt_core::registry_values::Request::NullDefaultString,
+            &RegistryEnvironment
+        ),
+        bt_core::registry_values::Read::Throws
+    );
     assert!(before == metadata(fixture.key.as_ref().unwrap()).unwrap());
     assert_eq!(read_hkcu_values(&fixture.path).unwrap(), first.snapshot);
+}
+
+#[test]
+fn native_registry_casing_matches_captured_dotnet_lookups() {
+    use bt_core::registry_values::Environment;
+    let reference: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../bt-core/tests/fixtures/registry_projection_reference.json"
+    ))
+    .unwrap();
+    for c in reference["lookups"].as_array().unwrap() {
+        let stored: Vec<_> = c["input"]["stored"]
+            .as_str()
+            .unwrap()
+            .encode_utf16()
+            .collect();
+        for q in c["queries"].as_array().unwrap() {
+            let query: Vec<_> = q["query"]
+                .as_str()
+                .unwrap_or_default()
+                .encode_utf16()
+                .take_while(|c| *c != 0)
+                .collect();
+            assert_eq!(
+                RegistryEnvironment.names_equal(&stored, &query),
+                q["hasKey"].as_bool().unwrap(),
+                "{q}"
+            );
+        }
+    }
+}
+
+#[test]
+fn native_expansion_preserves_units_and_obeys_windows_string_boundaries() {
+    use bt_core::registry_values::Environment;
+    use std::os::windows::ffi::OsStrExt;
+    for (input, expected) in [
+        (vec![], vec![]),
+        (vec![0xd800], vec![0xd800]),
+        (
+            "literal".encode_utf16().collect(),
+            "literal".encode_utf16().collect(),
+        ),
+        ("a\0tail".encode_utf16().collect(), vec![97]),
+    ] {
+        assert_eq!(RegistryEnvironment.expand(&input).unwrap(), expected);
+    }
+    if let Some(root) = std::env::var_os("SystemRoot") {
+        assert_eq!(
+            RegistryEnvironment
+                .expand(&"%SystemRoot%".encode_utf16().collect::<Vec<_>>())
+                .unwrap(),
+            root.encode_wide().collect::<Vec<_>>()
+        );
+    }
 }

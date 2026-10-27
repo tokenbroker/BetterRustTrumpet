@@ -23,6 +23,7 @@ pub mod numbers;
 pub mod profiles;
 pub mod protocol;
 pub mod registry_snapshot;
+pub mod registry_values;
 pub mod rules;
 pub mod settings;
 pub mod text;

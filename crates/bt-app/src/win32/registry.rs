@@ -273,5 +273,51 @@ pub fn migrate_legacy_settings(
     bt_storage::registry(destination, read_legacy_settings)
 }
 
+/// OS boundaries for reading an archived snapshot. No access to the original
+/// key is necessary; casing follows Windows registry UTF-16 upcasing.
+pub struct RegistryEnvironment;
+impl bt_core::registry_values::Environment for RegistryEnvironment {
+    fn names_equal(&self, left: &[u16], right: &[u16]) -> bool {
+        if left.len() != right.len() {
+            return false;
+        }
+        left.iter().zip(right).all(|(&a, &b)| {
+            // SAFETY: pure ntdll character conversions; scalar UTF-16 code
+            // units require no pointers/handles and may include surrogates.
+            unsafe {
+                windows::Wdk::System::SystemServices::RtlUpcaseUnicodeChar(a)
+                    == windows::Wdk::System::SystemServices::RtlUpcaseUnicodeChar(b)
+            }
+        })
+    }
+    fn expand(&self, text: &[u16]) -> Result<Vec<u16>, bt_core::registry_values::ExpansionError> {
+        use bt_core::registry_values::ExpansionError;
+        let source: Vec<_> = text.iter().copied().chain(Some(0)).collect();
+        let mut buffer = vec![0u16; 128];
+        for _ in 0..8 {
+            // SAFETY: source is NUL-terminated; buffer is an initialized
+            // writable UTF-16 slice. The API is synchronous and read-only.
+            let length = unsafe {
+                windows::Win32::System::Environment::ExpandEnvironmentStringsW(
+                    PCWSTR(source.as_ptr()),
+                    Some(&mut buffer),
+                )
+            } as usize;
+            if length == 0 {
+                return Err(ExpansionError);
+            }
+            if length <= buffer.len() {
+                buffer.truncate(length - 1);
+                return Ok(buffer);
+            }
+            buffer
+                .try_reserve_exact(length - buffer.len())
+                .map_err(|_| ExpansionError)?;
+            buffer.resize(length, 0);
+        }
+        Err(ExpansionError)
+    }
+}
+
 #[cfg(test)]
 mod tests;
