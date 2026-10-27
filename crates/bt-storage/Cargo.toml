@@ -1,0 +1,16 @@
+[package]
+name = "bt-storage"
+description = "BetterTrumpet read-only legacy migration and destination persistence"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file = "../../../LICENSE"
+
+[dependencies]
+bt-core = { path = "../bt-core" }
+thiserror.workspace = true
+tempfile = "3.27.0"
+
+[dev-dependencies]
+serde_json.workspace = true

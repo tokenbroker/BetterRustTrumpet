@@ -54,14 +54,34 @@ pub const REGISTRY_SETTINGS_SUBKEY: &str = r"Software\EarTrumpet";
 pub struct PortableSnapshot {
     original: Option<Vec<u8>>,
     store: PortableStore,
+    status: PortableLoadStatus,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PortableLoadStatus {
+    Missing,
+    EmptyDocument,
+    Loaded,
+    Invalid,
 }
 
 impl PortableSnapshot {
     pub fn capture(bytes: Option<Vec<u8>>, zone: &(impl LocalZone + ?Sized)) -> Self {
-        let store = PortableStore::load(bytes.as_deref(), zone);
+        let (status, values) = match bytes.as_deref() {
+            None => (PortableLoadStatus::Missing, Vec::new()),
+            Some(bytes) => match newtonsoft::parse_object_document(&decode_text(bytes), zone) {
+                Ok(None) => (PortableLoadStatus::EmptyDocument, Vec::new()),
+                Ok(Some(values)) => (PortableLoadStatus::Loaded, values),
+                Err(_) => (PortableLoadStatus::Invalid, Vec::new()),
+            },
+        };
+        let store = PortableStore {
+            values: values.into_iter().collect(),
+        };
         Self {
             original: bytes,
             store,
+            status,
         }
     }
 
@@ -71,6 +91,10 @@ impl PortableSnapshot {
 
     pub fn store(&self) -> &PortableStore {
         &self.store
+    }
+
+    pub fn status(&self) -> PortableLoadStatus {
+        self.status
     }
 }
 

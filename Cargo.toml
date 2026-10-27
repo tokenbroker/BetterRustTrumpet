@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/bt-core", "crates/bt-audio", "crates/bt-app"]
+members = ["crates/bt-core", "crates/bt-audio", "crates/bt-app", "crates/bt-storage"]
 resolver = "3"
 
 [workspace.package]

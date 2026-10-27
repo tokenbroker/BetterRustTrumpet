@@ -1,0 +1,51 @@
+//! Pure migration archive format. File discovery and persistence live in
+//! bt-storage so the portable models acquire no OS adapter dependencies.
+use crate::{legacy_store::PortableSnapshot, newtonsoft::LocalZone};
+use serde::{Deserialize, Serialize};
+use thiserror::Error;
+
+pub const PORTABLE_FORMAT: &str = "BetterTrumpet.Rust.PortableMigration";
+const VERSION: u32 = 1;
+
+#[derive(Debug, Error)]
+pub enum Error {
+    #[error("invalid migration archive: {0}")]
+    Json(#[from] serde_json::Error),
+    #[error("unsupported migration archive format or version")]
+    UnsupportedArchive,
+}
+
+#[derive(Serialize)]
+struct ArchiveRef<'a> {
+    format: &'a str,
+    version: u32,
+    original_bytes: Option<&'a [u8]>,
+}
+#[derive(Deserialize)]
+struct Archive {
+    format: String,
+    version: u32,
+    // This field must be present even when its value is null. A truncated or
+    // hand-edited archive cannot masquerade as a missing legacy source file.
+    #[serde(deserialize_with = "required_bytes")]
+    original_bytes: Option<Vec<u8>>,
+}
+fn required_bytes<'de, D: serde::Deserializer<'de>>(d: D) -> Result<Option<Vec<u8>>, D::Error> {
+    Option::deserialize(d)
+}
+
+pub fn encode_portable(bytes: Option<&[u8]>) -> Result<Vec<u8>, Error> {
+    Ok(serde_json::to_vec_pretty(&ArchiveRef {
+        format: PORTABLE_FORMAT,
+        version: VERSION,
+        original_bytes: bytes,
+    })?)
+}
+
+pub fn decode_portable(bytes: &[u8], zone: &dyn LocalZone) -> Result<PortableSnapshot, Error> {
+    let archive: Archive = serde_json::from_slice(bytes)?;
+    if archive.format != PORTABLE_FORMAT || archive.version != VERSION {
+        return Err(Error::UnsupportedArchive);
+    }
+    Ok(PortableSnapshot::capture(archive.original_bytes, zone))
+}

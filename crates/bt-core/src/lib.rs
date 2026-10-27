@@ -16,6 +16,7 @@ pub mod hidden;
 pub mod identity;
 pub mod legacy_store;
 pub mod legacy_xml;
+pub mod migration;
 pub mod models;
 pub mod newtonsoft;
 pub mod numbers;
