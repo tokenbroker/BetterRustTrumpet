@@ -23,5 +23,6 @@ pub mod settings;
 pub mod text;
 pub mod themes;
 pub mod typed_lists;
+pub mod typed_profiles;
 pub mod undo;
 pub mod window_policy;

@@ -1364,3 +1364,8 @@ pub fn typed_enum(
         _ => Err(Error),
     }
 }
+
+/// Windows Forms Keys property conversion in typed Json.NET records.
+pub fn typed_keys(token: &Token, zone: &(impl LocalZone + ?Sized)) -> Result<i32, Error> {
+    typed_enum(token, keys::KEY_NAMES, zone)
+}

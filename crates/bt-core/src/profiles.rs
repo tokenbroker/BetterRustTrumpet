@@ -47,27 +47,34 @@ pub fn normalize(profile: &mut VolumeProfile, allocate_id: &mut impl FnMut() -> 
     assigned_id
 }
 
-/// Strict entry point retains the parse error for app diagnostics. XML nil,
-/// blank strings and a JSON null list mean no presets in the C# implementation.
+/// The public C# ParseProfiles facade catches errors and returns empty.
+pub fn parse_legacy(
+    json: &str,
+    zone: &dyn crate::newtonsoft::LocalZone,
+    allocate_id: &mut impl FnMut() -> String,
+) -> Vec<VolumeProfile> {
+    parse(json, zone, allocate_id).unwrap_or_default().profiles
+}
+
+/// Installed loader path: typed Newtonsoft input with native local-zone rules.
 pub fn parse(
     json: &str,
+    zone: &dyn crate::newtonsoft::LocalZone,
     allocate_id: &mut impl FnMut() -> String,
-) -> Result<ParsedProfiles, serde_json::Error> {
-    if json.trim().is_empty() || json.trim_start().starts_with('<') {
+) -> Result<ParsedProfiles, crate::newtonsoft::Error> {
+    if is_blank(Some(json)) || json.trim_start().starts_with('<') {
         return Ok(ParsedProfiles::default());
     }
-    let raw: Option<Vec<Option<VolumeProfile>>> = serde_json::from_str(json)?;
     let mut result = ParsedProfiles::default();
-    for mut profile in raw.unwrap_or_default().into_iter().flatten() {
+    for mut profile in crate::typed_profiles::decode(json, zone)?
+        .unwrap_or_default()
+        .into_iter()
+        .flatten()
+    {
         result.assigned_ids |= normalize(&mut profile, allocate_id);
         result.profiles.push(profile);
     }
     Ok(result)
-}
-
-/// The public C# ParseProfiles facade catches all errors and returns empty.
-pub fn parse_legacy(json: &str, allocate_id: &mut impl FnMut() -> String) -> Vec<VolumeProfile> {
-    parse(json, allocate_id).unwrap_or_default().profiles
 }
 
 pub fn get_slug(profile: &VolumeProfile) -> String {
@@ -315,9 +322,10 @@ impl ProfileCollection {
     pub fn import_json(
         &mut self,
         json: &str,
+        zone: &dyn crate::newtonsoft::LocalZone,
         allocate_id: &mut impl FnMut() -> String,
-    ) -> Result<Option<usize>, serde_json::Error> {
-        let Some(mut profile): Option<VolumeProfile> = serde_json::from_str(json)? else {
+    ) -> Result<Option<usize>, crate::newtonsoft::Error> {
+        let Some(mut profile) = crate::typed_profiles::decode_one(json, zone)? else {
             return Ok(None);
         };
         normalize(&mut profile, allocate_id);

@@ -1,4 +1,6 @@
-//! Golden expectations execute verbatim extracted C# profile methods.
+mod support;
+use support::Central;
+// Golden expectations execute verbatim extracted C# profile methods.
 use bt_core::{
     models::*,
     profiles::{self, ProfileCollection},
@@ -79,7 +81,7 @@ fn profile_list_nil_empty_null_filtering_and_error_facade_match_source() {
     for case in reference()["profileParses"].as_array().unwrap() {
         let input = case["input"].as_str().unwrap();
         let mut allocate = || panic!("these fixtures already have IDs");
-        let parsed = profiles::parse(input, &mut allocate);
+        let parsed = profiles::parse(input, &Central, &mut allocate);
         if case["result"].get("errorType").is_some() {
             assert!(parsed.is_err(), "{input}");
         } else {
@@ -94,7 +96,7 @@ fn profile_list_nil_empty_null_filtering_and_error_facade_match_source() {
             );
         }
         assert_eq!(
-            serde_json::to_value(profiles::parse_legacy(input, &mut allocate)).unwrap(),
+            serde_json::to_value(profiles::parse_legacy(input, &Central, &mut allocate)).unwrap(),
             case["legacy"]
         );
     }
@@ -143,10 +145,14 @@ fn collection_lookup_cycles_save_rename_and_import_match_csharp() {
     );
     let mut calls = 0;
     let index = collection
-        .import_json(r#"{"Id":"A","Name":"Renamed","Slug":"night"}"#, &mut || {
-            calls += 1;
-            NEW_ID.into()
-        })
+        .import_json(
+            r#"{"Id":"A","Name":"Renamed","Slug":"night"}"#,
+            &Central,
+            &mut || {
+                calls += 1;
+                NEW_ID.into()
+            },
+        )
         .unwrap();
     assert_eq!(index, Some(3));
     assert_eq!(calls, 1);
@@ -188,16 +194,23 @@ fn profile_device_app_edits_and_empty_carrier_pruning_match_csharp() {
 fn load_persistence_signal_only_tracks_new_ids_and_roundtrips_stably() {
     let parsed = profiles::parse(
         r#"[null,{"Id":"keep","Hotkey":null},{"Name":"New"}]"#,
+        &Central,
         &mut || NEW_ID.into(),
     )
     .unwrap();
     assert!(parsed.assigned_ids);
     let collection = ProfileCollection::new(parsed.profiles);
     let json = collection.to_json().unwrap();
-    let second = profiles::parse(&json, &mut || panic!("IDs must survive reload")).unwrap();
+    let second =
+        profiles::parse(&json, &Central, &mut || panic!("IDs must survive reload")).unwrap();
     assert!(!second.assigned_ids);
     assert_eq!(second.profiles, collection.profiles());
-    let normalized = profiles::parse(r#"[{"Id":"keep","Hotkey":null}]"#, &mut || panic!()).unwrap();
+    let normalized = profiles::parse(
+        r#"[{"Id":"keep","Hotkey":null}]"#,
+        &Central,
+        &mut || panic!(),
+    )
+    .unwrap();
     assert!(!normalized.assigned_ids);
     assert_eq!(normalized.profiles[0].hotkey, Some(HotkeyData::default()));
 }

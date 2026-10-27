@@ -1061,6 +1061,874 @@
       }
     }
   ],
+  "profiles": [
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":12}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"12\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"12\",\"Slug\":\"12\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":true}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"true\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"true\",\"Slug\":\"true\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":1.50}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"1.50\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"1.50\",\"Slug\":\"1-50\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CreatedAt\":\"2026-10-26T12:00:00Z\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":\"2026-10-26T12:00:00Z\",\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":\"2026-10-26T12:00:00Z\",\"UpdatedAt\":\"2026-10-26T12:00:00Z\",\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":{}}]",
+      "raw": {
+        "errorType": "JsonReaderException"
+      },
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"SchemaVersion\":\"2\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":2,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":2,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"SchemaVersion\":2.0}]",
+      "raw": {
+        "errorType": "JsonReaderException"
+      },
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"SchemaVersion\":null}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"IncludeDeviceVolumes\":1}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"IncludeAppVolumes\":\"TRUE\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"RouteApps\":0.0}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":false,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":false,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"RouteApps\":null}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"ApplyAppsOnly\":\"true\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"IncludeDeviceVolumes\":true,\"ApplyAppsOnly\":true}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"ApplyAppsOnly\":true,\"IncludeDeviceVolumes\":true}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":\"AllDevices\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":\"currentdevice\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":1.5}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":true}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":\"CurrentDevice, AllDevices\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":null}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"CaptureScope\":\"2026-10-26T12:00:00Z\"}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":null}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":null,\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"Key\":\"P\",\"Modifiers\":\"Control, Shift\",\"IsEmpty\":\"false\"}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":196608,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":196608,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"Key\":80},\"Hotkey\":{\"Modifiers\":131072}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"Key\":80},\"Hotkey\":null,\"Hotkey\":{\"Modifiers\":131072}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":0,\"IsEmpty\":false},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":0,\"IsEmpty\":false},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"Key\":1.5}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"IsEmpty\":\"x\"}}]",
+      "raw": {
+        "errorType": "JsonReaderException"
+      },
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Hotkey\":{\"IsEmpty\":null}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"DefaultDevices\":null}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":null,\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":42,\"DisplayName\":false}}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"42\",\"DisplayName\":\"false\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"42\",\"DisplayName\":\"false\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\"}},\"DefaultDevices\":{\"Recording\":{\"DeviceId\":\"b\"}}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":null},\"PlaybackCommunications\":null,\"Recording\":{\"DeviceId\":\"b\",\"DisplayName\":null},\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":null},\"PlaybackCommunications\":null,\"Recording\":{\"DeviceId\":\"b\",\"DisplayName\":null},\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\"}},\"DefaultDevices\":{\"Playback\":{\"DisplayName\":\"A\"}}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":\"A\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":\"A\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"DefaultDevices\":{\"IsEmpty\":\"x\"}}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":null}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":null}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[null,{}]}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[null,{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"DeviceId\":\"d\",\"Volume\":\"42\",\"IsMuted\":1,\"IncludeVolume\":\"false\",\"Apps\":[null,{\"ExeName\":123,\"Volume\":\"3\"}]}]}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"d\",\"DisplayName\":null,\"Volume\":42,\"IsMuted\":true,\"IncludeVolume\":false,\"Apps\":[null,{\"ExeName\":\"123\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":3,\"IsMuted\":false}]}]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"d\",\"DisplayName\":null,\"Volume\":42,\"IsMuted\":true,\"IncludeVolume\":false,\"Apps\":[{\"ExeName\":\"123\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":\"d\",\"DeviceDisplayName\":null,\"Volume\":3,\"IsMuted\":false}]}]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"DeviceId\":\"a\"}],\"Devices\":[{\"DeviceId\":\"b\"}]}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"a\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]},{\"DeviceId\":\"b\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"a\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]},{\"DeviceId\":\"b\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"Apps\":[{\"ExeName\":\"a\"}],\"Apps\":[{\"ExeName\":\"b\"}]}]}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":\"a\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false},{\"ExeName\":\"b\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":\"a\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false},{\"ExeName\":\"b\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"Apps\":null,\"Apps\":[{}]}]}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":null,\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":null,\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"Volume\":null}]}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{\"Apps\":[1]}]}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[1]}]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"VolumeDevices\":[1],\"AllApps\":5}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Unknown\":new Date(0)}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Unknown\":{\"x\":\"9999-12-31T24:00:00\"}}]",
+      "raw": {
+        "errorType": "ArgumentOutOfRangeException"
+      },
+      "result": {
+        "errorType": "ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":\"bad\",\"Name\":\"good\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"good\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"good\",\"Slug\":\"good\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"NAME\":\"one\",\"name\":\"two\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"two\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"two\",\"Slug\":\"two\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "",
+      "raw": {
+        "value": "null"
+      },
+      "result": {
+        "value": "{\"profiles\":[],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": " ",
+      "raw": {
+        "value": "null"
+      },
+      "result": {
+        "value": "{\"profiles\":[],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "null",
+      "raw": {
+        "value": "null"
+      },
+      "result": {
+        "value": "{\"profiles\":[],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[]",
+      "raw": {
+        "value": "[]"
+      },
+      "result": {
+        "value": "{\"profiles\":[],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[null,{}]",
+      "raw": {
+        "value": "[null,{\"SchemaVersion\":3,\"Id\":null,\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"captured-id-0\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":true}"
+      }
+    },
+    {
+      "input": "[{},5]",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "{}",
+      "raw": {
+        "errorType": "JsonSerializationException"
+      },
+      "result": {
+        "errorType": "JsonSerializationException"
+      }
+    },
+    {
+      "input": "<nil/>",
+      "raw": {
+        "errorType": "JsonReaderException"
+      },
+      "result": {
+        "value": "{\"profiles\":[],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[/*c*/{Id:'stable',Name:'Night',},]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"Night\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"Night\",\"Slug\":\"night\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Devices\":[{}]}] trailing",
+      "raw": {
+        "errorType": "JsonReaderException"
+      },
+      "result": {
+        "errorType": "JsonReaderException"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Name\":\"\\u0000\"}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"\\u0000\",\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"\\u0000\",\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    },
+    {
+      "input": "[{\"Id\":\"stable\",\"Unknown\":undefined}]",
+      "raw": {
+        "value": "[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":null,\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}]"
+      },
+      "result": {
+        "value": "{\"profiles\":[{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}],\"assignedIds\":false}"
+      }
+    }
+  ],
+  "profileImports": [
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":12}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"12\",\"Slug\":\"12\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":true}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"true\",\"Slug\":\"true\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":1.50}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"1.50\",\"Slug\":\"1-50\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CreatedAt\":\"2026-10-26T12:00:00Z\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":\"2026-10-26T12:00:00Z\",\"UpdatedAt\":\"2026-10-26T12:00:00Z\",\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":{}}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"SchemaVersion\":\"2\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":2,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"SchemaVersion\":2.0}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"SchemaVersion\":null}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"IncludeDeviceVolumes\":1}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"IncludeAppVolumes\":\"TRUE\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"RouteApps\":0.0}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":false,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"RouteApps\":null}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"ApplyAppsOnly\":\"true\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"IncludeDeviceVolumes\":true,\"ApplyAppsOnly\":true}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":false,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":true,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"ApplyAppsOnly\":true,\"IncludeDeviceVolumes\":true}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":\"AllDevices\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":\"currentdevice\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":1.5}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":true}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":\"CurrentDevice, AllDevices\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":1,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":null}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"CaptureScope\":\"2026-10-26T12:00:00Z\"}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":null}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"Key\":\"P\",\"Modifiers\":\"Control, Shift\",\"IsEmpty\":\"false\"}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":196608,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"Key\":80},\"Hotkey\":{\"Modifiers\":131072}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":80,\"IsEmpty\":false},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"Key\":80},\"Hotkey\":null,\"Hotkey\":{\"Modifiers\":131072}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":131072,\"Key\":0,\"IsEmpty\":false},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"Key\":1.5}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"IsEmpty\":\"x\"}}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Hotkey\":{\"IsEmpty\":null}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"DefaultDevices\":null}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":42,\"DisplayName\":false}}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"42\",\"DisplayName\":\"false\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\"}},\"DefaultDevices\":{\"Recording\":{\"DeviceId\":\"b\"}}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":null},\"PlaybackCommunications\":null,\"Recording\":{\"DeviceId\":\"b\",\"DisplayName\":null},\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\"}},\"DefaultDevices\":{\"Playback\":{\"DisplayName\":\"A\"}}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":{\"DeviceId\":\"a\",\"DisplayName\":\"A\"},\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"DefaultDevices\":{\"IsEmpty\":\"x\"}}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":null}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[null,{}]}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"DeviceId\":\"d\",\"Volume\":\"42\",\"IsMuted\":1,\"IncludeVolume\":\"false\",\"Apps\":[null,{\"ExeName\":123,\"Volume\":\"3\"}]}]}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"d\",\"DisplayName\":null,\"Volume\":42,\"IsMuted\":true,\"IncludeVolume\":false,\"Apps\":[{\"ExeName\":\"123\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":\"d\",\"DeviceDisplayName\":null,\"Volume\":3,\"IsMuted\":false}]}]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"DeviceId\":\"a\"}],\"Devices\":[{\"DeviceId\":\"b\"}]}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":\"a\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]},{\"DeviceId\":\"b\",\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[]}]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"Apps\":[{\"ExeName\":\"a\"}],\"Apps\":[{\"ExeName\":\"b\"}]}]}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":\"a\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false},{\"ExeName\":\"b\",\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"Apps\":null,\"Apps\":[{}]}]}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[{\"DeviceId\":null,\"DisplayName\":null,\"Volume\":0,\"IsMuted\":false,\"IncludeVolume\":true,\"Apps\":[{\"ExeName\":null,\"AppId\":null,\"DisplayName\":null,\"DeviceId\":null,\"DeviceDisplayName\":null,\"Volume\":0,\"IsMuted\":false}]}]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"Volume\":null}]}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[{\"Apps\":[1]}]}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":[1]}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"VolumeDevices\":[1],\"AllApps\":5}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Unknown\":new Date(0)}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Unknown\":{\"x\":\"9999-12-31T24:00:00\"}}",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":\"bad\",\"Name\":\"good\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"good\",\"Slug\":\"good\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"NAME\":\"one\",\"name\":\"two\"}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":\"two\",\"Slug\":\"two\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "null",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "[]",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Name\":\"Night\"} trailing",
+      "result": {
+        "value": "null"
+      }
+    },
+    {
+      "input": "{\"Id\":\"stable\",\"Devices\":null}",
+      "result": {
+        "value": "{\"SchemaVersion\":3,\"Id\":\"stable\",\"Name\":null,\"Slug\":\"\",\"CreatedAt\":null,\"UpdatedAt\":null,\"CaptureScope\":0,\"IncludeDeviceVolumes\":true,\"IncludeAppVolumes\":true,\"RouteApps\":true,\"DefaultDevices\":{\"Playback\":null,\"PlaybackCommunications\":null,\"Recording\":null,\"RecordingCommunications\":null},\"ApplyAppsOnly\":false,\"Hotkey\":{\"Modifiers\":0,\"Key\":0,\"IsEmpty\":true},\"Devices\":[]}"
+      }
+    },
+    {
+      "input": "<nil/>",
+      "result": {
+        "value": "null"
+      }
+    }
+  ],
   "todayTicks": 639285696000000000,
   "sourceCommit": "1dd1726932c29537f34b6a0b2148bc5868f9ce89",
   "runtime": "8.0.31"
