@@ -21,7 +21,8 @@
         "skipTaskbar": true,
         "visible": false,
         "focus": true,
-        "shadow": true
+        "shadow": true,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --disable-gpu"
       },
       {
         "label": "media",
@@ -35,7 +36,8 @@
         "skipTaskbar": true,
         "visible": false,
         "focus": false,
-        "shadow": true
+        "shadow": true,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --disable-gpu"
       }
     ],
     "security": {

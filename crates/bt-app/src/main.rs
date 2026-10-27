@@ -1,4 +1,4 @@
-//! BetterTrumpet Rust port — preview tray app.
+//! BetterTrumpet Rust port â€” preview tray app.
 //!
 //! Daily-use features first: a tray flyout with every output device and its
 //! apps (volume, mute, peaks, names and icons), default-device switching from
@@ -8,7 +8,7 @@
 
 mod hotkeys;
 
-use bt_app::win32::{icons, startup, wheel};
+use bt_app::win32::{icons, startup, webview, wheel};
 use bt_audio::{AudioEngine, Snapshot};
 use bt_media::{Command as MediaCommand, MediaEngine, NowPlaying};
 use std::{
@@ -215,7 +215,14 @@ fn hide(window: &WebviewWindow) {
     if window.is_visible().unwrap_or(false) {
         let _ = window.hide();
         let _ = window.emit("flyout-hidden", ());
+        set_active(window, false);
     }
+}
+
+/// Resumes (`true`) or suspends (`false`) a window's page; hidden pages run
+/// no scripts or timers and trim their memory.
+fn set_active(window: &WebviewWindow, active: bool) {
+    let _ = window.with_webview(move |webview| webview::set_active(webview, active));
 }
 
 /// Bottom-right of the work area, horizontally centred on the tray icon when
@@ -251,6 +258,7 @@ fn hide_media(app: &AppHandle) {
         if window.is_visible().unwrap_or(false) {
             let _ = window.hide();
             let _ = window.emit("media-hidden", ());
+            set_active(&window, false);
         }
     }
 }
@@ -295,6 +303,7 @@ fn schedule_media_show(app: AppHandle, tray: Rect) {
         }
         if let Some(window) = app.get_webview_window(MEDIA) {
             place_near_taskbar(&window, Some(tray));
+            set_active(&window, true);
             let _ = window.show();
             let _ = window.emit("media-shown", ());
         }
@@ -307,6 +316,7 @@ fn show(app: &AppHandle, tray: Option<Rect>) {
         return;
     };
     place_near_taskbar(&window, tray);
+    set_active(&window, true);
     let _ = window.show();
     let _ = window.set_focus();
     let _ = window.emit("flyout-shown", ());
@@ -488,7 +498,7 @@ fn step_all_devices(app: &AppHandle, delta: f32) {
 fn start_tray_wheel(app: AppHandle) {
     let (sender, deltas) = std::sync::mpsc::channel::<i16>();
     let hover_app = app.clone();
-    wheel::start(move |delta| {
+    wheel::init(move |delta| {
         if hover_app.state::<App>().tray_hover.load(Ordering::Relaxed) {
             let _ = sender.send(delta);
         }
@@ -543,7 +553,7 @@ fn register_hotkeys(app: &tauri::App) {
         let status = if registered {
             ""
         } else {
-            " — in use by another app"
+            " â€” in use by another app"
         };
         labels.push(format!(
             "{}: {}{source}{status}",
@@ -644,12 +654,14 @@ fn main() {
                         }
                         TrayIconEvent::Enter { rect, .. } => {
                             app.state::<App>().tray_hover.store(true, Ordering::Relaxed);
+                            wheel::install();
                             schedule_media_show(app.clone(), rect);
                         }
                         TrayIconEvent::Leave { .. } => {
                             app.state::<App>()
                                 .tray_hover
                                 .store(false, Ordering::Relaxed);
+                            wheel::uninstall();
                             schedule_media_hide(app.clone());
                         }
                         _ => {}
@@ -663,6 +675,14 @@ fn main() {
                 show(app.handle(), None);
             }
             Ok(())
+        })
+        // Both windows start hidden: suspend each page once it has loaded.
+        .on_page_load(|webview, payload| {
+            if payload.event() == tauri::webview::PageLoadEvent::Finished
+                && !webview.window().is_visible().unwrap_or(false)
+            {
+                let _ = webview.with_webview(|platform| webview::set_active(platform, false));
+            }
         })
         .on_window_event(|window, event| {
             if window.label() != FLYOUT {
