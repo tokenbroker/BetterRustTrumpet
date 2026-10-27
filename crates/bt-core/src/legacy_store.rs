@@ -11,6 +11,69 @@ use crate::{
 };
 use std::collections::HashMap;
 
+/// Inputs to StorageFactory's one-time selection. The native adapter must use
+/// File.Exists semantics (a directory with a marker name is not a marker).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct StoreProbe {
+    pub portable_marker_is_file: bool,
+    pub dot_portable_is_file: bool,
+    pub has_package_identity: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum StoreFlavor {
+    Portable,
+    Package,
+    Registry,
+}
+
+impl StoreProbe {
+    /// A portable marker overrides package identity. Once selected, a corrupt
+    /// or missing portable file does not cause fallback to another store.
+    pub const fn select(self) -> StoreFlavor {
+        if self.portable_marker_is_file || self.dot_portable_is_file {
+            StoreFlavor::Portable
+        } else if self.has_package_identity {
+            StoreFlavor::Package
+        } else {
+            StoreFlavor::Registry
+        }
+    }
+}
+
+pub const PORTABLE_MARKERS: [&str; 2] = ["portable.marker", ".portable"];
+/// Components relative to the executable directory, never the working directory.
+pub const PORTABLE_SETTINGS_COMPONENTS: [&str; 2] = ["config", "settings.json"];
+pub const REGISTRY_SETTINGS_SUBKEY: &str = r"Software\EarTrumpet";
+
+/// Read-only portable migration input. Keep the original bytes even when Load
+/// catches malformed JSON and presents an empty bag. Re-serializing the parsed
+/// bag would lose comments, duplicate keys, encoding and unrecognized values.
+/// Native code supplies bytes; this type has no file-opening or saving API.
+#[derive(Clone, Debug, PartialEq)]
+pub struct PortableSnapshot {
+    original: Option<Vec<u8>>,
+    store: PortableStore,
+}
+
+impl PortableSnapshot {
+    pub fn capture(bytes: Option<Vec<u8>>, zone: &(impl LocalZone + ?Sized)) -> Self {
+        let store = PortableStore::load(bytes.as_deref(), zone);
+        Self {
+            original: bytes,
+            store,
+        }
+    }
+
+    pub fn original_bytes(&self) -> Option<&[u8]> {
+        self.original.as_deref()
+    }
+
+    pub fn store(&self) -> &PortableStore {
+        &self.store
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Read {
     Value(Value),
