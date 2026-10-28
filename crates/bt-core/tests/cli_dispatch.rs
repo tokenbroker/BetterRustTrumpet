@@ -1,6 +1,6 @@
 //! ProcessCommand request/response mapping over a fake provider (no audio,
 //! no pipe, no UI).
-use bt_core::cli_dispatch::{self, App, Device, Provider};
+use bt_core::cli_dispatch::{self, App, Device, Provider, SettingsFiles};
 use serde_json::{Value, json};
 
 #[derive(Default)]
@@ -10,6 +10,38 @@ struct Fake {
     profiles: Option<Option<String>>,
     default_error: Option<String>,
     processes: usize,
+    files: Option<Files>,
+}
+
+/// The app's settings file side: which paths exist and what the service
+/// answers.
+#[derive(Default)]
+struct Files {
+    available: bool,
+    existing: Vec<String>,
+    export_ok: bool,
+    import_ok: bool,
+    calls: Vec<String>,
+}
+
+impl SettingsFiles for Files {
+    fn settings_available(&self) -> bool {
+        self.available
+    }
+    fn default_export_path(&self) -> String {
+        r"C:\Users\u\Desktop\BetterTrumpet_Settings_2026-10-28.btsettings".into()
+    }
+    fn file_exists(&self, path: &str) -> bool {
+        self.existing.iter().any(|p| p == path)
+    }
+    fn export_to(&mut self, path: &str) -> bool {
+        self.calls.push(format!("export {path}"));
+        self.export_ok
+    }
+    fn import_from(&mut self, path: &str) -> bool {
+        self.calls.push(format!("import {path}"));
+        self.import_ok
+    }
 }
 
 impl Provider for Fake {
@@ -60,6 +92,14 @@ impl Provider for Fake {
         621_355_968_000_000_000
             + 20_754 * 864_000_000_000
             + ((13 * 3600 + 5 * 60 + 9) * 1000 + 42) * 10_000
+    }
+    fn extension(&mut self, command: &str, args: &[String]) -> Option<String> {
+        let files = self.files.as_mut()?;
+        Some(match command {
+            "export-settings" => cli_dispatch::export_settings(files, args),
+            "import-settings" => cli_dispatch::import_settings(files, args),
+            _ => return None,
+        })
     }
 }
 
@@ -482,4 +522,76 @@ fn preset_create_applies_its_rule_live_first() {
 #[test]
 fn watch_timestamp_is_local_time_with_literal_z() {
     assert_eq!(cli_dispatch::watch_timestamp(0), "0001-01-01T00:00:00.000Z");
+}
+
+#[test]
+fn export_and_import_settings_answer_like_cli_handler() {
+    let mut p = fake();
+    p.files = Some(Files {
+        available: true,
+        existing: vec!["in.btsettings".into(), r"C:\a b\x.btsettings".into()],
+        export_ok: true,
+        import_ok: true,
+        ..Files::default()
+    });
+    assert_eq!(
+        raw(&mut p, "export-settings"),
+        r#"{"ok":true,"path":"C:\\Users\\u\\Desktop\\BetterTrumpet_Settings_2026-10-28.btsettings"}"#
+    );
+    assert_eq!(
+        run(&mut p, "settings export out.btsettings extra"),
+        json!({"ok": true, "path": "out.btsettings"})
+    );
+    assert_eq!(
+        run(&mut p, r#"import-settings "C:\a b\x.btsettings""#),
+        json!({"ok": true, "path": r"C:\a b\x.btsettings"})
+    );
+    assert_eq!(
+        run(&mut p, "settings import in.btsettings"),
+        json!({"ok": true, "path": "in.btsettings"})
+    );
+    assert_eq!(
+        run(&mut p, "import-settings"),
+        json!({"error": "usage: import-settings <path>"})
+    );
+    assert_eq!(
+        run(&mut p, "import-settings missing.btsettings"),
+        json!({"error": "file not found: missing.btsettings"})
+    );
+    let files = p.files.as_mut().unwrap();
+    assert_eq!(
+        files.calls,
+        [
+            r"export C:\Users\u\Desktop\BetterTrumpet_Settings_2026-10-28.btsettings",
+            "export out.btsettings",
+            r"import C:\a b\x.btsettings",
+            "import in.btsettings",
+        ]
+    );
+    // A failed export/import is reported through `ok` alone; a partial
+    // import that the service counts as a success answers true.
+    files.export_ok = false;
+    files.import_ok = false;
+    assert_eq!(
+        run(&mut p, "export-settings x"),
+        json!({"ok": false, "path": "x"})
+    );
+    assert_eq!(
+        run(&mut p, "import-settings in.btsettings"),
+        json!({"ok": false, "path": "in.btsettings"})
+    );
+    // Without settings: export checks first, import after its file check.
+    p.files.as_mut().unwrap().available = false;
+    assert_eq!(
+        run(&mut p, "export-settings x"),
+        json!({"error": "settings not available"})
+    );
+    assert_eq!(
+        run(&mut p, "import-settings nope"),
+        json!({"error": "file not found: nope"})
+    );
+    assert_eq!(
+        run(&mut p, "import-settings in.btsettings"),
+        json!({"error": "settings not available"})
+    );
 }
