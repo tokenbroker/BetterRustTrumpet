@@ -165,6 +165,19 @@ impl Store {
         }
     }
 
+    /// A window placement setting (`FullMixerWindowPlacement`).
+    pub fn placement(&self, name: &str) -> Option<legacy_xml::WindowPlacement> {
+        match self.read(name, Request::Value(Kind::OptionalPlacement)) {
+            Read::Value(legacy_xml::Value::Placement(p)) => p,
+            _ => None,
+        }
+    }
+
+    /// Saves a window placement in the original's XmlSerializer form.
+    pub fn set_placement(&mut self, name: &str, placement: &legacy_xml::WindowPlacement) {
+        self.write(name, &legacy_xml::encode_placement(Some(placement)));
+    }
+
     fn load(&self, key: Key) -> Option<Value> {
         let name = key.storage_key();
         if key == Key::HasShownFirstRun {
