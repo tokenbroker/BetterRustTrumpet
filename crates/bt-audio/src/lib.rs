@@ -271,3 +271,94 @@ impl AudioEngine {
         }
     }
 }
+
+/// A default-device slot (VolumeProfileService.DefaultDeviceRole).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum Role {
+    Playback,
+    PlaybackCommunications,
+    Recording,
+    RecordingCommunications,
+}
+
+impl Role {
+    pub const ALL: [Role; 4] = [
+        Role::Playback,
+        Role::PlaybackCommunications,
+        Role::Recording,
+        Role::RecordingCommunications,
+    ];
+    pub fn is_capture(self) -> bool {
+        matches!(self, Role::Recording | Role::RecordingCommunications)
+    }
+}
+
+/// An active endpoint of either flow: id and friendly name.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct Endpoint {
+    pub id: String,
+    pub name: String,
+}
+
+/// Endpoint form factors (EndpointFormFactor) the tray icon distinguishes.
+pub mod form_factor {
+    pub const HEADPHONES: u32 = 3;
+    pub const HEADSET: u32 = 5;
+    pub const HANDSET: u32 = 6;
+    pub const DIGITAL_AUDIO_DISPLAY_DEVICE: u32 = 9;
+}
+
+impl AudioEngine {
+    /// Active endpoints of one flow (capture = recording).
+    pub fn endpoints(&self, capture: bool) -> Result<Vec<Endpoint>, AudioError> {
+        #[cfg(windows)]
+        return self.inner.endpoints(capture);
+        #[cfg(not(windows))]
+        {
+            let _ = capture;
+            Err(AudioError::Unsupported)
+        }
+    }
+    /// The current default endpoint for a slot (multimedia role for the main
+    /// slots, communications for the call slots).
+    pub fn default_endpoint(&self, role: Role) -> Result<Option<Endpoint>, AudioError> {
+        #[cfg(windows)]
+        return self.inner.default_endpoint(role);
+        #[cfg(not(windows))]
+        {
+            let _ = role;
+            Err(AudioError::Unsupported)
+        }
+    }
+    /// Whether an endpoint of either flow exists and is active.
+    pub fn is_active(&self, id: &str) -> Result<bool, AudioError> {
+        #[cfg(windows)]
+        return self.inner.is_active(id);
+        #[cfg(not(windows))]
+        {
+            let _ = id;
+            Err(AudioError::Unsupported)
+        }
+    }
+    /// Makes `id` the default for a slot: console and multimedia for the main
+    /// slots, communications for the call slots, as the original.
+    pub fn set_default_role(&self, id: &str, role: Role) -> Result<(), AudioError> {
+        #[cfg(windows)]
+        return self.inner.set_default_role(id, role);
+        #[cfg(not(windows))]
+        {
+            let _ = (id, role);
+            Err(AudioError::Unsupported)
+        }
+    }
+    /// PKEY_AudioEndpoint_FormFactor of an endpoint (see [`form_factor`]).
+    pub fn form_factor(&self, id: &str) -> Result<Option<u32>, AudioError> {
+        #[cfg(windows)]
+        return self.inner.form_factor(id);
+        #[cfg(not(windows))]
+        {
+            let _ = id;
+            Err(AudioError::Unsupported)
+        }
+    }
+}
