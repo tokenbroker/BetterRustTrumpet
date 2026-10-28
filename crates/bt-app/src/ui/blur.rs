@@ -36,7 +36,6 @@ fn boxes(sigma: f32) -> [usize; 3] {
 
 /// One box pass along rows (`stride` 4, `step` 4) or columns, `radius`
 /// pixels each side, edges clamped. `len` samples per line, `lines` lines.
-#[allow(clippy::too_many_arguments)]
 fn box_pass(
     src: &[u8],
     dst: &mut [u8],

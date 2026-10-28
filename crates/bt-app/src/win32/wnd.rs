@@ -27,9 +27,10 @@ use windows::{
             Controls::MARGINS,
             HiDpi::{GetDpiForMonitor, GetDpiForWindow, MDT_EFFECTIVE_DPI},
             Input::KeyboardAndMouse::{
-                GetKeyState, HOT_KEY_MODIFIERS, RegisterHotKey, ReleaseCapture, SetCapture,
-                SetFocus, TME_LEAVE, TRACKMOUSEEVENT, TrackMouseEvent, UnregisterHotKey,
-                VK_CONTROL, VK_F4, VK_LWIN, VK_MENU, VK_RWIN, VK_SHIFT,
+                GetAsyncKeyState, GetKeyState, HOT_KEY_MODIFIERS, RegisterHotKey, ReleaseCapture,
+                SetCapture, SetFocus, TME_LEAVE, TRACKMOUSEEVENT, TrackMouseEvent,
+                UnregisterHotKey, VK_CONTROL, VK_F4, VK_LBUTTON, VK_LWIN, VK_MBUTTON, VK_MENU,
+                VK_RBUTTON, VK_RWIN, VK_SHIFT,
             },
             WindowsAndMessaging::{
                 CS_HREDRAW, CS_VREDRAW, CreateWindowExW, DefWindowProcW, DestroyWindow,
@@ -43,11 +44,13 @@ use windows::{
                 SetForegroundWindow, SetTimer, SetWindowLongPtrW, SetWindowPos, ShowWindow,
                 TranslateMessage, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED, WM_CHAR, WM_CLOSE,
                 WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND, WM_GETMINMAXINFO, WM_HOTKEY,
-                WM_KEYDOWN, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDOWN,
-                WM_MBUTTONUP, WM_MOUSEACTIVATE, WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_PAINT,
-                WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE, WM_SIZE, WM_SYSCHAR,
-                WM_SYSKEYDOWN, WM_TIMER, WNDCLASSEXW, WS_EX_LAYERED, WS_EX_NOACTIVATE,
-                WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP,
+                WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN, WM_LBUTTONUP,
+                WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP, WM_MOUSEACTIVATE, WM_MOUSEMOVE,
+                WM_MOUSEWHEEL, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
+                WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE,
+                WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER, WNDCLASSEXW,
+                WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
+                WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP,
             },
         },
     },
@@ -577,6 +580,88 @@ pub fn run() {
             DispatchMessageW(&message);
         }
     }
+}
+
+/// Input a nested loop (`run_modal`) sees before any window does.
+/// Positions are screen pixels.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ModalInput {
+    MouseMove(Window, i32, i32),
+    /// Client or non-client (title bar) presses.
+    MouseDown(Window, Button, i32, i32),
+    MouseUp(Window, Button, i32, i32),
+    Wheel(Window),
+    Key(u16, Modifiers),
+    KeyUp(u16),
+    Timer(Window, usize),
+}
+
+/// Runs a nested message loop on this thread, as a menu does, until
+/// `done` returns true. Input messages for this thread's windows go to
+/// `filter` first, which returns true to swallow them; everything else is
+/// dispatched as usual, so other windows keep working. A quit request ends
+/// the loop and is passed on to the outer one.
+pub fn run_modal(mut filter: impl FnMut(ModalInput) -> bool, mut done: impl FnMut() -> bool) {
+    let mut message = MSG::default();
+    while !done() {
+        // SAFETY: the standard loop on this thread's queue.
+        let got = unsafe { GetMessageW(&mut message, None, 0, 0) };
+        if got.0 == 0 {
+            // SAFETY: re-posts WM_QUIT for the outer loop.
+            unsafe { PostQuitMessage(message.wParam.0 as i32) };
+            return;
+        }
+        if got.0 == -1 {
+            return;
+        }
+        let window = Window(message.hwnd.0 as isize);
+        let (x, y) = (message.pt.x, message.pt.y);
+        let input = match message.message {
+            WM_MOUSEMOVE => Some(ModalInput::MouseMove(window, x, y)),
+            WM_LBUTTONDOWN | WM_LBUTTONDBLCLK | WM_NCLBUTTONDOWN => {
+                Some(ModalInput::MouseDown(window, Button::Left, x, y))
+            }
+            WM_RBUTTONDOWN | WM_RBUTTONDBLCLK | WM_NCRBUTTONDOWN => {
+                Some(ModalInput::MouseDown(window, Button::Right, x, y))
+            }
+            WM_MBUTTONDOWN | WM_MBUTTONDBLCLK | WM_NCMBUTTONDOWN => {
+                Some(ModalInput::MouseDown(window, Button::Middle, x, y))
+            }
+            WM_LBUTTONUP => Some(ModalInput::MouseUp(window, Button::Left, x, y)),
+            WM_RBUTTONUP => Some(ModalInput::MouseUp(window, Button::Right, x, y)),
+            WM_MBUTTONUP => Some(ModalInput::MouseUp(window, Button::Middle, x, y)),
+            WM_MOUSEWHEEL => Some(ModalInput::Wheel(window)),
+            WM_KEYDOWN | WM_SYSKEYDOWN => {
+                Some(ModalInput::Key(message.wParam.0 as u16, modifiers()))
+            }
+            WM_KEYUP | WM_SYSKEYUP => Some(ModalInput::KeyUp(message.wParam.0 as u16)),
+            WM_TIMER => Some(ModalInput::Timer(window, message.wParam.0)),
+            _ => None,
+        };
+        if input.is_some_and(&mut filter) {
+            continue;
+        }
+        // SAFETY: as in `run`.
+        unsafe {
+            let _ = TranslateMessage(&message);
+            DispatchMessageW(&message);
+        }
+    }
+}
+
+/// The window in the foreground (any process), as a comparable handle.
+pub fn foreground() -> Window {
+    // SAFETY: plain query.
+    Window(unsafe { GetForegroundWindow() }.0 as isize)
+}
+
+/// Whether a mouse button is down, or was pressed since the last call
+/// (the asynchronous state, so presses in other processes count too).
+pub fn button_pressed() -> bool {
+    // SAFETY: plain queries of the asynchronous key state.
+    [VK_LBUTTON, VK_RBUTTON, VK_MBUTTON]
+        .into_iter()
+        .any(|vk| unsafe { GetAsyncKeyState(i32::from(vk.0)) } != 0)
 }
 
 /// Ends the message loop.

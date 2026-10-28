@@ -7,6 +7,11 @@ use crate::{core::HiddenEntry, profiles, store::with_env};
 use bt_app::win32::menu::Item;
 use bt_core::{hidden::AppKey, settings::Key, text::ordinal_ignore_case};
 
+// The original's menu icons (PhosphorIconData) and their IconScale.
+pub(super) const SLIDERS_HORIZONTAL: &str = "M40,92H70.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24H137.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24Zm64-24A12,12,0,1,1,92,80,12,12,0,0,1,104,68Zm112,96H201.94a36,36,0,0,0-67.88,0H40a12,12,0,0,0,0,24h94.06a36,36,0,0,0,67.88,0H216a12,12,0,0,0,0-24Zm-48,24a12,12,0,1,1,12-12A12,12,0,0,1,168,188Z";
+pub(super) const GEAR_SIX: &str = "M128,76a52,52,0,1,0,52,52A52.06,52.06,0,0,0,128,76Zm0,80a28,28,0,1,1,28-28A28,28,0,0,1,128,156Zm113.86-49.57A12,12,0,0,0,236,98.34L208.21,82.49l-.11-31.31a12,12,0,0,0-4.25-9.12,116,116,0,0,0-38-21.41,12,12,0,0,0-9.68.89L128,37.27,99.83,21.53a12,12,0,0,0-9.7-.9,116.06,116.06,0,0,0-38,21.47,12,12,0,0,0-4.24,9.1l-.14,31.34L20,98.35a12,12,0,0,0-5.85,8.11,110.7,110.7,0,0,0,0,43.11A12,12,0,0,0,20,157.66l27.82,15.85.11,31.31a12,12,0,0,0,4.25,9.12,116,116,0,0,0,38,21.41,12,12,0,0,0,9.68-.89L128,218.73l28.14,15.74a12,12,0,0,0,9.7.9,116.06,116.06,0,0,0,38-21.47,12,12,0,0,0,4.24-9.1l.14-31.34,27.81-15.81a12,12,0,0,0,5.85-8.11A110.7,110.7,0,0,0,241.86,106.43Zm-22.63,33.18-26.88,15.28a11.94,11.94,0,0,0-4.55,4.59c-.54,1-1.11,1.93-1.7,2.88a12,12,0,0,0-1.83,6.31L184.13,199a91.83,91.83,0,0,1-21.07,11.87l-27.15-15.19a12,12,0,0,0-5.86-1.53h-.29c-1.14,0-2.3,0-3.44,0a12.08,12.08,0,0,0-6.14,1.51L93,210.82A92.27,92.27,0,0,1,71.88,199l-.11-30.24a12,12,0,0,0-1.83-6.32c-.58-.94-1.16-1.91-1.7-2.88A11.92,11.92,0,0,0,63.7,155L36.8,139.63a86.53,86.53,0,0,1,0-23.24l26.88-15.28a12,12,0,0,0,4.55-4.58c.54-1,1.11-1.94,1.7-2.89a12,12,0,0,0,1.83-6.31L71.87,57A91.83,91.83,0,0,1,92.94,45.17l27.15,15.19a11.92,11.92,0,0,0,6.15,1.52c1.14,0,2.3,0,3.44,0a12.08,12.08,0,0,0,6.14-1.51L163,45.18A92.27,92.27,0,0,1,184.12,57l.11,30.24a12,12,0,0,0,1.83,6.32c.58.94,1.16,1.91,1.7,2.88A11.92,11.92,0,0,0,192.3,101l26.9,15.33A86.53,86.53,0,0,1,219.23,139.61Z";
+pub(super) const LIST_BULLETS: &str = "M76,64A12,12,0,0,1,88,52H216a12,12,0,0,1,0,24H88A12,12,0,0,1,76,64Zm140,52H88a12,12,0,0,0,0,24H216a12,12,0,0,0,0-24Zm0,64H88a12,12,0,0,0,0,24H216a12,12,0,0,0,0-24ZM44,112a16,16,0,1,0,16,16A16,16,0,0,0,44,112Zm0-64A16,16,0,1,0,60,64,16,16,0,0,0,44,48Zm0,128a16,16,0,1,0,16,16A16,16,0,0,0,44,176Z";
+
 fn compare(a: &str, b: &str) -> std::cmp::Ordering {
     a.to_lowercase()
         .cmp(&b.to_lowercase())
@@ -26,6 +31,16 @@ impl Builder {
     fn check(&mut self, text: impl Into<String>, command: MenuCommand, checked: bool) -> Item {
         self.commands.push(command);
         Item::check(text, self.commands.len() as u32, checked)
+    }
+    fn icon(
+        &mut self,
+        text: impl Into<String>,
+        command: MenuCommand,
+        path: &'static str,
+        scale: f32,
+    ) -> Item {
+        self.commands.push(command);
+        Item::icon(text, self.commands.len() as u32, path, scale)
     }
 }
 
@@ -161,9 +176,24 @@ impl Ui {
         }
 
         items.push(Item::Separator);
-        items.push(b.command("Open volume mixer", MenuCommand::Mixer));
-        items.push(b.command("Open settings (beta)", MenuCommand::Settings));
-        items.push(b.command("Open settings", MenuCommand::LegacySettings));
+        items.push(b.icon(
+            "Open volume mixer",
+            MenuCommand::Mixer,
+            SLIDERS_HORIZONTAL,
+            1.02,
+        ));
+        items.push(b.icon(
+            "Open settings (beta)",
+            MenuCommand::Settings,
+            GEAR_SIX,
+            0.96,
+        ));
+        items.push(b.icon(
+            "Open settings",
+            MenuCommand::LegacySettings,
+            LIST_BULLETS,
+            0.94,
+        ));
         items.push(Item::Separator);
         items.push(b.command("Star on GitHub", MenuCommand::GitHub));
         items.push(Item::Separator);

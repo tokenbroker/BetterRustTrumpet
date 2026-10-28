@@ -204,7 +204,11 @@ impl Tip {
                     );
                 }
                 let (background, border, foreground) = if light {
-                    (Rgba::rgb(242, 242, 242), Rgba::rgb(122, 122, 122), Rgba::BLACK)
+                    (
+                        Rgba::rgb(242, 242, 242),
+                        Rgba::rgb(122, 122, 122),
+                        Rgba::BLACK,
+                    )
                 } else {
                     (Rgba::rgb(43, 43, 43), Rgba::rgb(133, 133, 133), Rgba::WHITE)
                 };
