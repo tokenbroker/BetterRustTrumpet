@@ -12,30 +12,42 @@ use windows::{
     Win32::{
         Foundation::{HWND, LPARAM, LRESULT, POINT, RECT, WPARAM},
         Graphics::{
-            Dwm::{DWMWA_WINDOW_CORNER_PREFERENCE, DWMWCP_ROUND, DwmSetWindowAttribute},
-            Gdi::{GetMonitorInfoW, MONITOR_DEFAULTTONEAREST, MONITORINFO, MonitorFromPoint},
+            Dwm::{
+                DWMSBT_MAINWINDOW, DWMWA_SYSTEMBACKDROP_TYPE, DWMWA_USE_IMMERSIVE_DARK_MODE,
+                DWMWA_WINDOW_CORNER_PREFERENCE, DWMWCP_ROUND, DwmExtendFrameIntoClientArea,
+                DwmSetWindowAttribute,
+            },
+            Gdi::{
+                BeginPaint, EndPaint, GetMonitorInfoW, MONITOR_DEFAULTTONEAREST, MONITORINFO,
+                MonitorFromPoint, PAINTSTRUCT,
+            },
         },
         System::LibraryLoader::{GetModuleHandleW, GetProcAddress},
         UI::{
+            Controls::MARGINS,
             HiDpi::{GetDpiForMonitor, GetDpiForWindow, MDT_EFFECTIVE_DPI},
             Input::KeyboardAndMouse::{
                 GetKeyState, HOT_KEY_MODIFIERS, RegisterHotKey, ReleaseCapture, SetCapture,
                 SetFocus, TME_LEAVE, TRACKMOUSEEVENT, TrackMouseEvent, UnregisterHotKey,
-                VK_CONTROL, VK_MENU, VK_SHIFT,
+                VK_CONTROL, VK_F4, VK_LWIN, VK_MENU, VK_RWIN, VK_SHIFT,
             },
             WindowsAndMessaging::{
-                CS_HREDRAW, CS_VREDRAW, CreateWindowExW, DefWindowProcW, DispatchMessageW,
-                GWLP_USERDATA, GetCursorPos, GetForegroundWindow, GetMessageW, GetWindowLongPtrW,
-                HICON, HWND_TOPMOST, IDC_ARROW, IsWindowVisible, KillTimer, LoadCursorW,
-                MA_NOACTIVATE, MSG, PostMessageW, PostQuitMessage, RegisterClassExW,
-                RegisterWindowMessageW, SW_HIDE, SW_SHOW, SW_SHOWNOACTIVATE, SWP_NOACTIVATE,
-                SWP_NOMOVE, SWP_NOSIZE, SetForegroundWindow, SetTimer, SetWindowLongPtrW,
-                SetWindowPos, ShowWindow, TranslateMessage, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED,
-                WM_DISPLAYCHANGE, WM_DPICHANGED, WM_HOTKEY, WM_KEYDOWN, WM_LBUTTONDBLCLK,
-                WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDOWN, WM_MBUTTONUP, WM_MOUSEACTIVATE,
-                WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETTINGCHANGE,
+                CS_HREDRAW, CS_VREDRAW, CreateWindowExW, DefWindowProcW, DestroyWindow,
+                DispatchMessageW, GWLP_USERDATA, GetClientRect, GetCursorPos, GetForegroundWindow,
+                GetMessageW, GetSystemMetrics, GetWindowLongPtrW, HICON, HWND_TOPMOST, ICON_BIG,
+                ICON_SMALL, IDC_ARROW, IMAGE_ICON, IsIconic, IsWindowVisible, KillTimer,
+                LR_DEFAULTCOLOR, LR_SHARED, LoadCursorW, LoadImageW, MA_NOACTIVATE, MINMAXINFO,
+                MSG, PostMessageW, PostQuitMessage, RegisterClassExW, RegisterWindowMessageW,
+                SM_CXICON, SM_CXSMICON, SW_HIDE, SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE,
+                SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SendMessageW,
+                SetForegroundWindow, SetTimer, SetWindowLongPtrW, SetWindowPos, ShowWindow,
+                TranslateMessage, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED, WM_CHAR, WM_CLOSE,
+                WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND, WM_GETMINMAXINFO, WM_HOTKEY,
+                WM_KEYDOWN, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDOWN,
+                WM_MBUTTONUP, WM_MOUSEACTIVATE, WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_PAINT,
+                WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE, WM_SIZE, WM_SYSCHAR,
                 WM_SYSKEYDOWN, WM_TIMER, WNDCLASSEXW, WS_EX_LAYERED, WS_EX_NOACTIVATE,
-                WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_POPUP,
+                WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP,
             },
         },
     },
@@ -58,6 +70,8 @@ pub struct Modifiers {
     pub ctrl: bool,
     pub alt: bool,
     pub shift: bool,
+    /// Either Windows key.
+    pub win: bool,
 }
 
 /// Notification-area icon messages (NOTIFYICON_VERSION_4).
@@ -96,6 +110,14 @@ pub enum Event {
     Tray(TrayEvent),
     /// `Poster::post` / `Window::post` with this code.
     App(usize),
+    /// An app window (`create_app`) needs repainting.
+    Paint,
+    /// The user asked to close an app window (close button, Alt+F4).
+    Close,
+    /// An app window's client area changed size.
+    Resized,
+    /// A typed character (UTF-16 unit).
+    Char(u16),
 }
 
 const WM_MOUSELEAVE: u32 = 0x02a3;
@@ -150,6 +172,7 @@ fn modifiers() -> Modifiers {
         ctrl: down(VK_CONTROL.0),
         alt: down(VK_MENU.0),
         shift: down(VK_SHIFT.0),
+        win: down(VK_LWIN.0) || down(VK_RWIN.0),
     }
 }
 
@@ -163,6 +186,88 @@ fn point(window: Window, lparam: LPARAM) -> (f32, f32) {
 /// Per-window flags kept in GWLP_USERDATA.
 const NO_ACTIVATE: isize = 1;
 const TRACKING: isize = 2;
+/// A normal top-level window (`create_app`).
+const APP: isize = 4;
+
+thread_local! {
+    /// App windows' minimum client size in DIPs.
+    static MIN_SIZE: RefCell<Vec<(isize, (f32, f32))>> = const { RefCell::new(Vec::new()) };
+}
+
+/// Messages app windows handle themselves (painting, closing, sizing).
+fn app_message(window: Window, msg: u32, wparam: WPARAM, lparam: LPARAM) -> Option<LRESULT> {
+    let hwnd = window.hwnd();
+    match msg {
+        WM_PAINT => {
+            let mut paint = PAINTSTRUCT::default();
+            // SAFETY: validates our window's update region; the event
+            // handler redraws the whole client area.
+            unsafe {
+                BeginPaint(hwnd, &mut paint);
+            }
+            dispatch(window, Event::Paint);
+            // SAFETY: pairs the BeginPaint above.
+            unsafe {
+                let _ = EndPaint(hwnd, &paint);
+            }
+            Some(LRESULT(0))
+        }
+        // The handler paints every pixel.
+        WM_ERASEBKGND => Some(LRESULT(1)),
+        WM_CLOSE => {
+            dispatch(window, Event::Close);
+            Some(LRESULT(0))
+        }
+        WM_SIZE => {
+            dispatch(window, Event::Resized);
+            Some(LRESULT(0))
+        }
+        WM_DPICHANGED => {
+            // SAFETY: for WM_DPICHANGED, lParam points to the suggested
+            // window rectangle for the new DPI.
+            let r = unsafe { *(lparam.0 as *const RECT) };
+            // SAFETY: resizes our own window.
+            unsafe {
+                let _ = SetWindowPos(
+                    hwnd,
+                    None,
+                    r.left,
+                    r.top,
+                    r.right - r.left,
+                    r.bottom - r.top,
+                    SWP_NOZORDER | SWP_NOACTIVATE,
+                );
+            }
+            dispatch(window, Event::DpiChanged);
+            Some(LRESULT(0))
+        }
+        WM_GETMINMAXINFO => {
+            let min = MIN_SIZE.with(|m| {
+                m.borrow()
+                    .iter()
+                    .find(|(w, _)| *w == window.0)
+                    .map(|(_, size)| *size)
+            })?;
+            let scale = window.scale();
+            // SAFETY: for WM_GETMINMAXINFO, lParam points to a MINMAXINFO
+            // the system lets us fill in.
+            unsafe {
+                let info = &mut *(lparam.0 as *mut MINMAXINFO);
+                info.ptMinTrackSize.x = (min.0 * scale).round() as i32;
+                info.ptMinTrackSize.y = (min.1 * scale).round() as i32;
+            }
+            Some(LRESULT(0))
+        }
+        // Alt+F4 keeps its default meaning (WM_CLOSE).
+        WM_SYSKEYDOWN if wparam.0 == usize::from(VK_F4.0) => {
+            // SAFETY: default processing for our window.
+            Some(unsafe { DefWindowProcW(hwnd, msg, wparam, lparam) })
+        }
+        // Alt+letter arrives as a key; no menu beep.
+        WM_SYSCHAR => Some(LRESULT(0)),
+        _ => None,
+    }
+}
 
 unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {
     let window = Window(hwnd.0 as isize);
@@ -172,7 +277,13 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
         // SAFETY: as above.
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, f)
     };
+    if flags & APP != 0 {
+        if let Some(result) = app_message(window, msg, wparam, lparam) {
+            return result;
+        }
+    }
     let event = match msg {
+        WM_CHAR => Some(Event::Char(wparam.0 as u16)),
         WM_MOUSEMOVE => {
             if flags & TRACKING == 0 {
                 let mut track = TRACKMOUSEEVENT {
@@ -343,6 +454,64 @@ pub fn create_hidden(title: &str) -> windows::core::Result<Window> {
         },
         false,
     )
+}
+
+/// Creates a hidden normal top-level window (caption, resizable, a taskbar
+/// button with the app icon), `size` DIPs centred on the monitor under the
+/// pointer and at least `min` DIPs. It receives `Paint`, `Close` and
+/// `Resized`; show it with `Window::present_app` and remove it with
+/// `Window::destroy`.
+pub fn create_app(title: &str, size: (f32, f32), min: (f32, f32)) -> windows::core::Result<Window> {
+    if !register_class() {
+        return Err(windows::core::Error::from_thread());
+    }
+    let (cx, cy) = cursor_pos();
+    let monitor = monitor_at(cx, cy);
+    let (wx, wy, ww, wh) = monitor.work;
+    let w = ((size.0 * monitor.scale).round() as i32).min(ww);
+    let h = ((size.1 * monitor.scale).round() as i32).min(wh);
+    // SAFETY: creates a window of our registered class; the title is an
+    // HSTRING that outlives the call. The icons are shared resources of
+    // this module (LR_SHARED), never destroyed.
+    unsafe {
+        let module = GetModuleHandleW(None)?;
+        let hwnd = CreateWindowExW(
+            Default::default(),
+            CLASS,
+            &HSTRING::from(title),
+            WS_OVERLAPPEDWINDOW,
+            wx + (ww - w) / 2,
+            wy + (wh - h) / 2,
+            w,
+            h,
+            None,
+            None,
+            Some(module.into()),
+            None,
+        )?;
+        SetWindowLongPtrW(hwnd, GWLP_USERDATA, APP);
+        MIN_SIZE.with(|m| m.borrow_mut().push((hwnd.0 as isize, min)));
+        for (kind, metric) in [(ICON_BIG, SM_CXICON), (ICON_SMALL, SM_CXSMICON)] {
+            let px = GetSystemMetrics(metric);
+            // MAKEINTRESOURCE(1): the application icon.
+            if let Ok(icon) = LoadImageW(
+                Some(module.into()),
+                PCWSTR(std::ptr::without_provenance(1)),
+                IMAGE_ICON,
+                px,
+                px,
+                LR_DEFAULTCOLOR | LR_SHARED,
+            ) {
+                SendMessageW(
+                    hwnd,
+                    WM_SETICON,
+                    Some(WPARAM(kind as usize)),
+                    Some(LPARAM(icon.0 as isize)),
+                );
+            }
+        }
+        Ok(Window(hwnd.0 as isize))
+    }
 }
 
 fn create_with(title: &str, options: Options, layered: bool) -> windows::core::Result<Window> {
@@ -647,6 +816,76 @@ impl Window {
             };
             let set: SetWca = std::mem::transmute(function);
             let _ = set(self.hwnd(), &mut data);
+        }
+    }
+    /// Shows an app window (restoring it if minimised) and brings it to
+    /// the foreground.
+    pub fn present_app(self) {
+        // SAFETY: shows and activates our window; Windows may refuse the
+        // foreground change.
+        unsafe {
+            let command = if IsIconic(self.hwnd()).as_bool() {
+                SW_RESTORE
+            } else {
+                SW_SHOW
+            };
+            let _ = ShowWindow(self.hwnd(), command);
+            let _ = SetForegroundWindow(self.hwnd());
+        }
+    }
+    /// Destroys the window (its events stop; the handle becomes stale).
+    pub fn destroy(self) {
+        MIN_SIZE.with(|m| m.borrow_mut().retain(|(w, _)| *w != self.0));
+        // SAFETY: destroys our own window on its thread.
+        unsafe {
+            let _ = DestroyWindow(self.hwnd());
+        }
+    }
+    /// Client area size in physical pixels.
+    pub fn client_size(self) -> (i32, i32) {
+        let mut r = RECT::default();
+        // SAFETY: valid out-parameter.
+        unsafe {
+            let _ = GetClientRect(self.hwnd(), &mut r);
+        }
+        (r.right - r.left, r.bottom - r.top)
+    }
+    pub fn is_minimized(self) -> bool {
+        // SAFETY: plain query.
+        unsafe { IsIconic(self.hwnd()).as_bool() }
+    }
+    /// An app window's frame: a dark or light caption, and the Mica
+    /// backdrop behind the whole window (Windows 11 22H2+). Returns whether
+    /// Mica is on, in which case transparent client pixels show it.
+    pub fn set_app_frame(self, dark: bool) -> bool {
+        let dark = BOOL::from(dark);
+        let backdrop = DWMSBT_MAINWINDOW;
+        // SAFETY: each attribute gets a value of the documented size; the
+        // margins extend the frame over the whole client area.
+        unsafe {
+            let _ = DwmSetWindowAttribute(
+                self.hwnd(),
+                DWMWA_USE_IMMERSIVE_DARK_MODE,
+                (&raw const dark).cast(),
+                size_of_val(&dark) as u32,
+            );
+            let mica = DwmSetWindowAttribute(
+                self.hwnd(),
+                DWMWA_SYSTEMBACKDROP_TYPE,
+                (&raw const backdrop).cast(),
+                size_of_val(&backdrop) as u32,
+            )
+            .is_ok();
+            if !mica {
+                return false;
+            }
+            let margins = MARGINS {
+                cxLeftWidth: -1,
+                cxRightWidth: -1,
+                cyTopHeight: -1,
+                cyBottomHeight: -1,
+            };
+            DwmExtendFrameIntoClientArea(self.hwnd(), &margins).is_ok()
         }
     }
     /// DWM rounded corners (Windows 11; ignored before).

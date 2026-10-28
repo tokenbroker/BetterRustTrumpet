@@ -63,3 +63,9 @@ pub fn system_light() -> bool {
 pub fn accent_on_taskbar() -> bool {
     personalize("ColorPrevalence", 0)
 }
+
+/// The app theme ("Choose your default app mode": `AppsUseLightTheme`),
+/// which app windows such as settings follow.
+pub fn apps_light() -> bool {
+    personalize("AppsUseLightTheme", 1)
+}
