@@ -3,8 +3,10 @@
 //! notifications, the tray wheel hook, a second launch) only post codes to
 //! the hidden window.
 pub mod anim;
+mod blur;
 mod flyout;
 mod media;
+mod menu;
 mod quick;
 mod settings;
 mod slider;
@@ -19,7 +21,7 @@ use crate::{
 };
 use bt_app::win32::{
     gfx::Gfx,
-    menu::{self, Item},
+    menu::{self as native_menu, Item},
     tray::Tray,
     trayicon as icon_adapter, wheel,
     wnd::{self, Event, Modifiers, TrayEvent, Window},
@@ -261,7 +263,45 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     save("media-expanded.png", media.render(&core, tray, true));
     let mut tip = tip::Tip::new(gfx.clone())?;
     let devices = core.audio.devices().unwrap_or_default();
-    save("tip.png", tip.render(&tooltip(&devices)));
+    save("tip.png", tip.render(&tooltip(&devices), tip::Look::Tray));
+    save(
+        "tip-flyout-dark.png",
+        tip.render("Microsoft Edge", tip::Look::Wpf { light: false }),
+    );
+    save(
+        "tip-flyout-light.png",
+        tip.render("Pin window", tip::Look::Wpf { light: true }),
+    );
+    // Menus: the tray look (over its acrylic tint) and a window's context
+    // menu, dark and light, one item lit; and a submenu.
+    let sample = vec![
+        Item::check("Speakers (Realtek(R) Audio)", 1, true),
+        Item::command("Headphones (USB Audio)", 2),
+        Item::Separator,
+        Item::Submenu("Hidden app entries (2)".into(), vec![Item::command("a", 3)]),
+        Item::Separator,
+        Item::icon("Open volume mixer", 4, traymenu::SLIDERS_HORIZONTAL, 1.02),
+        Item::icon("Open settings (beta)", 5, traymenu::GEAR_SIX, 0.96),
+        Item::icon("Open settings", 6, traymenu::LIST_BULLETS, 0.94),
+        Item::Separator,
+        Item::disabled("No playback devices found"),
+        Item::Separator,
+        Item::command("Exit", 7),
+    ];
+    for light in [false, true] {
+        let mut look = theme.clone();
+        look.light = light;
+        look.accent_mode = false;
+        let name = if light { "light" } else { "dark" };
+        save(
+            &format!("menu-tray-{name}.png"),
+            menu::render(&gfx, &look, &sample, true, Some(5)),
+        );
+        save(
+            &format!("menu-flyout-{name}.png"),
+            menu::render(&gfx, &look, &sample[..3], false, Some(1)),
+        );
+    }
     let mut quick = quick::Quick::new(gfx.clone())?;
     save("quick.png", quick.render(palette_entries(&mut core), ""));
     save(
@@ -428,9 +468,17 @@ fn open_menu(request: MenuRequest) {
         above,
     } = request;
     wnd::post_task(owner, move || {
-        // Menus follow the same system theme as the flyout.
-        let dark = !bt_app::win32::theme::system_light();
-        let chosen = menu::popup(owner, &items, x, y, above, dark);
+        // Menus follow the same system theme as the flyout; the tray's is
+        // owned by the hidden window. The system menu is the fallback.
+        let context = with(|ui| (ui.gfx.clone(), ui.theme.clone(), owner == ui.hidden));
+        let chosen = context
+            .and_then(|(gfx, theme, tray)| {
+                menu::popup(&gfx, &theme, owner, &items, x, y, above, tray).ok()
+            })
+            .unwrap_or_else(|| {
+                let dark = !bt_app::win32::theme::system_light();
+                native_menu::popup(owner, &items, x, y, above, dark)
+            });
         let command = chosen.and_then(|id| commands.get(id as usize - 1).cloned());
         with(|ui| {
             if let Some(command) = command {
@@ -876,6 +924,11 @@ impl Ui {
         if window == self.tip.window {
             if let Event::Timer(id) = event {
                 self.tip.timer(id);
+            }
+        }
+        if window == self.flyout.tip.window {
+            if let Event::Timer(id) = event {
+                self.flyout.tip.timer(id);
             }
         }
         None

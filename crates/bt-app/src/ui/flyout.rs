@@ -5,8 +5,10 @@
 use super::{
     MenuRequest,
     anim::{self, BACK_OUT, Curve, EASE_IN, EASE_OUT, FADE_OUT_QUAD},
+    blur,
     slider::Slider,
     theme::Theme,
+    tip::Tip,
 };
 use crate::core::{AppView, Core, DeviceView, HiddenEntry, RuleKind, View};
 use bt_app::win32::{
@@ -33,8 +35,18 @@ const DEVICE_ROW_H: f32 = 60.0;
 const APP_ROW_H: f32 = 52.0;
 const APPS_PAD: f32 = 6.0;
 const FRAME: usize = 1;
+/// Tooltip timers: the initial show delay and ShowDuration.
+const TIP_SHOW: usize = 2;
+const TIP_HIDE: usize = 3;
+/// WPF's ToolTipService defaults: InitialShowDelay (the system hover
+/// time), BetweenShowDelay and ShowDuration, in ms.
+const TIP_DELAY: u32 = 400;
+const TIP_BETWEEN: u128 = 100;
+const TIP_DURATION: u32 = 5000;
 const TICK_WAV: &[u8] = include_bytes!("../../assets/tick.wav");
 const UI_FONT: &str = "Segoe UI";
+/// WindowBlurRadius: the blur of the flyout behind a popup.
+const BLUR_RADIUS: f32 = 10.0;
 
 // Segoe MDL2 / Fluent glyphs.
 const GLYPH_MUTE: char = '\u{E74F}';
@@ -111,6 +123,26 @@ enum ToolAction {
     Route,
     More,
     Close,
+}
+
+/// Where a tooltip opens: to the right of a control (window DIPs), or
+/// below the pointer.
+#[derive(Clone, Debug, PartialEq)]
+enum TipAnchor {
+    Right(Rect),
+    Mouse,
+}
+
+/// The tooltip for what the pointer is over.
+#[derive(Clone, Debug)]
+struct TipTarget {
+    hit: Hit,
+    text: String,
+    delay: u32,
+    anchor: TipAnchor,
+    /// Shown and closed (timed out, or a click): not again until the
+    /// pointer moves to another control.
+    done: bool,
 }
 
 struct Tool {
@@ -194,6 +226,9 @@ pub struct Flyout {
     scroll: f32,
     popup: Option<Popup>,
     dismiss_out: Option<Instant>,
+    /// The list as it was when the popup opened, blurred (at half size)
+    /// once, and the window size in pixels it was made for.
+    backdrop: Option<(Rc<Image>, (i32, i32))>,
     hiding_app: Option<(String, String, Instant)>,
     pub hidden_at: Option<Instant>,
     icons: HashMap<(String, u32), Option<Rc<Image>>>,
@@ -206,6 +241,10 @@ pub struct Flyout {
     last_tick: Instant,
     last_peaks: Instant,
     pointer: Option<(f32, f32)>,
+    /// The flyout's tooltips (app names, the header buttons).
+    pub tip: Tip,
+    tip_target: Option<TipTarget>,
+    tip_closed: Option<Instant>,
 }
 
 fn percent(volume: f32) -> i32 {
@@ -255,6 +294,7 @@ impl Flyout {
         )?;
         window.round_corners();
         let now = Instant::now();
+        let tip = Tip::new(gfx.clone())?;
         Ok(Self {
             window,
             surface: Some(Surface::new(gfx.clone())?),
@@ -276,6 +316,7 @@ impl Flyout {
             scroll: 0.0,
             popup: None,
             dismiss_out: None,
+            backdrop: None,
             hiding_app: None,
             hidden_at: None,
             icons: HashMap::new(),
@@ -287,6 +328,9 @@ impl Flyout {
             last_tick: now,
             last_peaks: now,
             pointer: None,
+            tip,
+            tip_target: None,
+            tip_closed: None,
         })
     }
 
@@ -650,6 +694,7 @@ impl Flyout {
             return;
         }
         self.closing = Some(Instant::now());
+        self.close_tip(false);
         if let Some((key, _)) = self.capture.take() {
             self.slider(&key).release(Instant::now());
             self.window.release_capture();
@@ -659,10 +704,12 @@ impl Flyout {
 
     fn finish_hide(&mut self) {
         self.window.kill_timer(FRAME);
+        self.close_tip(false);
         self.window.hide();
         self.visible = false;
         self.closing = None;
         self.popup = None;
+        self.backdrop = None;
         self.hover = None;
         self.pressed = None;
         for slider in self.sliders.values_mut() {
@@ -750,6 +797,20 @@ impl Flyout {
 
     /// The frame timer: animations, the peak meters at PeakMeterFps.
     pub fn timer(&mut self, id: usize, core: &mut Core, theme: &Theme) {
+        match id {
+            TIP_SHOW => {
+                self.window.kill_timer(TIP_SHOW);
+                if self.showing() {
+                    self.show_tip(theme);
+                }
+                return;
+            }
+            TIP_HIDE => {
+                self.close_tip(true);
+                return;
+            }
+            _ => {}
+        }
         if id != FRAME || !self.visible {
             return;
         }
@@ -1501,6 +1562,7 @@ impl Flyout {
                         (start_scroll + (y - start_y) * range / track.max(1.0)).clamp(0.0, range);
                 } else {
                     let hit = self.hit(x, y);
+                    self.update_tip(theme, hit.as_ref(), x, y);
                     if hit == self.hover {
                         return None;
                     }
@@ -1510,6 +1572,15 @@ impl Flyout {
             Event::MouseLeave => {
                 self.pointer = None;
                 self.hover = None;
+                self.close_tip(false);
+            }
+            Event::MouseDown(..) | Event::Wheel(..) | Event::Key(..)
+                if self.tip_target.as_ref().is_some_and(|t| !t.done) =>
+            {
+                // A click, the wheel or a key closes the tooltip; then the
+                // event is handled as usual.
+                self.close_tip(true);
+                return self.event(core, theme, event);
             }
             Event::MouseDown(Button::Left, x, y, _) => {
                 self.keyboard = false;
@@ -1632,6 +1703,124 @@ impl Flyout {
         menu
     }
 
+    // ---------- tooltips ----------
+
+    /// The original's flyout tooltips: an app's name on its icon
+    /// (ShowAppTooltips, at once, to the right), "Lock" on the lock badge
+    /// (at once), "Toggle mute" on a device's mute button and the header
+    /// buttons' titles (after the hover delay, below the pointer).
+    fn tip_for(&self, theme: &Theme, hit: &Hit, x: f32, y: f32) -> Option<TipTarget> {
+        let target = |text: &str, delay: u32, anchor: TipAnchor| TipTarget {
+            hit: hit.clone(),
+            text: text.into(),
+            delay,
+            anchor,
+            done: false,
+        };
+        match hit {
+            Hit::Mute(key) => match &key.app {
+                Some(app) => {
+                    let view = self.view.app(&key.device, app)?;
+                    let cell = Self::mute_rect(self.row_rect(key)?);
+                    let badge = Rect::new(cell.right() - 9.0, cell.bottom() - 9.0, 10.0, 10.0);
+                    if view.locked() && badge.contains(x, y) {
+                        return Some(target("Lock", 0, TipAnchor::Mouse));
+                    }
+                    let name = view.app.display_name.trim();
+                    (theme.show_tooltips && !name.is_empty())
+                        .then(|| target(name, 0, TipAnchor::Right(cell)))
+                }
+                None => Some(target("Toggle mute", TIP_DELAY, TipAnchor::Mouse)),
+            },
+            Hit::Restore => Some(target(
+                "Restore hidden app entries on this device",
+                TIP_DELAY,
+                TipAnchor::Mouse,
+            )),
+            Hit::Pin => Some(target("Pin window", TIP_DELAY, TipAnchor::Mouse)),
+            _ => None,
+        }
+    }
+
+    fn row_rect(&self, key: &SliderKey) -> Option<Rect> {
+        let rows = if key.popup {
+            self.popup_layout()?.1
+        } else {
+            self.layout().rows
+        };
+        rows.into_iter().find(|r| &r.key == key).map(|r| r.rect)
+    }
+
+    /// Follows the pointer: a new control's tooltip opens after its delay
+    /// (at once within BetweenShowDelay of another closing).
+    fn update_tip(&mut self, theme: &Theme, hit: Option<&Hit>, x: f32, y: f32) {
+        if self.capture.is_some() || self.scroll_drag.is_some() {
+            return;
+        }
+        let wanted = hit.and_then(|h| self.tip_for(theme, h, x, y));
+        let same = match (&wanted, &self.tip_target) {
+            (Some(w), Some(t)) => w.hit == t.hit && w.text == t.text,
+            (None, None) => true,
+            _ => false,
+        };
+        if same {
+            return;
+        }
+        self.close_tip(false);
+        self.tip_target = wanted;
+        let Some(target) = &self.tip_target else {
+            return;
+        };
+        let quick = self
+            .tip_closed
+            .is_some_and(|at| at.elapsed().as_millis() < TIP_BETWEEN);
+        if target.delay == 0 || quick {
+            self.show_tip(theme);
+        } else {
+            self.window.set_timer(TIP_SHOW, target.delay);
+        }
+    }
+
+    fn show_tip(&mut self, theme: &Theme) {
+        let Some(target) = self.tip_target.as_ref().filter(|t| !t.done) else {
+            return;
+        };
+        let scale = self.window.scale();
+        let (x, y, flip) = match target.anchor {
+            TipAnchor::Right(rect) => {
+                let (x, y) = self.window.client_to_screen(rect.right(), rect.y);
+                let (_, bottom) = self.window.client_to_screen(rect.right(), rect.bottom());
+                (x, y, bottom)
+            }
+            TipAnchor::Mouse => {
+                // Below the arrow pointer, or above its hot spot.
+                let (cx, cy) = wnd::cursor_pos();
+                (cx, cy + (20.0 * scale).round() as i32, cy)
+            }
+        };
+        let text = target.text.clone();
+        self.tip.show_at(&text, x, y, flip, theme.light);
+        self.window.set_timer(TIP_HIDE, TIP_DURATION);
+    }
+
+    /// Hides the tooltip; `done` keeps it closed until the pointer moves to
+    /// another control.
+    fn close_tip(&mut self, done: bool) {
+        self.window.kill_timer(TIP_SHOW);
+        self.window.kill_timer(TIP_HIDE);
+        if self.tip.visible {
+            self.tip.hide();
+            self.tip_closed = Some(Instant::now());
+        }
+        if done {
+            if let Some(target) = &mut self.tip_target {
+                target.done = true;
+            }
+        } else {
+            self.tip_target = None;
+        }
+    }
+
     fn slider_rect_of(&self, key: &SliderKey) -> Option<Rect> {
         let rows = if key.popup {
             self.popup_layout()?.1
@@ -1703,6 +1892,7 @@ impl Flyout {
         self.paint(theme);
         self.visible = false;
         self.popup = None;
+        self.backdrop = None;
         self.surface.as_ref()?.rgba()
     }
 
@@ -1736,6 +1926,19 @@ impl Flyout {
             Some(start) => 1.0 - EASE_IN.at(anim::progress(start, 0.0, 105.0, now)),
             None => FADE_OUT_QUAD.at(anim::progress(self.opened, 0.0, 165.0, now)),
         };
+        if self.popup.is_some() {
+            if self
+                .backdrop
+                .as_ref()
+                .is_none_or(|(_, size)| *size != (width, height))
+            {
+                self.backdrop = self
+                    .blur_list(theme, width, height, now)
+                    .map(|image| (image, (width, height)));
+            }
+        } else if !anim::running(self.dismiss_out, 150.0, now) {
+            self.backdrop = None;
+        }
         let Some(mut surface) = self.surface.take() else {
             return;
         };
@@ -1744,6 +1947,30 @@ impl Flyout {
         });
         surface.present(self.window.raw(), self.position.0, self.position.1, opacity);
         self.surface = Some(surface);
+    }
+
+    /// The list drawn offscreen and blurred, for behind a popup (the
+    /// original's LightDismissBorder shows BaseVisual through a Gaussian
+    /// BlurEffect). Computed once per popup; halving first keeps it cheap.
+    fn blur_list(&self, theme: &Theme, width: i32, height: i32, now: Instant) -> Option<Rc<Image>> {
+        let mut surface = Surface::new(self.gfx.clone()).ok()?;
+        surface.draw(width, height, self.scale, |canvas| {
+            self.draw_list(canvas, theme, now)
+        });
+        let (w, h, pixels) = surface.bgra()?;
+        let (mut small, sw, sh) = blur::half(&pixels, w as usize, h as usize);
+        let sigma = blur::sigma_for_radius(BLUR_RADIUS) * self.scale / 2.0;
+        blur::gaussian(&mut small, sw, sh, sigma);
+        Some(Image::new(sw as u32, sh as u32, small))
+    }
+
+    /// How far the dimmed, blurred layer behind a popup is faded in.
+    fn dismiss_level(&self, now: Instant) -> f32 {
+        match (&self.popup, self.dismiss_out) {
+            (Some(p), _) => anim::progress(p.opened, 0.0, 150.0, now),
+            (None, Some(start)) => 1.0 - anim::progress(start, 0.0, 150.0, now),
+            _ => 0.0,
+        }
     }
 
     fn draw(&self, canvas: &mut Canvas, theme: &Theme, now: Instant) {
@@ -1784,7 +2011,18 @@ impl Flyout {
                 theme.text,
             );
         } else {
-            self.draw_list(canvas, theme, now);
+            // Behind a popup the sharp list fades out under its blurred
+            // copy.
+            let dismiss = self.dismiss_level(now);
+            match &self.backdrop {
+                Some(_) if dismiss >= 1.0 => {}
+                Some(_) if dismiss > 0.0 => {
+                    canvas.push_layer(1.0 - dismiss, None);
+                    self.draw_list(canvas, theme, now);
+                    canvas.pop();
+                }
+                _ => self.draw_list(canvas, theme, now),
+            }
         }
         self.draw_popup(canvas, theme, now);
         canvas.pop_transform();
@@ -2090,14 +2328,14 @@ impl Flyout {
 
     fn draw_popup(&self, canvas: &mut Canvas, theme: &Theme, now: Instant) {
         let full = Rect::new(0.0, 0.0, WIDTH, self.height);
-        // The dimmed flyout behind the popup fades in and out (150 ms).
-        let dismiss = match (&self.popup, self.dismiss_out) {
-            (Some(p), _) => anim::progress(p.opened, 0.0, 150.0, now),
-            (None, Some(start)) => 1.0 - anim::progress(start, 0.0, 150.0, now),
-            _ => 0.0,
-        };
+        // The dimmed, blurred flyout behind the popup fades in and out
+        // (150 ms): the Background colour with the blurred list over it.
+        let dismiss = self.dismiss_level(now);
         if dismiss > 0.0 {
             canvas.rect(full, theme.dismiss.alpha(dismiss));
+            if let Some((image, _)) = &self.backdrop {
+                canvas.image(image, full, dismiss);
+            }
         }
         let Some(popup) = &self.popup else {
             return;

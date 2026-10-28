@@ -764,14 +764,20 @@ impl Surface {
         }
     }
 
-    /// The last drawing as straight-alpha RGBA (debug renders).
-    pub fn rgba(&self) -> Option<(u32, u32, Vec<u8>)> {
+    /// A copy of the last drawing as premultiplied BGRA (the `Image`
+    /// layout), for effects computed once from a drawing.
+    pub fn bgra(&self) -> Option<(u32, u32, Vec<u8>)> {
         let (_, _, bits) = self.bitmap?;
         let (w, h) = (self.size.0 as usize, self.size.1 as usize);
         // SAFETY: `bits` is the DIB's w*h*4 byte buffer, alive while the
         // bitmap is selected (until `release` or the next resize).
         let pixels = unsafe { std::slice::from_raw_parts(bits as *const u8, w * h * 4) };
-        let mut out = pixels.to_vec();
+        Some((w as u32, h as u32, pixels.to_vec()))
+    }
+
+    /// The last drawing as straight-alpha RGBA (debug renders).
+    pub fn rgba(&self) -> Option<(u32, u32, Vec<u8>)> {
+        let (w, h, mut out) = self.bgra()?;
         for p in out.chunks_exact_mut(4) {
             let a = u16::from(p[3]);
             if a > 0 && a < 255 {
@@ -781,7 +787,7 @@ impl Surface {
             }
             p.swap(0, 2);
         }
-        Some((w as u32, h as u32, out))
+        Some((w, h, out))
     }
 
     /// Releases the DIB (a hidden window keeps no pixels).

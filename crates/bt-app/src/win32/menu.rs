@@ -1,5 +1,6 @@
-//! Native popup menus. `popup` runs a modal loop, so call it from a task
-//! (`wnd::post_task`), never from inside an event handler.
+//! Menu items, and native popup menus: the fallback for the app's own
+//! drawn menus (`ui::menu`). `popup` runs a modal loop, so call it from a
+//! task (`wnd::post_task`), never from inside an event handler.
 use super::wnd::Window;
 use windows::{
     Win32::{
@@ -18,6 +19,9 @@ use windows::{
 pub enum Item {
     /// Text, command id (non-zero), checked, enabled.
     Command(String, u32, bool, bool),
+    /// Text, command id and a vector icon: SVG path data (any viewBox; it
+    /// is fitted by its bounds) and its scale (the original's IconScale).
+    Icon(String, u32, &'static str, f32),
     Submenu(String, Vec<Item>),
     Separator,
 }
@@ -31,6 +35,9 @@ impl Item {
     }
     pub fn disabled(text: impl Into<String>) -> Self {
         Self::Command(text.into(), 0, false, false)
+    }
+    pub fn icon(text: impl Into<String>, id: u32, path: &'static str, scale: f32) -> Self {
+        Self::Icon(text.into(), id, path, scale)
     }
 }
 
@@ -50,6 +57,9 @@ fn build(items: &[Item]) -> Option<HMENU> {
                         flags |= MF_GRAYED;
                     }
                     AppendMenuW(menu, flags, *id as usize, &HSTRING::from(text.as_str()))
+                }
+                Item::Icon(text, id, ..) => {
+                    AppendMenuW(menu, MF_STRING, *id as usize, &HSTRING::from(text.as_str()))
                 }
                 Item::Submenu(text, children) => match build(children) {
                     Some(sub) => AppendMenuW(
