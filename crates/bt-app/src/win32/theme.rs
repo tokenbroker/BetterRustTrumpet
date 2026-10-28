@@ -25,9 +25,17 @@ pub fn accent_dark1() -> String {
 
 /// A DWORD under HKCU, as the original's `ReadDword` (`> 0`).
 fn personalize(value: &str, default: u32) -> bool {
+    dword(
+        "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+        value,
+        default,
+    )
+}
+
+fn dword(path: &str, value: &str, default: u32) -> bool {
     let mut data = default;
     let mut size = std::mem::size_of::<u32>() as u32;
-    let key = HSTRING::from("Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+    let key = HSTRING::from(path);
     let name = HSTRING::from(value);
     // SAFETY: reads a DWORD into `data`, whose size is passed in `size`; the
     // key and value names are NUL-terminated HSTRINGs that outlive the call.
@@ -68,4 +76,10 @@ pub fn accent_on_taskbar() -> bool {
 /// which app windows such as settings follow.
 pub fn apps_light() -> bool {
     personalize("AppsUseLightTheme", 1)
+}
+
+/// "Show accent colour on title bars and window borders"
+/// (`UseAccentColorOnWindowBorders`, DWM ColorPrevalence).
+pub fn accent_on_title_bars() -> bool {
+    dword("Software\\Microsoft\\Windows\\DWM", "ColorPrevalence", 0)
 }

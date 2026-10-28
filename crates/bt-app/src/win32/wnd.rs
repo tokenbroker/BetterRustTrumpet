@@ -35,22 +35,26 @@ use windows::{
             WindowsAndMessaging::{
                 CS_HREDRAW, CS_VREDRAW, CreateWindowExW, DefWindowProcW, DestroyWindow,
                 DispatchMessageW, GWLP_USERDATA, GetClientRect, GetCursorPos, GetForegroundWindow,
-                GetMessageW, GetSystemMetrics, GetWindowLongPtrW, HICON, HWND_TOPMOST, ICON_BIG,
-                ICON_SMALL, IDC_ARROW, IMAGE_ICON, IsIconic, IsWindowVisible, KillTimer,
-                LR_DEFAULTCOLOR, LR_SHARED, LoadCursorW, LoadImageW, MA_NOACTIVATE, MINMAXINFO,
-                MSG, PostMessageW, PostQuitMessage, RegisterClassExW, RegisterWindowMessageW,
-                SM_CXICON, SM_CXSMICON, SW_HIDE, SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE,
-                SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SendMessageW,
-                SetForegroundWindow, SetTimer, SetWindowLongPtrW, SetWindowPos, ShowWindow,
-                TranslateMessage, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED, WM_CHAR, WM_CLOSE,
-                WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND, WM_GETMINMAXINFO, WM_HOTKEY,
-                WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN, WM_LBUTTONUP,
-                WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP, WM_MOUSEACTIVATE, WM_MOUSEMOVE,
-                WM_MOUSEWHEEL, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
+                GetMessageW, GetSystemMetrics, GetWindowLongPtrW, GetWindowPlacement, HICON,
+                HTBOTTOM, HTBOTTOMLEFT, HTBOTTOMRIGHT, HTCAPTION, HTCLIENT, HTLEFT, HTRIGHT, HTTOP,
+                HTTOPLEFT, HTTOPRIGHT, HWND_TOPMOST, ICON_BIG, ICON_SMALL, IDC_ARROW, IMAGE_ICON,
+                IsIconic, IsWindowVisible, KillTimer, LR_DEFAULTCOLOR, LR_SHARED, LoadCursorW,
+                LoadImageW, MA_NOACTIVATE, MINMAXINFO, MSG, PostMessageW, PostQuitMessage,
+                RegisterClassExW, RegisterWindowMessageW, SM_CXICON, SM_CXSMICON, SW_HIDE,
+                SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE, SWP_FRAMECHANGED, SWP_NOACTIVATE,
+                SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SendMessageW, SetForegroundWindow, SetTimer,
+                SetWindowLongPtrW, SetWindowPlacement, SetWindowPos, ShowWindow, TranslateMessage,
+                WINDOWPLACEMENT, WINDOWPLACEMENT_FLAGS, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED,
+                WM_CHAR, WM_CLOSE, WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND,
+                WM_GETMINMAXINFO, WM_HOTKEY, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDBLCLK,
+                WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP,
+                WM_MOUSEACTIVATE, WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_MOVE, WM_NCCALCSIZE,
+                WM_NCHITTEST, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
                 WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE,
                 WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER, WNDCLASSEXW,
-                WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
-                WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP,
+                WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
+                WS_EX_TRANSPARENT, WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP, WS_SYSMENU,
+                WS_THICKFRAME,
             },
         },
     },
@@ -119,6 +123,8 @@ pub enum Event {
     Close,
     /// An app window's client area changed size.
     Resized,
+    /// An app window moved.
+    Moved,
     /// A typed character (WM_CHAR UTF-16 unit, control characters
     /// included for text editing).
     Char(u16),
@@ -194,10 +200,98 @@ const TRACKING: isize = 2;
 const APP: isize = 4;
 /// Laid out right to left: pointer x counts from the right edge.
 const MIRRORED: isize = 8;
+/// Draws its own frame (`create_chrome_app`): the whole window is client
+/// area, with a caption strip and resize borders hit-tested here.
+const CHROME: isize = 16;
+
+/// A self-drawn window frame (`create_chrome_app`), in DIPs.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Chrome {
+    /// The caption strip's height: dragging there moves the window.
+    pub caption: f32,
+    /// The caption buttons' width at the strip's end (right, or left when
+    /// mirrored), which stay client area.
+    pub buttons: f32,
+    /// Whether the edges resize the window.
+    pub resizable: bool,
+}
+
+/// An app window's size limits in DIPs (the window size for a
+/// `create_chrome_app` window, the client size otherwise).
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Limits {
+    min: (f32, f32),
+    max: Option<(f32, f32)>,
+}
+
+/// A window's placement (GetWindowPlacement), in workspace pixels.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Placement {
+    pub flags: u32,
+    pub show_cmd: u32,
+    pub min_position: (i32, i32),
+    pub max_position: (i32, i32),
+    /// Left, top, right, bottom of the restored window.
+    pub normal: (i32, i32, i32, i32),
+}
 
 thread_local! {
-    /// App windows' minimum client size in DIPs.
-    static MIN_SIZE: RefCell<Vec<(isize, (f32, f32))>> = const { RefCell::new(Vec::new()) };
+    /// App windows' size limits.
+    static MIN_SIZE: RefCell<Vec<(isize, Limits)>> = const { RefCell::new(Vec::new()) };
+    /// Self-drawn frames by window.
+    static CHROMES: RefCell<Vec<(isize, Chrome)>> = const { RefCell::new(Vec::new()) };
+}
+
+fn is_chrome(window: Window) -> bool {
+    // SAFETY: reads our own window's flags.
+    unsafe { GetWindowLongPtrW(window.hwnd(), GWLP_USERDATA) & CHROME != 0 }
+}
+
+/// Hit-tests a self-drawn frame: resize edges, the caption strip, else
+/// the client area.
+fn chrome_hit(window: Window, lparam: LPARAM) -> Option<LRESULT> {
+    let chrome = CHROMES.with(|c| {
+        c.borrow()
+            .iter()
+            .find(|(w, _)| *w == window.0)
+            .map(|(_, c)| *c)
+    })?;
+    let (sx, sy) = (
+        i32::from((lparam.0 & 0xffff) as u16 as i16),
+        i32::from(((lparam.0 >> 16) & 0xffff) as u16 as i16),
+    );
+    let (left, top, w, h) = window.bounds();
+    let scale = window.scale();
+    let (x, y) = ((sx - left) as f32, (sy - top) as f32);
+    let (w, h) = (w as f32, h as f32);
+    // WindowResizeBorderThickness: the sizing frame plus its padding.
+    let border = 8.0 * scale;
+    let edge = if chrome.resizable {
+        let (l, r) = (x < border, x >= w - border);
+        let (t, b) = (y < border, y >= h - border);
+        match (l, r, t, b) {
+            (true, _, true, _) => Some(HTTOPLEFT),
+            (_, true, true, _) => Some(HTTOPRIGHT),
+            (true, _, _, true) => Some(HTBOTTOMLEFT),
+            (_, true, _, true) => Some(HTBOTTOMRIGHT),
+            (true, ..) => Some(HTLEFT),
+            (_, true, ..) => Some(HTRIGHT),
+            (_, _, true, _) => Some(HTTOP),
+            (.., true) => Some(HTBOTTOM),
+            _ => None,
+        }
+    } else {
+        None
+    };
+    let code = edge.unwrap_or_else(|| {
+        let along = if window.is_mirrored() { w - x } else { x };
+        if y < chrome.caption * scale && along < w - chrome.buttons * scale {
+            HTCAPTION
+        } else {
+            HTCLIENT
+        }
+    });
+    Some(LRESULT(code as isize))
 }
 
 /// Messages app windows handle themselves (painting, closing, sizing).
@@ -228,6 +322,13 @@ fn app_message(window: Window, msg: u32, wparam: WPARAM, lparam: LPARAM) -> Opti
             dispatch(window, Event::Resized);
             Some(LRESULT(0))
         }
+        WM_MOVE => {
+            dispatch(window, Event::Moved);
+            Some(LRESULT(0))
+        }
+        // A self-drawn frame: the client area is the whole window.
+        WM_NCCALCSIZE if wparam.0 != 0 && is_chrome(window) => Some(LRESULT(0)),
+        WM_NCHITTEST if is_chrome(window) => chrome_hit(window, lparam),
         WM_DPICHANGED => {
             // SAFETY: for WM_DPICHANGED, lParam points to the suggested
             // window rectangle for the new DPI.
@@ -248,19 +349,23 @@ fn app_message(window: Window, msg: u32, wparam: WPARAM, lparam: LPARAM) -> Opti
             Some(LRESULT(0))
         }
         WM_GETMINMAXINFO => {
-            let min = MIN_SIZE.with(|m| {
+            let limits = MIN_SIZE.with(|m| {
                 m.borrow()
                     .iter()
                     .find(|(w, _)| *w == window.0)
-                    .map(|(_, size)| *size)
+                    .map(|(_, limits)| *limits)
             })?;
             let scale = window.scale();
             // SAFETY: for WM_GETMINMAXINFO, lParam points to a MINMAXINFO
             // the system lets us fill in.
             unsafe {
                 let info = &mut *(lparam.0 as *mut MINMAXINFO);
-                info.ptMinTrackSize.x = (min.0 * scale).round() as i32;
-                info.ptMinTrackSize.y = (min.1 * scale).round() as i32;
+                info.ptMinTrackSize.x = (limits.min.0 * scale).round() as i32;
+                info.ptMinTrackSize.y = (limits.min.1 * scale).round() as i32;
+                if let Some(max) = limits.max {
+                    info.ptMaxTrackSize.x = (max.0 * scale).round() as i32;
+                    info.ptMaxTrackSize.y = (max.1 * scale).round() as i32;
+                }
             }
             Some(LRESULT(0))
         }
@@ -496,7 +601,67 @@ pub fn create_app(title: &str, size: (f32, f32), min: (f32, f32)) -> windows::co
             None,
         )?;
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, APP);
-        MIN_SIZE.with(|m| m.borrow_mut().push((hwnd.0 as isize, min)));
+        MIN_SIZE.with(|m| {
+            m.borrow_mut()
+                .push((hwnd.0 as isize, Limits { min, max: None }))
+        });
+        set_app_icons(hwnd, module);
+        Ok(Window(hwnd.0 as isize))
+    }
+}
+
+/// Creates a hidden top-level layered window that draws its own frame
+/// (the original's `WindowStyle="None"` + `AllowsTransparency` dialog
+/// windows): a taskbar button with the app icon, the system menu and
+/// minimising, not topmost. Present it with `Surface::present` and
+/// `Window::present_app`; it receives `Close`, `Resized`, `Moved` and
+/// `DpiChanged`, and `set_chrome` makes its caption and edges work.
+pub fn create_chrome_app(title: &str) -> windows::core::Result<Window> {
+    if !register_class() {
+        return Err(windows::core::Error::from_thread());
+    }
+    // SAFETY: creates a window of our registered class; the title is an
+    // HSTRING that outlives the call.
+    unsafe {
+        let module = GetModuleHandleW(None)?;
+        let hwnd = CreateWindowExW(
+            WS_EX_LAYERED | WS_EX_APPWINDOW,
+            CLASS,
+            &HSTRING::from(title),
+            WS_POPUP | WS_THICKFRAME | WS_SYSMENU | WS_MINIMIZEBOX,
+            0,
+            0,
+            1,
+            1,
+            None,
+            None,
+            Some(module.into()),
+            None,
+        )?;
+        SetWindowLongPtrW(hwnd, GWLP_USERDATA, APP | CHROME);
+        // WM_NCCALCSIZE again, now that the whole window is client area.
+        let _ = SetWindowPos(
+            hwnd,
+            None,
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED,
+        );
+        set_app_icons(hwnd, module);
+        Ok(Window(hwnd.0 as isize))
+    }
+}
+
+/// The application icon on a window's caption and taskbar button.
+///
+/// # Safety
+/// `hwnd` must be a window of this thread and `module` this executable.
+unsafe fn set_app_icons(hwnd: HWND, module: windows::Win32::Foundation::HMODULE) {
+    // SAFETY: the icons are shared resources of this module (LR_SHARED),
+    // never destroyed; WM_SETICON goes to our own window.
+    unsafe {
         for (kind, metric) in [(ICON_BIG, SM_CXICON), (ICON_SMALL, SM_CXSMICON)] {
             let px = GetSystemMetrics(metric);
             // MAKEINTRESOURCE(1): the application icon.
@@ -516,7 +681,6 @@ pub fn create_app(title: &str, size: (f32, f32), min: (f32, f32)) -> windows::co
                 );
             }
         }
-        Ok(Window(hwnd.0 as isize))
     }
 }
 
@@ -924,6 +1088,7 @@ impl Window {
     /// Destroys the window (its events stop; the handle becomes stale).
     pub fn destroy(self) {
         MIN_SIZE.with(|m| m.borrow_mut().retain(|(w, _)| *w != self.0));
+        CHROMES.with(|c| c.borrow_mut().retain(|(w, _)| *w != self.0));
         // SAFETY: destroys our own window on its thread.
         unsafe {
             let _ = DestroyWindow(self.hwnd());
@@ -1015,6 +1180,90 @@ impl Window {
                 cyBottomHeight: -1,
             };
             DwmExtendFrameIntoClientArea(self.hwnd(), &margins).is_ok()
+        }
+    }
+    /// A `create_chrome_app` window's caption strip and resize edges.
+    pub fn set_chrome(self, chrome: Chrome) {
+        CHROMES.with(|c| {
+            let mut c = c.borrow_mut();
+            c.retain(|(w, _)| *w != self.0);
+            c.push((self.0, chrome));
+        });
+    }
+    /// An app window's smallest and (optionally) largest size in DIPs.
+    pub fn set_limits(self, min: (f32, f32), max: Option<(f32, f32)>) {
+        MIN_SIZE.with(|m| {
+            let mut m = m.borrow_mut();
+            m.retain(|(w, _)| *w != self.0);
+            m.push((self.0, Limits { min, max }));
+        });
+    }
+    /// The window's screen rectangle in pixels: x, y, width, height.
+    pub fn bounds(self) -> (i32, i32, i32, i32) {
+        let mut r = RECT::default();
+        // SAFETY: valid out-parameter.
+        unsafe {
+            let _ = windows::Win32::UI::WindowsAndMessaging::GetWindowRect(self.hwnd(), &mut r);
+        }
+        (r.left, r.top, r.right - r.left, r.bottom - r.top)
+    }
+    /// Moves and sizes the window (screen pixels) without activating it.
+    pub fn set_bounds(self, x: i32, y: i32, width: i32, height: i32) {
+        // SAFETY: moves our own window.
+        unsafe {
+            let _ = SetWindowPos(
+                self.hwnd(),
+                None,
+                x,
+                y,
+                width,
+                height,
+                SWP_NOZORDER | SWP_NOACTIVATE,
+            );
+        }
+    }
+    /// GetWindowPlacement.
+    pub fn placement(self) -> Option<Placement> {
+        let mut p = WINDOWPLACEMENT {
+            length: size_of::<WINDOWPLACEMENT>() as u32,
+            ..Default::default()
+        };
+        // SAFETY: `p` is a WINDOWPLACEMENT with its length set.
+        unsafe { GetWindowPlacement(self.hwnd(), &mut p) }.ok()?;
+        let r = p.rcNormalPosition;
+        Some(Placement {
+            flags: p.flags.0,
+            show_cmd: p.showCmd,
+            min_position: (p.ptMinPosition.x, p.ptMinPosition.y),
+            max_position: (p.ptMaxPosition.x, p.ptMaxPosition.y),
+            normal: (r.left, r.top, r.right, r.bottom),
+        })
+    }
+    /// SetWindowPlacement, keeping the window hidden (it is shown later).
+    pub fn set_placement(self, placement: &Placement) {
+        let (left, top, right, bottom) = placement.normal;
+        let p = WINDOWPLACEMENT {
+            length: size_of::<WINDOWPLACEMENT>() as u32,
+            flags: WINDOWPLACEMENT_FLAGS(placement.flags),
+            showCmd: SW_HIDE.0 as u32,
+            ptMinPosition: POINT {
+                x: placement.min_position.0,
+                y: placement.min_position.1,
+            },
+            ptMaxPosition: POINT {
+                x: placement.max_position.0,
+                y: placement.max_position.1,
+            },
+            rcNormalPosition: RECT {
+                left,
+                top,
+                right,
+                bottom,
+            },
+        };
+        // SAFETY: `p` is a complete WINDOWPLACEMENT for our window.
+        unsafe {
+            let _ = SetWindowPlacement(self.hwnd(), &p);
         }
     }
     /// DWM rounded corners (Windows 11; ignored before).
