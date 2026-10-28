@@ -1,0 +1,1773 @@
+{
+ "source": "EarTrumpet/DataModel/SettingsExportService.cs at 1dd1726 run verbatim on .NET 8 WindowsDesktop + Newtonsoft.Json 13.0.2 under the invariant culture, with DateTime.UtcNow redirected to utcTicks and a recording AppSettings stand-in (sets: property, value; doubles as R text, colors as Color.ToString, hotkeys as [Modifiers, Key]). The capture machine zone was UTC-6 in January.",
+ "nullStringXml": "<?xml version=\"1.0\" encoding=\"utf-16\"?><string p1:nil=\"true\" xmlns:p1=\"http://www.w3.org/2001/XMLSchema-instance\" />",
+ "exports": [
+  {
+   "name": "defaults",
+   "version": "1.2.3.4",
+   "utcTicks": 639000000000000000,
+   "values": {
+    "UseLegacyIcon": false,
+    "TrayIconShowsDeviceType": false,
+    "IsExpanded": false,
+    "UseScrollWheelInTray": true,
+    "UseGlobalMouseWheelHook": false,
+    "ShowAppTooltips": true,
+    "IsTelemetryEnabled": true,
+    "RunAtStartup": false,
+    "UseLogarithmicVolume": false,
+    "UseSmoothVolumeAnimation": true,
+    "UseVolumeTickSound": true,
+    "MonkeyTickSoundUnlocked": false,
+    "UseMonkeyTickSound": false,
+    "EcoMode": false,
+    "AutoEcoMode": true,
+    "UseCustomSliderColors": false,
+    "UseDynamicAlbumArtTheme": false,
+    "MediaPopupEnabled": true,
+    "MediaPopupShowOnlyWhenPlaying": false,
+    "MediaPopupRememberExpanded": true,
+    "MediaPopupIsExpanded": false,
+    "AutoCheckForUpdates": true,
+    "ShowQuickTrumpetConfirmation": true,
+    "NotifyOnDefaultDeviceChange": false,
+    "UseFocusLostVolume": false,
+    "FocusLostSelectedAppsOnly": false,
+    "SliderThumbColor": "#00FFFFFF",
+    "SliderTrackFillColor": "#00FFFFFF",
+    "SliderTrackBackgroundColor": "#00FFFFFF",
+    "PeakMeterColor": "#00FFFFFF",
+    "WindowBackgroundColor": "#00FFFFFF",
+    "TextColor": "#00FFFFFF",
+    "AccentGlowColor": "#00FFFFFF",
+    "FlyoutHotkey": [
+     0,
+     0
+    ],
+    "MixerHotkey": [
+     0,
+     0
+    ],
+    "SettingsHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeUpHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeDownHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetNextHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetPreviousHotkey": [
+     0,
+     0
+    ],
+    "VolumeAnimationSpeed": "0.08",
+    "PeakMeterFps": 30,
+    "PeakMeterStyle": 0,
+    "WindowBackgroundOpacity": "0.7",
+    "CustomThemesJson": "[]",
+    "ActiveThemeName": "",
+    "MediaPopupHoverDelay": "2",
+    "MediaPopupBlurRadius": "15",
+    "UpdateNotifyChannel": 0,
+    "VolumeProfilesJson": "[]",
+    "QuickTrumpetNotificationSeconds": 3,
+    "MixerWindowWidth": "0",
+    "MixerWindowHeight": "0",
+    "FocusLostAttenuatePercent": 0,
+    "FocusLostFadeDurationMs": 0,
+    "AppRulesJson": "[]",
+    "FolderVolumeRulesJson": "[]"
+   },
+   "ok": true,
+   "text": "{\r\n  \"_formatVersion\": 1,\r\n  \"_exportedAt\": \"2025-11-29T08:00:00.0000000Z\",\r\n  \"_appVersion\": \"1.2.3.4\",\r\n  \"UseLegacyIcon\": false,\r\n  \"TrayIconShowsDeviceType\": false,\r\n  \"IsExpanded\": false,\r\n  \"UseScrollWheelInTray\": true,\r\n  \"UseGlobalMouseWheelHook\": false,\r\n  \"ShowAppTooltips\": true,\r\n  \"IsTelemetryEnabled\": true,\r\n  \"RunAtStartup\": false,\r\n  \"UseLogarithmicVolume\": false,\r\n  \"UseSmoothVolumeAnimation\": true,\r\n  \"UseVolumeTickSound\": true,\r\n  \"MonkeyTickSoundUnlocked\": false,\r\n  \"UseMonkeyTickSound\": false,\r\n  \"VolumeAnimationSpeed\": 0.08,\r\n  \"PeakMeterFps\": 30,\r\n  \"PeakMeterStyle\": 0,\r\n  \"EcoMode\": false,\r\n  \"AutoEcoMode\": true,\r\n  \"UseCustomSliderColors\": false,\r\n  \"SliderThumbColor\": \"#00FFFFFF\",\r\n  \"SliderTrackFillColor\": \"#00FFFFFF\",\r\n  \"SliderTrackBackgroundColor\": \"#00FFFFFF\",\r\n  \"PeakMeterColor\": \"#00FFFFFF\",\r\n  \"WindowBackgroundColor\": \"#00FFFFFF\",\r\n  \"WindowBackgroundOpacity\": 0.7,\r\n  \"TextColor\": \"#00FFFFFF\",\r\n  \"AccentGlowColor\": \"#00FFFFFF\",\r\n  \"CustomThemesJson\": \"[]\",\r\n  \"ActiveThemeName\": \"\",\r\n  \"UseDynamicAlbumArtTheme\": false,\r\n  \"MediaPopupEnabled\": true,\r\n  \"MediaPopupHoverDelay\": 2.0,\r\n  \"MediaPopupBlurRadius\": 15.0,\r\n  \"MediaPopupShowOnlyWhenPlaying\": false,\r\n  \"MediaPopupRememberExpanded\": true,\r\n  \"MediaPopupIsExpanded\": false,\r\n  \"AutoCheckForUpdates\": true,\r\n  \"UpdateNotifyChannel\": 0,\r\n  \"FlyoutHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"MixerHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"SettingsHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"AbsoluteVolumeUpHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"AbsoluteVolumeDownHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetNextHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetPreviousHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"VolumeProfilesJson\": \"[]\",\r\n  \"ShowQuickTrumpetConfirmation\": true,\r\n  \"QuickTrumpetNotificationSeconds\": 3,\r\n  \"MixerWindowWidth\": 0.0,\r\n  \"MixerWindowHeight\": 0.0,\r\n  \"NotifyOnDefaultDeviceChange\": false,\r\n  \"UseFocusLostVolume\": false,\r\n  \"FocusLostAttenuatePercent\": 0,\r\n  \"FocusLostFadeDurationMs\": 0,\r\n  \"FocusLostSelectedAppsOnly\": false,\r\n  \"AppRulesJson\": \"[]\",\r\n  \"FolderVolumeRulesJson\": \"[]\"\r\n}"
+  },
+  {
+   "name": "unusual",
+   "version": null,
+   "utcTicks": 639000000001234500,
+   "values": {
+    "UseLegacyIcon": true,
+    "TrayIconShowsDeviceType": false,
+    "IsExpanded": false,
+    "UseScrollWheelInTray": true,
+    "UseGlobalMouseWheelHook": false,
+    "ShowAppTooltips": true,
+    "IsTelemetryEnabled": false,
+    "RunAtStartup": true,
+    "UseLogarithmicVolume": false,
+    "UseSmoothVolumeAnimation": true,
+    "UseVolumeTickSound": true,
+    "MonkeyTickSoundUnlocked": false,
+    "UseMonkeyTickSound": false,
+    "EcoMode": false,
+    "AutoEcoMode": true,
+    "UseCustomSliderColors": false,
+    "UseDynamicAlbumArtTheme": false,
+    "MediaPopupEnabled": true,
+    "MediaPopupShowOnlyWhenPlaying": false,
+    "MediaPopupRememberExpanded": true,
+    "MediaPopupIsExpanded": false,
+    "AutoCheckForUpdates": true,
+    "ShowQuickTrumpetConfirmation": true,
+    "NotifyOnDefaultDeviceChange": false,
+    "UseFocusLostVolume": false,
+    "FocusLostSelectedAppsOnly": false,
+    "SliderThumbColor": "#FF102030",
+    "SliderTrackFillColor": "Red",
+    "SliderTrackBackgroundColor": "sc#0.5, 0.25, 1, 0",
+    "PeakMeterColor": "#80ABCDEF",
+    "WindowBackgroundColor": "#00000000",
+    "TextColor": "#FFFFFFFF",
+    "AccentGlowColor": "#7F00FF00",
+    "FlyoutHotkey": [
+     196608,
+     65
+    ],
+    "MixerHotkey": [
+     262144,
+     112
+    ],
+    "SettingsHotkey": [
+     -1,
+     2147483647
+    ],
+    "AbsoluteVolumeUpHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeDownHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetNextHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetPreviousHotkey": [
+     0,
+     0
+    ],
+    "VolumeAnimationSpeed": "NaN",
+    "PeakMeterFps": -5,
+    "PeakMeterStyle": 7,
+    "WindowBackgroundOpacity": "-0",
+    "CustomThemesJson": "[{\"Name\":\"é\\\"q\\\\\u0001\t\n <>&'\"}]",
+    "ActiveThemeName": "Café 🎺 \u0000   ퟿",
+    "MediaPopupHoverDelay": "Infinity",
+    "MediaPopupBlurRadius": "-Infinity",
+    "UpdateNotifyChannel": -1,
+    "VolumeProfilesJson": null,
+    "QuickTrumpetNotificationSeconds": 2147483647,
+    "MixerWindowWidth": "1E+21",
+    "MixerWindowHeight": "1E-07",
+    "FocusLostAttenuatePercent": -2147483648,
+    "FocusLostFadeDurationMs": 123,
+    "AppRulesJson": "[{\"ExeName\":\"a.exe\",\"HardMuted\":true}]",
+    "FolderVolumeRulesJson": null
+   },
+   "ok": true,
+   "text": "{\r\n  \"_formatVersion\": 1,\r\n  \"_exportedAt\": \"2025-11-29T08:00:00.1234500Z\",\r\n  \"_appVersion\": \"unknown\",\r\n  \"UseLegacyIcon\": true,\r\n  \"TrayIconShowsDeviceType\": false,\r\n  \"IsExpanded\": false,\r\n  \"UseScrollWheelInTray\": true,\r\n  \"UseGlobalMouseWheelHook\": false,\r\n  \"ShowAppTooltips\": true,\r\n  \"IsTelemetryEnabled\": false,\r\n  \"RunAtStartup\": true,\r\n  \"UseLogarithmicVolume\": false,\r\n  \"UseSmoothVolumeAnimation\": true,\r\n  \"UseVolumeTickSound\": true,\r\n  \"MonkeyTickSoundUnlocked\": false,\r\n  \"UseMonkeyTickSound\": false,\r\n  \"VolumeAnimationSpeed\": \"NaN\",\r\n  \"PeakMeterFps\": -5,\r\n  \"PeakMeterStyle\": 7,\r\n  \"EcoMode\": false,\r\n  \"AutoEcoMode\": true,\r\n  \"UseCustomSliderColors\": false,\r\n  \"SliderThumbColor\": \"#FF102030\",\r\n  \"SliderTrackFillColor\": \"#FFFF0000\",\r\n  \"SliderTrackBackgroundColor\": \"sc#0.5, 0.25, 1, 0\",\r\n  \"PeakMeterColor\": \"#80ABCDEF\",\r\n  \"WindowBackgroundColor\": \"#00000000\",\r\n  \"WindowBackgroundOpacity\": -0.0,\r\n  \"TextColor\": \"#FFFFFFFF\",\r\n  \"AccentGlowColor\": \"#7F00FF00\",\r\n  \"CustomThemesJson\": \"[{\\\"Name\\\":\\\"é\\\\\\\"q\\\\\\\\\\u0001\\t\\n\\u2028<>&'\\\"}]\",\r\n  \"ActiveThemeName\": \"Café 🎺 \\u0000  \\u0085 ퟿\",\r\n  \"UseDynamicAlbumArtTheme\": false,\r\n  \"MediaPopupEnabled\": true,\r\n  \"MediaPopupHoverDelay\": \"Infinity\",\r\n  \"MediaPopupBlurRadius\": \"-Infinity\",\r\n  \"MediaPopupShowOnlyWhenPlaying\": false,\r\n  \"MediaPopupRememberExpanded\": true,\r\n  \"MediaPopupIsExpanded\": false,\r\n  \"AutoCheckForUpdates\": true,\r\n  \"UpdateNotifyChannel\": -1,\r\n  \"FlyoutHotkey\": {\r\n    \"Modifiers\": 196608,\r\n    \"Key\": 65\r\n  },\r\n  \"MixerHotkey\": {\r\n    \"Modifiers\": 262144,\r\n    \"Key\": 112\r\n  },\r\n  \"SettingsHotkey\": {\r\n    \"Modifiers\": -1,\r\n    \"Key\": 2147483647\r\n  },\r\n  \"AbsoluteVolumeUpHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"AbsoluteVolumeDownHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetNextHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetPreviousHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"VolumeProfilesJson\": null,\r\n  \"ShowQuickTrumpetConfirmation\": true,\r\n  \"QuickTrumpetNotificationSeconds\": 2147483647,\r\n  \"MixerWindowWidth\": 1E+21,\r\n  \"MixerWindowHeight\": 1E-07,\r\n  \"NotifyOnDefaultDeviceChange\": false,\r\n  \"UseFocusLostVolume\": false,\r\n  \"FocusLostAttenuatePercent\": -2147483648,\r\n  \"FocusLostFadeDurationMs\": 123,\r\n  \"FocusLostSelectedAppsOnly\": false,\r\n  \"AppRulesJson\": \"[{\\\"ExeName\\\":\\\"a.exe\\\",\\\"HardMuted\\\":true}]\",\r\n  \"FolderVolumeRulesJson\": null\r\n}"
+  },
+  {
+   "name": "two-part version",
+   "version": "3.2",
+   "utcTicks": 630000000000000000,
+   "values": {
+    "UseLegacyIcon": false,
+    "TrayIconShowsDeviceType": false,
+    "IsExpanded": false,
+    "UseScrollWheelInTray": true,
+    "UseGlobalMouseWheelHook": false,
+    "ShowAppTooltips": true,
+    "IsTelemetryEnabled": true,
+    "RunAtStartup": false,
+    "UseLogarithmicVolume": false,
+    "UseSmoothVolumeAnimation": true,
+    "UseVolumeTickSound": true,
+    "MonkeyTickSoundUnlocked": false,
+    "UseMonkeyTickSound": false,
+    "EcoMode": false,
+    "AutoEcoMode": true,
+    "UseCustomSliderColors": false,
+    "UseDynamicAlbumArtTheme": false,
+    "MediaPopupEnabled": true,
+    "MediaPopupShowOnlyWhenPlaying": false,
+    "MediaPopupRememberExpanded": true,
+    "MediaPopupIsExpanded": false,
+    "AutoCheckForUpdates": true,
+    "ShowQuickTrumpetConfirmation": true,
+    "NotifyOnDefaultDeviceChange": false,
+    "UseFocusLostVolume": false,
+    "FocusLostSelectedAppsOnly": false,
+    "SliderThumbColor": "#00FFFFFF",
+    "SliderTrackFillColor": "#00FFFFFF",
+    "SliderTrackBackgroundColor": "#00FFFFFF",
+    "PeakMeterColor": "#00FFFFFF",
+    "WindowBackgroundColor": "#00FFFFFF",
+    "TextColor": "#00FFFFFF",
+    "AccentGlowColor": "#00FFFFFF",
+    "FlyoutHotkey": [
+     0,
+     0
+    ],
+    "MixerHotkey": [
+     0,
+     0
+    ],
+    "SettingsHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeUpHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeDownHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetNextHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetPreviousHotkey": [
+     0,
+     0
+    ],
+    "VolumeAnimationSpeed": "0.08",
+    "PeakMeterFps": 30,
+    "PeakMeterStyle": 0,
+    "WindowBackgroundOpacity": "0.7",
+    "CustomThemesJson": "[]",
+    "ActiveThemeName": "",
+    "MediaPopupHoverDelay": "2",
+    "MediaPopupBlurRadius": "15",
+    "UpdateNotifyChannel": 0,
+    "VolumeProfilesJson": "[]",
+    "QuickTrumpetNotificationSeconds": 3,
+    "MixerWindowWidth": "0",
+    "MixerWindowHeight": "0",
+    "FocusLostAttenuatePercent": 0,
+    "FocusLostFadeDurationMs": 0,
+    "AppRulesJson": "[]",
+    "FolderVolumeRulesJson": "[]"
+   },
+   "ok": true,
+   "text": "{\r\n  \"_formatVersion\": 1,\r\n  \"_exportedAt\": \"1997-05-23T16:00:00.0000000Z\",\r\n  \"_appVersion\": \"3.2\",\r\n  \"UseLegacyIcon\": false,\r\n  \"TrayIconShowsDeviceType\": false,\r\n  \"IsExpanded\": false,\r\n  \"UseScrollWheelInTray\": true,\r\n  \"UseGlobalMouseWheelHook\": false,\r\n  \"ShowAppTooltips\": true,\r\n  \"IsTelemetryEnabled\": true,\r\n  \"RunAtStartup\": false,\r\n  \"UseLogarithmicVolume\": false,\r\n  \"UseSmoothVolumeAnimation\": true,\r\n  \"UseVolumeTickSound\": true,\r\n  \"MonkeyTickSoundUnlocked\": false,\r\n  \"UseMonkeyTickSound\": false,\r\n  \"VolumeAnimationSpeed\": 0.08,\r\n  \"PeakMeterFps\": 30,\r\n  \"PeakMeterStyle\": 0,\r\n  \"EcoMode\": false,\r\n  \"AutoEcoMode\": true,\r\n  \"UseCustomSliderColors\": false,\r\n  \"SliderThumbColor\": \"#00FFFFFF\",\r\n  \"SliderTrackFillColor\": \"#00FFFFFF\",\r\n  \"SliderTrackBackgroundColor\": \"#00FFFFFF\",\r\n  \"PeakMeterColor\": \"#00FFFFFF\",\r\n  \"WindowBackgroundColor\": \"#00FFFFFF\",\r\n  \"WindowBackgroundOpacity\": 0.7,\r\n  \"TextColor\": \"#00FFFFFF\",\r\n  \"AccentGlowColor\": \"#00FFFFFF\",\r\n  \"CustomThemesJson\": \"[]\",\r\n  \"ActiveThemeName\": \"\",\r\n  \"UseDynamicAlbumArtTheme\": false,\r\n  \"MediaPopupEnabled\": true,\r\n  \"MediaPopupHoverDelay\": 2.0,\r\n  \"MediaPopupBlurRadius\": 15.0,\r\n  \"MediaPopupShowOnlyWhenPlaying\": false,\r\n  \"MediaPopupRememberExpanded\": true,\r\n  \"MediaPopupIsExpanded\": false,\r\n  \"AutoCheckForUpdates\": true,\r\n  \"UpdateNotifyChannel\": 0,\r\n  \"FlyoutHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"MixerHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"SettingsHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"AbsoluteVolumeUpHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"AbsoluteVolumeDownHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetNextHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"QuickTrumpetPreviousHotkey\": {\r\n    \"Modifiers\": 0,\r\n    \"Key\": 0\r\n  },\r\n  \"VolumeProfilesJson\": \"[]\",\r\n  \"ShowQuickTrumpetConfirmation\": true,\r\n  \"QuickTrumpetNotificationSeconds\": 3,\r\n  \"MixerWindowWidth\": 0.0,\r\n  \"MixerWindowHeight\": 0.0,\r\n  \"NotifyOnDefaultDeviceChange\": false,\r\n  \"UseFocusLostVolume\": false,\r\n  \"FocusLostAttenuatePercent\": 0,\r\n  \"FocusLostFadeDurationMs\": 0,\r\n  \"FocusLostSelectedAppsOnly\": false,\r\n  \"AppRulesJson\": \"[]\",\r\n  \"FolderVolumeRulesJson\": \"[]\"\r\n}"
+  },
+  {
+   "name": "null hotkey",
+   "version": "1.0.0",
+   "utcTicks": 639000000000000000,
+   "values": {
+    "UseLegacyIcon": false,
+    "TrayIconShowsDeviceType": false,
+    "IsExpanded": false,
+    "UseScrollWheelInTray": true,
+    "UseGlobalMouseWheelHook": false,
+    "ShowAppTooltips": true,
+    "IsTelemetryEnabled": true,
+    "RunAtStartup": false,
+    "UseLogarithmicVolume": false,
+    "UseSmoothVolumeAnimation": true,
+    "UseVolumeTickSound": true,
+    "MonkeyTickSoundUnlocked": false,
+    "UseMonkeyTickSound": false,
+    "EcoMode": false,
+    "AutoEcoMode": true,
+    "UseCustomSliderColors": false,
+    "UseDynamicAlbumArtTheme": false,
+    "MediaPopupEnabled": true,
+    "MediaPopupShowOnlyWhenPlaying": false,
+    "MediaPopupRememberExpanded": true,
+    "MediaPopupIsExpanded": false,
+    "AutoCheckForUpdates": true,
+    "ShowQuickTrumpetConfirmation": true,
+    "NotifyOnDefaultDeviceChange": false,
+    "UseFocusLostVolume": false,
+    "FocusLostSelectedAppsOnly": false,
+    "SliderThumbColor": "#00FFFFFF",
+    "SliderTrackFillColor": "#00FFFFFF",
+    "SliderTrackBackgroundColor": "#00FFFFFF",
+    "PeakMeterColor": "#00FFFFFF",
+    "WindowBackgroundColor": "#00FFFFFF",
+    "TextColor": "#00FFFFFF",
+    "AccentGlowColor": "#00FFFFFF",
+    "FlyoutHotkey": [
+     0,
+     0
+    ],
+    "MixerHotkey": null,
+    "SettingsHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeUpHotkey": [
+     0,
+     0
+    ],
+    "AbsoluteVolumeDownHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetNextHotkey": [
+     0,
+     0
+    ],
+    "QuickTrumpetPreviousHotkey": [
+     0,
+     0
+    ],
+    "VolumeAnimationSpeed": "0.08",
+    "PeakMeterFps": 30,
+    "PeakMeterStyle": 0,
+    "WindowBackgroundOpacity": "0.7",
+    "CustomThemesJson": "[]",
+    "ActiveThemeName": "",
+    "MediaPopupHoverDelay": "2",
+    "MediaPopupBlurRadius": "15",
+    "UpdateNotifyChannel": 0,
+    "VolumeProfilesJson": "[]",
+    "QuickTrumpetNotificationSeconds": 3,
+    "MixerWindowWidth": "0",
+    "MixerWindowHeight": "0",
+    "FocusLostAttenuatePercent": 0,
+    "FocusLostFadeDurationMs": 0,
+    "AppRulesJson": "[]",
+    "FolderVolumeRulesJson": "[]"
+   },
+   "ok": false
+  }
+ ],
+ "imports": [
+  {
+   "name": "empty object",
+   "text": "{}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "null document",
+   "text": "null",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "empty file",
+   "text": "",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "whitespace file",
+   "text": "  \r\n ",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "array root",
+   "text": "[]",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "string root",
+   "text": "\"x\"",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "trailing content",
+   "text": "{\"EcoMode\": true} x",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "truncated",
+   "text": "{\"EcoMode\": true",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "missing file",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "utf8 bom",
+   "base64": "77u/eyJFY29Nb2RlIjogdHJ1ZX0=",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "utf16 bom",
+   "base64": "//57ACIARQBjAG8ATQBvAGQAZQAiADoAIAB0AHIAdQBlAH0A",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "lenient reader",
+   "text": "// c\n{EcoMode: true, /* x */ 'ActiveThemeName': 'a', \"PeakMeterFps\": 0x10,}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     16
+    ],
+    [
+     "EcoMode",
+     true
+    ],
+    [
+     "ActiveThemeName",
+     "a"
+    ]
+   ]
+  },
+  {
+   "name": "metadata, RunAtStartup and unknown keys",
+   "text": "{\"_formatVersion\": 99, \"_exportedAt\": \"bogus\", \"_appVersion\": 5, \"RunAtStartup\": true, \"Unknown\": 1, \"SwitchDeviceHotkey\": {\"Modifiers\": 1, \"Key\": 2}, \"Hotkey\": {\"Modifiers\": 1, \"Key\": 2}, \"IsExpanded\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "IsExpanded",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "duplicate root key",
+   "text": "{\"EcoMode\": true, \"EcoMode\": false, \"EcoMode\": \"true\"}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "case-sensitive root keys",
+   "text": "{\"ecomode\": true, \"ECOMODE\": true}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "rule order",
+   "text": "{\"FolderVolumeRulesJson\": \"[f]\", \"HardMutedAppsJson\": \"[h]\", \"AppRulesJson\": \"[a]\"}",
+   "ok": true,
+   "sets": [
+    [
+     "AppRulesJson",
+     "[a]"
+    ],
+    [
+     "LegacyHardMutedAppsJson",
+     "[h]"
+    ],
+    [
+     "FolderVolumeRulesJson",
+     "[f]"
+    ]
+   ]
+  },
+  {
+   "name": "monkey order",
+   "text": "{\"UseMonkeyTickSound\": true, \"MonkeyTickSoundUnlocked\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "MonkeyTickSoundUnlocked",
+     true
+    ],
+    [
+     "UseMonkeyTickSound",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=true",
+   "text": "{\"EcoMode\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=false",
+   "text": "{\"EcoMode\": false}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     false
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=1",
+   "text": "{\"EcoMode\": 1}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=0",
+   "text": "{\"EcoMode\": 0}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     false
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=2.5",
+   "text": "{\"EcoMode\": 2.5}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=0.0",
+   "text": "{\"EcoMode\": 0.0}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     false
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=\"true\"",
+   "text": "{\"EcoMode\": \"true\"}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=\" TRUE\\u0000 \"",
+   "text": "{\"EcoMode\": \" TRUE\\u0000 \"}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=\"yes\"",
+   "text": "{\"EcoMode\": \"yes\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=\"\"",
+   "text": "{\"EcoMode\": \"\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=null",
+   "text": "{\"EcoMode\": null}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=undefined",
+   "text": "{\"EcoMode\": undefined}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=\"2024-01-02T03:04:05Z\"",
+   "text": "{\"EcoMode\": \"2024-01-02T03:04:05Z\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode={}",
+   "text": "{\"EcoMode\": {}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=[]",
+   "text": "{\"EcoMode\": []}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=123456789012345678901234567890",
+   "text": "{\"EcoMode\": 123456789012345678901234567890}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "EcoMode=NaN",
+   "text": "{\"EcoMode\": NaN}",
+   "ok": true,
+   "sets": [
+    [
+     "EcoMode",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "EcoMode=\"1\"",
+   "text": "{\"EcoMode\": \"1\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=60",
+   "text": "{\"PeakMeterFps\": 60}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     60
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=60.5",
+   "text": "{\"PeakMeterFps\": 60.5}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     60
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=61.5",
+   "text": "{\"PeakMeterFps\": 61.5}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     62
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=-0.5",
+   "text": "{\"PeakMeterFps\": -0.5}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     0
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=\"45\"",
+   "text": "{\"PeakMeterFps\": \"45\"}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     45
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=\" 45 \"",
+   "text": "{\"PeakMeterFps\": \" 45 \"}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     45
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=\"+45\"",
+   "text": "{\"PeakMeterFps\": \"+45\"}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     45
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=\"4.5\"",
+   "text": "{\"PeakMeterFps\": \"4.5\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=\"0x10\"",
+   "text": "{\"PeakMeterFps\": \"0x10\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=\"1,000\"",
+   "text": "{\"PeakMeterFps\": \"1,000\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=true",
+   "text": "{\"PeakMeterFps\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     1
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=3000000000",
+   "text": "{\"PeakMeterFps\": 3000000000}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=-2147483648",
+   "text": "{\"PeakMeterFps\": -2147483648}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     -2147483648
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=2147483647.5",
+   "text": "{\"PeakMeterFps\": 2147483647.5}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=-2147483648.5",
+   "text": "{\"PeakMeterFps\": -2147483648.5}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     -2147483648
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterFps=NaN",
+   "text": "{\"PeakMeterFps\": NaN}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=Infinity",
+   "text": "{\"PeakMeterFps\": Infinity}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=\"\"",
+   "text": "{\"PeakMeterFps\": \"\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=null",
+   "text": "{\"PeakMeterFps\": null}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=\"2024-01-02\"",
+   "text": "{\"PeakMeterFps\": \"2024-01-02\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps={}",
+   "text": "{\"PeakMeterFps\": {}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "PeakMeterFps=1e2",
+   "text": "{\"PeakMeterFps\": 1e2}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterFps",
+     100
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=1",
+   "text": "{\"VolumeAnimationSpeed\": 1}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=0.25",
+   "text": "{\"VolumeAnimationSpeed\": 0.25}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "0.25"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"0.5\"",
+   "text": "{\"VolumeAnimationSpeed\": \"0.5\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "0.5"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"1,000.5\"",
+   "text": "{\"VolumeAnimationSpeed\": \"1,000.5\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "1000.5"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\" 1e3 \"",
+   "text": "{\"VolumeAnimationSpeed\": \" 1e3 \"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "1000"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"(1)\"",
+   "text": "{\"VolumeAnimationSpeed\": \"(1)\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"-\"",
+   "text": "{\"VolumeAnimationSpeed\": \"-\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=true",
+   "text": "{\"VolumeAnimationSpeed\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"NaN\"",
+   "text": "{\"VolumeAnimationSpeed\": \"NaN\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "NaN"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"Infinity\"",
+   "text": "{\"VolumeAnimationSpeed\": \"Infinity\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "Infinity"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"-Infinity\"",
+   "text": "{\"VolumeAnimationSpeed\": \"-Infinity\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "-Infinity"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"abc\"",
+   "text": "{\"VolumeAnimationSpeed\": \"abc\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=NaN",
+   "text": "{\"VolumeAnimationSpeed\": NaN}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "NaN"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=-Infinity",
+   "text": "{\"VolumeAnimationSpeed\": -Infinity}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "-Infinity"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=-0.0",
+   "text": "{\"VolumeAnimationSpeed\": -0.0}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeAnimationSpeed",
+     "0"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"\"",
+   "text": "{\"VolumeAnimationSpeed\": \"\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=null",
+   "text": "{\"VolumeAnimationSpeed\": null}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=12345678901234567890123",
+   "text": "{\"VolumeAnimationSpeed\": 12345678901234567890123}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=\"2024-01-02T03:04:05Z\"",
+   "text": "{\"VolumeAnimationSpeed\": \"2024-01-02T03:04:05Z\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "VolumeAnimationSpeed=[]",
+   "text": "{\"VolumeAnimationSpeed\": []}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "ActiveThemeName=5",
+   "text": "{\"ActiveThemeName\": 5}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "5"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=-5",
+   "text": "{\"ActiveThemeName\": -5}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "-5"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=5.5",
+   "text": "{\"ActiveThemeName\": 5.5}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "5.5"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=1e20",
+   "text": "{\"ActiveThemeName\": 1e20}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "1E+20"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=0.1",
+   "text": "{\"ActiveThemeName\": 0.1}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "0.1"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=1.0",
+   "text": "{\"ActiveThemeName\": 1.0}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "1"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=-0.0",
+   "text": "{\"ActiveThemeName\": -0.0}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "0"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=NaN",
+   "text": "{\"ActiveThemeName\": NaN}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "NaN"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=Infinity",
+   "text": "{\"ActiveThemeName\": Infinity}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "Infinity"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=true",
+   "text": "{\"ActiveThemeName\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "True"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=false",
+   "text": "{\"ActiveThemeName\": false}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "False"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=null",
+   "text": "{\"ActiveThemeName\": null}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=undefined",
+   "text": "{\"ActiveThemeName\": undefined}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=\"plain\"",
+   "text": "{\"ActiveThemeName\": \"plain\"}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "plain"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=\"2024-01-02T03:04:05Z\"",
+   "text": "{\"ActiveThemeName\": \"2024-01-02T03:04:05Z\"}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "01/02/2024 03:04:05"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=\"2024-01-02T03:04:05.1234567\"",
+   "text": "{\"ActiveThemeName\": \"2024-01-02T03:04:05.1234567\"}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "01/02/2024 03:04:05"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=\"2024-01-02T03:04:05+02:00\"",
+   "text": "{\"ActiveThemeName\": \"2024-01-02T03:04:05+02:00\"}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "01/01/2024 19:04:05"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName=\"\\/Date(0)\\/\"",
+   "text": "{\"ActiveThemeName\": \"\\/Date(0)\\/\"}",
+   "ok": true,
+   "sets": [
+    [
+     "ActiveThemeName",
+     "01/01/1970 00:00:00"
+    ]
+   ]
+  },
+  {
+   "name": "ActiveThemeName={\"a\":1}",
+   "text": "{\"ActiveThemeName\": {\"a\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "ActiveThemeName=[1]",
+   "text": "{\"ActiveThemeName\": [1]}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "ActiveThemeName=12345678901234567890123",
+   "text": "{\"ActiveThemeName\": 12345678901234567890123}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "ActiveThemeName=new Date(2020, 0, 1)",
+   "text": "{\"ActiveThemeName\": new Date(2020, 0, 1)}",
+   "ok": false,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=\"#FF0000\"",
+   "text": "{\"SliderThumbColor\": \"#FF0000\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#FFFF0000"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"Red\"",
+   "text": "{\"SliderThumbColor\": \"Red\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#FFFF0000"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"red\"",
+   "text": "{\"SliderThumbColor\": \"red\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#FFFF0000"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"#abc\"",
+   "text": "{\"SliderThumbColor\": \"#abc\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#FFAABBCC"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"#ABCD\"",
+   "text": "{\"SliderThumbColor\": \"#ABCD\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#AABBCCDD"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"#80FF0000\"",
+   "text": "{\"SliderThumbColor\": \"#80FF0000\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#80FF0000"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\" #FF00FF00 \"",
+   "text": "{\"SliderThumbColor\": \" #FF00FF00 \"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#FF00FF00"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"sc#1,0.5,0.5,0.5\"",
+   "text": "{\"SliderThumbColor\": \"sc#1,0.5,0.5,0.5\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "sc#1, 0.5, 0.5, 0.5"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"sc#0.5, 0.25, 1\"",
+   "text": "{\"SliderThumbColor\": \"sc#0.5, 0.25, 1\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "sc#1, 0.5, 0.25, 1"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor=\"\"",
+   "text": "{\"SliderThumbColor\": \"\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=null",
+   "text": "{\"SliderThumbColor\": null}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=5",
+   "text": "{\"SliderThumbColor\": 5}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=true",
+   "text": "{\"SliderThumbColor\": true}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=\"bogus\"",
+   "text": "{\"SliderThumbColor\": \"bogus\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=\"Transparent\"",
+   "text": "{\"SliderThumbColor\": \"Transparent\"}",
+   "ok": true,
+   "sets": [
+    [
+     "SliderThumbColor",
+     "#00FFFFFF"
+    ]
+   ]
+  },
+  {
+   "name": "SliderThumbColor={}",
+   "text": "{\"SliderThumbColor\": {}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "SliderThumbColor=\"2024-01-02T03:04:05Z\"",
+   "text": "{\"SliderThumbColor\": \"2024-01-02T03:04:05Z\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":131072,\"Key\":65}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":131072,\"Key\":65}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      131072,
+      65
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Key\":65,\"Modifiers\":131072,\"IsEmpty\":true}",
+   "text": "{\"FlyoutHotkey\": {\"Key\":65,\"Modifiers\":131072,\"IsEmpty\":true}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      131072,
+      65
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":131072}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":131072}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Key\":65}",
+   "text": "{\"FlyoutHotkey\": {\"Key\":65}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"modifiers\":1,\"Key\":65}",
+   "text": "{\"FlyoutHotkey\": {\"modifiers\":1,\"Key\":65}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":\"5\",\"Key\":\" 6 \"}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":\"5\",\"Key\":\" 6 \"}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      5,
+      6
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":1.5,\"Key\":2.5}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":1.5,\"Key\":2.5}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      2,
+      2
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":true,\"Key\":false}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":true,\"Key\":false}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      1,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":null,\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":null,\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":\"x\",\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":\"x\",\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":3000000000,\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":3000000000,\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":1,\"Key\":1,\"Modifiers\":2}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":1,\"Key\":1,\"Modifiers\":2}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      2,
+      1
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":[],\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":[],\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":\"2024-01-02T03:04:05Z\",\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":\"2024-01-02T03:04:05Z\",\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":-1,\"Key\":-2147483648}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":-1,\"Key\":-2147483648}}",
+   "ok": true,
+   "sets": [
+    [
+     "FlyoutHotkey",
+     [
+      -1,
+      -2147483648
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":\"0x10\",\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":\"0x10\",\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":12345678901234567890123,\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":12345678901234567890123,\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={\"Modifiers\":NaN,\"Key\":1}",
+   "text": "{\"FlyoutHotkey\": {\"Modifiers\":NaN,\"Key\":1}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey=null",
+   "text": "{\"FlyoutHotkey\": null}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey=5",
+   "text": "{\"FlyoutHotkey\": 5}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey=\"x\"",
+   "text": "{\"FlyoutHotkey\": \"x\"}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey=[1,2]",
+   "text": "{\"FlyoutHotkey\": [1,2]}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "FlyoutHotkey={}",
+   "text": "{\"FlyoutHotkey\": {}}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "UpdateNotifyChannel=7",
+   "text": "{\"UpdateNotifyChannel\": 7}",
+   "ok": true,
+   "sets": [
+    [
+     "UpdateNotifyChannel",
+     7
+    ]
+   ]
+  },
+  {
+   "name": "UpdateNotifyChannel=-1",
+   "text": "{\"UpdateNotifyChannel\": -1}",
+   "ok": true,
+   "sets": [
+    [
+     "UpdateNotifyChannel",
+     -1
+    ]
+   ]
+  },
+  {
+   "name": "UpdateNotifyChannel=\"2\"",
+   "text": "{\"UpdateNotifyChannel\": \"2\"}",
+   "ok": true,
+   "sets": [
+    [
+     "UpdateNotifyChannel",
+     2
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterStyle=9",
+   "text": "{\"PeakMeterStyle\": 9}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterStyle",
+     9
+    ]
+   ]
+  },
+  {
+   "name": "PeakMeterStyle=2.5",
+   "text": "{\"PeakMeterStyle\": 2.5}",
+   "ok": true,
+   "sets": [
+    [
+     "PeakMeterStyle",
+     2
+    ]
+   ]
+  },
+  {
+   "name": "VolumeProfilesJson=null",
+   "text": "{\"VolumeProfilesJson\": null}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeProfilesJson",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "VolumeProfilesJson=\"[]\"",
+   "text": "{\"VolumeProfilesJson\": \"[]\"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeProfilesJson",
+     "[]"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeProfilesJson=5",
+   "text": "{\"VolumeProfilesJson\": 5}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeProfilesJson",
+     "5"
+    ]
+   ]
+  },
+  {
+   "name": "VolumeProfilesJson=\"  \"",
+   "text": "{\"VolumeProfilesJson\": \"  \"}",
+   "ok": true,
+   "sets": [
+    [
+     "VolumeProfilesJson",
+     "  "
+    ]
+   ]
+  },
+  {
+   "name": "AppRulesJson=null",
+   "text": "{\"AppRulesJson\": null}",
+   "ok": true,
+   "sets": [
+    [
+     "AppRulesJson",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "AppRulesJson=\"\"",
+   "text": "{\"AppRulesJson\": \"\"}",
+   "ok": true,
+   "sets": [
+    [
+     "AppRulesJson",
+     ""
+    ]
+   ]
+  },
+  {
+   "name": "AppRulesJson=true",
+   "text": "{\"AppRulesJson\": true}",
+   "ok": true,
+   "sets": [
+    [
+     "AppRulesJson",
+     "True"
+    ]
+   ]
+  },
+  {
+   "name": "HardMutedAppsJson=null",
+   "text": "{\"HardMutedAppsJson\": null}",
+   "ok": true,
+   "sets": [
+    [
+     "LegacyHardMutedAppsJson",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "HardMutedAppsJson=\"x\"",
+   "text": "{\"HardMutedAppsJson\": \"x\"}",
+   "ok": true,
+   "sets": [
+    [
+     "LegacyHardMutedAppsJson",
+     "x"
+    ]
+   ]
+  },
+  {
+   "name": "CustomThemesJson=null",
+   "text": "{\"CustomThemesJson\": null}",
+   "ok": true,
+   "sets": [
+    [
+     "CustomThemesJson",
+     null
+    ]
+   ]
+  },
+  {
+   "name": "CustomThemesJson=[]",
+   "text": "{\"CustomThemesJson\": []}",
+   "ok": true,
+   "sets": []
+  },
+  {
+   "name": "CustomThemesJson={\"a\":1}",
+   "text": "{\"CustomThemesJson\": {\"a\":1}}",
+   "ok": true,
+   "sets": []
+  }
+ ]
+}

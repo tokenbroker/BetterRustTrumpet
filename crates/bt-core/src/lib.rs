@@ -30,6 +30,7 @@ pub mod registry_snapshot;
 pub mod registry_values;
 pub mod rules;
 pub mod settings;
+pub mod settings_export;
 pub mod text;
 pub mod themes;
 pub mod typed_lists;
