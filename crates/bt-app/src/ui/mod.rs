@@ -925,7 +925,17 @@ impl Ui {
             }
             Event::Hotkey(id) => self.hotkey(id),
             Event::App(APP_SHOW) => self.show_flyout(),
-            Event::App(crate::ipc::APP_IPC) => crate::ipc::drain(&mut self.core),
+            Event::App(crate::ipc::APP_IPC) => {
+                let effects = crate::ipc::drain(&mut self.core);
+                if effects.hotkeys {
+                    self.reload_hotkeys();
+                }
+                if !effects.settle.is_empty() {
+                    self.settle = effects.settle;
+                    self.settle_ticks = 3;
+                    self.hidden.set_timer(PRESET_SETTLE, 250);
+                }
+            }
             Event::App(APP_SETTINGS) => self.open_settings(),
             Event::App(APP_SHOW_MEDIA) => {
                 if let Some(rect) = self.tray.rect() {

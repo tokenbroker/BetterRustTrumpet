@@ -87,8 +87,10 @@ impl CommandCulture for InvariantCulture {
     }
 }
 
-/// Commands whose feature is not ported: they answer this error.
-pub const UNAVAILABLE: [&str; 13] = [
+/// Commands the provider's `extension` answers (presets live in the app,
+/// which owns capture, apply and the store); without one they answer the
+/// "not available" error.
+pub const EXTENSIONS: [&str; 13] = [
     "list-profiles",
     "presets",
     "apply-profile",
@@ -108,7 +110,8 @@ pub fn error(message: impl Into<String>) -> String {
     json(&ErrorResponse::from(message.into()))
 }
 
-fn json(value: &impl Serialize) -> String {
+/// A response as JSON, or the serializer error as an error response.
+pub fn json(value: &impl Serialize) -> String {
     serde_json::to_string(value).unwrap_or_else(|e| error(e.to_string()))
 }
 
@@ -171,7 +174,7 @@ pub fn process(provider: &mut impl Provider, line: &str) -> String {
         }
         "rule-apply" => rule_apply(provider, args),
         "watch" => watch(provider),
-        c if UNAVAILABLE.contains(&c) => provider
+        c if EXTENSIONS.contains(&c) => provider
             .extension(c, args)
             .unwrap_or_else(|| unavailable(c)),
         // Anything else is a preset name: ApplyProfile(parts).
@@ -498,6 +501,34 @@ fn rule_apply(provider: &mut impl Provider, args: &[String]) -> String {
         Ok(response) => response,
         Err(e) => return error(e),
     };
+    set_changed(provider, &devices, &before, &after);
+    json(&response)
+}
+
+/// CreatePresetFromRule's first half: the rule is parsed, planned and
+/// applied live (the capture that follows reads the new volumes). Returns
+/// the rule and its plan.
+pub fn apply_rule(
+    provider: &mut impl Provider,
+    args: &[String],
+) -> Result<(cli_rules::Spec, Vec<cli_rules::PlanChange>), String> {
+    let devices = provider.devices().ok_or("audio not ready")?;
+    let spec = cli_rules::parse(args)?;
+    let before = collection(&devices);
+    let plan = cli_rules::build_plan(&before, &spec);
+    let mut after = before.clone();
+    cli_rules::apply_plan(&mut after, &plan);
+    set_changed(provider, &devices, &before, &after);
+    Ok((spec, plan))
+}
+
+/// Sets every app whose volume or mute differs between the snapshots.
+fn set_changed(
+    provider: &mut impl Provider,
+    devices: &[Device],
+    before: &cli_rules::Collection,
+    after: &cli_rules::Collection,
+) {
     let rows = |c: &cli_rules::Collection| -> Vec<(i32, bool)> {
         c.all_devices
             .iter()
@@ -507,7 +538,7 @@ fn rule_apply(provider: &mut impl Provider, args: &[String]) -> String {
             .map(|a| (a.volume, a.is_muted))
             .collect()
     };
-    let changed = rows(&before).into_iter().zip(rows(&after));
+    let changed = rows(before).into_iter().zip(rows(after));
     let apps = devices
         .iter()
         .flat_map(|d| d.apps.iter().map(move |a| (d, a)));
@@ -519,7 +550,6 @@ fn rule_apply(provider: &mut impl Provider, args: &[String]) -> String {
             provider.set_app_mute(device, app, new_muted);
         }
     }
-    json(&response)
 }
 
 /// `DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")`: local time with a

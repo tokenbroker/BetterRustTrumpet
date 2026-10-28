@@ -224,6 +224,16 @@ impl<'a> Service<'a> {
         profile
     }
 
+    /// `DefaultDevices.Set(role, ReadCurrentDefault(role))` (save --defaults).
+    pub fn capture_default(&self, profile: &mut VolumeProfile, role: Role) {
+        let current = self.read_default(role);
+        set_slot(
+            profile.default_devices.get_or_insert_default(),
+            role,
+            current,
+        );
+    }
+
     fn read_default(&self, role: Role) -> Option<DefaultDeviceEntry> {
         let endpoint = self.core.audio.default_endpoint(role).ok().flatten()?;
         Some(DefaultDeviceEntry {

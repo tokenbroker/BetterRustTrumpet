@@ -433,13 +433,49 @@ fn extension_handles_unported_commands_when_present() {
         }
     }
     let mut p = WithProfiles(fake());
+    // Every preset command and alias reaches the provider's extension with
+    // the normalized command name and its arguments.
+    for (line, expected) in [
+        ("Night Mode", "apply:Night|Mode"),
+        ("preset load a b", "apply:a|b"),
+        ("presets", "presets:"),
+        ("list-profiles", "list-profiles:"),
+        ("profile list", "presets:"),
+        ("apply-profile Focus", "apply-profile:Focus"),
+        ("mode Focus", "apply:Focus"),
+        (
+            "save Night --DEFAULTS --no-route",
+            "save:Night|--DEFAULTS|--no-route",
+        ),
+        ("preset save x", "save:x"),
+        ("preset next", "preset-next:"),
+        ("preset prev", "preset-prev:"),
+        ("preset-previous", "preset-previous:"),
+        ("delete Night Mode", "delete:Night|Mode"),
+        (
+            "preset create Calm --keep spotify=30",
+            "preset-create:Calm|--keep|spotify=30",
+        ),
+    ] {
+        assert_eq!(cli_dispatch::process(&mut p, line), expected, "{line}");
+    }
+}
+
+#[test]
+fn preset_create_applies_its_rule_live_first() {
+    let mut p = fake();
+    let args: Vec<String> = ["--keep", "discord=90", "--others", "mute"]
+        .map(String::from)
+        .to_vec();
+    let (spec, plan) = cli_dispatch::apply_rule(&mut p, &args).unwrap();
+    assert!(spec.capture_all_devices && !spec.apply_apps_only);
+    assert_eq!(plan.len(), 2);
+    assert_eq!(p.calls[1], "app-volume {speakers} key-Discord-20 90");
+    let bad = ["--keep".to_string()];
+    assert!(cli_dispatch::apply_rule(&mut fake(), &bad).is_err());
     assert_eq!(
-        cli_dispatch::process(&mut p, "Night Mode"),
-        "apply:Night|Mode"
-    );
-    assert_eq!(
-        cli_dispatch::process(&mut p, "preset load a b"),
-        "apply:a|b"
+        cli_dispatch::apply_rule(&mut Fake::default(), &args).unwrap_err(),
+        "audio not ready"
     );
 }
 
