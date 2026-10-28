@@ -5,6 +5,7 @@
 use super::{
     MenuRequest,
     anim::{self, BACK_OUT, Curve, EASE_IN, EASE_OUT, FADE_OUT_QUAD},
+    blur,
     slider::Slider,
     theme::Theme,
 };
@@ -35,6 +36,8 @@ const APPS_PAD: f32 = 6.0;
 const FRAME: usize = 1;
 const TICK_WAV: &[u8] = include_bytes!("../../assets/tick.wav");
 const UI_FONT: &str = "Segoe UI";
+/// WindowBlurRadius: the blur of the flyout behind a popup.
+const BLUR_RADIUS: f32 = 10.0;
 
 // Segoe MDL2 / Fluent glyphs.
 const GLYPH_MUTE: char = '\u{E74F}';
@@ -194,6 +197,9 @@ pub struct Flyout {
     scroll: f32,
     popup: Option<Popup>,
     dismiss_out: Option<Instant>,
+    /// The list as it was when the popup opened, blurred (at half size)
+    /// once, and the window size in pixels it was made for.
+    backdrop: Option<(Rc<Image>, (i32, i32))>,
     hiding_app: Option<(String, String, Instant)>,
     pub hidden_at: Option<Instant>,
     icons: HashMap<(String, u32), Option<Rc<Image>>>,
@@ -276,6 +282,7 @@ impl Flyout {
             scroll: 0.0,
             popup: None,
             dismiss_out: None,
+            backdrop: None,
             hiding_app: None,
             hidden_at: None,
             icons: HashMap::new(),
@@ -663,6 +670,7 @@ impl Flyout {
         self.visible = false;
         self.closing = None;
         self.popup = None;
+        self.backdrop = None;
         self.hover = None;
         self.pressed = None;
         for slider in self.sliders.values_mut() {
@@ -1703,6 +1711,7 @@ impl Flyout {
         self.paint(theme);
         self.visible = false;
         self.popup = None;
+        self.backdrop = None;
         self.surface.as_ref()?.rgba()
     }
 
@@ -1736,6 +1745,19 @@ impl Flyout {
             Some(start) => 1.0 - EASE_IN.at(anim::progress(start, 0.0, 105.0, now)),
             None => FADE_OUT_QUAD.at(anim::progress(self.opened, 0.0, 165.0, now)),
         };
+        if self.popup.is_some() {
+            if self
+                .backdrop
+                .as_ref()
+                .is_none_or(|(_, size)| *size != (width, height))
+            {
+                self.backdrop = self
+                    .blur_list(theme, width, height, now)
+                    .map(|image| (image, (width, height)));
+            }
+        } else if !anim::running(self.dismiss_out, 150.0, now) {
+            self.backdrop = None;
+        }
         let Some(mut surface) = self.surface.take() else {
             return;
         };
@@ -1744,6 +1766,30 @@ impl Flyout {
         });
         surface.present(self.window.raw(), self.position.0, self.position.1, opacity);
         self.surface = Some(surface);
+    }
+
+    /// The list drawn offscreen and blurred, for behind a popup (the
+    /// original's LightDismissBorder shows BaseVisual through a Gaussian
+    /// BlurEffect). Computed once per popup; halving first keeps it cheap.
+    fn blur_list(&self, theme: &Theme, width: i32, height: i32, now: Instant) -> Option<Rc<Image>> {
+        let mut surface = Surface::new(self.gfx.clone()).ok()?;
+        surface.draw(width, height, self.scale, |canvas| {
+            self.draw_list(canvas, theme, now)
+        });
+        let (w, h, pixels) = surface.bgra()?;
+        let (mut small, sw, sh) = blur::half(&pixels, w as usize, h as usize);
+        let sigma = blur::sigma_for_radius(BLUR_RADIUS) * self.scale / 2.0;
+        blur::gaussian(&mut small, sw, sh, sigma);
+        Some(Image::new(sw as u32, sh as u32, small))
+    }
+
+    /// How far the dimmed, blurred layer behind a popup is faded in.
+    fn dismiss_level(&self, now: Instant) -> f32 {
+        match (&self.popup, self.dismiss_out) {
+            (Some(p), _) => anim::progress(p.opened, 0.0, 150.0, now),
+            (None, Some(start)) => 1.0 - anim::progress(start, 0.0, 150.0, now),
+            _ => 0.0,
+        }
     }
 
     fn draw(&self, canvas: &mut Canvas, theme: &Theme, now: Instant) {
@@ -1784,7 +1830,18 @@ impl Flyout {
                 theme.text,
             );
         } else {
-            self.draw_list(canvas, theme, now);
+            // Behind a popup the sharp list fades out under its blurred
+            // copy.
+            let dismiss = self.dismiss_level(now);
+            match &self.backdrop {
+                Some(_) if dismiss >= 1.0 => {}
+                Some(_) if dismiss > 0.0 => {
+                    canvas.push_layer(1.0 - dismiss, None);
+                    self.draw_list(canvas, theme, now);
+                    canvas.pop();
+                }
+                _ => self.draw_list(canvas, theme, now),
+            }
         }
         self.draw_popup(canvas, theme, now);
         canvas.pop_transform();
@@ -2090,14 +2147,14 @@ impl Flyout {
 
     fn draw_popup(&self, canvas: &mut Canvas, theme: &Theme, now: Instant) {
         let full = Rect::new(0.0, 0.0, WIDTH, self.height);
-        // The dimmed flyout behind the popup fades in and out (150 ms).
-        let dismiss = match (&self.popup, self.dismiss_out) {
-            (Some(p), _) => anim::progress(p.opened, 0.0, 150.0, now),
-            (None, Some(start)) => 1.0 - anim::progress(start, 0.0, 150.0, now),
-            _ => 0.0,
-        };
+        // The dimmed, blurred flyout behind the popup fades in and out
+        // (150 ms): the Background colour with the blurred list over it.
+        let dismiss = self.dismiss_level(now);
         if dismiss > 0.0 {
             canvas.rect(full, theme.dismiss.alpha(dismiss));
+            if let Some((image, _)) = &self.backdrop {
+                canvas.image(image, full, dismiss);
+            }
         }
         let Some(popup) = &self.popup else {
             return;

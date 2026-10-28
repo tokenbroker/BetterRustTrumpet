@@ -428,10 +428,12 @@ impl Media {
             _ => false,
         };
         if !same_art {
-            self.art = art.as_ref().and_then(|bytes| gfx::decode_image(bytes, 400));
+            let decoded = art.as_ref().and_then(|bytes| gfx::decode_image(bytes, 400));
             self.art_bytes = art;
-            let accent = self.art.as_deref().map_or(DEFAULT_ACCENT, dominant_color);
+            let accent = decoded.as_deref().map_or(DEFAULT_ACCENT, dominant_color);
             self.set_accent(accent);
+            // Low-resolution art is shown slightly blurred (ApplyThumbnail).
+            self.art = decoded.map(super::blur::soften_art);
         }
         if let Some(np) = &now_playing {
             // After a seek, ignore reports until the app catches up (or 2 s

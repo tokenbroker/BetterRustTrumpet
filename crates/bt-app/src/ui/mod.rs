@@ -3,6 +3,7 @@
 //! notifications, the tray wheel hook, a second launch) only post codes to
 //! the hidden window.
 pub mod anim;
+mod blur;
 mod flyout;
 mod media;
 mod quick;
