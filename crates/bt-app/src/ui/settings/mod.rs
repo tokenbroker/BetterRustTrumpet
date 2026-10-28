@@ -19,6 +19,7 @@ use self::{
 };
 use super::{MenuCommand, MenuRequest};
 use crate::core::Core;
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::{
     gfx::{Align, Canvas, Gfx, Image, Rect, Rgba, Surface, TextStyle},
     icons,
@@ -229,7 +230,7 @@ impl Settings {
         core: &mut Core,
         icon_font: &'static str,
     ) -> windows::core::Result<Self> {
-        let window = wnd::create_app("Settings", SIZE, MIN)?;
+        let window = wnd::create_app(tr("SettingsWindowText"), SIZE, MIN)?;
         let mica = window.set_app_frame(!system::apps_light());
         let app_icon = std::env::current_exe().ok().and_then(|exe| {
             let size = (24.0 * window.scale()).round() as u32;
@@ -409,7 +410,7 @@ impl Settings {
         let mut y = 72.0;
         for (title, group) in pages::GROUPS {
             l.groups
-                .push((title, Rect::new(20.0, y, SIDEBAR - 40.0, 28.0)));
+                .push((tr(title), Rect::new(20.0, y, SIDEBAR - 40.0, 28.0)));
             y += 30.0;
             for &page in group {
                 l.nav.push((page, Rect::new(8.0, y, SIDEBAR - 16.0, 36.0)));
@@ -1808,7 +1809,7 @@ impl Settings {
                     let label = if *set || self.picker.as_ref().is_some_and(|pk| pk.row == row.at) {
                         hex_of(shown)
                     } else {
-                        format!("{} (default)", hex_of(shown))
+                        trf("ColorDefaultFormat", &[("Color", &hex_of(shown))])
                     };
                     canvas.text(
                         &label,
@@ -1948,11 +1949,19 @@ impl Settings {
         };
         let state = self.state(Target::Row(row.at, Part::Main));
         if self.recording.as_ref() == Some(target) {
-            widgets::button(canvas, &p, r, "Press keys · Esc clears", None, true, state);
+            widgets::button(
+                canvas,
+                &p,
+                r,
+                tr("WebSettingsPressShortcut"),
+                None,
+                true,
+                state,
+            );
         } else if text.is_empty() {
             let label = match fallback {
-                Some(f) => format!("Default: {f}"),
-                None => "Record shortcut".into(),
+                Some(f) => format!("{}{f}", tr("SettingsDefaultPrefix")),
+                None => tr("WebSettingsRecordShortcut").into(),
             };
             widgets::button(canvas, &p, r, &label, None, false, state);
         } else {
@@ -2029,7 +2038,7 @@ impl Settings {
                     if armed {
                         canvas.round_rect(*d, 4.0, Rgba::rgb(196, 43, 28));
                         canvas.text(
-                            "Confirm?",
+                            tr("WebSettingsConfirmDelete"),
                             *d,
                             &label_style(12.0).weight(600).align(Align::Center),
                             Rgba::WHITE,
@@ -2064,7 +2073,7 @@ impl Settings {
         }
         if let Some(r) = part(Part::Hex) {
             canvas.text(
-                "Hex color",
+                tr("WebSettingsHexColor"),
                 Rect::new(r.x, r.bottom() + 6.0, r.w, 20.0),
                 &label_style(12.0),
                 p.secondary,

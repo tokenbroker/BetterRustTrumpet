@@ -44,6 +44,11 @@ fn main() {
         }
     };
     let _instance = instance;
+    // The UI language; BT_CULTURE overrides it for checking translations.
+    let culture = (render.is_some() || cfg!(debug_assertions))
+        .then(|| std::env::var("BT_CULTURE").ok())
+        .flatten();
+    bt_app::i18n::init(culture.as_deref());
     wnd::init_thread();
     let audio = match AudioEngine::start() {
         Ok(audio) => audio,

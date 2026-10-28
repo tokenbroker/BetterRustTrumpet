@@ -11,6 +11,7 @@ use super::{
     tip::Tip,
 };
 use crate::core::{AppView, Core, DeviceView, HiddenEntry, RuleKind, View};
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::{
     gfx::{Align, Canvas, Gfx, Image, Rect, Surface, TextStyle},
     icons,
@@ -404,7 +405,7 @@ impl Flyout {
 
     fn no_devices_height(&self) -> f32 {
         self.gfx.measure_wrapped(
-            NO_DEVICES,
+            tr("NoDevicesPanelContent"),
             &TextStyle::new(UI_FONT, 13.0).align(Align::Center),
             WIDTH - 48.0,
         ) + 48.0
@@ -1147,13 +1148,13 @@ impl Flyout {
         if !view.device.is_default {
             add(
                 &mut items,
-                "Set as default device",
+                tr("SetAsDefaultDeviceText"),
                 Command::SetDefault(device.into()),
             );
             if self.visible_count() > 1 {
                 add(
                     &mut items,
-                    "Hide this device",
+                    tr("HideDeviceButtonText"),
                     Command::HideDevice(device.into(), view.device.name.clone()),
                 );
             }
@@ -1161,7 +1162,7 @@ impl Flyout {
         if !view.hidden_apps.is_empty() {
             let restore = Self::restore_items(view, commands);
             items.push(Item::Submenu(
-                "Restore hidden app entries on this device".into(),
+                tr("RestoreHiddenAppsForDevice").into(),
                 restore,
             ));
         }
@@ -1177,7 +1178,7 @@ impl Flyout {
         items.push(Item::Separator);
         commands.push(Command::UnhideAll(view.device.id.clone()));
         items.push(Item::command(
-            "Restore all on this device",
+            tr("RestoreHiddenAppsForDeviceAll"),
             commands.len() as u32,
         ));
         items
@@ -1315,14 +1316,17 @@ impl Flyout {
                 add(
                     &mut items,
                     checked(false),
-                    format!("Current volume ({percent_now}%)"),
+                    trf(
+                        "VolumeRuleUseCurrentFormatText",
+                        &[("0", &percent_now.to_string())],
+                    ),
                     Command::Rule(device.clone(), key.clone(), RuleKind::Launch(percent_now)),
                 );
                 items.push(Item::Separator);
                 add(
                     &mut items,
                     checked(mode == VolumeRuleMode::NONE),
-                    "No volume rule".into(),
+                    tr("VolumeRuleMenuNoneText").into(),
                     Command::Rule(device.clone(), key.clone(), RuleKind::None),
                 );
             }
@@ -1330,9 +1334,9 @@ impl Flyout {
                 let app = self.view.app(device, key)?;
                 let on = app.rule.as_ref().is_some_and(|r| r.focus_lost_enabled);
                 let text = if on {
-                    "Exclude this app when focus is lost"
+                    tr("FocusLostAppMenuDisableText")
                 } else {
-                    "Include this app when focus is lost"
+                    tr("FocusLostAppMenuText")
                 };
                 add(
                     &mut items,
@@ -1345,9 +1349,9 @@ impl Flyout {
                 let app = self.view.app(device, key)?;
                 let on = app.rule.as_ref().is_some_and(|r| r.hard_muted);
                 let text = if on {
-                    "Stop keeping muted"
+                    tr("HardMuteAppMenuDisableText")
                 } else {
-                    "Keep muted (survives restart)"
+                    tr("HardMuteAppMenuText")
                 };
                 add(
                     &mut items,
@@ -1362,7 +1366,7 @@ impl Flyout {
                 add(
                     &mut items,
                     checked(current.is_none()),
-                    "Always use the default playback device".into(),
+                    tr("DefaultDeviceText").into(),
                     Command::Route(key.clone(), None),
                 );
                 items.push(Item::Separator);
@@ -1724,20 +1728,24 @@ impl Flyout {
                     let cell = Self::mute_rect(self.row_rect(key)?);
                     let badge = Rect::new(cell.right() - 9.0, cell.bottom() - 9.0, 10.0, 10.0);
                     if view.locked() && badge.contains(x, y) {
-                        return Some(target("Lock", 0, TipAnchor::Mouse));
+                        return Some(target(tr("AppRulesModeLockText"), 0, TipAnchor::Mouse));
                     }
                     let name = view.app.display_name.trim();
                     (theme.show_tooltips && !name.is_empty())
                         .then(|| target(name, 0, TipAnchor::Right(cell)))
                 }
-                None => Some(target("Toggle mute", TIP_DELAY, TipAnchor::Mouse)),
+                None => Some(target(tr("ToggleMuteToolTip"), TIP_DELAY, TipAnchor::Mouse)),
             },
             Hit::Restore => Some(target(
-                "Restore hidden app entries on this device",
+                tr("RestoreHiddenAppsForDevice"),
                 TIP_DELAY,
                 TipAnchor::Mouse,
             )),
-            Hit::Pin => Some(target("Pin window", TIP_DELAY, TipAnchor::Mouse)),
+            Hit::Pin => Some(target(
+                tr("FlyoutPinWindowToolTip"),
+                TIP_DELAY,
+                TipAnchor::Mouse,
+            )),
             _ => None,
         }
     }
@@ -2005,7 +2013,7 @@ impl Flyout {
                 .wrap()
                 .top();
             canvas.text(
-                NO_DEVICES,
+                tr("NoDevicesPanelContent"),
                 Rect::new(24.0, 24.0, WIDTH - 48.0, self.height),
                 &style,
                 theme.text,
@@ -2392,5 +2400,3 @@ impl Flyout {
         canvas.pop();
     }
 }
-
-const NO_DEVICES: &str = "It doesn't look like you have any playback devices.";

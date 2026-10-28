@@ -11,6 +11,7 @@ use super::{
     lists,
 };
 use crate::{core::Core, hotkeys, store::with_env};
+use bt_app::i18n::tr;
 use bt_app::win32::{gfx::Rgba, startup};
 use bt_audio::Role;
 use bt_core::{
@@ -35,19 +36,22 @@ pub enum PageId {
     About,
 }
 
-/// The sidebar groups (App.tsx groupPages).
+/// The sidebar groups (App.tsx groupPages), titles as resource keys.
 pub const GROUPS: [(&str, &[PageId]); 4] = [
     (
-        "Essentials",
+        "WebSettingsCategoryEssentials",
         &[PageId::General, PageId::Mouse, PageId::Shortcuts],
     ),
     (
-        "Audio",
+        "WebSettingsCategoryAudio",
         &[PageId::QuickTrumpet, PageId::AppRules, PageId::Media],
     ),
-    ("Experience", &[PageId::Appearance, PageId::Performance]),
     (
-        "Application",
+        "WebSettingsCategoryExperience",
+        &[PageId::Appearance, PageId::Performance],
+    ),
+    (
+        "AppCategoryTitle",
         &[PageId::Updates, PageId::Privacy, PageId::About],
     ),
 ];
@@ -58,36 +62,32 @@ impl PageId {
     }
     pub fn title(self) -> &'static str {
         match self {
-            Self::General => "General",
-            Self::Mouse => "Volume & mouse",
-            Self::Shortcuts => "Shortcuts",
-            Self::QuickTrumpet => "QuickTrumpet",
-            Self::AppRules => "App rules",
-            Self::Media => "Media popup",
-            Self::Appearance => "Appearance",
-            Self::Performance => "Performance",
-            Self::Updates => "Updates",
-            Self::Privacy => "Privacy & data",
-            Self::About => "About",
+            Self::General => tr("GeneralSettingsPageText"),
+            Self::Mouse => tr("VolumeMouseSettingsPageText"),
+            Self::Shortcuts => tr("ShortcutsPageText"),
+            Self::QuickTrumpet => tr("QuickTrumpetSettingsPageText"),
+            Self::AppRules => tr("AppRulesSettingsPageText"),
+            Self::Media => tr("MediaPopupSettingsPageText"),
+            Self::Appearance => tr("AppearanceSettingsPageText"),
+            Self::Performance => tr("PerformanceSettingsPageText"),
+            Self::Updates => tr("UpdatesSettingsPageText"),
+            Self::Privacy => tr("PrivacySettingsPageText"),
+            Self::About => tr("AboutTitle"),
         }
     }
     pub fn subtitle(self) -> &'static str {
         match self {
-            Self::General => "Startup, tray icon, tooltips, and hidden apps.",
-            Self::Mouse => "Scroll wheel behavior and volume scaling.",
-            Self::Shortcuts => "Assign global hotkeys to quickly control audio.",
-            Self::QuickTrumpet => {
-                "Switch default devices and volumes in one go, from here, a shortcut, Raycast or the bt CLI."
-            }
-            Self::AppRules => {
-                "Saved app profiles with independent mute, focus-loss, and volume behavior"
-            }
-            Self::Media => "Control how media controls appear on tray hover.",
-            Self::Appearance => "Customize how BetterTrumpet looks on your desktop.",
-            Self::Performance => "Tune refresh rates, animations, and battery usage.",
-            Self::Updates => "Choose when to be notified and install new versions.",
-            Self::Privacy => "Telemetry, announcements and settings backup.",
-            Self::About => "Version info, telemetry, and diagnostics.",
+            Self::General => tr("GeneralSettingsPageSubtitle"),
+            Self::Mouse => tr("VolumeMouseSettingsPageSubtitle"),
+            Self::Shortcuts => tr("ShortcutsPageSubtitle"),
+            Self::QuickTrumpet => tr("QuickTrumpetSettingsPageSubtitle"),
+            Self::AppRules => tr("AppRulesSettingsPageSubtitle"),
+            Self::Media => tr("MediaPopupSettingsPageSubtitle"),
+            Self::Appearance => tr("AppearanceSettingsPageSubtitle"),
+            Self::Performance => tr("PerformanceSettingsPageSubtitle"),
+            Self::Updates => tr("UpdatesSettingsPageSubtitle"),
+            Self::Privacy => tr("WebSettingsPrivacyPageSubtitle"),
+            Self::About => tr("SettingsAboutSubtitle"),
         }
     }
     /// Segoe Fluent Icons / MDL2 glyph for the sidebar.
@@ -508,20 +508,20 @@ pub fn key_name(vk: i32) -> Option<String> {
         33 => "PageUp".into(),
         34 => "PageDown".into(),
         35 => "End".into(),
-        36 => "Home".into(),
+        36 => tr("HomeButtonText").into(),
         37 => "Left".into(),
         38 => "Up".into(),
         39 => "Right".into(),
         40 => "Down".into(),
         44 => "PrintScreen".into(),
         45 => "Insert".into(),
-        46 => "Delete".into(),
+        46 => tr("SettingsProfileDelete").into(),
         106 => "Num *".into(),
         107 => "Num +".into(),
         109 => "Num -".into(),
         110 => "Num .".into(),
         111 => "Num /".into(),
-        173 => "Mute".into(),
+        173 => tr("MuteKind_Mute").into(),
         174 => "Volume Down".into(),
         175 => "Volume Up".into(),
         176 => "Next Track".into(),
@@ -652,11 +652,9 @@ pub fn build(page: PageId, core: &mut Core, state: &PageState) -> Vec<Section> {
         PageId::Performance => performance(core),
         PageId::Updates => updates(core),
         PageId::Privacy => vec![section(
-            "Telemetry and announcements",
-            Some("What BetterTrumpet may send, and what it may show you."),
-            vec![note(
-                "This preview sends no data and fetches no announcements, so there is nothing to turn off here.",
-            )],
+            tr("WebSettingsPrivacySection"),
+            Some(tr("WebSettingsPrivacySectionDesc")),
+            vec![note(tr("PrivacyPreviewNote"))],
         )],
         PageId::About => about(core),
     }
@@ -666,28 +664,33 @@ fn general(core: &mut Core) -> Vec<Section> {
     let legacy = core.store.bool(Key::UseLegacyIcon);
     let mut sections = vec![
         section(
-            "Startup",
+            tr("SettingsStartup"),
             None,
             vec![row(
-                "Run at Windows startup",
+                tr("SettingsRunAtStartup"),
                 None,
                 Control::Toggle(startup::is_enabled(), Set::Startup),
             )],
         ),
         section(
-            "Tray Icon",
-            Some("System tray icon appearance"),
+            tr("SettingsTrayIcon"),
+            Some(tr("SettingsTrayIconDesc")),
             vec![
-                toggle(core, Key::UseLegacyIcon, "Use legacy icon", None),
+                toggle(
+                    core,
+                    Key::UseLegacyIcon,
+                    tr("SettingsUseLegacyEarTrumpetIcon"),
+                    None,
+                ),
                 disabled(
                     toggle(
                         core,
                         Key::TrayIconShowsDeviceType,
-                        "Show the output device type",
+                        tr("SettingsTrayIconDeviceType"),
                         Some(if legacy {
-                            "Turn off the original icon to show the device type."
+                            tr("WebSettingsRequiresModernIcon")
                         } else {
-                            "Headphones or monitor icon based on the default output (headsets show as headphones). Speakers keep the regular icon; not available with the original icon."
+                            tr("SettingsTrayIconDeviceTypeDesc")
                         }),
                     ),
                     legacy,
@@ -695,8 +698,8 @@ fn general(core: &mut Core) -> Vec<Section> {
                 toggle(
                     core,
                     Key::ShowAppTooltips,
-                    "Show icon tooltips",
-                    Some("Show or hide tooltips when hovering tray and app icons."),
+                    tr("SettingsShowAppTooltips"),
+                    Some(tr("SettingsAppTooltipsDesc")),
                 ),
             ],
         ),
@@ -717,13 +720,14 @@ fn general(core: &mut Core) -> Vec<Section> {
             .iter()
             .find(|(d, _)| *d == id.to_lowercase())
             .map(|(_, n)| n.clone())
-            .unwrap_or_else(|| "Disconnected device".into())
+            .unwrap_or_else(|| tr("DisconnectedDeviceText").into())
     };
     let store = &mut core.store;
     let compare = |a: &str, b: &str| a.to_lowercase().cmp(&b.to_lowercase());
     let apps = with_env(|env| store.hidden_apps.sorted(env, compare));
     let devices = with_env(|env| store.hidden_devices.sorted(env, compare));
-    let restore = |action| Control::Buttons(vec![button("Restore", None, action)]);
+    let restore =
+        |action| Control::Buttons(vec![button(tr("WebSettingsRestoreButton"), None, action)]);
     let mut rows: Vec<Row> = apps
         .iter()
         .map(|entry| {
@@ -747,21 +751,21 @@ fn general(core: &mut Core) -> Vec<Section> {
         })
         .collect();
     if rows.is_empty() {
-        rows.push(note("Nothing configured yet."));
+        rows.push(note(tr("WebSettingsEmpty")));
     } else {
         rows.push(row(
             "",
             None,
             Control::Buttons(vec![button(
-                "Restore hidden app entries",
+                tr("SettingsRestoreHiddenApps"),
                 None,
                 Action::RestoreAllApps,
             )]),
         ));
     }
     sections.push(section(
-        "Hidden App Entries",
-        Some("Hide noisy app duplicates per device and restore them anytime."),
+        tr("SettingsHiddenAppsTitle"),
+        Some(tr("SettingsHiddenAppsDesc")),
         rows,
     ));
     if !devices.is_empty() {
@@ -781,12 +785,12 @@ fn general(core: &mut Core) -> Vec<Section> {
             "",
             None,
             Control::Buttons(vec![button(
-                "Restore all devices",
+                tr("WebSettingsRestoreAllDevices"),
                 None,
                 Action::RestoreAllDevices,
             )]),
         ));
-        sections.push(section("Hidden devices", None, rows));
+        sections.push(section(tr("WebSettingsHiddenDevices"), None, rows));
     }
     sections
 }
@@ -796,16 +800,14 @@ fn mouse(core: &mut Core) -> Vec<Section> {
     let mut focus_rows = vec![toggle(
         core,
         Key::UseFocusLostVolume,
-        "Lower volume of apps that lose focus",
+        tr("SettingsUseFocusLostVolume"),
         None,
     )];
     if focus_lost {
         focus_rows.extend([
             row(
-                "Background volume (0% mutes)",
-                Some(
-                    "Locked and keep-muted rules are left alone. The original volume comes back when the app is focused again.",
-                ),
+                tr("SettingsFocusLostAttenuate"),
+                Some(tr("SettingsFocusLostAttenuateHint")),
                 Control::Slider {
                     value: f64::from(core.store.int(Key::FocusLostAttenuatePercent)),
                     min: 0.0,
@@ -816,10 +818,8 @@ fn mouse(core: &mut Core) -> Vec<Section> {
                 },
             ),
             row(
-                "Fade duration",
-                Some(
-                    "0 ms is immediate. The same duration is used when restoring the original volume.",
-                ),
+                tr("SettingsFocusLostFade"),
+                Some(tr("SettingsFocusLostFadeHint")),
                 Control::Slider {
                     value: f64::from(core.store.int(Key::FocusLostFadeDurationMs)),
                     min: 0.0,
@@ -830,14 +830,12 @@ fn mouse(core: &mut Core) -> Vec<Section> {
                 },
             ),
             row(
-                "Applications affected",
-                Some(
-                    "Use the Focus lost checkbox on an app rule, or the app flyout menu, to select an application.",
-                ),
+                tr("SettingsFocusLostScope"),
+                Some(tr("SettingsFocusLostSelectedHint")),
                 Control::Choice {
                     options: vec![
-                        "All applications".into(),
-                        "Only applications selected in App rules".into(),
+                        tr("SettingsFocusLostAllApps").into(),
+                        tr("SettingsFocusLostSelectedApps").into(),
                     ],
                     selected: usize::from(core.store.bool(Key::FocusLostSelectedAppsOnly)),
                     set: Set::BoolChoice(Key::FocusLostSelectedAppsOnly),
@@ -847,58 +845,54 @@ fn mouse(core: &mut Core) -> Vec<Section> {
     }
     vec![
         section(
-            "Scroll Wheel",
-            Some("Control volume with your mouse wheel"),
+            tr("SettingsScrollWheel"),
+            Some(tr("SettingsScrollWheelDesc")),
             vec![
                 toggle(
                     core,
                     Key::UseScrollWheelInTray,
-                    "Use the scroll wheel to change volume while hovering over the tray icon",
-                    Some(
-                        "Scroll your mouse wheel over the tray icon to quickly adjust system volume.",
-                    ),
+                    tr("SettingsUseScrollWheelInTray"),
+                    Some(tr("SettingsScrollWheelTrayTip")),
                 ),
                 toggle(
                     core,
                     Key::UseGlobalMouseWheelHook,
-                    "Use the scroll wheel to change volume while the flyout is open",
-                    Some(
-                        "Enables volume control via scroll wheel anywhere on screen when holding a modifier key.",
-                    ),
+                    tr("SettingsUseGlobalMouseWheelHook"),
+                    Some(tr("SettingsScrollWheelGlobalTip")),
                 ),
             ],
         ),
         section(
-            "Volume Scale",
-            Some("How volume steps are distributed"),
+            tr("SettingsVolumeScale"),
+            Some(tr("SettingsVolumeScaleDesc")),
             vec![
                 toggle(
                     core,
                     Key::UseLogarithmicVolume,
-                    "Use logarithmic volume scale",
+                    tr("SettingsUseLogarithmicVolume"),
                     None,
                 ),
                 toggle(
                     core,
                     Key::UseVolumeTickSound,
-                    "Volume tick sound effect",
-                    Some("Play a subtle tick sound when adjusting volume"),
+                    tr("SettingsVolumeTickSound"),
+                    Some(tr("SettingsVolumeTickSoundTip")),
                 ),
             ],
         ),
         section(
-            "Device change",
-            Some("Toast when the default playback device switches"),
+            tr("SettingsDeviceChangeNotify"),
+            Some(tr("SettingsDeviceChangeNotifyDesc")),
             vec![toggle(
                 core,
                 Key::NotifyOnDefaultDeviceChange,
-                "Show a notification when the default device changes",
+                tr("SettingsNotifyOnDeviceChange"),
                 None,
             )],
         ),
         section(
-            "Focus lost",
-            Some("Mute or reduce apps when another window is in front"),
+            tr("SettingsFocusLostVolume"),
+            Some(tr("SettingsFocusLostVolumeDesc")),
             focus_rows,
         ),
     ]
@@ -908,48 +902,48 @@ fn shortcuts(core: &mut Core) -> Vec<Section> {
     let hotkeys = [
         (
             Key::FlyoutHotkey,
-            "Open Taskbar flyout",
-            "Show the volume flyout from anywhere.",
+            tr("SettingsOpenEarTrumpetText"),
+            tr("WebSettingsHotkeyFlyoutDesc"),
         ),
         (
             Key::MixerHotkey,
-            "Open Mixer",
-            "Open the full volume mixer.",
+            tr("SettingsOpenMixerText"),
+            tr("WebSettingsHotkeyMixerDesc"),
         ),
         (
             Key::SettingsHotkey,
-            "Open settings",
-            "Open this settings window.",
+            tr("SettingsOpenSettingsText"),
+            tr("WebSettingsHotkeySettingsDesc"),
         ),
         (
             Key::AbsoluteVolumeUpHotkey,
-            "Increase volume for all devices",
-            "Raise the volume of every playback device.",
+            tr("SettingsAbsoluteVolumeUpText"),
+            tr("WebSettingsHotkeyVolumeUpDesc"),
         ),
         (
             Key::AbsoluteVolumeDownHotkey,
-            "Decrease volume for all devices",
-            "Lower the volume of every playback device.",
+            tr("SettingsAbsoluteVolumeDownText"),
+            tr("WebSettingsHotkeyVolumeDownDesc"),
         ),
         (
             Key::SwitchDeviceHotkey,
-            "Switch Default Device",
-            "Cycle to the next playback device.",
+            tr("SettingsSwitchDevice"),
+            tr("WebSettingsHotkeySwitchDeviceDesc"),
         ),
         (
             Key::QuickTrumpetNextHotkey,
-            "Next preset",
-            "Applies the next QuickTrumpet preset, wrapping around.",
+            tr("SettingsQuickTrumpetNextHotkey"),
+            tr("WebSettingsHotkeyNextPresetDesc"),
         ),
         (
             Key::QuickTrumpetPreviousHotkey,
-            "Previous preset",
-            "Applies the previous QuickTrumpet preset, wrapping around.",
+            tr("SettingsQuickTrumpetPreviousHotkey"),
+            tr("WebSettingsHotkeyPreviousPresetDesc"),
         ),
     ];
     vec![
         section(
-            "Global shortcuts",
+            tr("WebSettingsShortcutsGlobal"),
             None,
             hotkeys
                 .iter()
@@ -957,15 +951,15 @@ fn shortcuts(core: &mut Core) -> Vec<Section> {
                 .collect(),
         ),
         section(
-            "Device shortcuts",
-            Some("Switch the default playback device with one shortcut."),
+            tr("WebSettingsDeviceShortcuts"),
+            Some(tr("WebSettingsDeviceShortcutsDesc")),
             lists::device_shortcuts(core)
                 .into_iter()
                 .chain([toggle(
                     core,
                     Key::ShowDeviceSwitchNotification,
-                    "Show a notification when switching devices",
-                    Some("Display a toast when a device shortcut switches the default device."),
+                    tr("WebSettingsShowDeviceSwitchNotification"),
+                    Some(tr("WebSettingsShowDeviceSwitchNotificationDesc")),
                 )])
                 .collect(),
         ),
@@ -977,13 +971,13 @@ fn quicktrumpet(core: &mut Core, state: &PageState) -> Vec<Section> {
     let mut rows = vec![toggle(
         core,
         Key::ShowQuickTrumpetConfirmation,
-        "Show a confirmation when a preset is applied",
+        tr("SettingsQuickTrumpetConfirmation"),
         None,
     )];
     if confirmation {
         rows.push(row(
-            "Notification duration",
-            Some("How long the confirmation stays on screen."),
+            tr("WebSettingsQtNotificationDuration"),
+            Some(tr("WebSettingsQtNotificationDurationDesc")),
             Control::Slider {
                 value: f64::from(core.store.int(Key::QuickTrumpetNotificationSeconds)),
                 min: 1.0,
@@ -996,52 +990,50 @@ fn quicktrumpet(core: &mut Core, state: &PageState) -> Vec<Section> {
     }
     vec![
         section(
-            "Presets",
-            Some(
-                "A preset can switch your default output and microphone, set device volumes and set app volumes.",
-            ),
+            tr("SettingsTabPresets"),
+            Some(tr("WebSettingsQtPresetsDesc")),
             lists::presets(core, state),
         ),
         section(
-            "Cycle through presets",
-            Some("One shortcut steps through your presets in list order and wraps around."),
+            tr("WebSettingsQtCycleTitle"),
+            Some(tr("WebSettingsQtCycleDesc")),
             vec![
                 hotkey_row(
                     core,
                     Key::QuickTrumpetNextHotkey,
-                    "Next preset",
-                    "Applies the next QuickTrumpet preset, wrapping around.",
+                    tr("SettingsQuickTrumpetNextHotkey"),
+                    tr("WebSettingsHotkeyNextPresetDesc"),
                 ),
                 hotkey_row(
                     core,
                     Key::QuickTrumpetPreviousHotkey,
-                    "Previous preset",
-                    "Applies the previous QuickTrumpet preset, wrapping around.",
+                    tr("SettingsQuickTrumpetPreviousHotkey"),
+                    tr("WebSettingsHotkeyPreviousPresetDesc"),
                 ),
             ],
         ),
-        section("Confirmation", None, rows),
+        section(tr("WebSettingsQtNotificationTitle"), None, rows),
     ]
 }
 
 fn media(core: &mut Core) -> Vec<Section> {
     vec![
         section(
-            "Display",
-            Some("Show media controls on tray hover"),
+            tr("WebSettingsMediaPopupSection"),
+            Some(tr("SettingsMediaPopupDesc")),
             vec![toggle(
                 core,
                 Key::MediaPopupEnabled,
-                "Enable media popup",
+                tr("SettingsEnableMediaPopup"),
                 None,
             )],
         ),
         section(
-            "Interaction",
+            tr("SettingsInteraction"),
             None,
             vec![
                 row(
-                    "Hover delay",
+                    tr("SettingsHoverDelay"),
                     None,
                     Control::Slider {
                         value: core.store.float(Key::MediaPopupHoverDelay),
@@ -1053,7 +1045,7 @@ fn media(core: &mut Core) -> Vec<Section> {
                     },
                 ),
                 row(
-                    "Show controls when media is paused",
+                    tr("SettingsShowWhenPaused"),
                     None,
                     Control::Toggle(
                         !core.store.bool(Key::MediaPopupShowOnlyWhenPlaying),
@@ -1063,7 +1055,7 @@ fn media(core: &mut Core) -> Vec<Section> {
                 toggle(
                     core,
                     Key::MediaPopupRememberExpanded,
-                    "Remember expanded/collapsed state",
+                    tr("SettingsRememberExpanded"),
                     None,
                 ),
             ],
@@ -1110,23 +1102,23 @@ fn appearance(core: &mut Core) -> Vec<Section> {
     if custom_on && !chips.iter().any(|c| c.active) {
         let c = |i| channel_color(core, i).0;
         chips.push(ThemeChip {
-            name: "Custom".into(),
+            name: tr("WebSettingsCustomTheme").into(),
             swatches: [c(0), c(1), c(3), c(4)],
             active: true,
             custom: None,
         });
     }
     let labels = [
-        "Thumb color",
-        "Track fill color",
-        "Track background color",
-        "Peak meter color",
-        "Window background",
-        "Text color",
-        "Accent glow",
+        tr("SettingsSliderThumbColor"),
+        tr("SettingsSliderTrackFillColor"),
+        tr("SettingsSliderTrackBackgroundColor"),
+        tr("SettingsPeakMeterColor"),
+        tr("SettingsWindowBgColor"),
+        tr("SettingsTextColor"),
+        tr("SettingsAccentGlowColor"),
     ];
     let mut colors = vec![row(
-        "Use custom slider colors",
+        tr("SettingsUseCustomSliderColors"),
         None,
         Control::Toggle(custom_on, Set::Bool(Key::UseCustomSliderColors)),
     )];
@@ -1144,7 +1136,7 @@ fn appearance(core: &mut Core) -> Vec<Section> {
     }
     colors.extend([
         row(
-            "Window background opacity",
+            tr("SettingsWindowOpacity"),
             None,
             Control::Slider {
                 value: (core.store.float(Key::WindowBackgroundOpacity) * 100.0).round(),
@@ -1156,12 +1148,18 @@ fn appearance(core: &mut Core) -> Vec<Section> {
             },
         ),
         row(
-            "Peak Meter Style",
+            tr("SettingsPeakMeterStyle"),
             None,
             Control::Choice {
-                options: ["Classic", "Dotted", "Blocks", "Bars", "Wave"]
-                    .map(String::from)
-                    .to_vec(),
+                options: [
+                    tr("WebSettingsPeakStyleClassic"),
+                    tr("WebSettingsPeakStyleDotted"),
+                    tr("WebSettingsPeakStyleBlocks"),
+                    tr("WebSettingsPeakStyleBars"),
+                    tr("WebSettingsPeakStyleWave"),
+                ]
+                .map(String::from)
+                .to_vec(),
                 selected: core.store.int(Key::PeakMeterStyle).clamp(0, 4) as usize,
                 set: Set::IntChoice(Key::PeakMeterStyle, &[0, 1, 2, 3, 4]),
             },
@@ -1170,8 +1168,16 @@ fn appearance(core: &mut Core) -> Vec<Section> {
             "",
             None,
             Control::Buttons(vec![
-                button("Randomize colors", Some("\u{E8B1}"), Action::Randomize),
-                button("Reset to Default", Some("\u{E72C}"), Action::ResetColors),
+                button(
+                    tr("SettingsRandomizeTooltip"),
+                    Some("\u{E8B1}"),
+                    Action::Randomize,
+                ),
+                button(
+                    tr("SettingsResetToDefault"),
+                    Some("\u{E72C}"),
+                    Action::ResetColors,
+                ),
             ]),
         ),
         row(
@@ -1179,29 +1185,31 @@ fn appearance(core: &mut Core) -> Vec<Section> {
             None,
             Control::Input {
                 field: Field::Theme,
-                placeholder: "Theme name",
-                buttons: vec![button("Save", Some("\u{E74E}"), Action::ThemeSave).primary()],
+                placeholder: tr("WebSettingsThemeName"),
+                buttons: vec![
+                    button(tr("WebSettingsSave"), Some("\u{E74E}"), Action::ThemeSave).primary(),
+                ],
             },
         ),
     ]);
     vec![
         section(
-            "Presets",
-            Some("Pick a coordinated palette, then fine-tune it below."),
+            tr("SettingsTabPresets"),
+            Some(tr("WebSettingsAppearanceDesc")),
             vec![row("", None, Control::Themes(chips))],
         ),
         section(
-            "Custom Colors",
-            Some("The selected preset lands here; tweak any channel to make it yours."),
+            tr("SettingsCustomColors"),
+            Some(tr("WebSettingsCustomColorsTweakHint")),
             colors,
         ),
         section(
-            "Dynamic Album Art Theme",
-            Some("Colors automatically adapt to the album art of currently playing music"),
+            tr("SettingsDynamicAlbumArt"),
+            Some(tr("SettingsDynamicAlbumArtDesc")),
             vec![toggle(
                 core,
                 Key::UseDynamicAlbumArtTheme,
-                "Enable dynamic album art colors",
+                tr("SettingsEnableDynamicAlbumArt"),
                 None,
             )],
         ),
@@ -1227,27 +1235,27 @@ fn performance(core: &mut Core) -> Vec<Section> {
     let current = core.store.int(Key::PeakMeterFps);
     vec![
         section(
-            "Eco Mode",
-            Some("Lower refresh rates to save CPU/GPU, always or only on battery"),
+            tr("SettingsEcoMode"),
+            Some(tr("SettingsEcoModeDesc")),
             vec![
-                toggle(core, Key::EcoMode, "Always use Eco Mode (20 FPS)", None),
-                toggle(core, Key::AutoEcoMode, "Auto-enable when on battery", None),
+                toggle(core, Key::EcoMode, tr("SettingsEcoModeEnable"), None),
+                toggle(core, Key::AutoEcoMode, tr("SettingsAutoEcoMode"), None),
             ],
         ),
         section(
-            "Animations",
+            tr("SettingsAnimations"),
             None,
             vec![
                 toggle(
                     core,
                     Key::UseSmoothVolumeAnimation,
-                    "Smooth volume animation",
+                    tr("SettingsSmoothVolumeAnimation"),
                     None,
                 ),
                 disabled(
                     row(
-                        "Animation speed",
-                        (!smooth).then_some("Requires smooth volume animation"),
+                        tr("SettingsAnimationSpeedLabel"),
+                        (!smooth).then_some(tr("WebSettingsRequiresSmoothAnimation")),
                         Control::Slider {
                             value: speed_step(core.store.float(Key::VolumeAnimationSpeed)),
                             min: 1.0,
@@ -1262,13 +1270,13 @@ fn performance(core: &mut Core) -> Vec<Section> {
             ],
         ),
         section(
-            "Peak Meter",
+            tr("SettingsPeakMeter"),
             None,
             vec![
                 disabled(
                     row(
-                        "Refresh rate",
-                        eco.then_some("Overridden by eco mode"),
+                        tr("SettingsRefreshRate"),
+                        eco.then_some(tr("WebSettingsDisabledByEco")),
                         Control::Choice {
                             options: RATES.iter().map(|r| format!("{r} FPS")).collect(),
                             selected: RATES.iter().position(|r| *r == current).unwrap_or(2),
@@ -1278,10 +1286,10 @@ fn performance(core: &mut Core) -> Vec<Section> {
                     eco,
                 ),
                 row(
-                    "Effective rate",
-                    Some("Actual rendering rate right now."),
+                    tr("WebSettingsEffectiveRate"),
+                    Some(tr("WebSettingsEffectiveRateHint")),
                     Control::Chip(if eco {
-                        format!("{fps} FPS · Eco")
+                        format!("{fps} FPS · {}", tr("WebSettingsEcoActive"))
                     } else {
                         format!("{fps} FPS")
                     }),
@@ -1294,25 +1302,25 @@ fn performance(core: &mut Core) -> Vec<Section> {
 fn updates(core: &mut Core) -> Vec<Section> {
     let auto = core.store.bool(Key::AutoCheckForUpdates);
     vec![section(
-        "Update checks",
-        Some("New version notifications"),
+        tr("WebSettingsUpdatesSection"),
+        Some(tr("SettingsUpdatesDesc")),
         vec![
             toggle(
                 core,
                 Key::AutoCheckForUpdates,
-                "Check for updates automatically",
-                Some("Saved for the original app; this preview never checks for updates itself."),
+                tr("AutoUpdateCheckboxText"),
+                Some(tr("UpdatesPreviewNote")),
             ),
             disabled(
                 row(
-                    "Notify for",
-                    (!auto).then_some("Requires automatic checks"),
+                    tr("SettingsNotifyFor"),
+                    (!auto).then_some(tr("WebSettingsRequiresAutoCheck")),
                     Control::Choice {
                         options: [
-                            "All updates",
-                            "Minor and major",
-                            "Major only",
-                            "No update notifications",
+                            tr("SettingsUpdateChannelAllDesc"),
+                            tr("SettingsUpdateChannelMinorMajorDesc"),
+                            tr("SettingsUpdateChannelMajorOnlyDesc"),
+                            tr("SettingsUpdateChannelNoneDesc"),
                         ]
                         .map(String::from)
                         .to_vec(),
@@ -1329,12 +1337,12 @@ fn updates(core: &mut Core) -> Vec<Section> {
 fn about(core: &mut Core) -> Vec<Section> {
     let mut sections = vec![section(
         &format!("BetterTrumpet {}", env!("CARGO_PKG_VERSION")),
-        Some("Rust preview. © 2026 xmn. Based on EarTrumpet; MIT License."),
+        Some(tr("AboutPreviewCredits")),
         vec![row(
             "",
             None,
             Control::Buttons(vec![button(
-                "GitHub Repository",
+                tr("AboutGitHub"),
                 None,
                 Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
             )]),
@@ -1342,13 +1350,13 @@ fn about(core: &mut Core) -> Vec<Section> {
     )];
     if core.store.bool(Key::MonkeyTickSoundUnlocked) {
         sections.push(section(
-            "Alternate volume sound",
+            tr("AlternateVolumeSoundTitle"),
             None,
             vec![toggle(
                 core,
                 Key::UseMonkeyTickSound,
-                "Use the monkey sound instead of the tick",
-                Some("Keep this secret sound enabled for volume adjustments"),
+                tr("SettingsUseMonkeyTickSound"),
+                Some(tr("SettingsUseMonkeyTickSoundTip")),
             )],
         ));
     }
@@ -1412,6 +1420,13 @@ pub fn restore(core: &mut Core, action: &Action) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn group_titles_are_resource_keys() {
+        for (key, _) in GROUPS {
+            assert!(bt_app::i18n::KEYS.contains(&key), "{key}");
+        }
+    }
 
     #[test]
     fn animation_speed_round_trips_through_the_ui_scale() {

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Strings of the Rust UI with no key in Resources.resx: text the original
+  hard-codes in English (its XAML and C#), and texts only this port shows.
+  English only for now; see NOTICE.md. A key here must not also be in
+  Resources.resx (build.rs refuses duplicates).
+-->
+<root>
+  <!-- FlyoutWindow.xaml: ToolTipService.ToolTip="Pin window". -->
+  <data name="FlyoutPinWindowToolTip" xml:space="preserve">
+    <value>Pin window</value>
+  </data>
+  <!-- MediaPopupWindow.xaml / .xaml.cs. -->
+  <data name="MediaPopupNoMediaText" xml:space="preserve">
+    <value>No media playing</value>
+  </data>
+  <!-- CommandPaletteHelper.BuildCommands. -->
+  <data name="CommandPaletteUndo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="CommandPaletteRedo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="CommandPaletteOpenMixer" xml:space="preserve">
+    <value>Open Volume Mixer</value>
+  </data>
+  <data name="CommandPaletteOpenSettings" xml:space="preserve">
+    <value>Open Settings</value>
+  </data>
+  <data name="CommandPaletteOpenPlaybackDevices" xml:space="preserve">
+    <value>Open Playback Devices</value>
+  </data>
+  <data name="CommandPaletteOpenRecordingDevices" xml:space="preserve">
+    <value>Open Recording Devices</value>
+  </data>
+  <data name="CommandPaletteOpenSoundSettings" xml:space="preserve">
+    <value>Open Sound Settings</value>
+  </data>
+  <data name="CommandPaletteToggleMuteFormat" xml:space="preserve">
+    <value>Mute/Unmute: {Name}</value>
+  </data>
+  <data name="CommandPaletteSetDefaultFormat" xml:space="preserve">
+    <value>Set Default: {Name}</value>
+  </data>
+  <data name="CommandPaletteExit" xml:space="preserve">
+    <value>Exit BetterTrumpet</value>
+  </data>
+  <!-- EarTrumpetVolumeProfilesSettingsPageViewModel: file dialogs. -->
+  <data name="ImportVolumeProfileDialogTitle" xml:space="preserve">
+    <value>Import Volume Profile</value>
+  </data>
+  <data name="ExportQuickTrumpetPresetDialogTitle" xml:space="preserve">
+    <value>Export QuickTrumpet Preset</value>
+  </data>
+  <data name="FileFilterBtProfile" xml:space="preserve">
+    <value>BetterTrumpet Profile (*.btprofile)</value>
+  </data>
+  <data name="FileFilterJson" xml:space="preserve">
+    <value>JSON Files (*.json)</value>
+  </data>
+  <data name="FileFilterAllFiles" xml:space="preserve">
+    <value>All Files (*.*)</value>
+  </data>
+  <!-- Settings window texts of this port. -->
+  <data name="ColorDefaultFormat" xml:space="preserve">
+    <value>{Color} (default)</value>
+  </data>
+  <data name="DisconnectedDeviceText" xml:space="preserve">
+    <value>Disconnected device</value>
+  </data>
+  <data name="PrivacyPreviewNote" xml:space="preserve">
+    <value>This preview sends no data and fetches no announcements, so there is nothing to turn off here.</value>
+  </data>
+  <data name="UpdatesPreviewNote" xml:space="preserve">
+    <value>Saved for the original app; this preview never checks for updates itself.</value>
+  </data>
+  <data name="AboutPreviewCredits" xml:space="preserve">
+    <value>Rust preview. © 2026 xmn. Based on EarTrumpet; MIT License.</value>
+  </data>
+  <data name="AlternateVolumeSoundTitle" xml:space="preserve">
+    <value>Alternate volume sound</value>
+  </data>
+</root>

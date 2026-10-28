@@ -1,0 +1,1772 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ContextMenuExitTitle" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="ContextMenuNoDevices" xml:space="preserve">
+    <value>未找到播放设备</value>
+  </data>
+  <data name="ContextMenuSendFeedback" xml:space="preserve">
+    <value>提交反馈</value>
+  </data>
+  <data name="FullWindowTitleText" xml:space="preserve">
+    <value>音量合成器</value>
+  </data>
+  <data name="LegacyVolumeMixerText" xml:space="preserve">
+    <value>音量合成器</value>
+  </data>
+  <data name="NoDevicesPanelContent" xml:space="preserve">
+    <value>似乎没有任何播放设备。</value>
+  </data>
+  <data name="NoDeviceTrayText" xml:space="preserve">
+    <value>BetterTrumpet：没有播放设备</value>
+  </data>
+  <data name="PlaybackDevicesText" xml:space="preserve">
+    <value>播放设备</value>
+  </data>
+  <data name="RecordingDevicesText" xml:space="preserve">
+    <value>录制设备</value>
+  </data>
+  <data name="SettingsWindowText" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SoundsControlPanelText" xml:space="preserve">
+    <value>声音</value>
+  </data>
+  <data name="TroubleshootEarTrumpetText" xml:space="preserve">
+    <value>导出诊断报告</value>
+  </data>
+  <data name="HotkeyDescriptionText" xml:space="preserve">
+    <value>你的快捷键</value>
+  </data>
+  <data name="DefaultDeviceText" xml:space="preserve">
+    <value>始终使用默认播放设备</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="WebsiteText" xml:space="preserve">
+    <value>了解更多</value>
+  </data>
+  <data name="AppOrDeviceFormatAccessibleText" xml:space="preserve">
+    <value>"音量 {Volume}% - {Name}"</value>
+  </data>
+  <data name="AppOrDeviceMutedFormatAccessibleText" xml:space="preserve">
+    <value>"已静音 - {Name}"</value>
+  </data>
+  <data name="AppsListAccessibleText" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="CloseButtonAccessibleText" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="CollapseAccessibleText" xml:space="preserve">
+    <value>折叠并仅显示默认播放设备</value>
+  </data>
+  <data name="DefaultHotkeyDescriptionText" xml:space="preserve">
+    <value>默认快捷键</value>
+  </data>
+  <data name="ExpandAccessibleText" xml:space="preserve">
+    <value>展开显示所有播放设备</value>
+  </data>
+  <data name="SettingsCategoryTitle" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="MoveButtonAccessibleText" xml:space="preserve">
+    <value>指定此应用的播放设备</value>
+  </data>
+  <data name="SettingsOpenEarTrumpetText" xml:space="preserve">
+    <value>打开任务栏浮出面板</value>
+  </data>
+  <data name="SettingsUseLegacyEarTrumpetIcon" xml:space="preserve">
+    <value>使用旧版图标</value>
+  </data>
+  <data name="MoreCommandsAccessibleText" xml:space="preserve">
+    <value>更多命令</value>
+  </data>
+  <data name="MutedText" xml:space="preserve">
+    <value>已静音</value>
+  </data>
+  <data name="OpenSoundSettingsText" xml:space="preserve">
+    <value>声音设置</value>
+  </data>
+  <data name="WindowsLegacyMenuText" xml:space="preserve">
+    <value>Windows 旧版</value>
+  </data>
+  <data name="AboutThisAddonText" xml:space="preserve">
+    <value>关于 {Name} 加载项</value>
+  </data>
+  <data name="AddonNameText" xml:space="preserve">
+    <value>名称：</value>
+  </data>
+  <data name="AddonUninstallButtonText" xml:space="preserve">
+    <value>打开 Windows 设置</value>
+  </data>
+  <data name="AddonUninstallDescriptionText" xml:space="preserve">
+    <value>此加载项可通过 Windows「设置」应用移除。</value>
+  </data>
+  <data name="AddonUninstallTitle" xml:space="preserve">
+    <value>卸载</value>
+  </data>
+  <data name="DefaultManagementGroupName" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="LegacySettingsPageText" xml:space="preserve">
+    <value>旧版设置</value>
+  </data>
+  <data name="PublisherText" xml:space="preserve">
+    <value>发布者：</value>
+  </data>
+  <data name="SettingsDescriptionText" xml:space="preserve">
+    <value>启动、音量、鼠标、快捷键和预设</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>BetterTrumpet 设置</value>
+  </data>
+  <data name="ShortcutsPageText" xml:space="preserve">
+    <value>快捷键</value>
+  </data>
+  <data name="VersionText" xml:space="preserve">
+    <value>版本：</value>
+  </data>
+  <data name="FindASettingText" xml:space="preserve">
+    <value>查找设置</value>
+  </data>
+  <data name="SearchBoxNoResultsText" xml:space="preserve">
+    <value>没有结果</value>
+  </data>
+  <data name="SettingsOpenMixerText" xml:space="preserve">
+    <value>打开音量合成器</value>
+  </data>
+  <data name="ToggleSwitchOffText" xml:space="preserve">
+    <value>关</value>
+  </data>
+  <data name="ToggleSwitchOnText" xml:space="preserve">
+    <value>开</value>
+  </data>
+  <data name="HomeButtonText" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="ProjectADescription" xml:space="preserve">
+    <value>即将推出</value>
+  </data>
+  <data name="ProjectATitle" xml:space="preserve">
+    <value>即将推出</value>
+  </data>
+  <data name="SettingsOpenSettingsText" xml:space="preserve">
+    <value>打开设置</value>
+  </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="WelcomeDialogHeaderText" xml:space="preserve">
+    <value>欢迎使用 BetterTrumpet</value>
+  </data>
+  <data name="CriticalFailureDialogHeaderText" xml:space="preserve">
+    <value>BetterTrumpet 无法启动</value>
+  </data>
+  <data name="CriticalFailureFontLookupHelpText" xml:space="preserve">
+    <value>你的系统上存在损坏的字体，使得 BetterTrumpet 无法启动。
+
+是否现在打开 [https://eartrumpet.app/jmp/fixfonts]？</value>
+  </data>
+  <data name="ToggleMuteToolTip" xml:space="preserve">
+    <value>静音/取消静音</value>
+  </data>
+  <data name="PrivacyPolicyText" xml:space="preserve">
+    <value>隐私政策</value>
+  </data>
+  <data name="PrivacyCheckboxText" xml:space="preserve">
+    <value>发送崩溃数据以帮助改进 BetterTrumpet</value>
+  </data>
+  <data name="ActionAdditionalText" xml:space="preserve">
+    <value>和</value>
+  </data>
+  <data name="ActionVerbText" xml:space="preserve">
+    <value>就执行</value>
+  </data>
+  <data name="AddActionText" xml:space="preserve">
+    <value>添加动作</value>
+  </data>
+  <data name="AddConditionText" xml:space="preserve">
+    <value>添加条件</value>
+  </data>
+  <data name="AddonDescriptionText" xml:space="preserve">
+    <value>设置快捷键与自动化</value>
+  </data>
+  <data name="AddTriggerText" xml:space="preserve">
+    <value>添加触发器</value>
+  </data>
+  <data name="AppEventTrigger_AddText" xml:space="preserve">
+    <value>某应用会话被添加、被移除、开始播放声音……</value>
+  </data>
+  <data name="AppEventTrigger_LinkText" xml:space="preserve">
+    <value>{App} 在 {Device} 上 {Option}</value>
+  </data>
+  <data name="AudioAppEventKind_Added" xml:space="preserve">
+    <value>被添加</value>
+  </data>
+  <data name="AudioAppEventKind_Muted" xml:space="preserve">
+    <value>被静音</value>
+  </data>
+  <data name="AudioAppEventKind_NotPlayingSound" xml:space="preserve">
+    <value>停止播放声音</value>
+  </data>
+  <data name="AudioAppEventKind_PlayingSound" xml:space="preserve">
+    <value>开始播放声音</value>
+  </data>
+  <data name="AudioAppEventKind_Removed" xml:space="preserve">
+    <value>被移除</value>
+  </data>
+  <data name="AudioAppEventKind_Unmuted" xml:space="preserve">
+    <value>被取消静音</value>
+  </data>
+  <data name="AudioDeviceEventKind_Added" xml:space="preserve">
+    <value>被添加</value>
+  </data>
+  <data name="AudioDeviceEventKind_BecomingDefault" xml:space="preserve">
+    <value>成为默认设备</value>
+  </data>
+  <data name="AudioDeviceEventKind_LeavingDefault" xml:space="preserve">
+    <value>不再是默认设备</value>
+  </data>
+  <data name="AudioDeviceEventKind_Removed" xml:space="preserve">
+    <value>被移除</value>
+  </data>
+  <data name="BoolValue_False" xml:space="preserve">
+    <value>false</value>
+  </data>
+  <data name="BoolValue_True" xml:space="preserve">
+    <value>true</value>
+  </data>
+  <data name="ComparisonBoolKind_Is" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="ComparisonBoolKind_IsNot" xml:space="preserve">
+    <value>不是</value>
+  </data>
+  <data name="ConditionAdditionalText" xml:space="preserve">
+    <value>和</value>
+  </data>
+  <data name="ConditionsHelpText" xml:space="preserve">
+    <value>配置过滤器是可选的，但此功能可以帮你实现更高级的动作。当所有条件都为真时，动作才能执行。</value>
+  </data>
+  <data name="ConditionVerbText" xml:space="preserve">
+    <value>高级筛选</value>
+  </data>
+  <data name="ContextMenuTrigger_AddText" xml:space="preserve">
+    <value>我使用此动作的上下文菜单项</value>
+  </data>
+  <data name="ContextMenuTrigger_LinkText" xml:space="preserve">
+    <value>我使用此动作的上下文菜单项</value>
+  </data>
+  <data name="DefaultDeviceCondition_AddText" xml:space="preserve">
+    <value>当默认播放设备是或不是某设备</value>
+  </data>
+  <data name="DefaultDeviceCondition_LinkText" xml:space="preserve">
+    <value>{Device} {Option} 默认设备</value>
+  </data>
+  <data name="DefaultPlaybackDeviceText" xml:space="preserve">
+    <value>默认播放设备</value>
+  </data>
+  <data name="DeviceEventTrigger_AddText" xml:space="preserve">
+    <value>某音频设备被添加、移除、设为默认设备……</value>
+  </data>
+  <data name="DeviceEventTrigger_LinkText" xml:space="preserve">
+    <value>{Device} {Option}</value>
+  </data>
+  <data name="EarTrumpetEventKind_Shutdown" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="EarTrumpetEventKind_Startup" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="EditText" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="EtaXmlFileText" xml:space="preserve">
+    <value>BetterTrumpet 动作 XML</value>
+  </data>
+  <data name="EventTrigger_AddText" xml:space="preserve">
+    <value>BetterTrumpet 启动或退出</value>
+  </data>
+  <data name="EventTrigger_LinkText" xml:space="preserve">
+    <value>BetterTrumpet {Option}</value>
+  </data>
+  <data name="EveryAppText" xml:space="preserve">
+    <value>所有应用</value>
+  </data>
+  <data name="ExportHeaderText" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="ExportHelpText" xml:space="preserve">
+    <value>将你的动作保存到文件。</value>
+  </data>
+  <data name="ForegroundAppText" xml:space="preserve">
+    <value>前台应用</value>
+  </data>
+  <data name="HotkeyTrigger_AddText" xml:space="preserve">
+    <value>某快捷键被按下</value>
+  </data>
+  <data name="HotkeyTrigger_EmptyText" xml:space="preserve">
+    <value>(请设置快捷键)</value>
+  </data>
+  <data name="HotkeyTrigger_LinkText" xml:space="preserve">
+    <value>{Hotkey} 被按下</value>
+  </data>
+  <data name="ImportAndExportTitle" xml:space="preserve">
+    <value>导入和导出</value>
+  </data>
+  <data name="ImportHeaderText" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="ImportHelpText" xml:space="preserve">
+    <value>从文件中恢复你的动作。</value>
+  </data>
+  <data name="MuteKind_Mute" xml:space="preserve">
+    <value>静音</value>
+  </data>
+  <data name="MuteKind_ToggleMute" xml:space="preserve">
+    <value>静音/取消静音</value>
+  </data>
+  <data name="MuteKind_Unmute" xml:space="preserve">
+    <value>取消静音</value>
+  </data>
+  <data name="MyActionsText" xml:space="preserve">
+    <value>动作</value>
+  </data>
+  <data name="NewActionText" xml:space="preserve">
+    <value>新建动作</value>
+  </data>
+  <data name="OptionalText" xml:space="preserve">
+    <value>(可选)</value>
+  </data>
+  <data name="PlaybackDeviceGroupText" xml:space="preserve">
+    <value>播放</value>
+  </data>
+  <data name="ProcessCondition_AddText" xml:space="preserve">
+    <value>当某进程正在运行或未运行时</value>
+  </data>
+  <data name="ProcessCondition_EmptyText" xml:space="preserve">
+    <value>(请输入进程名称)</value>
+  </data>
+  <data name="ProcessCondition_LinkText" xml:space="preserve">
+    <value>当 {Text} {Option}</value>
+  </data>
+  <data name="ProcessCondition_PromptText" xml:space="preserve">
+    <value>进程名称 (例如：notepad)</value>
+  </data>
+  <data name="ProcessEventKind_Start" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="ProcessEventKind_Stop" xml:space="preserve">
+    <value>结束</value>
+  </data>
+  <data name="ProcessStateKind_NotRunning" xml:space="preserve">
+    <value>未运行</value>
+  </data>
+  <data name="ProcessStateKind_Running" xml:space="preserve">
+    <value>正在运行</value>
+  </data>
+  <data name="ProcessTrigger_AddText" xml:space="preserve">
+    <value>某进程启动或结束</value>
+  </data>
+  <data name="ProcessTrigger_EmptyText" xml:space="preserve">
+    <value>(请输入进程名称)</value>
+  </data>
+  <data name="ProcessTrigger_LinkText" xml:space="preserve">
+    <value>当 {Text} {Option}</value>
+  </data>
+  <data name="ProcessTrigger_PromptText" xml:space="preserve">
+    <value>进程名称 (例如：notepad)</value>
+  </data>
+  <data name="RecordingDeviceGroupText" xml:space="preserve">
+    <value>录制</value>
+  </data>
+  <data name="RemoveText" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="RequiredText" xml:space="preserve">
+    <value>(必填)</value>
+  </data>
+  <data name="SetAppMuteAction_AddText" xml:space="preserve">
+    <value>将某应用静音或取消静音</value>
+  </data>
+  <data name="SetAppMuteAction_LinkText" xml:space="preserve">
+    <value>在 {Device} 上将 {App} {Option}</value>
+  </data>
+  <data name="SetAppVolumeAction_AddText" xml:space="preserve">
+    <value>设置某应用的音量</value>
+  </data>
+  <data name="SetAppVolumeAction_LinkText" xml:space="preserve">
+    <value>在 {Device} 上将 {App} 的音量 {Option} 为 {Volume}</value>
+  </data>
+  <data name="SetAppVolumeAction_LinkTextIncrement" xml:space="preserve">
+    <value>在 {Device} 上将 {App} 的音量 {Option} {Volume}</value>
+  </data>
+  <data name="SetDefaultDeviceAction_AddText" xml:space="preserve">
+    <value>设置默认播放设备</value>
+  </data>
+  <data name="SetDefaultDeviceAction_LinkText" xml:space="preserve">
+    <value>将 {Device} 设置为默认播放设备</value>
+  </data>
+  <data name="SetDeviceMuteAction_AddText" xml:space="preserve">
+    <value>将某设备静音或取消静音</value>
+  </data>
+  <data name="SetDeviceMuteAction_LinkText" xml:space="preserve">
+    <value>将 {Device} {Option}</value>
+  </data>
+  <data name="SetDeviceMuteAction_LinkTextToggle" xml:space="preserve">
+    <value>将 {Device} {Option}</value>
+  </data>
+  <data name="SetDeviceVolumeAction_AddText" xml:space="preserve">
+    <value>设置某设备音量</value>
+  </data>
+  <data name="SetDeviceVolumeAction_LinkText" xml:space="preserve">
+    <value>将 {Device} 的音量 {Option} 为 {Volume}</value>
+  </data>
+  <data name="SetDeviceVolumeAction_LinkTextIncrement" xml:space="preserve">
+    <value>将 {Device} 的音量 {Option} {Volume}</value>
+  </data>
+  <data name="SetVariableAction_AddText" xml:space="preserve">
+    <value>设置某局部变量</value>
+  </data>
+  <data name="SetVariableAction_EmptyText" xml:space="preserve">
+    <value>(请设置变量名称)</value>
+  </data>
+  <data name="SetVariableAction_LinkText" xml:space="preserve">
+    <value>将变量 {Text} 设置为 {Option}</value>
+  </data>
+  <data name="SetVariableAction_PromptText" xml:space="preserve">
+    <value>输入变量名称 (例如：isInGameMode)</value>
+  </data>
+  <data name="SetVolumeKind_Decrement" xml:space="preserve">
+    <value>调低</value>
+  </data>
+  <data name="SetVolumeKind_Increment" xml:space="preserve">
+    <value>调高</value>
+  </data>
+  <data name="SetVolumeKind_Set" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="TriggerAdditionalText" xml:space="preserve">
+    <value>或</value>
+  </data>
+  <data name="TriggerVerbText" xml:space="preserve">
+    <value>当</value>
+  </data>
+  <data name="VariableCondition_AddText" xml:space="preserve">
+    <value>当某局部变量值为 true 或 false</value>
+  </data>
+  <data name="VariableCondition_EmptyText" xml:space="preserve">
+    <value>(请输入变量名称)</value>
+  </data>
+  <data name="VariableCondition_LinkText" xml:space="preserve">
+    <value>变量 {Text} 值为 {Option}</value>
+  </data>
+  <data name="VariableCondition_PromptText" xml:space="preserve">
+    <value>输入变量名称 (例如：isInGameMode)</value>
+  </data>
+  <data name="ToolbarDeleteText" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ToolbarEditText" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="ToolbarSaveText" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="ChooseADeviceTitle" xml:space="preserve">
+    <value>选择设备</value>
+  </data>
+  <data name="ChooseAnAppTitle" xml:space="preserve">
+    <value>选择应用</value>
+  </data>
+  <data name="DeleteActionDialogNoText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DeleteActionDialogText" xml:space="preserve">
+    <value>删除此动作？</value>
+  </data>
+  <data name="DeleteActionDialogTitle" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="DeleteActionDialogYesText" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="LeavingPageDialogNoText" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="LeavingPageDialogText" xml:space="preserve">
+    <value>不保存就离开吗？</value>
+  </data>
+  <data name="LeavingPageDialogTitle" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="LeavingPageDialogYesText" xml:space="preserve">
+    <value>离开</value>
+  </data>
+  <data name="RemoveActionButtonText" xml:space="preserve">
+    <value>移除此动作</value>
+  </data>
+  <data name="RemoveActionDescriptionText" xml:space="preserve">
+    <value>此操作无法撤销。</value>
+  </data>
+  <data name="RemoveActionHeadingText" xml:space="preserve">
+    <value>移除动作</value>
+  </data>
+  <data name="RemoveButtonAccessibleName" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="ChooseAnAppHelpText" xml:space="preserve">
+    <value>以上应用最近播放过声音。</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeDownText" xml:space="preserve">
+    <value>降低所有设备的音量</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeUpText" xml:space="preserve">
+    <value>提高所有设备的音量</value>
+  </data>
+  <data name="OpenAppsVolume_Windows10_Text" xml:space="preserve">
+    <value>应用音量和设备首选项</value>
+  </data>
+  <data name="OpenAppsVolume_Windows11_Text" xml:space="preserve">
+    <value>音量合成器</value>
+  </data>
+  <data name="MouseSettingsPageText" xml:space="preserve">
+    <value>鼠标设置</value>
+  </data>
+  <data name="SettingsUseScrollWheelInTray" xml:space="preserve">
+    <value>鼠标指针悬停在托盘图标上时，使用滚轮调节音量</value>
+  </data>
+  <data name="SettingsUseGlobalMouseWheelHook" xml:space="preserve">
+    <value>浮出面板打开时，使用滚轮调节音量</value>
+  </data>
+  <data name="ContextMenuHiddenAppsTitleFormat" xml:space="preserve">
+    <value>已隐藏的应用条目 ({0})</value>
+  </data>
+  <data name="TrayOpenVolumeMixer" xml:space="preserve">
+    <value>打开音量合成器</value>
+  </data>
+  <data name="TrayOpenSettings" xml:space="preserve">
+    <value>打开设置</value>
+  </data>
+  <data name="TrayShowOnboarding" xml:space="preserve">
+    <value>显示新手引导</value>
+  </data>
+  <data name="TrayWhatsNew" xml:space="preserve">
+    <value>最新动态</value>
+  </data>
+  <data name="TrayStarProject" xml:space="preserve">
+    <value>在 GitHub 上加星</value>
+  </data>
+  <data name="TrayWindowsAudioTools" xml:space="preserve">
+    <value>Windows 音频工具</value>
+  </data>
+  <data name="ContextMenuRestoreAllHiddenApps" xml:space="preserve">
+    <value>恢复所有已隐藏的应用条目</value>
+  </data>
+  <data name="ContextMenuRestoreHiddenAppsForDeviceFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="ContextMenuHiddenDevicesTitleFormat" xml:space="preserve">
+    <value>已隐藏的设备 ({0})</value>
+  </data>
+  <data name="ContextMenuRestoreAllHiddenDevices" xml:space="preserve">
+    <value>显示所有已隐藏的设备</value>
+  </data>
+  <data name="HideAppEntryButtonText" xml:space="preserve">
+    <value>隐藏此应用条目</value>
+  </data>
+  <data name="HardMuteAppButtonText" xml:space="preserve">
+    <value>强制静音此应用</value>
+  </data>
+  <data name="HardMuteAppMenuText" xml:space="preserve">
+    <value>保持静音（重启后仍生效）</value>
+  </data>
+  <data name="HardMuteAppMenuDisableText" xml:space="preserve">
+    <value>取消保持静音</value>
+  </data>
+  <data name="VolumeRuleAppButtonText" xml:space="preserve">
+    <value>记住此应用的音量</value>
+  </data>
+  <data name="VolumeRuleLockButtonText" xml:space="preserve">
+    <value>将音量锁定在当前水平</value>
+  </data>
+  <data name="VolumeRuleUnlockButtonText" xml:space="preserve">
+    <value>解锁此应用的音量</value>
+  </data>
+  <data name="VolumeRuleLaunchButtonText" xml:space="preserve">
+    <value>设置启动音量</value>
+  </data>
+  <data name="VolumeRuleMenuLaunchText" xml:space="preserve">
+    <value>启动时设为</value>
+  </data>
+  <data name="VolumeRuleMenuLockText" xml:space="preserve">
+    <value>锁定为</value>
+  </data>
+  <data name="VolumeRuleMenuNoneText" xml:space="preserve">
+    <value>无音量规则</value>
+  </data>
+  <data name="VolumeRulePercentFormatText" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="VolumeRuleUseCurrentFormatText" xml:space="preserve">
+    <value>当前音量 ({0}%)</value>
+  </data>
+  <data name="AppRulesSettingsPageText" xml:space="preserve">
+    <value>应用规则</value>
+  </data>
+  <data name="AppRulesSettingsPageSubtitle" xml:space="preserve">
+    <value>保持静音或固定音量的应用，重启后仍生效</value>
+  </data>
+  <data name="FolderVolumeRulesHeaderText" xml:space="preserve">
+    <value>文件夹默认值</value>
+  </data>
+  <data name="FolderVolumeRulesAddButtonText" xml:space="preserve">
+    <value>添加文件夹</value>
+  </data>
+  <data name="FolderVolumeRulesEmptyText" xml:space="preserve">
+    <value>暂无自定义文件夹。</value>
+  </data>
+  <data name="FolderVolumeRulesFolderText" xml:space="preserve">
+    <value>文件夹</value>
+  </data>
+  <data name="FolderVolumeRulesBrowseButtonText" xml:space="preserve">
+    <value>选择文件夹</value>
+  </data>
+  <data name="FolderVolumeRulesRemoveButtonText" xml:space="preserve">
+    <value>移除文件夹规则</value>
+  </data>
+  <data name="FolderVolumeRulesBrowseDialogTitle" xml:space="preserve">
+    <value>选择文件夹</value>
+  </data>
+  <data name="FolderVolumeRulesVolumeText" xml:space="preserve">
+    <value>起始音量</value>
+  </data>
+  <data name="AppRulesListHeaderText" xml:space="preserve">
+    <value>已保存的规则</value>
+  </data>
+  <data name="AppRulesListHeaderDesc" xml:space="preserve">
+    <value>规则以可执行文件为键，同一应用的每个窗口共享同一条规则。</value>
+  </data>
+  <data name="AppRulesAddHeaderText" xml:space="preserve">
+    <value>添加应用</value>
+  </data>
+  <data name="AppRulesAddRuleButtonText" xml:space="preserve">
+    <value>添加规则</value>
+  </data>
+  <data name="AppRulesAddHeaderDesc" xml:space="preserve">
+    <value>为当前未播放音频的应用创建规则。</value>
+  </data>
+  <data name="AppRulesAddPlaceholderText" xml:space="preserve">
+    <value>可执行文件名，例如 steam.exe</value>
+  </data>
+  <data name="AppRulesAddButtonText" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="AppRulesBrowseButtonText" xml:space="preserve">
+    <value>浏览…</value>
+  </data>
+  <data name="AppRulesBrowseDialogTitle" xml:space="preserve">
+    <value>选择应用</value>
+  </data>
+  <data name="AppRulesBrowseDialogFilter" xml:space="preserve">
+    <value>应用程序 (*.exe)|*.exe</value>
+  </data>
+  <data name="AppRulesClearAllButtonText" xml:space="preserve">
+    <value>全部移除</value>
+  </data>
+  <data name="AppRulesClearAllConfirmTitle" xml:space="preserve">
+    <value>移除所有应用规则</value>
+  </data>
+  <data name="AppRulesClearAllConfirmText" xml:space="preserve">
+    <value>移除所有已保存的应用规则？已静音的应用在取消静音前仍保持静音。</value>
+  </data>
+  <data name="AppRulesEmptyText" xml:space="preserve">
+    <value>暂无规则。在浮出面板中使用音量或静音按钮，或在下方添加。</value>
+  </data>
+  <data name="AppRulesHardMuteColumnText" xml:space="preserve">
+    <value>保持静音</value>
+  </data>
+  <data name="AppRulesVolumeColumnText" xml:space="preserve">
+    <value>音量</value>
+  </data>
+  <data name="AppRulesVolumeBehaviorText" xml:space="preserve">
+    <value>音量行为</value>
+  </data>
+  <data name="AppRulesTargetVolumeText" xml:space="preserve">
+    <value>目标音量</value>
+  </data>
+  <data name="AppRulesRemoveButtonText" xml:space="preserve">
+    <value>移除此规则</value>
+  </data>
+  <data name="AppRulesModeNoneText" xml:space="preserve">
+    <value>无音量规则</value>
+  </data>
+  <data name="AppRulesModeLaunchText" xml:space="preserve">
+    <value>启动时设置</value>
+  </data>
+  <data name="AppRulesModeLaunchDesc" xml:space="preserve">
+    <value>应用目标音量一次</value>
+  </data>
+  <data name="AppRulesModeLockText" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="AppRulesModeLockDesc" xml:space="preserve">
+    <value>保持精确音量水平</value>
+  </data>
+  <data name="AppRulesStatusRunningText" xml:space="preserve">
+    <value>运行中</value>
+  </data>
+  <data name="AppRulesStatusNotRunningText" xml:space="preserve">
+    <value>未运行</value>
+  </data>
+  <data name="AppRulesSharedExeWarningText" xml:space="preserve">
+    <value>规则以可执行文件名为键，同一应用的多个窗口或标签页会同时受到影响。</value>
+  </data>
+  <data name="RestoreHiddenAppsForDevice" xml:space="preserve">
+    <value>恢复此设备上已隐藏的应用条目</value>
+  </data>
+  <data name="RestoreHiddenAppsForDeviceAll" xml:space="preserve">
+    <value>恢复此设备上的全部</value>
+  </data>
+  <data name="HideDeviceButtonText" xml:space="preserve">
+    <value>隐藏此设备</value>
+  </data>
+  <data name="SetAsDefaultDeviceText" xml:space="preserve">
+    <value>设为默认设备</value>
+  </data>
+  <data name="RestoreHiddenDevices" xml:space="preserve">
+    <value>显示已隐藏的设备</value>
+  </data>
+  <data name="RestoreHiddenDevicesAll" xml:space="preserve">
+    <value>显示所有已隐藏的设备</value>
+  </data>
+  <data name="CommunitySettingsPageText" xml:space="preserve">
+    <value>社区设置</value>
+  </data>
+  <data name="SettingsUseLogarithmicVolume" xml:space="preserve">
+    <value>使用对数音量刻度</value>
+  </data>
+  <data name="ForkAttributionText" xml:space="preserve">
+    <value>EarTrumpet 的分支，原作者 File-New-Project</value>
+  </data>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>BetterTrumpet</value>
+  </data>
+  <data name="SettingsUseSmoothAnimation" xml:space="preserve">
+    <value>使用平滑音量动画</value>
+  </data>
+  <data name="SettingsAnimationSpeed" xml:space="preserve">
+    <value>动画速度：</value>
+  </data>
+  <data name="CustomizationSettingsPageText" xml:space="preserve">
+    <value>个性化</value>
+  </data>
+  <data name="CustomizationCategoryTitle" xml:space="preserve">
+    <value>外观</value>
+  </data>
+  <data name="CustomizationCategoryDescription" xml:space="preserve">
+    <value>主题、颜色、媒体弹窗和性能</value>
+  </data>
+  <data name="AppCategoryTitle" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="AppCategoryDescription" xml:space="preserve">
+    <value>版本、更新和隐私</value>
+  </data>
+  <data name="GeneralSettingsPageText" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="GeneralSettingsPageSubtitle" xml:space="preserve">
+    <value>启动、托盘图标、工具提示和已隐藏的应用。</value>
+  </data>
+  <data name="VolumeMouseSettingsPageText" xml:space="preserve">
+    <value>音量和鼠标</value>
+  </data>
+  <data name="VolumeMouseSettingsPageSubtitle" xml:space="preserve">
+    <value>滚轮行为和音量刻度。</value>
+  </data>
+  <data name="PerformanceSettingsPageText" xml:space="preserve">
+    <value>性能</value>
+  </data>
+  <data name="PerformanceSettingsPageSubtitle" xml:space="preserve">
+    <value>调整刷新率、动画和电池使用。</value>
+  </data>
+  <data name="AppearanceSettingsPageText" xml:space="preserve">
+    <value>外观</value>
+  </data>
+  <data name="AppearanceSettingsPageSubtitle" xml:space="preserve">
+    <value>自定义 BetterTrumpet 在桌面上的外观。</value>
+  </data>
+  <data name="MediaPopupSettingsPageText" xml:space="preserve">
+    <value>媒体弹窗</value>
+  </data>
+  <data name="MediaPopupSettingsPageSubtitle" xml:space="preserve">
+    <value>控制悬停托盘时媒体控件的显示方式。</value>
+  </data>
+  <data name="QuickTrumpetSettingsPageText" xml:space="preserve">
+    <value>QuickTrumpet</value>
+  </data>
+  <data name="QuickTrumpetSettingsPageSubtitle" xml:space="preserve">
+    <value>从 BetterTrumpet、快捷键或 Raycast 保存和应用音频预设。</value>
+  </data>
+  <data name="UpdatesSettingsPageText" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="UpdatesSettingsPageSubtitle" xml:space="preserve">
+    <value>选择何时通知和安装新版本。</value>
+  </data>
+  <data name="PrivacySettingsPageText" xml:space="preserve">
+    <value>隐私和数据</value>
+  </data>
+  <data name="PrivacySettingsPageSubtitle" xml:space="preserve">
+    <value>遥测、设置备份和诊断。</value>
+  </data>
+  <data name="SettingsUseCustomSliderColors" xml:space="preserve">
+    <value>使用自定义滑块颜色</value>
+  </data>
+  <data name="SettingsSliderThumbColor" xml:space="preserve">
+    <value>滑块颜色：</value>
+  </data>
+  <data name="SettingsSliderTrackFillColor" xml:space="preserve">
+    <value>轨道填充颜色：</value>
+  </data>
+  <data name="SettingsSliderTrackBackgroundColor" xml:space="preserve">
+    <value>轨道背景颜色：</value>
+  </data>
+  <data name="SettingsPeakMeterColor" xml:space="preserve">
+    <value>峰值表颜色：</value>
+  </data>
+  <data name="SettingsCustomColors" xml:space="preserve">
+    <value>自定义颜色</value>
+  </data>
+  <data name="SettingsCustomColorsDesc" xml:space="preserve">
+    <value>个性化音量滑块外观</value>
+  </data>
+  <data name="SettingsWindowOpacity" xml:space="preserve">
+    <value>窗口背景不透明度</value>
+  </data>
+  <data name="SettingsWindowOpacityDesc" xml:space="preserve">
+    <value>值越低，亚克力模糊越明显</value>
+  </data>
+  <data name="SettingsTabDynamic" xml:space="preserve">
+    <value>动态</value>
+  </data>
+  <data name="SettingsTabPresets" xml:space="preserve">
+    <value>预设</value>
+  </data>
+  <data name="SettingsTabCustom" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="SettingsLivePreview" xml:space="preserve">
+    <value>实时预览</value>
+  </data>
+  <data name="SettingsColorPalette" xml:space="preserve">
+    <value>调色板</value>
+  </data>
+  <data name="SettingsSliderColors" xml:space="preserve">
+    <value>滑块颜色</value>
+  </data>
+  <data name="SettingsWindowColors" xml:space="preserve">
+    <value>窗口颜色</value>
+  </data>
+  <data name="SettingsWindowBgColor" xml:space="preserve">
+    <value>窗口背景</value>
+  </data>
+  <data name="SettingsTextColor" xml:space="preserve">
+    <value>文本颜色</value>
+  </data>
+  <data name="SettingsAccentGlowColor" xml:space="preserve">
+    <value>强调光晕</value>
+  </data>
+  <data name="SettingsMyThemes" xml:space="preserve">
+    <value>我的主题</value>
+  </data>
+  <data name="SettingsSaveTheme" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SettingsResetToDefault" xml:space="preserve">
+    <value>重置为默认</value>
+  </data>
+  <data name="SettingsThemeNamePlaceholder" xml:space="preserve">
+    <value>主题名称...</value>
+  </data>
+  <data name="SettingsCopyToClipboard" xml:space="preserve">
+    <value>复制到剪贴板</value>
+  </data>
+  <data name="SettingsPasteFromClipboard" xml:space="preserve">
+    <value>从剪贴板粘贴</value>
+  </data>
+  <data name="SettingsExportBttheme" xml:space="preserve">
+    <value>导出 .bttheme</value>
+  </data>
+  <data name="SettingsImportBttheme" xml:space="preserve">
+    <value>导入 .bttheme</value>
+  </data>
+  <data name="SettingsPresetCategories" xml:space="preserve">
+    <value>分类</value>
+  </data>
+  <data name="SettingsCategoryAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="SettingsEcoMode" xml:space="preserve">
+    <value>节能模式</value>
+  </data>
+  <data name="SettingsEcoModeDesc" xml:space="preserve">
+    <value>降低刷新率以减少 CPU/GPU 使用（始终或仅在电池供电时）</value>
+  </data>
+  <data name="SettingsEcoModeOverridden" xml:space="preserve">
+    <value>节能模式激活时覆盖此项</value>
+  </data>
+  <data name="SettingsAnimations" xml:space="preserve">
+    <value>动画</value>
+  </data>
+  <data name="SettingsSmoothVolumeAnimation" xml:space="preserve">
+    <value>平滑音量动画</value>
+  </data>
+  <data name="SettingsVolumeTickSound" xml:space="preserve">
+    <value>音量滴答音效</value>
+  </data>
+  <data name="SettingsVolumeTickSoundTip" xml:space="preserve">
+    <value>调节音量时播放细微的滴答声</value>
+  </data>
+  <data name="MonkeyTickSoundUnlockedTitle" xml:space="preserve">
+    <value>猴子模式已解锁！</value>
+  </data>
+  <data name="MonkeyTickSoundUnlockedDescription" xml:space="preserve">
+    <value>你发现了秘密音量音效。音量升高时猴子也会变化。</value>
+  </data>
+  <data name="SettingsUseMonkeyTickSound" xml:space="preserve">
+    <value>使用猴子音效代替滴答声</value>
+  </data>
+  <data name="SettingsUseMonkeyTickSoundTip" xml:space="preserve">
+    <value>在调节音量时保持启用此秘密音效</value>
+  </data>
+  <data name="AboutDeveloper" xml:space="preserve">
+    <value>由 xammen 开发</value>
+  </data>
+  <data name="AboutFork" xml:space="preserve">
+    <value>EarTrumpet 的分支（感谢你们的出色工作！）</value>
+  </data>
+  <data name="AboutGitHub" xml:space="preserve">
+    <value>GitHub 仓库</value>
+  </data>
+  <data name="AboutFeedback" xml:space="preserve">
+    <value>反馈和建议</value>
+  </data>
+  <data name="AboutReportBug" xml:space="preserve">
+    <value>报告 Bug</value>
+  </data>
+  <data name="CheckForUpdatesText" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+  <data name="CheckingForUpdatesText" xml:space="preserve">
+    <value>正在检查更新...</value>
+  </data>
+  <data name="UpdateAvailableText" xml:space="preserve">
+    <value>有可用更新：{0}</value>
+  </data>
+  <data name="NoUpdatesAvailableText" xml:space="preserve">
+    <value>已是最新版本！</value>
+  </data>
+  <data name="SettingsAnimationSpeedLabel" xml:space="preserve">
+    <value>动画速度</value>
+  </data>
+  <data name="SettingsSpeedSlow" xml:space="preserve">
+    <value>慢</value>
+  </data>
+  <data name="SettingsSpeedFast" xml:space="preserve">
+    <value>快</value>
+  </data>
+  <data name="SettingsPeakMeter" xml:space="preserve">
+    <value>峰值表</value>
+  </data>
+  <data name="SettingsRefreshRate" xml:space="preserve">
+    <value>刷新率</value>
+  </data>
+  <data name="SettingsFpsUltraSaver" xml:space="preserve">
+    <value>极致省电</value>
+  </data>
+  <data name="SettingsFpsBatterySaver" xml:space="preserve">
+    <value>省电模式</value>
+  </data>
+  <data name="SettingsFpsBalanced" xml:space="preserve">
+    <value>平衡</value>
+  </data>
+  <data name="SettingsFpsSmoothest" xml:space="preserve">
+    <value>最流畅</value>
+  </data>
+  <data name="SettingsScrollWheelDesc" xml:space="preserve">
+    <value>用鼠标滚轮控制音量</value>
+  </data>
+  <data name="SettingsScrollWheel" xml:space="preserve">
+    <value>滚轮</value>
+  </data>
+  <data name="SettingsScrollWheelTrayTip" xml:space="preserve">
+    <value>在托盘图标上滚动鼠标滚轮可快速调节系统音量。</value>
+  </data>
+  <data name="SettingsScrollWheelGlobalTip" xml:space="preserve">
+    <value>按住修饰键时可在屏幕任意位置通过滚轮控制音量。</value>
+  </data>
+  <data name="SettingsAppTooltips" xml:space="preserve">
+    <value>图标工具提示</value>
+  </data>
+  <data name="SettingsAppTooltipsDesc" xml:space="preserve">
+    <value>悬停托盘和应用图标时显示或隐藏工具提示。</value>
+  </data>
+  <data name="SettingsShowAppTooltips" xml:space="preserve">
+    <value>显示图标工具提示</value>
+  </data>
+  <data name="SettingsVolumeScale" xml:space="preserve">
+    <value>音量刻度</value>
+  </data>
+  <data name="SettingsVolumeScaleDesc" xml:space="preserve">
+    <value>音量步进的分布方式</value>
+  </data>
+  <data name="SettingsLogVolumeDesc" xml:space="preserve">
+    <value>对数刻度符合人耳听觉感知——低音量时控制更精细，高音量时更粗略。</value>
+  </data>
+  <data name="SettingsStartupDesc" xml:space="preserve">
+    <value>随 Windows 启动 BetterTrumpet</value>
+  </data>
+  <data name="SettingsTrayIconDesc" xml:space="preserve">
+    <value>托盘图标外观</value>
+  </data>
+  <data name="SettingsMediaPopupDesc" xml:space="preserve">
+    <value>悬停托盘时显示媒体控件</value>
+  </data>
+  <data name="SettingsEnableMediaPopup" xml:space="preserve">
+    <value>启用媒体弹窗</value>
+  </data>
+  <data name="SettingsInteractionDesc" xml:space="preserve">
+    <value>悬停延迟和触发行为</value>
+  </data>
+  <data name="SettingsOnlyWhenPlaying" xml:space="preserve">
+    <value>仅在播放媒体时显示</value>
+  </data>
+  <data name="SettingsShowWhenPaused" xml:space="preserve">
+    <value>媒体暂停时显示控件</value>
+  </data>
+  <data name="SettingsRememberExpanded" xml:space="preserve">
+    <value>记住展开/折叠状态</value>
+  </data>
+  <data name="SettingsVisualEffectsDesc" xml:space="preserve">
+    <value>专辑封面模糊强度</value>
+  </data>
+  <data name="SettingsBlurNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="SettingsBlurMax" xml:space="preserve">
+    <value>最大</value>
+  </data>
+  <data name="SettingsEcoModeEnable" xml:space="preserve">
+    <value>始终使用节能模式（20 FPS）</value>
+  </data>
+  <data name="SettingsEcoModeEnableTip" xml:space="preserve">
+    <value>将峰值表刷新率降至 20 FPS，显著降低 CPU 使用。适合笔记本电脑或电池供电时使用。</value>
+  </data>
+  <data name="SettingsAutoEcoMode" xml:space="preserve">
+    <value>电池供电时自动启用</value>
+  </data>
+  <data name="SettingsAutoEcoModeTip" xml:space="preserve">
+    <value>设备使用电池时自动激活节能模式以延长续航。</value>
+  </data>
+  <data name="SettingsSmoothVolumeAnimationTip" xml:space="preserve">
+    <value>启用后，点击音量轨道将平滑动画到目标音量，而非瞬间跳变。</value>
+  </data>
+  <data name="SettingsCurrentRefreshRate" xml:space="preserve">
+    <value>当前刷新率：</value>
+  </data>
+  <data name="SettingsAnimationsDesc" xml:space="preserve">
+    <value>音量滑块过渡</value>
+  </data>
+  <data name="SettingsPeakMeterDesc" xml:space="preserve">
+    <value>音频电平可视化刷新</value>
+  </data>
+  <data name="SettingsPeakMeterStyle" xml:space="preserve">
+    <value>峰值表样式</value>
+  </data>
+  <data name="SettingsPeakMeterStyleDesc" xml:space="preserve">
+    <value>选择音频电平表的外观</value>
+  </data>
+  <data name="SettingsDynamicAlbumArt" xml:space="preserve">
+    <value>动态专辑封面主题</value>
+  </data>
+  <data name="SettingsDynamicAlbumArtDesc" xml:space="preserve">
+    <value>颜色自动适配当前播放音乐的专辑封面</value>
+  </data>
+  <data name="SettingsEnableDynamicAlbumArt" xml:space="preserve">
+    <value>启用动态专辑封面颜色</value>
+  </data>
+  <data name="SettingsDynamicAlbumArtInfo" xml:space="preserve">
+    <value>启用后，BetterTrumpet 会每隔几秒从专辑封面中采样颜色，为滑块生成和谐配色。</value>
+  </data>
+  <data name="SettingsColorPaletteDesc" xml:space="preserve">
+    <value>点击任意色块编辑其颜色</value>
+  </data>
+  <data name="SettingsMyThemesDesc" xml:space="preserve">
+    <value>已保存的自定义配色方案</value>
+  </data>
+  <data name="SettingsNoSavedThemes" xml:space="preserve">
+    <value>暂无已保存的主题。可从当前颜色创建一个。</value>
+  </data>
+  <data name="SettingsRandomizeTooltip" xml:space="preserve">
+    <value>随机颜色</value>
+  </data>
+  <data name="SettingsProfileApply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="SettingsProfileDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="SettingsProfileExport" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="SettingsProfileImport" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="SettingsProfileSave" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SettingsStartup" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="SettingsTrayIcon" xml:space="preserve">
+    <value>托盘图标</value>
+  </data>
+  <data name="SettingsRunAtStartup" xml:space="preserve">
+    <value>开机自启动</value>
+  </data>
+  <data name="SettingsHiddenAppsTitle" xml:space="preserve">
+    <value>已隐藏的应用条目</value>
+  </data>
+  <data name="SettingsHiddenAppsDesc" xml:space="preserve">
+    <value>按设备隐藏嘈杂的应用副本，随时恢复。</value>
+  </data>
+  <data name="SettingsHiddenAppsSummaryFormat" xml:space="preserve">
+    <value>{0} 个已隐藏的应用条目</value>
+  </data>
+  <data name="SettingsHiddenAppsNone" xml:space="preserve">
+    <value>无已隐藏的应用条目</value>
+  </data>
+  <data name="SettingsRestoreHiddenApps" xml:space="preserve">
+    <value>恢复已隐藏的应用条目</value>
+  </data>
+  <data name="SettingsHiddenAppsUnknown" xml:space="preserve">
+    <value>未知应用条目</value>
+  </data>
+  <data name="HiddenAppsOnDeviceTooltip" xml:space="preserve">
+    <value>此设备上已隐藏的应用条目数</value>
+  </data>
+  <data name="SettingsMediaPopup" xml:space="preserve">
+    <value>媒体弹窗</value>
+  </data>
+  <data name="SettingsInteraction" xml:space="preserve">
+    <value>交互</value>
+  </data>
+  <data name="SettingsHoverDelay" xml:space="preserve">
+    <value>悬停延迟</value>
+  </data>
+  <data name="SettingsVisualEffects" xml:space="preserve">
+    <value>视觉效果</value>
+  </data>
+  <data name="SettingsBlurRadius" xml:space="preserve">
+    <value>模糊半径</value>
+  </data>
+  <data name="SettingsShowOnlyWhenPlaying" xml:space="preserve">
+    <value>仅在播放时显示</value>
+  </data>
+  <data name="SettingsExpandedByDefault" xml:space="preserve">
+    <value>默认展开</value>
+  </data>
+  <data name="SettingsAbsoluteVolume" xml:space="preserve">
+    <value>绝对音量</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeDesc" xml:space="preserve">
+    <value>直接音量增减快捷键</value>
+  </data>
+  <data name="SettingsSwitchDevice" xml:space="preserve">
+    <value>切换默认设备</value>
+  </data>
+  <data name="SettingsDefaultPrefix" xml:space="preserve">
+    <value>默认：</value>
+  </data>
+  <data name="SettingsSaveCurrentVolumes" xml:space="preserve">
+    <value>保存当前配置</value>
+  </data>
+  <data name="SettingsSaveCurrentVolumesDesc" xml:space="preserve">
+    <value>从当前设备及其应用创建 QuickTrumpet 预设</value>
+  </data>
+  <data name="SettingsSavedProfiles" xml:space="preserve">
+    <value>QuickTrumpet 预设</value>
+  </data>
+  <data name="SettingsSavedProfilesDesc" xml:space="preserve">
+    <value>从 BetterTrumpet、快捷键、Raycast 或 bt CLI 应用</value>
+  </data>
+  <data name="SettingsProfileDeviceCount" xml:space="preserve">
+    <value>{0} 个设备 | {1}</value>
+  </data>
+  <data name="QuickTrumpetAppliedTitle" xml:space="preserve">
+    <value>QuickTrumpet 已应用</value>
+  </data>
+  <data name="QuickTrumpetAppliedMessage" xml:space="preserve">
+    <value>{0} 已应用。{1} 个应用，{2} 个设备。</value>
+  </data>
+  <data name="SettingsQuickTrumpetConfirmation" xml:space="preserve">
+    <value>应用预设时显示确认</value>
+  </data>
+  <data name="SettingsQuickTrumpetAllDevices" xml:space="preserve">
+    <value>在此预设中包含所有设备</value>
+  </data>
+  <data name="SettingsQuickTrumpetShortcut" xml:space="preserve">
+    <value>快捷键</value>
+  </data>
+  <data name="SettingsQuickTrumpetShortcutDesc" xml:space="preserve">
+    <value>在此与预设一起管理，使 Raycast、CLI 和键盘工作流保持统一。</value>
+  </data>
+  <data name="SettingsQuickTrumpetAppsOnly" xml:space="preserve">
+    <value>仅应用各应用音量与静音状态</value>
+  </data>
+  <data name="SettingsAboutSubtitle" xml:space="preserve">
+    <value>版本信息、遥测和诊断。</value>
+  </data>
+  <data name="SettingsSendDiagnostics" xml:space="preserve">
+    <value>发送诊断数据以改进 BetterTrumpet</value>
+  </data>
+  <data name="SettingsSendDiagnosticsDesc" xml:space="preserve">
+    <value>发送匿名崩溃报告和使用统计。不收集任何个人数据。</value>
+  </data>
+  <data name="DiagnosticsExportSuccessTitle" xml:space="preserve">
+    <value>诊断报告已就绪</value>
+  </data>
+  <data name="DiagnosticsExportSuccessMessage" xml:space="preserve">
+    <value>已创建支持包并将其路径复制到剪贴板：
+
+{0}
+
+报告 BetterTrumpet 问题时请附上此 .zip 文件。</value>
+  </data>
+  <data name="DiagnosticsExportFailedTitle" xml:space="preserve">
+    <value>诊断导出失败</value>
+  </data>
+  <data name="DiagnosticsExportFailedMessage" xml:space="preserve">
+    <value>BetterTrumpet 无法创建诊断报告。
+
+详细信息：{0}</value>
+  </data>
+  <data name="SettingsUpdates" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="SettingsUpdatesDesc" xml:space="preserve">
+    <value>新版本通知</value>
+  </data>
+  <data name="SettingsNotifyFor" xml:space="preserve">
+    <value>通知范围：</value>
+  </data>
+  <data name="SettingsUpdateChannelAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="SettingsUpdateChannelAllSub" xml:space="preserve">
+    <value>补丁+</value>
+  </data>
+  <data name="SettingsUpdateChannelMinor" xml:space="preserve">
+    <value>次版本+</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorSub" xml:space="preserve">
+    <value>次版本+</value>
+  </data>
+  <data name="SettingsUpdateChannelMajor" xml:space="preserve">
+    <value>主版本</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorSub" xml:space="preserve">
+    <value>主版本</value>
+  </data>
+  <data name="SettingsUpdateChannelNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneSub" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="SettingsCheckUpdate" xml:space="preserve">
+    <value>检查</value>
+  </data>
+  <data name="SettingsInstallUpdate" xml:space="preserve">
+    <value>安装更新</value>
+  </data>
+  <data name="SettingsTelemetryDesc" xml:space="preserve">
+    <value>发送匿名崩溃报告和使用统计以改进 BetterTrumpet。不收集任何个人数据。</value>
+  </data>
+  <data name="SettingsTelemetryEnabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="SettingsTelemetryDisabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="SettingsUpdateChannelAllDesc" xml:space="preserve">
+    <value>所有更新</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorMajorDesc" xml:space="preserve">
+    <value>次版本和主版本</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorOnlyDesc" xml:space="preserve">
+    <value>仅主版本</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneDesc" xml:space="preserve">
+    <value>无更新通知</value>
+  </data>
+  <data name="SettingsUpdateChannelAllDetail" xml:space="preserve">
+    <value>补丁、次版本和主版本（如 3.0.0 → 3.0.1）</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorMajorDetail" xml:space="preserve">
+    <value>仅次版本和主版本（如 3.0 → 3.1）</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorOnlyDetail" xml:space="preserve">
+    <value>仅主版本（如 3 → 4）</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneDetail" xml:space="preserve">
+    <value>无更新通知</value>
+  </data>
+  <data name="SettingsUpdateStatusDownloading" xml:space="preserve">
+    <value>正在下载...</value>
+  </data>
+  <data name="SettingsUpdateStatusChecking" xml:space="preserve">
+    <value>正在检查...</value>
+  </data>
+  <data name="SettingsUpdateStatusAvailable" xml:space="preserve">
+    <value>v{0} 可用</value>
+  </data>
+  <data name="SettingsUpdateStatusUpToDate" xml:space="preserve">
+    <value>已是最新</value>
+  </data>
+  <data name="SettingsExportImport" xml:space="preserve">
+    <value>导出和导入</value>
+  </data>
+  <data name="SettingsExportImportDesc" xml:space="preserve">
+    <value>备份或恢复所有设置</value>
+  </data>
+  <data name="SettingsExportSettings" xml:space="preserve">
+    <value>导出设置</value>
+  </data>
+  <data name="SettingsImportSettings" xml:space="preserve">
+    <value>导入设置</value>
+  </data>
+  <data name="SettingsImportSuccess" xml:space="preserve">
+    <value>设置导入成功！某些更改可能需要重启 BetterTrumpet。</value>
+  </data>
+  <data name="SettingsImportTitle" xml:space="preserve">
+    <value>导入完成</value>
+  </data>
+  <data name="SettingsResetConfirm" xml:space="preserve">
+    <value>将所有颜色重置为 Windows 默认值？</value>
+  </data>
+  <data name="SettingsResetTitle" xml:space="preserve">
+    <value>重置主题</value>
+  </data>
+  <data name="SettingsDeleteConfirm" xml:space="preserve">
+    <value>删除“{0}”？</value>
+  </data>
+  <data name="SettingsDeleteTitle" xml:space="preserve">
+    <value>删除主题</value>
+  </data>
+  <data name="SettingsThemeCopied" xml:space="preserve">
+    <value>主题已复制到剪贴板</value>
+  </data>
+  <data name="OnboardingWelcomeTo" xml:space="preserve">
+    <value>欢迎使用</value>
+  </data>
+  <data name="OnboardingWindowTitle" xml:space="preserve">
+    <value>BetterTrumpet 设置向导</value>
+  </data>
+  <data name="OnboardingStepFormat" xml:space="preserve">
+    <value>第 {0} 步，共 {1} 步</value>
+  </data>
+  <data name="OnboardingIntroTitle" xml:space="preserve">
+    <value>只需设置一次合成器。</value>
+  </data>
+  <data name="OnboardingIntroDesc" xml:space="preserve">
+    <value>BetterTrumpet 常驻任务栏，让你快速控制应用、设备、主题和恢复设置。</value>
+  </data>
+  <data name="OnboardingIntroMixerTitle" xml:space="preserve">
+    <value>无需打开设置即可混音应用</value>
+  </data>
+  <data name="OnboardingIntroMixerDesc" xml:space="preserve">
+    <value>让各应用的音量和输出控制触手可及。</value>
+  </data>
+  <data name="OnboardingIntroTrayTitle" xml:space="preserve">
+    <value>让托盘图标易于访问</value>
+  </data>
+  <data name="OnboardingIntroTrayDesc" xml:space="preserve">
+    <value>最后一步展示如何将 BetterTrumpet 固定到系统图标旁。</value>
+  </data>
+  <data name="OnboardingSubtitleWelcome" xml:space="preserve">
+    <value>完全掌控你的声音。</value>
+  </data>
+  <data name="OnboardingSetupSummaryTitle" xml:space="preserve">
+    <value>此设置的作用</value>
+  </data>
+  <data name="OnboardingSetupSummaryDesc" xml:space="preserve">
+    <value>选择设备、应用外观，然后锁定你想要的隐私和启动设置。</value>
+  </data>
+  <data name="OnboardingAudioOutput" xml:space="preserve">
+    <value>音频输出</value>
+  </data>
+  <data name="OnboardingSubtitleAudio" xml:space="preserve">
+    <value>选择音频输出位置。</value>
+  </data>
+  <data name="OnboardingAppearance" xml:space="preserve">
+    <value>外观</value>
+  </data>
+  <data name="OnboardingSubtitleAppearance" xml:space="preserve">
+    <value>选择你的风格。</value>
+  </data>
+  <data name="OnboardingPrivacy" xml:space="preserve">
+    <value>隐私</value>
+  </data>
+  <data name="OnboardingSubtitlePrivacy" xml:space="preserve">
+    <value>崩溃报告仅包含技术信息，它们帮助我们更快修复真实 Bug。</value>
+  </data>
+  <data name="OnboardingCrashReports" xml:space="preserve">
+    <value>崩溃报告</value>
+  </data>
+  <data name="OnboardingCrashReportsDesc" xml:space="preserve">
+    <value>推荐用于崩溃、Bug 和内存泄漏诊断</value>
+  </data>
+  <data name="OnboardingCrashReportsInfo" xml:space="preserve">
+    <value>这帮助我们修复 Bug，且绝不收集私人数据。</value>
+  </data>
+  <data name="OnboardingTelemetryValueTitle" xml:space="preserve">
+    <value>帮助我们捕获崩溃和内存泄漏</value>
+  </data>
+  <data name="OnboardingTelemetryValueDesc" xml:space="preserve">
+    <value>这些报告包含技术诊断信息，如堆栈跟踪、操作系统版本和应用状态。我们绝不会出售你的数据。</value>
+  </data>
+  <data name="OnboardingTelemetryConfirmTitle" xml:space="preserve">
+    <value>禁用崩溃报告？</value>
+  </data>
+  <data name="OnboardingTelemetryConfirmDesc" xml:space="preserve">
+    <value>保持启用可帮助我们在正式版本中修复崩溃、Bug 和内存泄漏。报告仅用于改进 BetterTrumpet。</value>
+  </data>
+  <data name="OnboardingTelemetryKeepEnabled" xml:space="preserve">
+    <value>保持启用</value>
+  </data>
+  <data name="OnboardingTelemetryDisableAnyway" xml:space="preserve">
+    <value>仍然禁用</value>
+  </data>
+  <data name="OnboardingAutoUpdates" xml:space="preserve">
+    <value>自动更新</value>
+  </data>
+  <data name="OnboardingUpdateAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="OnboardingUpdateRecommended" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="OnboardingUpdateMinor" xml:space="preserve">
+    <value>次版本</value>
+  </data>
+  <data name="OnboardingUpdateNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="OnboardingLaunchAtStartup" xml:space="preserve">
+    <value>开机启动</value>
+  </data>
+  <data name="OnboardingLaunchAtStartupDesc" xml:space="preserve">
+    <value>随 Windows 启动</value>
+  </data>
+  <data name="OnboardingAllReady" xml:space="preserve">
+    <value>全部就绪</value>
+  </data>
+  <data name="OnboardingAllReadyDesc" xml:space="preserve">
+    <value>点击任务栏图标即可混音。</value>
+  </data>
+  <data name="OnboardingDeviceConfigured" xml:space="preserve">
+    <value>音频设备已配置</value>
+  </data>
+  <data name="OnboardingAppearanceChosen" xml:space="preserve">
+    <value>外观已选择</value>
+  </data>
+  <data name="OnboardingPrivacyConfigured" xml:space="preserve">
+    <value>隐私已配置</value>
+  </data>
+  <data name="OnboardingPinTitle" xml:space="preserve">
+    <value>固定 BetterTrumpet</value>
+  </data>
+  <data name="OnboardingPinDesc" xml:space="preserve">
+    <value>将 BetterTrumpet 图标从隐藏菜单拖到任务栏，实现一键访问。</value>
+  </data>
+  <data name="OnboardingNoDevices" xml:space="preserve">
+    <value>未检测到音频设备。</value>
+  </data>
+  <data name="OnboardingSystemTheme" xml:space="preserve">
+    <value>系统</value>
+  </data>
+  <data name="OnboardingSystemThemeDesc" xml:space="preserve">
+    <value>跟随 Windows，保持应用视觉低调。</value>
+  </data>
+  <data name="OnboardingCustomTheme" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="OnboardingCustomThemeDesc" xml:space="preserve">
+    <value>使用 BetterTrumpet 配色，让滑块和电平表更醒目。</value>
+  </data>
+  <data name="OnboardingCustomThemeNote" xml:space="preserve">
+    <value>使用 BetterTrumpet 颜色</value>
+  </data>
+  <data name="OnboardingRecommendedBadge" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="OnboardingSetupReadyDesc" xml:space="preserve">
+    <value>你的设置选择已生效。</value>
+  </data>
+  <data name="OnboardingTrayAccessDesc" xml:space="preserve">
+    <value>托盘图标让应用和设备控制触手可及。</value>
+  </data>
+  <data name="OnboardingSkip" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="OnboardingBack" xml:space="preserve">
+    <value>上一步</value>
+  </data>
+  <data name="OnboardingContinue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="OnboardingDone" xml:space="preserve">
+    <value>完成！</value>
+  </data>
+  <data name="OnboardingTelemetryReassurance" xml:space="preserve">
+    <value>我们理解。我们绝不会出售你的数据——崩溃报告仅包含技术信息（堆栈跟踪、操作系统版本），帮助我们修复 Bug 和优化性能。</value>
+  </data>
+  <data name="UpdateTextDownloading" xml:space="preserve">
+    <value>正在下载更新...</value>
+  </data>
+  <data name="UpdateTextAvailable" xml:space="preserve">
+    <value>有可用更新：v{0}</value>
+  </data>
+  <data name="UpdateTextUpToDate" xml:space="preserve">
+    <value>已是最新</value>
+  </data>
+  <data name="UpdateTextNeverChecked" xml:space="preserve">
+    <value>从未检查</value>
+  </data>
+  <data name="UpdateTextLastChecked" xml:space="preserve">
+    <value>上次检查：{0}</value>
+  </data>
+  <data name="UpdateContextMenu" xml:space="preserve">
+    <value>更新（v{0}）</value>
+  </data>
+  <data name="ChangelogTitle" xml:space="preserve">
+    <value>BetterTrumpet 已是最新</value>
+  </data>
+  <data name="ChangelogSubtitle" xml:space="preserve">
+    <value>版本 {0} 已安装。</value>
+  </data>
+  <data name="ChangelogViewReleaseNotes" xml:space="preserve">
+    <value>查看最新动态</value>
+  </data>
+  <data name="ChangelogContinue" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="PresetCategoryAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="PresetCategoryMinimal" xml:space="preserve">
+    <value>极简</value>
+  </data>
+  <data name="PresetCategoryBrands" xml:space="preserve">
+    <value>品牌</value>
+  </data>
+  <data name="PresetCategoryRetro" xml:space="preserve">
+    <value>复古</value>
+  </data>
+  <data name="PresetCategoryDeveloper" xml:space="preserve">
+    <value>开发者</value>
+  </data>
+  <data name="PresetCategoryNature" xml:space="preserve">
+    <value>自然</value>
+  </data>
+  <data name="PresetCategoryAccessibility" xml:space="preserve">
+    <value>无障碍</value>
+  </data>
+  <data name="ColorLabelThumb" xml:space="preserve">
+    <value>滑块</value>
+  </data>
+  <data name="ColorLabelFill" xml:space="preserve">
+    <value>填充</value>
+  </data>
+  <data name="ColorLabelTrackBg" xml:space="preserve">
+    <value>轨道背景</value>
+  </data>
+  <data name="ColorLabelPeakMeter" xml:space="preserve">
+    <value>峰值表</value>
+  </data>
+  <data name="ColorLabelWindowBg" xml:space="preserve">
+    <value>窗口背景</value>
+  </data>
+  <data name="ColorLabelText" xml:space="preserve">
+    <value>文本</value>
+  </data>
+  <data name="ColorLabelGlow" xml:space="preserve">
+    <value>光晕</value>
+  </data>
+  <data name="ColorLabelPreview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="SettingsRememberAppVolumes" xml:space="preserve">
+    <value>记住应用音量</value>
+  </data>
+  <data name="SettingsRememberAppVolumesDesc" xml:space="preserve">
+    <value>应用重启时自动恢复音量水平</value>
+  </data>
+  <data name="SettingsRememberAppVolumesEnable" xml:space="preserve">
+    <value>按应用记住音量水平</value>
+  </data>
+  <data name="SettingsClearSavedVolumes" xml:space="preserve">
+    <value>清除已保存的音量</value>
+  </data>
+  <data name="SettingsSavedVolumesCount" xml:space="preserve">
+    <value>已保存的音量：</value>
+  </data>
+  <data name="SettingsExperimentalBadge" xml:space="preserve">
+    <value>实验性</value>
+  </data>
+  <data name="PeakMeterStyleClassic" xml:space="preserve">
+    <value>经典</value>
+  </data>
+  <data name="PeakMeterStyleDotted" xml:space="preserve">
+    <value>点状</value>
+  </data>
+  <data name="PeakMeterStyleBlocks" xml:space="preserve">
+    <value>方块</value>
+  </data>
+  <data name="PeakMeterStyleBars" xml:space="preserve">
+    <value>条形</value>
+  </data>
+  <data name="PeakMeterStyleWave" xml:space="preserve">
+    <value>波形</value>
+  </data>
+  <data name="SettingsProfileDeviceCountFormat" xml:space="preserve">
+    <value>{0} 个设备 | {1}</value>
+  </data>
+  <data name="SettingsMoreOptions" xml:space="preserve">
+    <value>更多选项</value>
+  </data>
+</root>

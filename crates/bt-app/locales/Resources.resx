@@ -1,0 +1,2424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ContextMenuExitTitle" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="ContextMenuNoDevices" xml:space="preserve">
+    <value>No playback devices found</value>
+  </data>
+  <data name="ContextMenuSendFeedback" xml:space="preserve">
+    <value>Send feedback</value>
+  </data>
+  <data name="ContextMenuHiddenAppsTitleFormat" xml:space="preserve">
+    <value>Hidden app entries ({0})</value>
+  </data>
+  <data name="TrayOpenVolumeMixer" xml:space="preserve">
+    <value>Open volume mixer</value>
+  </data>
+  <data name="TrayOpenSettings" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
+  <data name="TrayOpenSettingsNew" xml:space="preserve">
+    <value>Open settings (beta)</value>
+  </data>
+  <data name="TrayShowOnboarding" xml:space="preserve">
+    <value>Show onboarding</value>
+  </data>
+  <data name="TrayWhatsNew" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="TrayStarProject" xml:space="preserve">
+    <value>Star on GitHub</value>
+  </data>
+  <data name="TrayWindowsAudioTools" xml:space="preserve">
+    <value>Windows audio tools</value>
+  </data>
+  <data name="ContextMenuRestoreAllHiddenApps" xml:space="preserve">
+    <value>Restore all hidden app entries</value>
+  </data>
+  <data name="ContextMenuRestoreHiddenAppsForDeviceFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+  </data>
+  <data name="ContextMenuHiddenDevicesTitleFormat" xml:space="preserve">
+    <value>Hidden devices ({0})</value>
+  </data>
+  <data name="ContextMenuRestoreAllHiddenDevices" xml:space="preserve">
+    <value>Show all hidden devices</value>
+  </data>
+  <data name="FullWindowTitleText" xml:space="preserve">
+    <value>Volume Mixer</value>
+  </data>
+  <data name="LegacyVolumeMixerText" xml:space="preserve">
+    <value>Volume Mixer</value>
+  </data>
+  <data name="NoDevicesPanelContent" xml:space="preserve">
+    <value>It doesn't look like you have any playback devices.</value>
+  </data>
+  <data name="NoDeviceTrayText" xml:space="preserve">
+    <value>BetterTrumpet: No playback devices</value>
+  </data>
+  <data name="PlaybackDevicesText" xml:space="preserve">
+    <value>Playback devices</value>
+  </data>
+  <data name="RecordingDevicesText" xml:space="preserve">
+    <value>Recording devices</value>
+  </data>
+  <data name="SettingsWindowText" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SoundsControlPanelText" xml:space="preserve">
+    <value>Sounds</value>
+  </data>
+  <data name="TroubleshootEarTrumpetText" xml:space="preserve">
+    <value>Export diagnostic report</value>
+  </data>
+  <data name="HotkeyDescriptionText" xml:space="preserve">
+    <value>Your shortcut</value>
+  </data>
+  <data name="DefaultDeviceText" xml:space="preserve">
+    <value>Always use the default playback device</value>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="WebsiteText" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="AppOrDeviceFormatAccessibleText" xml:space="preserve">
+    <value>"{Volume}% volume - {Name}"</value>
+  </data>
+  <data name="AppOrDeviceMutedFormatAccessibleText" xml:space="preserve">
+    <value>"Muted - {Name}"</value>
+  </data>
+  <data name="AppsListAccessibleText" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="CloseButtonAccessibleText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="CollapseAccessibleText" xml:space="preserve">
+    <value>Collapse to show only the default playback device</value>
+  </data>
+  <data name="DefaultHotkeyDescriptionText" xml:space="preserve">
+    <value>Default shortcut</value>
+  </data>
+  <data name="ExpandAccessibleText" xml:space="preserve">
+    <value>Expand to show all playback devices</value>
+  </data>
+  <data name="SettingsCategoryTitle" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="MoveButtonAccessibleText" xml:space="preserve">
+    <value>Assign this app to a playback device</value>
+  </data>
+  <data name="HideAppEntryButtonText" xml:space="preserve">
+    <value>Hide this app entry</value>
+  </data>
+  <data name="HardMuteAppButtonText" xml:space="preserve">
+    <value>Hard mute this app</value>
+  </data>
+  <data name="HardMuteAppMenuText" xml:space="preserve">
+    <value>Keep muted (survives restart)</value>
+  </data>
+  <data name="HardMuteAppMenuDisableText" xml:space="preserve">
+    <value>Stop keeping muted</value>
+  </data>
+  <data name="VolumeRuleAppButtonText" xml:space="preserve">
+    <value>Remember this app's volume</value>
+  </data>
+  <data name="VolumeRuleLockButtonText" xml:space="preserve">
+    <value>Lock volume at the current level</value>
+  </data>
+  <data name="VolumeRuleUnlockButtonText" xml:space="preserve">
+    <value>Unlock this app's volume</value>
+  </data>
+  <data name="VolumeRuleLaunchButtonText" xml:space="preserve">
+    <value>Set launch volume</value>
+  </data>
+  <data name="VolumeRuleMenuLaunchText" xml:space="preserve">
+    <value>Start at</value>
+  </data>
+  <data name="VolumeRuleMenuLockText" xml:space="preserve">
+    <value>Lock at</value>
+  </data>
+  <data name="VolumeRuleMenuNoneText" xml:space="preserve">
+    <value>No volume rule</value>
+  </data>
+  <data name="VolumeRulePercentFormatText" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="VolumeRuleUseCurrentFormatText" xml:space="preserve">
+    <value>Current volume ({0}%)</value>
+  </data>
+  <data name="AppRulesSettingsPageText" xml:space="preserve">
+    <value>App rules</value>
+  </data>
+  <data name="AppRulesSettingsPageSubtitle" xml:space="preserve">
+    <value>Saved app profiles with independent mute, focus-loss, and volume behavior</value>
+  </data>
+  <data name="FolderVolumeRulesHeaderText" xml:space="preserve">
+    <value>Folder defaults</value>
+  </data>
+  <data name="FolderVolumeRulesAddButtonText" xml:space="preserve">
+    <value>Add folder</value>
+  </data>
+  <data name="FolderVolumeRulesEmptyText" xml:space="preserve">
+    <value>No custom folders yet.</value>
+  </data>
+  <data name="FolderVolumeRulesFolderText" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="FolderVolumeRulesBrowseButtonText" xml:space="preserve">
+    <value>Choose folder</value>
+  </data>
+  <data name="FolderVolumeRulesRemoveButtonText" xml:space="preserve">
+    <value>Remove folder rule</value>
+  </data>
+  <data name="FolderVolumeRulesBrowseDialogTitle" xml:space="preserve">
+    <value>Choose a folder</value>
+  </data>
+  <data name="FolderVolumeRulesVolumeText" xml:space="preserve">
+    <value>Starting volume</value>
+  </data>
+  <data name="AppRulesListHeaderText" xml:space="preserve">
+    <value>App profiles</value>
+  </data>
+  <data name="AppRulesListHeaderDesc" xml:space="preserve">
+    <value>A profile stays here until you remove it. Each behavior below can be enabled independently.</value>
+  </data>
+  <data name="AppRulesAddHeaderText" xml:space="preserve">
+    <value>Add an app profile</value>
+  </data>
+  <data name="AppRulesAddRuleButtonText" xml:space="preserve">
+    <value>Add rule</value>
+  </data>
+  <data name="AppRulesAddHeaderDesc" xml:space="preserve">
+    <value>Adding an app only saves it here. Choose the behaviors you want after it is added.</value>
+  </data>
+  <data name="AppRulesAddPlaceholderText" xml:space="preserve">
+    <value>Executable name, e.g. steam.exe</value>
+  </data>
+  <data name="AppRulesAddButtonText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AppRulesBrowseButtonText" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="AppRulesBrowseDialogTitle" xml:space="preserve">
+    <value>Pick an application</value>
+  </data>
+  <data name="AppRulesBrowseDialogFilter" xml:space="preserve">
+    <value>Applications (*.exe)|*.exe</value>
+  </data>
+  <data name="AppRulesClearAllButtonText" xml:space="preserve">
+    <value>Remove all</value>
+  </data>
+  <data name="AppRulesClearAllConfirmTitle" xml:space="preserve">
+    <value>Remove all app rules</value>
+  </data>
+  <data name="AppRulesClearAllConfirmText" xml:space="preserve">
+    <value>Remove every saved app rule? Muted apps stay muted until you unmute them.</value>
+  </data>
+  <data name="AppRulesEmptyText" xml:space="preserve">
+    <value>No app profiles yet. Add one here, or use an app's menu in the flyout.</value>
+  </data>
+  <data name="AppRulesHardMuteColumnText" xml:space="preserve">
+    <value>Keep muted</value>
+  </data>
+  <data name="AppRulesVolumeColumnText" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="AppRulesVolumeBehaviorText" xml:space="preserve">
+    <value>Volume behavior</value>
+  </data>
+  <data name="AppRulesTargetVolumeText" xml:space="preserve">
+    <value>Target volume</value>
+  </data>
+  <data name="AppRulesRemoveButtonText" xml:space="preserve">
+    <value>Remove this app profile</value>
+  </data>
+  <data name="AppRulesModeNoneText" xml:space="preserve">
+    <value>No volume rule</value>
+  </data>
+  <data name="AppRulesNoActiveActionsText" xml:space="preserve">
+    <value>No behavior enabled. This profile will stay saved until you remove it.</value>
+  </data>
+  <data name="AppRulesModeLaunchText" xml:space="preserve">
+    <value>Set at launch</value>
+  </data>
+  <data name="AppRulesModeLaunchDesc" xml:space="preserve">
+    <value>Apply the target volume once</value>
+  </data>
+  <data name="AppRulesModeLockText" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="AppRulesModeLockDesc" xml:space="preserve">
+    <value>Maintain the exact level</value>
+  </data>
+  <data name="AppRulesStatusRunningText" xml:space="preserve">
+    <value>running</value>
+  </data>
+  <data name="AppRulesStatusNotRunningText" xml:space="preserve">
+    <value>not running</value>
+  </data>
+  <data name="AppRulesSharedExeWarningText" xml:space="preserve">
+    <value>Rules are keyed on the executable name, so several windows or tabs of the same app are affected together.</value>
+  </data>
+  <data name="SettingsOpenEarTrumpetText" xml:space="preserve">
+    <value>Open Taskbar flyout</value>
+  </data>
+  <data name="SettingsUseLegacyEarTrumpetIcon" xml:space="preserve">
+    <value>Use legacy icon</value>
+  </data>
+  <data name="MoreCommandsAccessibleText" xml:space="preserve">
+    <value>More commands</value>
+  </data>
+  <data name="RestoreHiddenAppsForDevice" xml:space="preserve">
+    <value>Restore hidden app entries on this device</value>
+  </data>
+  <data name="RestoreHiddenAppsForDeviceAll" xml:space="preserve">
+    <value>Restore all on this device</value>
+  </data>
+  <data name="HideDeviceButtonText" xml:space="preserve">
+    <value>Hide this device</value>
+  </data>
+  <data name="SetAsDefaultDeviceText" xml:space="preserve">
+    <value>Set as default device</value>
+  </data>
+  <data name="RestoreHiddenDevices" xml:space="preserve">
+    <value>Show hidden devices</value>
+  </data>
+  <data name="RestoreHiddenDevicesAll" xml:space="preserve">
+    <value>Show all hidden devices</value>
+  </data>
+  <data name="MutedText" xml:space="preserve">
+    <value>Muted</value>
+  </data>
+  <data name="OpenSoundSettingsText" xml:space="preserve">
+    <value>Sound settings</value>
+  </data>
+  <data name="WindowsLegacyMenuText" xml:space="preserve">
+    <value>Windows Legacy</value>
+  </data>
+  <data name="AboutThisAddonText" xml:space="preserve">
+    <value>About {Name} add-on</value>
+  </data>
+  <data name="AddonNameText" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="AddonUninstallButtonText" xml:space="preserve">
+    <value>Open Windows Settings</value>
+  </data>
+  <data name="AddonUninstallDescriptionText" xml:space="preserve">
+    <value>This add-on can be removed using the Windows Settings app.</value>
+  </data>
+  <data name="AddonUninstallTitle" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="DefaultManagementGroupName" xml:space="preserve">
+    <value>Management</value>
+  </data>
+  <data name="LegacySettingsPageText" xml:space="preserve">
+    <value>Legacy settings</value>
+  </data>
+  <data name="PublisherText" xml:space="preserve">
+    <value>Publisher:</value>
+  </data>
+  <data name="SettingsDescriptionText" xml:space="preserve">
+    <value>Startup, volume, mouse, shortcuts, and presets</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>BetterTrumpet Settings</value>
+  </data>
+  <data name="ShortcutsPageText" xml:space="preserve">
+    <value>Shortcuts</value>
+  </data>
+  <data name="VersionText" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="FindASettingText" xml:space="preserve">
+    <value>Find a setting</value>
+  </data>
+  <data name="SearchBoxNoResultsText" xml:space="preserve">
+    <value>No results</value>
+  </data>
+  <data name="SettingsOpenMixerText" xml:space="preserve">
+    <value>Open Mixer</value>
+  </data>
+  <data name="ToggleSwitchOffText" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="ToggleSwitchOnText" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="HomeButtonText" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ProjectADescription" xml:space="preserve">
+    <value>Coming soon</value>
+  </data>
+  <data name="ProjectATitle" xml:space="preserve">
+    <value>Coming soon</value>
+  </data>
+  <data name="SettingsOpenSettingsText" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
+  <data name="CloseButtonText" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="WelcomeDialogHeaderText" xml:space="preserve">
+    <value>Welcome to BetterTrumpet</value>
+  </data>
+  <data name="CriticalFailureDialogHeaderText" xml:space="preserve">
+    <value>BetterTrumpet couldn't start</value>
+  </data>
+  <data name="CriticalFailureFontLookupHelpText" xml:space="preserve">
+    <value>A broken font on your system is preventing BetterTrumpet from starting.
+
+Open [https://eartrumpet.app/jmp/fixfonts] now?</value>
+  </data>
+  <data name="ToggleMuteToolTip" xml:space="preserve">
+    <value>Toggle mute</value>
+  </data>
+  <data name="PrivacyPolicyText" xml:space="preserve">
+    <value>Privacy policy</value>
+  </data>
+  <data name="PrivacyCheckboxText" xml:space="preserve">
+    <value>Send crash data to help improve BetterTrumpet</value>
+  </data>
+  <data name="PrivacyAnnouncementsText" xml:space="preserve">
+    <value>What's-new announcements</value>
+  </data>
+  <data name="PrivacyAnnouncementsDesc" xml:space="preserve">
+    <value>Receive news, polls and surveys pushed into the What's new window.</value>
+  </data>
+  <data name="ActionAdditionalText" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="ActionVerbText" xml:space="preserve">
+    <value>Do</value>
+  </data>
+  <data name="AddActionText" xml:space="preserve">
+    <value>Add action</value>
+  </data>
+  <data name="AddConditionText" xml:space="preserve">
+    <value>Add condition</value>
+  </data>
+  <data name="AddonDescriptionText" xml:space="preserve">
+    <value>Set up hotkeys and automation</value>
+  </data>
+  <data name="AddTriggerText" xml:space="preserve">
+    <value>Add trigger</value>
+  </data>
+  <data name="AppEventTrigger_AddText" xml:space="preserve">
+    <value>An app session is added, removed, starts playing sound, ...</value>
+  </data>
+  <data name="AppEventTrigger_LinkText" xml:space="preserve">
+    <value>{App} {Option} on {Device}</value>
+  </data>
+  <data name="AudioAppEventKind_Added" xml:space="preserve">
+    <value>is added</value>
+  </data>
+  <data name="AudioAppEventKind_Muted" xml:space="preserve">
+    <value>is muted</value>
+  </data>
+  <data name="AudioAppEventKind_NotPlayingSound" xml:space="preserve">
+    <value>stops playing sound</value>
+  </data>
+  <data name="AudioAppEventKind_PlayingSound" xml:space="preserve">
+    <value>begins playing sound</value>
+  </data>
+  <data name="AudioAppEventKind_Removed" xml:space="preserve">
+    <value>is removed</value>
+  </data>
+  <data name="AudioAppEventKind_Unmuted" xml:space="preserve">
+    <value>is unmuted</value>
+  </data>
+  <data name="AudioDeviceEventKind_Added" xml:space="preserve">
+    <value>is added</value>
+  </data>
+  <data name="AudioDeviceEventKind_BecomingDefault" xml:space="preserve">
+    <value>becomes default</value>
+  </data>
+  <data name="AudioDeviceEventKind_LeavingDefault" xml:space="preserve">
+    <value>leaves default</value>
+  </data>
+  <data name="AudioDeviceEventKind_Removed" xml:space="preserve">
+    <value>is removed</value>
+  </data>
+  <data name="BoolValue_False" xml:space="preserve">
+    <value>false</value>
+  </data>
+  <data name="BoolValue_True" xml:space="preserve">
+    <value>true</value>
+  </data>
+  <data name="ComparisonBoolKind_Is" xml:space="preserve">
+    <value>is</value>
+  </data>
+  <data name="ComparisonBoolKind_IsNot" xml:space="preserve">
+    <value>is not</value>
+  </data>
+  <data name="ConditionAdditionalText" xml:space="preserve">
+    <value>and</value>
+  </data>
+  <data name="ConditionsHelpText" xml:space="preserve">
+    <value>Configuring a filter is optional but lets you build more advanced actions. All conditions must be true before actions are carried out.</value>
+  </data>
+  <data name="ConditionVerbText" xml:space="preserve">
+    <value>Advanced Filter</value>
+  </data>
+  <data name="ContextMenuTrigger_AddText" xml:space="preserve">
+    <value>I use this action's context menu item</value>
+  </data>
+  <data name="ContextMenuTrigger_LinkText" xml:space="preserve">
+    <value>I use this action's context menu item</value>
+  </data>
+  <data name="DefaultDeviceCondition_AddText" xml:space="preserve">
+    <value>If the default playback device is or is not</value>
+  </data>
+  <data name="DefaultDeviceCondition_LinkText" xml:space="preserve">
+    <value>{Device} {Option} the default device</value>
+  </data>
+  <data name="DefaultPlaybackDeviceText" xml:space="preserve">
+    <value>Default playback device</value>
+  </data>
+  <data name="DeviceEventTrigger_AddText" xml:space="preserve">
+    <value>An audio device is added, removed, set as default, ...</value>
+  </data>
+  <data name="DeviceEventTrigger_LinkText" xml:space="preserve">
+    <value>{Device} {Option}</value>
+  </data>
+  <data name="EarTrumpetEventKind_Shutdown" xml:space="preserve">
+    <value>ends</value>
+  </data>
+  <data name="EarTrumpetEventKind_Startup" xml:space="preserve">
+    <value>starts</value>
+  </data>
+  <data name="EditText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EtaXmlFileText" xml:space="preserve">
+    <value>BetterTrumpet Actions XML</value>
+  </data>
+  <data name="EventTrigger_AddText" xml:space="preserve">
+    <value>BetterTrumpet starts or ends</value>
+  </data>
+  <data name="EventTrigger_LinkText" xml:space="preserve">
+    <value> BetterTrumpet {Option}</value>
+  </data>
+  <data name="EveryAppText" xml:space="preserve">
+    <value>Every app</value>
+  </data>
+  <data name="ExportHeaderText" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ExportHelpText" xml:space="preserve">
+    <value>Save a copy of your actions to a file.</value>
+  </data>
+  <data name="ForegroundAppText" xml:space="preserve">
+    <value>Foreground app</value>
+  </data>
+  <data name="HotkeyTrigger_AddText" xml:space="preserve">
+    <value>A hotkey is typed</value>
+  </data>
+  <data name="HotkeyTrigger_EmptyText" xml:space="preserve">
+    <value>(choose a hotkey)</value>
+  </data>
+  <data name="HotkeyTrigger_LinkText" xml:space="preserve">
+    <value>{Hotkey} is typed</value>
+  </data>
+  <data name="ImportAndExportTitle" xml:space="preserve">
+    <value>Import and export</value>
+  </data>
+  <data name="ImportHeaderText" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportHelpText" xml:space="preserve">
+    <value>Restore a copy of your actions from a file.</value>
+  </data>
+  <data name="MuteKind_Mute" xml:space="preserve">
+    <value>Mute</value>
+  </data>
+  <data name="MuteKind_ToggleMute" xml:space="preserve">
+    <value>Toggle mute</value>
+  </data>
+  <data name="MuteKind_Unmute" xml:space="preserve">
+    <value>Unmute</value>
+  </data>
+  <data name="MyActionsText" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="NewActionText" xml:space="preserve">
+    <value>New action</value>
+  </data>
+  <data name="OptionalText" xml:space="preserve">
+    <value>(optional)</value>
+  </data>
+  <data name="PlaybackDeviceGroupText" xml:space="preserve">
+    <value>Playback</value>
+  </data>
+  <data name="ProcessCondition_AddText" xml:space="preserve">
+    <value>If a process is running or not</value>
+  </data>
+  <data name="ProcessCondition_EmptyText" xml:space="preserve">
+    <value>(enter a process name)</value>
+  </data>
+  <data name="ProcessCondition_LinkText" xml:space="preserve">
+    <value>When {Text} {Option}</value>
+  </data>
+  <data name="ProcessCondition_PromptText" xml:space="preserve">
+    <value>Process name (e.g. notepad)</value>
+  </data>
+  <data name="ProcessEventKind_Start" xml:space="preserve">
+    <value>starts</value>
+  </data>
+  <data name="ProcessEventKind_Stop" xml:space="preserve">
+    <value>ends</value>
+  </data>
+  <data name="ProcessStateKind_NotRunning" xml:space="preserve">
+    <value>is not running</value>
+  </data>
+  <data name="ProcessStateKind_Running" xml:space="preserve">
+    <value>is running</value>
+  </data>
+  <data name="ProcessTrigger_AddText" xml:space="preserve">
+    <value>A process starts or ends</value>
+  </data>
+  <data name="ProcessTrigger_EmptyText" xml:space="preserve">
+    <value>(enter a process name)</value>
+  </data>
+  <data name="ProcessTrigger_LinkText" xml:space="preserve">
+    <value>When {Text} {Option}</value>
+  </data>
+  <data name="ProcessTrigger_PromptText" xml:space="preserve">
+    <value>Process name (e.g. notepad)</value>
+  </data>
+  <data name="RecordingDeviceGroupText" xml:space="preserve">
+    <value>Recording</value>
+  </data>
+  <data name="RemoveText" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="RequiredText" xml:space="preserve">
+    <value>(required)</value>
+  </data>
+  <data name="SetAppMuteAction_AddText" xml:space="preserve">
+    <value>Mute or unmute an app</value>
+  </data>
+  <data name="SetAppMuteAction_LinkText" xml:space="preserve">
+    <value>{Option} {App} on {Device}</value>
+  </data>
+  <data name="SetAppVolumeAction_AddText" xml:space="preserve">
+    <value>Set the volume of an app</value>
+  </data>
+  <data name="SetAppVolumeAction_LinkText" xml:space="preserve">
+    <value>{Option} {App} volume to {Volume} on {Device}</value>
+  </data>
+  <data name="SetAppVolumeAction_LinkTextIncrement" xml:space="preserve">
+    <value>{Option} {App} volume by {Volume} on {Device}</value>
+  </data>
+  <data name="SetDefaultDeviceAction_AddText" xml:space="preserve">
+    <value>Set the default playback device</value>
+  </data>
+  <data name="SetDefaultDeviceAction_LinkText" xml:space="preserve">
+    <value>Set {Device} as playback default</value>
+  </data>
+  <data name="SetDeviceMuteAction_AddText" xml:space="preserve">
+    <value>Mute or unmute a device</value>
+  </data>
+  <data name="SetDeviceMuteAction_LinkText" xml:space="preserve">
+    <value>{Option} {Device}</value>
+  </data>
+  <data name="SetDeviceMuteAction_LinkTextToggle" xml:space="preserve">
+    <value>{Option} on {Device}</value>
+  </data>
+  <data name="SetDeviceVolumeAction_AddText" xml:space="preserve">
+    <value>Set a device volume</value>
+  </data>
+  <data name="SetDeviceVolumeAction_LinkText" xml:space="preserve">
+    <value>{Option} {Device} volume to {Volume}</value>
+  </data>
+  <data name="SetDeviceVolumeAction_LinkTextIncrement" xml:space="preserve">
+    <value>{Option} {Device} volume by {Volume}</value>
+  </data>
+  <data name="SetVariableAction_AddText" xml:space="preserve">
+    <value>Set a local variable</value>
+  </data>
+  <data name="SetVariableAction_EmptyText" xml:space="preserve">
+    <value>(set variable name)</value>
+  </data>
+  <data name="SetVariableAction_LinkText" xml:space="preserve">
+    <value>Set variable {Text} to {Option}</value>
+  </data>
+  <data name="SetVariableAction_PromptText" xml:space="preserve">
+    <value>Enter a variable name (e.g. isInGameMode)</value>
+  </data>
+  <data name="SetVolumeKind_Decrement" xml:space="preserve">
+    <value>Decrement</value>
+  </data>
+  <data name="SetVolumeKind_Increment" xml:space="preserve">
+    <value>Increment</value>
+  </data>
+  <data name="SetVolumeKind_Set" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="TriggerAdditionalText" xml:space="preserve">
+    <value>or</value>
+  </data>
+  <data name="TriggerVerbText" xml:space="preserve">
+    <value>When</value>
+  </data>
+  <data name="VariableCondition_AddText" xml:space="preserve">
+    <value>If a local variable is true or false</value>
+  </data>
+  <data name="VariableCondition_EmptyText" xml:space="preserve">
+    <value>(enter a variable name)</value>
+  </data>
+  <data name="VariableCondition_LinkText" xml:space="preserve">
+    <value>Variable {Text} is {Option}</value>
+  </data>
+  <data name="VariableCondition_PromptText" xml:space="preserve">
+    <value>Enter a variable name (e.g. isInGameMode)</value>
+  </data>
+  <data name="ToolbarDeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ToolbarEditText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="ToolbarSaveText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ChooseADeviceTitle" xml:space="preserve">
+    <value>Choose a device</value>
+  </data>
+  <data name="ChooseAnAppTitle" xml:space="preserve">
+    <value>Choose an app</value>
+  </data>
+  <data name="DeleteActionDialogNoText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="DeleteActionDialogText" xml:space="preserve">
+    <value>Delete this action?</value>
+  </data>
+  <data name="DeleteActionDialogTitle" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DeleteActionDialogYesText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="LeavingPageDialogNoText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="LeavingPageDialogText" xml:space="preserve">
+    <value>Leave without saving?</value>
+  </data>
+  <data name="LeavingPageDialogTitle" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="LeavingPageDialogYesText" xml:space="preserve">
+    <value>Leave</value>
+  </data>
+  <data name="RemoveActionButtonText" xml:space="preserve">
+    <value>Remove this action</value>
+  </data>
+  <data name="RemoveActionDescriptionText" xml:space="preserve">
+    <value>This cannot be undone.</value>
+  </data>
+  <data name="RemoveActionHeadingText" xml:space="preserve">
+    <value>Remove action</value>
+  </data>
+  <data name="RemoveButtonAccessibleName" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="ChooseAnAppHelpText" xml:space="preserve">
+    <value>Apps shown above have played sound recently.</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeDownText" xml:space="preserve">
+    <value>Decrease volume for all devices</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeUpText" xml:space="preserve">
+    <value>Increase volume for all devices</value>
+  </data>
+  <data name="OpenAppsVolume_Windows10_Text" xml:space="preserve">
+    <value>App volume and device preferences</value>
+  </data>
+  <data name="OpenAppsVolume_Windows11_Text" xml:space="preserve">
+    <value>Volume mixer</value>
+  </data>
+  <data name="MouseSettingsPageText" xml:space="preserve">
+    <value>Mouse settings</value>
+  </data>
+  <data name="SettingsUseScrollWheelInTray" xml:space="preserve">
+    <value>Use the scroll wheel to change volume while hovering over the tray icon</value>
+  </data>
+  <data name="SettingsUseGlobalMouseWheelHook" xml:space="preserve">
+    <value>Use the scroll wheel to change volume while the flyout is open</value>
+  </data>
+  <data name="CommunitySettingsPageText" xml:space="preserve">
+    <value>Community settings</value>
+  </data>
+  <data name="SettingsUseLogarithmicVolume" xml:space="preserve">
+    <value>Use logarithmic volume scale</value>
+  </data>
+  <data name="ForkAttributionText" xml:space="preserve">
+    <value>Fork of EarTrumpet by File-New-Project</value>
+  </data>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>BetterTrumpet</value>
+  </data>
+  <data name="SettingsUseSmoothAnimation" xml:space="preserve">
+    <value>Use smooth volume animation</value>
+  </data>
+  <data name="SettingsAnimationSpeed" xml:space="preserve">
+    <value>Animation speed:</value>
+  </data>
+  <data name="CustomizationSettingsPageText" xml:space="preserve">
+    <value>Customization</value>
+  </data>
+  <data name="CustomizationCategoryTitle" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="CustomizationCategoryDescription" xml:space="preserve">
+    <value>Theme, colors, media popup, and performance</value>
+  </data>
+  <data name="AppCategoryTitle" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="AppCategoryDescription" xml:space="preserve">
+    <value>Version, updates, and privacy</value>
+  </data>
+  <data name="GeneralSettingsPageText" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="GeneralSettingsPageSubtitle" xml:space="preserve">
+    <value>Startup, tray icon, tooltips, and hidden apps.</value>
+  </data>
+  <data name="VolumeMouseSettingsPageText" xml:space="preserve">
+    <value>Volume &amp; mouse</value>
+  </data>
+  <data name="VolumeMouseSettingsPageSubtitle" xml:space="preserve">
+    <value>Scroll wheel behavior and volume scaling.</value>
+  </data>
+  <data name="PerformanceSettingsPageText" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="PerformanceSettingsPageSubtitle" xml:space="preserve">
+    <value>Tune refresh rates, animations, and battery usage.</value>
+  </data>
+  <data name="AppearanceSettingsPageText" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="AppearanceSettingsPageSubtitle" xml:space="preserve">
+    <value>Customize how BetterTrumpet looks on your desktop.</value>
+  </data>
+  <data name="MediaPopupSettingsPageText" xml:space="preserve">
+    <value>Media popup</value>
+  </data>
+  <data name="MediaPopupSettingsPageSubtitle" xml:space="preserve">
+    <value>Control how media controls appear on tray hover.</value>
+  </data>
+  <data name="QuickTrumpetSettingsPageText" xml:space="preserve">
+    <value>QuickTrumpet</value>
+  </data>
+  <data name="QuickTrumpetSettingsPageSubtitle" xml:space="preserve">
+    <value>Switch default devices and volumes in one go, from here, a shortcut, Raycast or the bt CLI.</value>
+  </data>
+  <data name="UpdatesSettingsPageText" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="UpdatesSettingsPageSubtitle" xml:space="preserve">
+    <value>Choose when to be notified and install new versions.</value>
+  </data>
+  <data name="PrivacySettingsPageText" xml:space="preserve">
+    <value>Privacy &amp; data</value>
+  </data>
+  <data name="PrivacySettingsPageSubtitle" xml:space="preserve">
+    <value>Telemetry, settings backup, and diagnostics.</value>
+  </data>
+  <data name="SettingsUseCustomSliderColors" xml:space="preserve">
+    <value>Use custom slider colors</value>
+  </data>
+  <data name="SettingsSliderThumbColor" xml:space="preserve">
+    <value>Thumb color:</value>
+  </data>
+  <data name="SettingsSliderTrackFillColor" xml:space="preserve">
+    <value>Track fill color:</value>
+  </data>
+  <data name="SettingsSliderTrackBackgroundColor" xml:space="preserve">
+    <value>Track background color:</value>
+  </data>
+  <data name="SettingsPeakMeterColor" xml:space="preserve">
+    <value>Peak meter color:</value>
+  </data>
+  <!-- Settings - Appearance page -->
+  <data name="SettingsCustomColors" xml:space="preserve">
+    <value>Custom Colors</value>
+  </data>
+  <data name="SettingsCustomColorsDesc" xml:space="preserve">
+    <value>Personalize volume slider appearance</value>
+  </data>
+  <data name="SettingsWindowOpacity" xml:space="preserve">
+    <value>Window background opacity</value>
+  </data>
+  <data name="SettingsWindowOpacityDesc" xml:space="preserve">
+    <value>Lower values keep more of the acrylic blur visible</value>
+  </data>
+  <data name="SettingsTabDynamic" xml:space="preserve">
+    <value>Dynamic</value>
+  </data>
+  <data name="SettingsTabPresets" xml:space="preserve">
+    <value>Presets</value>
+  </data>
+  <data name="SettingsTabCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="SettingsLivePreview" xml:space="preserve">
+    <value>Live Preview</value>
+  </data>
+  <data name="SettingsColorPalette" xml:space="preserve">
+    <value>Color Palette</value>
+  </data>
+  <data name="SettingsSliderColors" xml:space="preserve">
+    <value>Slider Colors</value>
+  </data>
+  <data name="SettingsWindowColors" xml:space="preserve">
+    <value>Window Colors</value>
+  </data>
+  <data name="SettingsWindowBgColor" xml:space="preserve">
+    <value>Window background</value>
+  </data>
+  <data name="SettingsTextColor" xml:space="preserve">
+    <value>Text color</value>
+  </data>
+  <data name="SettingsAccentGlowColor" xml:space="preserve">
+    <value>Accent glow</value>
+  </data>
+  <data name="SettingsMyThemes" xml:space="preserve">
+    <value>My Themes</value>
+  </data>
+  <data name="SettingsSaveTheme" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SettingsResetToDefault" xml:space="preserve">
+    <value>Reset to Default</value>
+  </data>
+  <data name="SettingsThemeNamePlaceholder" xml:space="preserve">
+    <value>Theme name...</value>
+  </data>
+  <data name="SettingsCopyToClipboard" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="SettingsPasteFromClipboard" xml:space="preserve">
+    <value>Paste from clipboard</value>
+  </data>
+  <data name="SettingsExportBttheme" xml:space="preserve">
+    <value>Export .bttheme</value>
+  </data>
+  <data name="SettingsImportBttheme" xml:space="preserve">
+    <value>Import .bttheme</value>
+  </data>
+  <data name="SettingsPresetCategories" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="SettingsCategoryAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <!-- Settings - Performance page -->
+  <data name="SettingsEcoMode" xml:space="preserve">
+    <value>Eco Mode</value>
+  </data>
+  <data name="SettingsEcoModeDesc" xml:space="preserve">
+    <value>Lower refresh rates to save CPU/GPU, always or only on battery</value>
+  </data>
+  <data name="SettingsEcoModeOverridden" xml:space="preserve">
+    <value>Overridden by Eco Mode when active</value>
+  </data>
+  <data name="SettingsAnimations" xml:space="preserve">
+    <value>Animations</value>
+  </data>
+  <data name="SettingsSmoothVolumeAnimation" xml:space="preserve">
+    <value>Smooth volume animation</value>
+  </data>
+  <data name="SettingsVolumeTickSound" xml:space="preserve">
+    <value>Volume tick sound effect</value>
+  </data>
+  <data name="SettingsVolumeTickSoundTip" xml:space="preserve">
+    <value>Play a subtle tick sound when adjusting volume</value>
+  </data>
+  <data name="MonkeyTickSoundUnlockedTitle" xml:space="preserve">
+    <value>Monkey mode unlocked!</value>
+  </data>
+  <data name="MonkeyTickSoundUnlockedDescription" xml:space="preserve">
+    <value>You found the secret volume sounds. The monkey changes as the volume rises.</value>
+  </data>
+  <data name="SettingsUseMonkeyTickSound" xml:space="preserve">
+    <value>Use the monkey sound instead of the tick</value>
+  </data>
+  <data name="SettingsUseMonkeyTickSoundTip" xml:space="preserve">
+    <value>Keep this secret sound enabled for volume adjustments</value>
+  </data>
+  <data name="AboutDeveloper" xml:space="preserve">
+    <value>Developed by xammen</value>
+  </data>
+  <data name="AboutFork" xml:space="preserve">
+    <value>Fork of EarTrumpet (thx for your great work!)</value>
+  </data>
+  <data name="AboutGitHub" xml:space="preserve">
+    <value>GitHub Repository</value>
+  </data>
+  <data name="AboutFeedback" xml:space="preserve">
+    <value>Feedback &amp; Suggestions</value>
+  </data>
+  <data name="AboutReportBug" xml:space="preserve">
+    <value>Report a Bug</value>
+  </data>
+  <data name="CheckForUpdatesText" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="CheckingForUpdatesText" xml:space="preserve">
+    <value>Checking for updates...</value>
+  </data>
+  <data name="UpdateAvailableText" xml:space="preserve">
+    <value>Update available: {0}</value>
+  </data>
+  <data name="NoUpdatesAvailableText" xml:space="preserve">
+    <value>You're up to date!</value>
+  </data>
+  <data name="SettingsAnimationSpeedLabel" xml:space="preserve">
+    <value>Animation speed</value>
+  </data>
+  <data name="SettingsSpeedSlow" xml:space="preserve">
+    <value>Slow</value>
+  </data>
+  <data name="SettingsSpeedFast" xml:space="preserve">
+    <value>Fast</value>
+  </data>
+  <data name="SettingsPeakMeter" xml:space="preserve">
+    <value>Peak Meter</value>
+  </data>
+  <data name="SettingsRefreshRate" xml:space="preserve">
+    <value>Refresh rate</value>
+  </data>
+  <data name="SettingsFpsUltraSaver" xml:space="preserve">
+    <value>Ultra saver</value>
+  </data>
+  <data name="SettingsFpsBatterySaver" xml:space="preserve">
+    <value>Battery saver</value>
+  </data>
+  <data name="SettingsFpsBalanced" xml:space="preserve">
+    <value>Balanced</value>
+  </data>
+  <data name="SettingsFpsSmoothest" xml:space="preserve">
+    <value>Smoothest</value>
+  </data>
+  <!-- Settings - General page -->
+  <data name="SettingsScrollWheelDesc" xml:space="preserve">
+    <value>Control volume with your mouse wheel</value>
+  </data>
+  <data name="SettingsScrollWheel" xml:space="preserve">
+    <value>Scroll Wheel</value>
+  </data>
+  <data name="SettingsScrollWheelTrayTip" xml:space="preserve">
+    <value>Scroll your mouse wheel over the tray icon to quickly adjust system volume.</value>
+  </data>
+  <data name="SettingsScrollWheelGlobalTip" xml:space="preserve">
+    <value>Enables volume control via scroll wheel anywhere on screen when holding a modifier key.</value>
+  </data>
+  <data name="SettingsAppTooltips" xml:space="preserve">
+    <value>Icon Tooltips</value>
+  </data>
+  <data name="SettingsAppTooltipsDesc" xml:space="preserve">
+    <value>Show or hide tooltips when hovering tray and app icons.</value>
+  </data>
+  <data name="SettingsShowAppTooltips" xml:space="preserve">
+    <value>Show icon tooltips</value>
+  </data>
+  <data name="SettingsVolumeScale" xml:space="preserve">
+    <value>Volume Scale</value>
+  </data>
+  <data name="SettingsVolumeScaleDesc" xml:space="preserve">
+    <value>How volume steps are distributed</value>
+  </data>
+  <data name="SettingsLogVolumeDesc" xml:space="preserve">
+    <value>Logarithmic scale matches human hearing perception — finer control at low volumes, coarser at high.</value>
+  </data>
+  <data name="SettingsStartupDesc" xml:space="preserve">
+    <value>Launch BetterTrumpet with Windows</value>
+  </data>
+  <data name="SettingsTrayIconDesc" xml:space="preserve">
+    <value>System tray icon appearance</value>
+  </data>
+  <data name="SettingsMediaPopupDesc" xml:space="preserve">
+    <value>Show media controls on tray hover</value>
+  </data>
+  <data name="SettingsEnableMediaPopup" xml:space="preserve">
+    <value>Enable media popup</value>
+  </data>
+  <data name="SettingsInteractionDesc" xml:space="preserve">
+    <value>Hover delay and trigger behavior</value>
+  </data>
+  <data name="SettingsOnlyWhenPlaying" xml:space="preserve">
+    <value>Only show when media is playing</value>
+  </data>
+  <data name="SettingsShowWhenPaused" xml:space="preserve">
+    <value>Show controls when media is paused</value>
+  </data>
+  <data name="SettingsRememberExpanded" xml:space="preserve">
+    <value>Remember expanded/collapsed state</value>
+  </data>
+  <data name="SettingsVisualEffectsDesc" xml:space="preserve">
+    <value>Album art blur intensity</value>
+  </data>
+  <data name="SettingsBlurNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="SettingsBlurMax" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="SettingsEcoModeEnable" xml:space="preserve">
+    <value>Always use Eco Mode (20 FPS)</value>
+  </data>
+  <data name="SettingsEcoModeEnableTip" xml:space="preserve">
+    <value>Reduces peak meter refresh rate to 20 FPS, significantly lowering CPU usage. Ideal for laptops or when running on battery power.</value>
+  </data>
+  <data name="SettingsAutoEcoMode" xml:space="preserve">
+    <value>Auto-enable when on battery</value>
+  </data>
+  <data name="SettingsAutoEcoModeTip" xml:space="preserve">
+    <value>Automatically activates Eco Mode when your device is running on battery to extend battery life.</value>
+  </data>
+  <data name="SettingsSmoothVolumeAnimationTip" xml:space="preserve">
+    <value>When enabled, clicking on the volume track will smoothly animate to the target volume instead of jumping instantly.</value>
+  </data>
+  <data name="SettingsCurrentRefreshRate" xml:space="preserve">
+    <value>Current refresh rate: </value>
+  </data>
+  <data name="SettingsAnimationsDesc" xml:space="preserve">
+    <value>Volume slider transitions</value>
+  </data>
+  <data name="SettingsPeakMeterDesc" xml:space="preserve">
+    <value>Audio level visualization refresh</value>
+  </data>
+  <data name="SettingsPeakMeterStyle" xml:space="preserve">
+    <value>Peak Meter Style</value>
+  </data>
+  <data name="SettingsPeakMeterStyleDesc" xml:space="preserve">
+    <value>Choose how the audio level meter looks</value>
+  </data>
+  <data name="SettingsDynamicAlbumArt" xml:space="preserve">
+    <value>Dynamic Album Art Theme</value>
+  </data>
+  <data name="SettingsDynamicAlbumArtDesc" xml:space="preserve">
+    <value>Colors automatically adapt to the album art of currently playing music</value>
+  </data>
+  <data name="SettingsEnableDynamicAlbumArt" xml:space="preserve">
+    <value>Enable dynamic album art colors</value>
+  </data>
+  <data name="SettingsDynamicAlbumArtInfo" xml:space="preserve">
+    <value> When enabled, BetterTrumpet samples colors from album art every few seconds and generates a harmonious palette for your sliders.</value>
+  </data>
+  <data name="SettingsColorPaletteDesc" xml:space="preserve">
+    <value>Click any swatch to edit its color</value>
+  </data>
+  <data name="SettingsMyThemesDesc" xml:space="preserve">
+    <value>Saved custom color schemes</value>
+  </data>
+  <data name="SettingsNoSavedThemes" xml:space="preserve">
+    <value>No saved themes yet. Create one from your current colors.</value>
+  </data>
+  <data name="SettingsRandomizeTooltip" xml:space="preserve">
+    <value>Randomize colors</value>
+  </data>
+  <data name="SettingsProfileApply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="SettingsProfileDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SettingsProfileExport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="SettingsProfileImport" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="SettingsProfileSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SettingsStartup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="SettingsTrayIcon" xml:space="preserve">
+    <value>Tray Icon</value>
+  </data>
+  <data name="SettingsRunAtStartup" xml:space="preserve">
+    <value>Run at Windows startup</value>
+  </data>
+  <data name="WebSettingsSearchPlaceholder" xml:space="preserve">
+    <value>Search settings</value>
+  </data>
+  <data name="WebSettingsClassicButton" xml:space="preserve">
+    <value>Classic settings</value>
+  </data>
+  <data name="WebSettingsLegacyNoticeTitle" xml:space="preserve">
+    <value>This page is coming soon</value>
+  </data>
+  <data name="WebSettingsLegacyNoticeDescription" xml:space="preserve">
+    <value>It remains available in the classic interface during the migration.</value>
+  </data>
+  <data name="WebSettingsOpenClassicPage" xml:space="preserve">
+    <value>Open this page</value>
+  </data>
+  <data name="WebSettingsNoResults" xml:space="preserve">
+    <value>No settings match your search.</value>
+  </data>
+  <data name="WebSettingsOpenFailed" xml:space="preserve">
+    <value>The classic settings could not be opened. Please try again.</value>
+  </data>
+  <data name="WebSettingsMinimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="WebSettingsClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="WebSettingsLoadErrorTitle" xml:space="preserve">
+    <value>The new settings could not be loaded</value>
+  </data>
+  <data name="WebSettingsLoadErrorDescription" xml:space="preserve">
+    <value>WebView2 may be unavailable. You can retry or use the classic settings.</value>
+  </data>
+  <data name="WebSettingsRetryButton" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="SettingsHiddenAppsTitle" xml:space="preserve">
+    <value>Hidden App Entries</value>
+  </data>
+  <data name="SettingsHiddenAppsDesc" xml:space="preserve">
+    <value>Hide noisy app duplicates per device and restore them anytime.</value>
+  </data>
+  <data name="SettingsHiddenAppsSummaryFormat" xml:space="preserve">
+    <value>{0} hidden app entry(ies)</value>
+  </data>
+  <data name="SettingsHiddenAppsNone" xml:space="preserve">
+    <value>No hidden app entries</value>
+  </data>
+  <data name="SettingsRestoreHiddenApps" xml:space="preserve">
+    <value>Restore hidden app entries</value>
+  </data>
+  <data name="SettingsHiddenAppsUnknown" xml:space="preserve">
+    <value>Unknown app entry</value>
+  </data>
+  <data name="HiddenAppsOnDeviceTooltip" xml:space="preserve">
+    <value>Number of hidden app entries on this device</value>
+  </data>
+  <data name="SettingsMediaPopup" xml:space="preserve">
+    <value>Media Popup</value>
+  </data>
+  <data name="SettingsInteraction" xml:space="preserve">
+    <value>Interaction</value>
+  </data>
+  <data name="SettingsHoverDelay" xml:space="preserve">
+    <value>Hover delay</value>
+  </data>
+  <data name="SettingsVisualEffects" xml:space="preserve">
+    <value>Visual Effects</value>
+  </data>
+  <data name="SettingsBlurRadius" xml:space="preserve">
+    <value>Blur radius</value>
+  </data>
+  <data name="SettingsShowOnlyWhenPlaying" xml:space="preserve">
+    <value>Show only when playing</value>
+  </data>
+  <data name="SettingsExpandedByDefault" xml:space="preserve">
+    <value>Expanded by default</value>
+  </data>
+  <data name="SettingsAbsoluteVolume" xml:space="preserve">
+    <value>Absolute Volume</value>
+  </data>
+  <data name="SettingsAbsoluteVolumeDesc" xml:space="preserve">
+    <value>Direct volume up/down hotkeys</value>
+  </data>
+  <data name="SettingsSwitchDevice" xml:space="preserve">
+    <value>Switch Default Device</value>
+  </data>
+  <data name="SettingsDefaultPrefix" xml:space="preserve">
+    <value>Default: </value>
+  </data>
+  <!-- Settings - Profiles page -->
+  <data name="SettingsSaveCurrentVolumes" xml:space="preserve">
+    <value>Save current setup</value>
+  </data>
+  <data name="SettingsSaveCurrentVolumesDesc" xml:space="preserve">
+    <value>Create a QuickTrumpet preset from the current device and its apps</value>
+  </data>
+  <data name="SettingsSavedProfiles" xml:space="preserve">
+    <value>QuickTrumpet presets</value>
+  </data>
+  <data name="SettingsSavedProfilesDesc" xml:space="preserve">
+    <value>Apply from BetterTrumpet, a hotkey, Raycast, or the bt CLI</value>
+  </data>
+  <data name="SettingsProfileDeviceCount" xml:space="preserve">
+    <value>{0} device(s) | {1}</value>
+  </data>
+  <data name="QuickTrumpetAppliedTitle" xml:space="preserve">
+    <value>QuickTrumpet applied</value>
+  </data>
+  <data name="QuickTrumpetAppliedMessage" xml:space="preserve">
+    <value>{0} applied. {1} app(s), {2} device(s).</value>
+  </data>
+  <data name="SettingsQuickTrumpetConfirmation" xml:space="preserve">
+    <value>Show a confirmation when a preset is applied</value>
+  </data>
+  <data name="SettingsQuickTrumpetAllDevices" xml:space="preserve">
+    <value>Include all devices in this preset</value>
+  </data>
+  <data name="SettingsQuickTrumpetShortcut" xml:space="preserve">
+    <value>Shortcut</value>
+  </data>
+  <data name="SettingsQuickTrumpetShortcutDesc" xml:space="preserve">
+    <value>Managed here with the preset, so Raycast, CLI, and keyboard workflows stay together.</value>
+  </data>
+  <data name="SettingsQuickTrumpetAppsOnly" xml:space="preserve">
+    <value>Only apply app volumes and mute states</value>
+  </data>
+  <data name="SettingsQuickTrumpetAppsOnlyDesc" xml:space="preserve">
+    <value>Only matching app volumes change; devices keep their volume.</value>
+  </data>
+  <data name="WebSettingsSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="WebSettingsRename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="WebSettingsCustomColorsTweakHint" xml:space="preserve">
+    <value>The selected preset lands here; tweak any channel to make it yours.</value>
+  </data>
+  <data name="WebSettingsEffectiveRate" xml:space="preserve">
+    <value>Effective rate</value>
+  </data>
+  <data name="WebSettingsEffectiveRateHint" xml:space="preserve">
+    <value>Actual rendering rate right now.</value>
+  </data>
+  <data name="WebSettingsQuickTrumpetEmptyHint" xml:space="preserve">
+    <value>Capture your current mix as your first preset.</value>
+  </data>
+  <data name="FolderVolumeRulesHeaderDesc" xml:space="preserve">
+    <value>Starting volume for apps launched from a folder.</value>
+  </data>
+  <!-- Settings - About page -->
+  <data name="SettingsAboutSubtitle" xml:space="preserve">
+    <value>Version info, telemetry, and diagnostics.</value>
+  </data>
+  <data name="SettingsSendDiagnostics" xml:space="preserve">
+    <value>Send diagnostic data to improve BetterTrumpet</value>
+  </data>
+  <data name="SettingsSendDiagnosticsDesc" xml:space="preserve">
+    <value>Send anonymous crash reports and usage statistics. No personal data is collected.</value>
+  </data>
+  <data name="DiagnosticsExportSuccessTitle" xml:space="preserve">
+    <value>Diagnostic report ready</value>
+  </data>
+  <data name="DiagnosticsExportSuccessMessage" xml:space="preserve">
+    <value>A support bundle was created and its path was copied to the clipboard:
+
+{0}
+
+Review the zip before sharing. It can still contain app names, device names, process IDs, and other details from your audio setup.</value>
+  </data>
+  <data name="DiagnosticsExportConfirmTitle" xml:space="preserve">
+    <value>Export diagnostic report</value>
+  </data>
+  <data name="DiagnosticsExportConfirmMessage" xml:space="preserve">
+    <value>The diagnostic report can include app names, device names, process IDs, Windows audio endpoint IDs, settings state, and recent BetterTrumpet logs.
+
+User folder paths are replaced with environment variables, but you should still review the files before sharing.
+
+Create the report now?</value>
+  </data>
+  <data name="DiagnosticsExportReviewTitle" xml:space="preserve">
+    <value>Review diagnostic files</value>
+  </data>
+  <data name="DiagnosticsExportReviewMessage" xml:space="preserve">
+    <value>The diagnostic files are open in Explorer. Review or edit them, then click OK to pack them into a zip.
+
+Click Cancel to leave the files unzipped so you can keep editing them.</value>
+  </data>
+  <data name="DiagnosticsExportStagingKeptMessage" xml:space="preserve">
+    <value>The diagnostic files were left unzipped so you can review them:
+
+{0}
+
+The folder path was copied to the clipboard.</value>
+  </data>
+  <data name="CrashDialogTitle" xml:space="preserve">
+    <value>BetterTrumpet</value>
+  </data>
+  <data name="CrashDialogFatalBody" xml:space="preserve">
+    <value>BetterTrumpet ran into a critical error and must close.
+
+The report was saved to the logs.
+
+Details: {0}{1}</value>
+  </data>
+  <data name="CrashDialogNonFatalBody" xml:space="preserve">
+    <value>BetterTrumpet ran into a problem.
+
+The app will try to continue.
+
+Details: {0}{1}</value>
+  </data>
+  <data name="CrashDialogDiagnosticPath" xml:space="preserve">
+    <value>
+
+A diagnostic report was created and its path was copied to the clipboard:
+{0}</value>
+  </data>
+  <data name="CrashDialogUnknownError" xml:space="preserve">
+    <value>Unknown error</value>
+  </data>
+  <data name="DiagnosticsExportFailedTitle" xml:space="preserve">
+    <value>Diagnostic export failed</value>
+  </data>
+  <data name="DiagnosticsExportFailedMessage" xml:space="preserve">
+    <value>BetterTrumpet could not create the diagnostic report.
+
+Details: {0}</value>
+  </data>
+  <data name="SettingsUpdates" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="SettingsUpdatesDesc" xml:space="preserve">
+    <value>New version notifications</value>
+  </data>
+  <data name="SettingsNotifyFor" xml:space="preserve">
+    <value>Notify for:</value>
+  </data>
+  <data name="SettingsUpdateChannelAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="SettingsUpdateChannelAllSub" xml:space="preserve">
+    <value>Patch+</value>
+  </data>
+  <data name="SettingsUpdateChannelMinor" xml:space="preserve">
+    <value>Minor+</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorSub" xml:space="preserve">
+    <value>Minor+</value>
+  </data>
+  <data name="SettingsUpdateChannelMajor" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorSub" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="SettingsUpdateChannelNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneSub" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="SettingsCheckUpdate" xml:space="preserve">
+    <value>Check</value>
+  </data>
+  <data name="SettingsInstallUpdate" xml:space="preserve">
+    <value>Install update</value>
+  </data>
+  <data name="SettingsTelemetryDesc" xml:space="preserve">
+    <value>Send anonymous crash reports and usage statistics to improve BetterTrumpet. No personal data is collected.</value>
+  </data>
+  <data name="SettingsTelemetryEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="SettingsTelemetryDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="SettingsUpdateChannelAllDesc" xml:space="preserve">
+    <value>All updates</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorMajorDesc" xml:space="preserve">
+    <value>Minor and major</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorOnlyDesc" xml:space="preserve">
+    <value>Major only</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneDesc" xml:space="preserve">
+    <value>No update notifications</value>
+  </data>
+  <data name="SettingsUpdateChannelAllDetail" xml:space="preserve">
+    <value>Patch, minor and major (e.g. 3.0.0 → 3.0.1)</value>
+  </data>
+  <data name="SettingsUpdateChannelMinorMajorDetail" xml:space="preserve">
+    <value>Minor and major only (e.g. 3.0 → 3.1)</value>
+  </data>
+  <data name="SettingsUpdateChannelMajorOnlyDetail" xml:space="preserve">
+    <value>Major only (e.g. 3 → 4)</value>
+  </data>
+  <data name="SettingsUpdateChannelNoneDetail" xml:space="preserve">
+    <value>No update notifications</value>
+  </data>
+  <data name="SettingsUpdateStatusDownloading" xml:space="preserve">
+    <value>Downloading...</value>
+  </data>
+  <data name="SettingsUpdateStatusChecking" xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="SettingsUpdateStatusAvailable" xml:space="preserve">
+    <value>v{0} available</value>
+  </data>
+  <data name="SettingsUpdateStatusUpToDate" xml:space="preserve">
+    <value>Up to date</value>
+  </data>
+  <data name="SettingsExportImport" xml:space="preserve">
+    <value>Export &amp; Import</value>
+  </data>
+  <data name="SettingsExportImportDesc" xml:space="preserve">
+    <value>Backup or restore all your settings</value>
+  </data>
+  <data name="SettingsExportSettings" xml:space="preserve">
+    <value>Export Settings</value>
+  </data>
+  <data name="SettingsImportSettings" xml:space="preserve">
+    <value>Import Settings</value>
+  </data>
+  <data name="SettingsImportSuccess" xml:space="preserve">
+    <value>Settings imported successfully! Some changes may require restarting BetterTrumpet.</value>
+  </data>
+  <data name="SettingsImportTitle" xml:space="preserve">
+    <value>Import Complete</value>
+  </data>
+  <!-- Settings - Dialogs -->
+  <data name="SettingsResetConfirm" xml:space="preserve">
+    <value>Reset all colors to Windows defaults?</value>
+  </data>
+  <data name="SettingsResetTitle" xml:space="preserve">
+    <value>Reset Theme</value>
+  </data>
+  <data name="SettingsDeleteConfirm" xml:space="preserve">
+    <value>Delete "{0}"?</value>
+  </data>
+  <data name="SettingsDeleteTitle" xml:space="preserve">
+    <value>Delete Theme</value>
+  </data>
+  <data name="SettingsThemeCopied" xml:space="preserve">
+    <value>Theme copied to clipboard</value>
+  </data>
+  <!-- Onboarding -->
+  <data name="OnboardingWelcomeTo" xml:space="preserve">
+    <value>Welcome to</value>
+  </data>
+  <data name="OnboardingWindowTitle" xml:space="preserve">
+    <value>BetterTrumpet Setup</value>
+  </data>
+  <data name="OnboardingStepFormat" xml:space="preserve">
+    <value>Step {0} of {1}</value>
+  </data>
+  <data name="OnboardingIntroTitle" xml:space="preserve">
+    <value>Set up the mixer once.</value>
+  </data>
+  <data name="OnboardingIntroDesc" xml:space="preserve">
+    <value>BetterTrumpet stays in the taskbar and gives you fast control over apps, devices, themes, and recovery settings.</value>
+  </data>
+  <data name="OnboardingIntroMixerTitle" xml:space="preserve">
+    <value>Mix apps without opening Settings</value>
+  </data>
+  <data name="OnboardingIntroMixerDesc" xml:space="preserve">
+    <value>Keep per-app volume and output controls one click away.</value>
+  </data>
+  <data name="OnboardingIntroTrayTitle" xml:space="preserve">
+    <value>Make the tray icon easy to reach</value>
+  </data>
+  <data name="OnboardingIntroTrayDesc" xml:space="preserve">
+    <value>The final step shows how to pin BetterTrumpet beside your system icons.</value>
+  </data>
+  <data name="OnboardingSubtitleWelcome" xml:space="preserve">
+    <value>Take full control of your sound.</value>
+  </data>
+  <data name="OnboardingSetupSummaryTitle" xml:space="preserve">
+    <value>What this setup does</value>
+  </data>
+  <data name="OnboardingSetupSummaryDesc" xml:space="preserve">
+    <value>Pick a device, choose the app look, then lock in the privacy and startup settings you want.</value>
+  </data>
+  <data name="OnboardingAudioOutput" xml:space="preserve">
+    <value>Audio Output</value>
+  </data>
+  <data name="OnboardingSubtitleAudio" xml:space="preserve">
+    <value>Choose where your audio goes.</value>
+  </data>
+  <data name="OnboardingAppearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="OnboardingSubtitleAppearance" xml:space="preserve">
+    <value>Choose your style.</value>
+  </data>
+  <data name="OnboardingPrivacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="OnboardingSubtitlePrivacy" xml:space="preserve">
+    <value>Crash reports are technical only, and they are what let us fix real bugs faster.</value>
+  </data>
+  <data name="OnboardingCrashReports" xml:space="preserve">
+    <value>Crash reports</value>
+  </data>
+  <data name="OnboardingCrashReportsDesc" xml:space="preserve">
+    <value>Recommended for crash, bug, and memory leak diagnostics</value>
+  </data>
+  <data name="OnboardingCrashReportsInfo" xml:space="preserve">
+    <value>This helps us fix bugs without ever collecting private data.</value>
+  </data>
+  <data name="OnboardingTelemetryValueTitle" xml:space="preserve">
+    <value>Help us catch crashes and memory leaks</value>
+  </data>
+  <data name="OnboardingTelemetryValueDesc" xml:space="preserve">
+    <value>These reports include technical diagnostics such as stack traces, OS version, and app state. We never sell your data.</value>
+  </data>
+  <data name="OnboardingTelemetryConfirmTitle" xml:space="preserve">
+    <value>Disable crash reports?</value>
+  </data>
+  <data name="OnboardingTelemetryConfirmDesc" xml:space="preserve">
+    <value>Keeping them on helps us fix crashes, bugs, and memory leaks in live builds. Reports are used only to improve BetterTrumpet.</value>
+  </data>
+  <data name="OnboardingTelemetryKeepEnabled" xml:space="preserve">
+    <value>Keep enabled</value>
+  </data>
+  <data name="OnboardingTelemetryDisableAnyway" xml:space="preserve">
+    <value>Disable anyway</value>
+  </data>
+  <data name="OnboardingAutoUpdates" xml:space="preserve">
+    <value>Automatic updates</value>
+  </data>
+  <data name="OnboardingUpdateAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="OnboardingUpdateRecommended" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="OnboardingUpdateMinor" xml:space="preserve">
+    <value>Minor</value>
+  </data>
+  <data name="OnboardingUpdateNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="OnboardingLaunchAtStartup" xml:space="preserve">
+    <value>Launch at startup</value>
+  </data>
+  <data name="OnboardingLaunchAtStartupDesc" xml:space="preserve">
+    <value>Starts with Windows</value>
+  </data>
+  <data name="OnboardingAllReady" xml:space="preserve">
+    <value>All set</value>
+  </data>
+  <data name="OnboardingAllReadyDesc" xml:space="preserve">
+    <value>Click the icon in the taskbar to mix your audio.</value>
+  </data>
+  <data name="OnboardingDeviceConfigured" xml:space="preserve">
+    <value>Audio device configured</value>
+  </data>
+  <data name="OnboardingAppearanceChosen" xml:space="preserve">
+    <value>Appearance chosen</value>
+  </data>
+  <data name="OnboardingPrivacyConfigured" xml:space="preserve">
+    <value>Privacy configured</value>
+  </data>
+  <data name="OnboardingPinTitle" xml:space="preserve">
+    <value>Pin BetterTrumpet</value>
+  </data>
+  <data name="OnboardingPinDesc" xml:space="preserve">
+    <value>Drag the BetterTrumpet icon from the hidden menu to your taskbar for one-click access.</value>
+  </data>
+  <data name="OnboardingNoDevices" xml:space="preserve">
+    <value>No audio devices detected.</value>
+  </data>
+  <data name="OnboardingSystemTheme" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="OnboardingSystemThemeDesc" xml:space="preserve">
+    <value>Follow Windows and keep the app visually quiet.</value>
+  </data>
+  <data name="OnboardingCustomTheme" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="OnboardingCustomThemeDesc" xml:space="preserve">
+    <value>Use the BetterTrumpet palette for stronger sliders and meters.</value>
+  </data>
+  <data name="OnboardingCustomThemeNote" xml:space="preserve">
+    <value>Use BetterTrumpet colors</value>
+  </data>
+  <data name="OnboardingRecommendedBadge" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="OnboardingSetupReadyDesc" xml:space="preserve">
+    <value>Your setup choices are in place.</value>
+  </data>
+  <data name="OnboardingTrayAccessDesc" xml:space="preserve">
+    <value>The tray icon keeps app and device controls one click away.</value>
+  </data>
+  <data name="OnboardingSkip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="OnboardingBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="OnboardingContinue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="OnboardingDone" xml:space="preserve">
+    <value>Done!</value>
+  </data>
+  <data name="OnboardingTelemetryReassurance" xml:space="preserve">
+    <value>We understand. We never sell your data — crash reports only contain technical info (stack traces, OS version) to help us fix bugs and optimize performance.</value>
+  </data>
+  <data name="UpdateTextDownloading" xml:space="preserve">
+    <value>Downloading update...</value>
+  </data>
+  <data name="UpdateTextAvailable" xml:space="preserve">
+    <value>Update available: v{0}</value>
+  </data>
+  <data name="UpdateTextUpToDate" xml:space="preserve">
+    <value>Up to date</value>
+  </data>
+  <data name="UpdateTextNeverChecked" xml:space="preserve">
+    <value>Never checked</value>
+  </data>
+  <data name="UpdateTextLastChecked" xml:space="preserve">
+    <value>Last checked: {0}</value>
+  </data>
+  <data name="UpdateContextMenu" xml:space="preserve">
+    <value>Update (v{0})</value>
+  </data>
+  <data name="ChangelogTitle" xml:space="preserve">
+    <value>BetterTrumpet is up to date</value>
+  </data>
+  <data name="ChangelogSubtitle" xml:space="preserve">
+    <value>Version {0} is now installed.</value>
+  </data>
+  <data name="ChangelogViewReleaseNotes" xml:space="preserve">
+    <value>See what's new</value>
+  </data>
+  <data name="ChangelogContinue" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="TrayWhatsNewWithBadge" xml:space="preserve">
+    <value>What's new ({0})</value>
+  </data>
+  <data name="AnnouncementsTitle" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="AnnouncementsLive" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="AnnouncementsPageDescription" xml:space="preserve">
+    <value>News, polls and surveys from the BetterTrumpet team.</value>
+  </data>
+  <data name="AnnouncementsLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="AnnouncementsLoadErrorTitle" xml:space="preserve">
+    <value>Couldn't load announcements</value>
+  </data>
+  <data name="AnnouncementsLoadErrorDescription" xml:space="preserve">
+    <value>Something went wrong while loading the announcements. Please try again.</value>
+  </data>
+  <data name="AnnouncementsRetryButton" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="AnnouncementsCloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="AnnouncementsVoteButton" xml:space="preserve">
+    <value>Vote</value>
+  </data>
+  <data name="AnnouncementsChangeVote" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="AnnouncementsLearnMore" xml:space="preserve">
+    <value>Learn more</value>
+  </data>
+  <data name="AnnouncementsVotesFormat" xml:space="preserve">
+    <value>{0} votes</value>
+  </data>
+  <data name="AnnouncementsYouVoted" xml:space="preserve">
+    <value>You voted</value>
+  </data>
+  <data name="AnnouncementsThanks" xml:space="preserve">
+    <value>Thanks for voting!</value>
+  </data>
+  <data name="AnnouncementsEmptyTitle" xml:space="preserve">
+    <value>Nothing new right now</value>
+  </data>
+  <data name="AnnouncementsEmptyBody" xml:space="preserve">
+    <value>News, polls and updates will appear here.</value>
+  </data>
+  <data name="AnnouncementsTypeNews" xml:space="preserve">
+    <value>News</value>
+  </data>
+  <data name="AnnouncementsTypePoll" xml:space="preserve">
+    <value>Poll</value>
+  </data>
+  <data name="AnnouncementsTypeSurvey" xml:space="preserve">
+    <value>Survey</value>
+  </data>
+  <data name="AnnouncementsTypeAb" xml:space="preserve">
+    <value>A/B</value>
+  </data>
+  <data name="AnnouncementsTypeText" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
+  <data name="AnnouncementsSubmitButton" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="AnnouncementsTextPlaceholder" xml:space="preserve">
+    <value>Type your answer...</value>
+  </data>
+  <data name="PresetCategoryAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="PresetCategoryMinimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="PresetCategoryBrands" xml:space="preserve">
+    <value>Brands</value>
+  </data>
+  <data name="PresetCategoryRetro" xml:space="preserve">
+    <value>Retro</value>
+  </data>
+  <data name="PresetCategoryAtmosphere" xml:space="preserve">
+    <value>Atmosphere</value>
+  </data>
+  <data name="PresetCategoryDeveloper" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="PresetCategoryNature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="PresetCategoryAccessibility" xml:space="preserve">
+    <value>Accessibility</value>
+  </data>
+  <data name="ColorLabelThumb" xml:space="preserve">
+    <value>Thumb</value>
+  </data>
+  <data name="ColorLabelFill" xml:space="preserve">
+    <value>Fill</value>
+  </data>
+  <data name="ColorLabelTrackBg" xml:space="preserve">
+    <value>Track BG</value>
+  </data>
+  <data name="ColorLabelPeakMeter" xml:space="preserve">
+    <value>Peak Meter</value>
+  </data>
+  <data name="ColorLabelWindowBg" xml:space="preserve">
+    <value>Window BG</value>
+  </data>
+  <data name="ColorLabelText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="ColorLabelGlow" xml:space="preserve">
+    <value>Glow</value>
+  </data>
+  <data name="ColorLabelPreview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="SettingsRememberAppVolumes" xml:space="preserve">
+    <value>Remember application volumes</value>
+  </data>
+  <data name="SettingsRememberAppVolumesDesc" xml:space="preserve">
+    <value>Automatically restore volume levels when applications restart</value>
+  </data>
+  <data name="SettingsRememberAppVolumesEnable" xml:space="preserve">
+    <value>Remember volume levels per application</value>
+  </data>
+  <data name="SettingsClearSavedVolumes" xml:space="preserve">
+    <value>Clear saved volumes</value>
+  </data>
+  <data name="SettingsSavedVolumesCount" xml:space="preserve">
+    <value>Saved volumes:</value>
+  </data>
+  <data name="SettingsExperimentalBadge" xml:space="preserve">
+    <value>Experimental</value>
+  </data>
+  <data name="PeakMeterStyleClassic" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="PeakMeterStyleDotted" xml:space="preserve">
+    <value>Dotted</value>
+  </data>
+  <data name="PeakMeterStyleBlocks" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="PeakMeterStyleBars" xml:space="preserve">
+    <value>Bars</value>
+  </data>
+  <data name="PeakMeterStyleWave" xml:space="preserve">
+    <value>Wave</value>
+  </data>
+  <data name="SettingsProfileDeviceCountFormat" xml:space="preserve">
+    <value>{0} device(s) | {1}</value>
+  </data>
+  <data name="SettingsMoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="WebSettingsCategoryEssentials" xml:space="preserve">
+    <value>Essentials</value>
+  </data>
+  <data name="WebSettingsCategoryAudio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="WebSettingsCategoryExperience" xml:space="preserve">
+    <value>Experience</value>
+  </data>
+  <data name="WebSettingsHiddenDevices" xml:space="preserve">
+    <value>Hidden devices</value>
+  </data>
+  <data name="WebSettingsRecordShortcut" xml:space="preserve">
+    <value>Record shortcut</value>
+  </data>
+  <data name="WebSettingsClearShortcut" xml:space="preserve">
+    <value>Clear shortcut</value>
+  </data>
+  <data name="WebSettingsDeviceShortcuts" xml:space="preserve">
+    <value>Device shortcuts</value>
+  </data>
+  <data name="WebSettingsDeviceShortcutDesc" xml:space="preserve">
+    <value>Switch to this device</value>
+  </data>
+  <data name="WebSettingsDeviceShortcutsDesc" xml:space="preserve">
+    <value>Switch the default playback device with one shortcut.</value>
+  </data>
+  <data name="WebSettingsDefaultDeviceBadge" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="WebSettingsRestoreButton" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="WebSettingsNavigation" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="WebSettingsCollapseSidebar" xml:space="preserve">
+    <value>Collapse sidebar</value>
+  </data>
+  <data name="WebSettingsExpandSidebar" xml:space="preserve">
+    <value>Expand sidebar</value>
+  </data>
+  <data name="WebSettingsCloseNavigation" xml:space="preserve">
+    <value>Close navigation</value>
+  </data>
+  <data name="WebSettingsOpenNavigation" xml:space="preserve">
+    <value>Open navigation</value>
+  </data>
+  <data name="WebSettingsLoading" xml:space="preserve">
+    <value>Loading settings</value>
+  </data>
+  <data name="WebSettingsPressShortcut" xml:space="preserve">
+    <value>Press keys · Esc clears</value>
+  </data>
+  <data name="WebSettingsEcoActive" xml:space="preserve">
+    <value>Eco</value>
+  </data>
+  <data name="WebSettingsProfileSelected" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="ShortcutsPageSubtitle" xml:space="preserve">
+    <value>Assign global hotkeys to quickly control audio.</value>
+  </data>
+  <data name="WebSettingsEmpty" xml:space="preserve">
+    <value>Nothing configured yet.</value>
+  </data>
+  <data name="WebSettingsSeconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="AutoUpdateCheckboxText" xml:space="preserve">
+    <value>Check for updates automatically</value>
+  </data>
+  <data name="SettingsDeviceChangeNotify" xml:space="preserve">
+    <value>Device change</value>
+  </data>
+  <data name="SettingsDeviceChangeNotifyDesc" xml:space="preserve">
+    <value>Toast when the default playback device switches</value>
+  </data>
+  <data name="SettingsNotifyOnDeviceChange" xml:space="preserve">
+    <value>Show a notification when the default device changes</value>
+  </data>
+  <data name="DefaultDeviceChangedNotificationTitle" xml:space="preserve">
+    <value>Playback device</value>
+  </data>
+  <data name="DefaultDeviceChangedNotificationFormat" xml:space="preserve">
+    <value>Now using {0}</value>
+  </data>
+  <data name="SettingsFocusLostVolume" xml:space="preserve">
+    <value>Focus lost</value>
+  </data>
+  <data name="SettingsFocusLostVolumeDesc" xml:space="preserve">
+    <value>Mute or reduce apps when another window is in front</value>
+  </data>
+  <data name="SettingsUseFocusLostVolume" xml:space="preserve">
+    <value>Lower volume of apps that lose focus</value>
+  </data>
+  <data name="SettingsFocusLostAttenuate" xml:space="preserve">
+    <value>Background volume (0% mutes)</value>
+  </data>
+  <data name="SettingsFocusLostAttenuateHint" xml:space="preserve">
+    <value>Locked and keep-muted rules are left alone. The original volume comes back when the app is focused again.</value>
+  </data>
+  <data name="SettingsFocusLostFade" xml:space="preserve">
+    <value>Fade duration</value>
+  </data>
+  <data name="SettingsFocusLostFadeHint" xml:space="preserve">
+    <value>0 ms is immediate. The same duration is used when restoring the original volume.</value>
+  </data>
+  <data name="SettingsFocusLostScope" xml:space="preserve">
+    <value>Applications affected</value>
+  </data>
+  <data name="SettingsFocusLostAllApps" xml:space="preserve">
+    <value>All applications</value>
+  </data>
+  <data name="SettingsFocusLostSelectedApps" xml:space="preserve">
+    <value>Only applications selected in App rules</value>
+  </data>
+  <data name="SettingsFocusLostSelectedHint" xml:space="preserve">
+    <value>Use the Focus lost checkbox on an app rule, or the app flyout menu, to select an application.</value>
+  </data>
+  <data name="AppRulesFocusLostColumnText" xml:space="preserve">
+    <value>Focus lost</value>
+  </data>
+  <data name="FocusLostAppButtonText" xml:space="preserve">
+    <value>Focus lost behavior</value>
+  </data>
+  <data name="FocusLostAppMenuText" xml:space="preserve">
+    <value>Include this app when focus is lost</value>
+  </data>
+  <data name="FocusLostAppMenuDisableText" xml:space="preserve">
+    <value>Exclude this app when focus is lost</value>
+  </data>
+  <data name="WebSettingsPresetName" xml:space="preserve">
+    <value>Preset name</value>
+  </data>
+  <data name="WebSettingsThemeName" xml:space="preserve">
+    <value>Theme name</value>
+  </data>
+  <data name="WebSettingsAppearanceDesc" xml:space="preserve">
+    <value>Pick a coordinated palette, then fine-tune it below.</value>
+  </data>
+  <data name="WebSettingsDiagnostics" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="WebSettingsExportDiagnostics" xml:space="preserve">
+    <value>Export diagnostics</value>
+  </data>
+  <data name="WebSettingsDiagnosticsDesc" xml:space="preserve">
+    <value>Create a support bundle (logs and app state) to attach to a bug report. Nothing is sent automatically.</value>
+  </data>
+  <data name="WebSettingsRestoreAllDevices" xml:space="preserve">
+    <value>Restore all devices</value>
+  </data>
+  <data name="WebSettingsShowDeviceSwitchNotification" xml:space="preserve">
+    <value>Show a notification when switching devices</value>
+  </data>
+  <data name="WebSettingsShowDeviceSwitchNotificationDesc" xml:space="preserve">
+    <value>Display a toast when a device shortcut switches the default device.</value>
+  </data>
+  <data name="WebSettingsPeakStyleClassic" xml:space="preserve">
+    <value>Classic</value>
+  </data>
+  <data name="WebSettingsPeakStyleDotted" xml:space="preserve">
+    <value>Dotted</value>
+  </data>
+  <data name="WebSettingsPeakStyleBlocks" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="WebSettingsPeakStyleBars" xml:space="preserve">
+    <value>Bars</value>
+  </data>
+  <data name="WebSettingsPeakStyleWave" xml:space="preserve">
+    <value>Wave</value>
+  </data>
+  <data name="WebSettingsSecondsShort" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="WebSettingsHealthMemory" xml:space="preserve">
+    <value>Memory</value>
+  </data>
+  <data name="WebSettingsHealthPeak" xml:space="preserve">
+    <value>peak</value>
+  </data>
+  <data name="WebSettingsHealthUser" xml:space="preserve">
+    <value>Window objects (USER)</value>
+  </data>
+  <data name="WebSettingsHealthGdi" xml:space="preserve">
+    <value>Graphics objects (GDI)</value>
+  </data>
+  <data name="WebSettingsHealthHint" xml:space="preserve">
+    <value>Windows resource counters used to spot leaks. Graphics (GDI) and window (USER) objects should stay roughly stable over time; peaks are the highest values since launch.</value>
+  </data>
+  <data name="WebSettingsHealthThreads" xml:space="preserve">
+    <value>Threads</value>
+  </data>
+  <data name="WebSettingsHealthUptime" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="WebSettingsHealthUnavailable" xml:space="preserve">
+    <value>Health data unavailable</value>
+  </data>
+  <data name="WebSettingsShortcutsGlobal" xml:space="preserve">
+    <value>Global shortcuts</value>
+  </data>
+  <data name="WebSettingsUpdatesSection" xml:space="preserve">
+    <value>Update checks</value>
+  </data>
+  <data name="WebSettingsMediaPopupSection" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="WebSettingsPrivacySection" xml:space="preserve">
+    <value>Telemetry and announcements</value>
+  </data>
+  <data name="WebSettingsPrivacySectionDesc" xml:space="preserve">
+    <value>What BetterTrumpet may send, and what it may show you.</value>
+  </data>
+  <data name="WebSettingsPrivacyPageSubtitle" xml:space="preserve">
+    <value>Telemetry, announcements and settings backup.</value>
+  </data>
+  <data name="WebSettingsHotkeyFlyoutDesc" xml:space="preserve">
+    <value>Show the volume flyout from anywhere.</value>
+  </data>
+  <data name="WebSettingsHotkeyMixerDesc" xml:space="preserve">
+    <value>Open the full volume mixer.</value>
+  </data>
+  <data name="WebSettingsHotkeySettingsDesc" xml:space="preserve">
+    <value>Open this settings window.</value>
+  </data>
+  <data name="WebSettingsHotkeyVolumeUpDesc" xml:space="preserve">
+    <value>Raise the volume of every playback device.</value>
+  </data>
+  <data name="WebSettingsHotkeyVolumeDownDesc" xml:space="preserve">
+    <value>Lower the volume of every playback device.</value>
+  </data>
+  <data name="WebSettingsHotkeySwitchDeviceDesc" xml:space="preserve">
+    <value>Cycle to the next playback device.</value>
+  </data>
+  <data name="WebSettingsCustomTheme" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="WebSettingsConfirmDelete" xml:space="preserve">
+    <value>Confirm?</value>
+  </data>
+  <data name="WebSettingsConfirmClearAll" xml:space="preserve">
+    <value>Clear all rules?</value>
+  </data>
+  <data name="WebSettingsCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="WebSettingsSaved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="WebSettingsApplied" xml:space="preserve">
+    <value>Applied</value>
+  </data>
+  <data name="WebSettingsHexColor" xml:space="preserve">
+    <value>Hex color</value>
+  </data>
+  <data name="WebSettingsPreview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="WebSettingsAppHealth" xml:space="preserve">
+    <value>App health</value>
+  </data>
+  <data name="WebSettingsSearchShortcut" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="WebSettingsDisabledByEco" xml:space="preserve">
+    <value>Overridden by eco mode</value>
+  </data>
+  <data name="WebSettingsRequiresSmoothAnimation" xml:space="preserve">
+    <value>Requires smooth volume animation</value>
+  </data>
+  <data name="WebSettingsRequiresAutoCheck" xml:space="preserve">
+    <value>Requires automatic checks</value>
+  </data>
+  <data name="QuickTrumpetToastTitleFormat" xml:space="preserve">
+    <value>“{0}” applied</value>
+  </data>
+  <data name="QuickTrumpetSummaryEmpty" xml:space="preserve">
+    <value>Empty preset</value>
+  </data>
+  <data name="QuickTrumpetSummaryNothing" xml:space="preserve">
+    <value>Nothing to change</value>
+  </data>
+  <data name="QuickTrumpetSummaryMissingFormat" xml:space="preserve">
+    <value>Not connected: {0}</value>
+  </data>
+  <data name="QuickTrumpetSummaryDeviceOne" xml:space="preserve">
+    <value>1 device</value>
+  </data>
+  <data name="QuickTrumpetSummaryDevicesFormat" xml:space="preserve">
+    <value>{0} devices</value>
+  </data>
+  <data name="QuickTrumpetSummaryAppOne" xml:space="preserve">
+    <value>1 app</value>
+  </data>
+  <data name="QuickTrumpetSummaryAppsFormat" xml:space="preserve">
+    <value>{0} apps</value>
+  </data>
+  <data name="QuickTrumpetSummaryPlaybackFormat" xml:space="preserve">
+    <value>Output → {0}</value>
+  </data>
+  <data name="QuickTrumpetSummaryPlaybackCommsFormat" xml:space="preserve">
+    <value>Calls output → {0}</value>
+  </data>
+  <data name="QuickTrumpetSummaryRecordingFormat" xml:space="preserve">
+    <value>Mic → {0}</value>
+  </data>
+  <data name="QuickTrumpetSummaryRecordingCommsFormat" xml:space="preserve">
+    <value>Calls mic → {0}</value>
+  </data>
+  <data name="QuickTrumpetRolePlayback" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="QuickTrumpetRolePlaybackComms" xml:space="preserve">
+    <value>Calls output</value>
+  </data>
+  <data name="QuickTrumpetRoleRecording" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
+  <data name="QuickTrumpetRoleRecordingComms" xml:space="preserve">
+    <value>Calls microphone</value>
+  </data>
+  <data name="SettingsQuickTrumpetNextHotkey" xml:space="preserve">
+    <value>Next preset</value>
+  </data>
+  <data name="SettingsQuickTrumpetPreviousHotkey" xml:space="preserve">
+    <value>Previous preset</value>
+  </data>
+  <data name="WebSettingsHotkeyNextPresetDesc" xml:space="preserve">
+    <value>Applies the next QuickTrumpet preset, wrapping around.</value>
+  </data>
+  <data name="WebSettingsHotkeyPreviousPresetDesc" xml:space="preserve">
+    <value>Applies the previous QuickTrumpet preset, wrapping around.</value>
+  </data>
+  <data name="WebSettingsQtPresetsDesc" xml:space="preserve">
+    <value>A preset can switch your default output and microphone, set device volumes and set app volumes — any mix of the three. Apply it here, with a shortcut or with the bt CLI.</value>
+  </data>
+  <data name="WebSettingsQtNewPreset" xml:space="preserve">
+    <value>New preset</value>
+  </data>
+  <data name="WebSettingsQtNewPresetDesc" xml:space="preserve">
+    <value>Saves what is checked below, as it is right now.</value>
+  </data>
+  <data name="WebSettingsQtWhatToSave" xml:space="preserve">
+    <value>What this preset saves</value>
+  </data>
+  <data name="WebSettingsQtNothingSelected" xml:space="preserve">
+    <value>Check at least one thing to save.</value>
+  </data>
+  <data name="WebSettingsQtIncludeDefaults" xml:space="preserve">
+    <value>Default devices</value>
+  </data>
+  <data name="WebSettingsQtIncludeDefaultsDesc" xml:space="preserve">
+    <value>Switch which output and microphone Windows uses, e.g. speakers + desk mic or headset + headset mic.</value>
+  </data>
+  <data name="WebSettingsQtIncludeDevices" xml:space="preserve">
+    <value>Device volumes</value>
+  </data>
+  <data name="WebSettingsQtIncludeDevicesDesc" xml:space="preserve">
+    <value>Volume and mute of the output devices you check.</value>
+  </data>
+  <data name="WebSettingsQtIncludeApps" xml:space="preserve">
+    <value>App volumes</value>
+  </data>
+  <data name="WebSettingsQtIncludeAppsDesc" xml:space="preserve">
+    <value>Volume and mute of each app in the mixer.</value>
+  </data>
+  <data name="WebSettingsQtAppsOpenFormat" xml:space="preserve">
+    <value>{0} apps open now</value>
+  </data>
+  <data name="WebSettingsQtDevicesCheckedFormat" xml:space="preserve">
+    <value>{0} of {1} checked</value>
+  </data>
+  <data name="WebSettingsQtChoose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="WebSettingsQtDontChange" xml:space="preserve">
+    <value>Don't change</value>
+  </data>
+  <data name="WebSettingsQtNotConnected" xml:space="preserve">
+    <value>Not connected</value>
+  </data>
+  <data name="WebSettingsQtNoDevice" xml:space="preserve">
+    <value>None available</value>
+  </data>
+  <data name="WebSettingsQtRouteApps" xml:space="preserve">
+    <value>Send apps back to their device</value>
+  </data>
+  <data name="WebSettingsQtRouteAppsDesc" xml:space="preserve">
+    <value>Pins each app to the output it was playing on when saved, so it won't follow a default-device switch.</value>
+  </data>
+  <data name="WebSettingsQtUpdateFromCurrent" xml:space="preserve">
+    <value>Update with current mix</value>
+  </data>
+  <data name="WebSettingsQtUpdateFromCurrentDesc" xml:space="preserve">
+    <value>Re-reads the current volumes and defaults for what this preset holds.</value>
+  </data>
+  <data name="WebSettingsQtUpdateConfirm" xml:space="preserve">
+    <value>Overwrite values?</value>
+  </data>
+  <data name="WebSettingsQtUpdated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="WebSettingsQtAddDevice" xml:space="preserve">
+    <value>Add a device</value>
+  </data>
+  <data name="WebSettingsQtRemoveEntry" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="WebSettingsQtMuteEntry" xml:space="preserve">
+    <value>Muted</value>
+  </data>
+  <data name="WebSettingsQtNoDeviceEntries" xml:space="preserve">
+    <value>No device volume saved.</value>
+  </data>
+  <data name="WebSettingsQtNoAppEntries" xml:space="preserve">
+    <value>No app volume saved.</value>
+  </data>
+  <data name="WebSettingsQtLastApplied" xml:space="preserve">
+    <value>Last applied</value>
+  </data>
+  <data name="WebSettingsQtCycleTitle" xml:space="preserve">
+    <value>Cycle through presets</value>
+  </data>
+  <data name="WebSettingsQtCycleDesc" xml:space="preserve">
+    <value>One shortcut steps through your presets in list order and wraps around.</value>
+  </data>
+  <data name="WebSettingsQtNotificationTitle" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="WebSettingsQtNotificationDuration" xml:space="preserve">
+    <value>Notification duration</value>
+  </data>
+  <data name="WebSettingsQtNotificationDurationDesc" xml:space="preserve">
+    <value>How long the confirmation stays on screen.</value>
+  </data>
+  <data name="SettingsTrayIconDeviceType" xml:space="preserve">
+    <value>Show the output device type</value>
+  </data>
+  <data name="SettingsTrayIconDeviceTypeDesc" xml:space="preserve">
+    <value>Headphones or monitor icon based on the default output (headsets show as headphones). Speakers keep the regular icon; not available with the original icon.</value>
+  </data>
+  <data name="WebSettingsRequiresModernIcon" xml:space="preserve">
+    <value>Turn off the original icon to show the device type.</value>
+  </data>
+</root>

@@ -4,6 +4,7 @@
 //! audio tools and Exit, with the original's labels and order.
 use super::{MenuCommand, MenuRequest, Ui};
 use crate::{core::HiddenEntry, profiles, store::with_env};
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::menu::Item;
 use bt_core::{hidden::AppKey, settings::Key, text::ordinal_ignore_case};
 
@@ -76,7 +77,7 @@ impl Ui {
             ));
         }
         if devices.is_empty() {
-            items.push(Item::disabled("No playback devices found"));
+            items.push(Item::disabled(tr("ContextMenuNoDevices")));
         }
 
         // Hidden app entries of the active outputs, per device.
@@ -114,16 +115,28 @@ impl Ui {
                     .collect();
                 per_device.push(Item::Separator);
                 per_device.push(b.command(
-                    "Restore all on this device",
+                    tr("RestoreHiddenAppsForDeviceAll"),
                     MenuCommand::UnhideDeviceApps(id.clone()),
                 ));
-                children.push(Item::Submenu(format!("{name} ({count})"), per_device));
+                children.push(Item::Submenu(
+                    trf(
+                        "ContextMenuRestoreHiddenAppsForDeviceFormat",
+                        &[("0", &name), ("1", &count.to_string())],
+                    ),
+                    per_device,
+                ));
             }
             children.push(Item::Separator);
-            children.push(b.command("Restore all hidden app entries", MenuCommand::UnhideAllApps));
+            children.push(b.command(
+                tr("ContextMenuRestoreAllHiddenApps"),
+                MenuCommand::UnhideAllApps,
+            ));
             items.push(Item::Separator);
             items.push(Item::Submenu(
-                format!("Hidden app entries ({total})"),
+                trf(
+                    "ContextMenuHiddenAppsTitleFormat",
+                    &[("0", &total.to_string())],
+                ),
                 children,
             ));
         }
@@ -141,11 +154,20 @@ impl Ui {
                 })
                 .collect();
             children.push(Item::Separator);
-            children.push(b.command("Show all hidden devices", MenuCommand::UnhideAllDevices));
+            children.push(b.command(
+                tr("ContextMenuRestoreAllHiddenDevices"),
+                MenuCommand::UnhideAllDevices,
+            ));
             if !items.iter().any(|i| matches!(i, Item::Submenu(..))) {
                 items.push(Item::Separator);
             }
-            items.push(Item::Submenu(format!("Hidden devices ({count})"), children));
+            items.push(Item::Submenu(
+                trf(
+                    "ContextMenuHiddenDevicesTitleFormat",
+                    &[("0", &count.to_string())],
+                ),
+                children,
+            ));
         }
 
         // Not in the original's menu: the presets to apply (their hotkeys,
@@ -172,47 +194,59 @@ impl Ui {
                 })
                 .collect();
             items.push(Item::Separator);
-            items.push(Item::Submenu("QuickTrumpet presets".into(), children));
+            items.push(Item::Submenu(tr("SettingsSavedProfiles").into(), children));
         }
 
         items.push(Item::Separator);
         items.push(b.icon(
-            "Open volume mixer",
+            tr("TrayOpenVolumeMixer"),
             MenuCommand::Mixer,
             SLIDERS_HORIZONTAL,
             1.02,
         ));
         items.push(b.icon(
-            "Open settings (beta)",
+            tr("TrayOpenSettingsNew"),
             MenuCommand::Settings,
             GEAR_SIX,
             0.96,
         ));
         items.push(b.icon(
-            "Open settings",
+            tr("TrayOpenSettings"),
             MenuCommand::LegacySettings,
             LIST_BULLETS,
             0.94,
         ));
         items.push(Item::Separator);
-        items.push(b.command("Star on GitHub", MenuCommand::GitHub));
+        items.push(b.command(tr("TrayStarProject"), MenuCommand::GitHub));
         items.push(Item::Separator);
         let apps_volume = if self.windows_11 {
-            "Volume mixer"
+            tr("OpenAppsVolume_Windows11_Text")
         } else {
-            "App volume and device preferences"
+            tr("OpenAppsVolume_Windows10_Text")
         };
         let tools = vec![
-            b.command("Volume Mixer", MenuCommand::LegacyMixer),
-            b.command("Playback devices", MenuCommand::ControlPanel("playback")),
-            b.command("Recording devices", MenuCommand::ControlPanel("recording")),
-            b.command("Sounds", MenuCommand::ControlPanel("sounds")),
-            b.command("Sound settings", MenuCommand::SystemSettings("sound")),
+            b.command(tr("LegacyVolumeMixerText"), MenuCommand::LegacyMixer),
+            b.command(
+                tr("PlaybackDevicesText"),
+                MenuCommand::ControlPanel("playback"),
+            ),
+            b.command(
+                tr("RecordingDevicesText"),
+                MenuCommand::ControlPanel("recording"),
+            ),
+            b.command(
+                tr("SoundsControlPanelText"),
+                MenuCommand::ControlPanel("sounds"),
+            ),
+            b.command(
+                tr("OpenSoundSettingsText"),
+                MenuCommand::SystemSettings("sound"),
+            ),
             b.command(apps_volume, MenuCommand::SystemSettings("apps-volume")),
         ];
-        items.push(Item::Submenu("Windows audio tools".into(), tools));
+        items.push(Item::Submenu(tr("TrayWindowsAudioTools").into(), tools));
         items.push(Item::Separator);
-        items.push(b.command("Exit", MenuCommand::Quit));
+        items.push(b.command(tr("ContextMenuExitTitle"), MenuCommand::Quit));
         MenuRequest {
             owner: self.hidden,
             items,

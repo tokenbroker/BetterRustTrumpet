@@ -14,6 +14,7 @@ use crate::{
     rules,
     store::with_env,
 };
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::dialog;
 use bt_audio::{Endpoint, Role, Snapshot};
 use bt_core::{
@@ -25,13 +26,20 @@ use bt_core::{
     text::{is_blank, ordinal_ignore_case},
 };
 
-/// ROLE_LABELS, in DefaultDeviceRole order.
-const ROLE_LABELS: [&str; 4] = ["Output", "Calls output", "Microphone", "Calls microphone"];
-
-const PROFILE_FILTERS: [dialog::Filter<'static>; 2] = [
-    ("BetterTrumpet Profile (*.btprofile)", "*.btprofile"),
-    ("JSON Files (*.json)", "*.json"),
+/// ROLE_LABELS (resource keys), in DefaultDeviceRole order.
+const ROLE_LABELS: [&str; 4] = [
+    "QuickTrumpetRolePlayback",
+    "QuickTrumpetRolePlaybackComms",
+    "QuickTrumpetRoleRecording",
+    "QuickTrumpetRoleRecordingComms",
 ];
+
+fn profile_filters() -> [dialog::Filter<'static>; 2] {
+    [
+        (tr("FileFilterBtProfile"), "*.btprofile"),
+        (tr("FileFilterJson"), "*.json"),
+    ]
+}
 
 // Segoe Fluent Icons.
 const GLYPH_SAVE: &str = "\u{E74E}";
@@ -179,7 +187,7 @@ pub fn presets(core: &mut Core, state: &PageState) -> Vec<Row> {
         .unwrap_or_default();
     let mut rows = vec![];
     if list.is_empty() {
-        rows.push(note("Capture your current mix as your first preset."));
+        rows.push(note(tr("WebSettingsQuickTrumpetEmptyHint")));
     }
     rows.extend(capture_form(&state.capture, &audio));
     for (index, profile) in list.iter().enumerate() {
@@ -190,8 +198,12 @@ pub fn presets(core: &mut Core, state: &PageState) -> Vec<Row> {
             .as_deref()
             .is_some_and(|id| !id.is_empty() && ordinal_ignore_case(id, &last));
         rows.push(Row {
-            badge: last_applied.then(|| "Last applied".into()),
-            trail: vec![button("Apply", None, Action::PresetApply(index))],
+            badge: last_applied.then(|| tr("WebSettingsQtLastApplied").into()),
+            trail: vec![button(
+                tr("SettingsProfileApply"),
+                None,
+                Action::PresetApply(index),
+            )],
             expand: Some((Action::PresetToggle(Expand::Preset(key)), open)),
             ..row(
                 profile.name.as_deref().unwrap_or_default(),
@@ -216,7 +228,11 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
     let has_devices = form.device_volumes && !ids.is_empty();
     let has_defaults = form.defaults && !roles.is_empty();
     let nothing = !has_devices && !form.app_volumes && !has_defaults;
-    let mut save = button("Save", Some(GLYPH_SAVE), Action::PresetCapture);
+    let mut save = button(
+        tr("WebSettingsSave"),
+        Some(GLYPH_SAVE),
+        Action::PresetCapture,
+    );
     save.primary = !nothing;
     let mut rows = vec![
         row(
@@ -224,18 +240,22 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
             None,
             Control::Input {
                 field: Field::Preset,
-                placeholder: "Preset name",
+                placeholder: tr("WebSettingsPresetName"),
                 buttons: vec![
                     save,
-                    button("Import", Some(GLYPH_IMPORT), Action::PresetImport),
+                    button(
+                        tr("SettingsProfileImport"),
+                        Some(GLYPH_IMPORT),
+                        Action::PresetImport,
+                    ),
                 ],
             },
         ),
-        row("What this preset saves", None, Control::Heading),
+        row(tr("WebSettingsQtWhatToSave"), None, Control::Heading),
     ];
     let choose = |which| {
         vec![button(
-            "Choose",
+            tr("WebSettingsQtChoose"),
             Some(GLYPH_CHOOSE),
             Action::CaptureChoose(which),
         )]
@@ -256,21 +276,21 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
         },
         trail: choose(Choose::Defaults),
         ..check(
-            "Default devices",
-            Some("Switch which output and microphone Windows uses."),
+            tr("WebSettingsQtIncludeDefaults"),
+            Some(tr("WebSettingsQtIncludeDefaultsDesc")),
             form.defaults,
             Set::CaptureDefaults,
         )
     });
     if form.defaults && form.open == Some(Choose::Defaults) {
-        for (r, label) in ROLE_LABELS.iter().enumerate() {
+        for (r, label) in ROLE_LABELS.map(tr).iter().enumerate() {
             let current = audio.defaults[r].as_ref();
             rows.push(Row {
                 enabled: current.is_some(),
                 indent: true,
                 ..check(
                     label,
-                    Some(current.map_or("None available", |e| e.name.as_str())),
+                    Some(current.map_or(tr("WebSettingsQtNoDevice"), |e| e.name.as_str())),
                     current.is_some() && form.roles.contains(&r),
                     Set::CaptureRole(r),
                 )
@@ -281,14 +301,20 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
     let devices = &audio.snapshot.devices;
     rows.push(Row {
         chips: if form.device_volumes {
-            vec![format!("{} of {} checked", ids.len(), devices.len())]
+            vec![trf(
+                "WebSettingsQtDevicesCheckedFormat",
+                &[
+                    ("0", &ids.len().to_string()),
+                    ("1", &devices.len().to_string()),
+                ],
+            )]
         } else {
             vec![]
         },
         trail: choose(Choose::Devices),
         ..check(
-            "Device volumes",
-            Some("Volume and mute of the output devices you check."),
+            tr("WebSettingsQtIncludeDevices"),
+            Some(tr("WebSettingsQtIncludeDevicesDesc")),
             form.device_volumes,
             Set::CaptureDevices,
         )
@@ -296,9 +322,11 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
     if form.device_volumes && form.open == Some(Choose::Devices) {
         for device in devices {
             rows.push(Row {
-                badge: device.is_default.then(|| "Default".into()),
+                badge: device
+                    .is_default
+                    .then(|| tr("WebSettingsDefaultDeviceBadge").into()),
                 chips: vec![if device.muted {
-                    "Muted".into()
+                    tr("WebSettingsQtMuteEntry").into()
                 } else {
                     format!("{}%", percent(device.volume))
                 }],
@@ -315,27 +343,30 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
     // App volumes.
     rows.push(Row {
         chips: if form.app_volumes {
-            vec![format!("{} apps open now", audio.app_count())]
+            vec![trf(
+                "WebSettingsQtAppsOpenFormat",
+                &[("0", &audio.app_count().to_string())],
+            )]
         } else {
             vec![]
         },
         ..check(
-            "App volumes",
-            Some("Volume and mute of each app in the mixer."),
+            tr("WebSettingsQtIncludeApps"),
+            Some(tr("WebSettingsQtIncludeAppsDesc")),
             form.app_volumes,
             Set::CaptureApps,
         )
     });
     if form.app_volumes {
         rows.push(indented(check(
-            "Send apps back to their device",
-            Some("Pins each app to the output it was playing on when saved."),
+            tr("WebSettingsQtRouteApps"),
+            Some(tr("WebSettingsQtRouteAppsDesc")),
             form.route_apps,
             Set::CaptureRoute,
         )));
     }
     if nothing {
-        rows.push(note("Check at least one thing to save."));
+        rows.push(note(tr("WebSettingsQtNothingSelected")));
     }
     rows
 }
@@ -343,7 +374,7 @@ fn capture_form(form: &CaptureForm, audio: &Audio) -> Vec<Row> {
 /// PresetDetails: default devices, device and app volumes, rename and the
 /// preset's actions.
 fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<Row> {
-    let mut rows = vec![heading("Default devices")];
+    let mut rows = vec![heading(tr("WebSettingsQtIncludeDefaults"))];
     for role in Role::ALL {
         let entry = profile
             .default_devices
@@ -354,7 +385,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         } else {
             &audio.playback
         };
-        let mut options = vec!["Don't change".to_string()];
+        let mut options = vec![tr("WebSettingsQtDontChange").to_string()];
         let mut ids = vec![String::new()];
         for e in endpoints {
             options.push(e.name.clone());
@@ -365,12 +396,12 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
             let name = entry
                 .and_then(|e| e.display_name.clone())
                 .unwrap_or_default();
-            options.push(format!("{name} · Not connected"));
+            options.push(format!("{name} · {}", tr("WebSettingsQtNotConnected")));
             ids.push(id.clone());
         }
         let selected = ids.iter().position(|i| *i == id).unwrap_or(0);
         rows.push(indented(row(
-            ROLE_LABELS[role_index(role)],
+            tr(ROLE_LABELS[role_index(role)]),
             None,
             Control::Choice {
                 options,
@@ -381,7 +412,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
     }
     // Device volumes.
     rows.push(indented(row(
-        "Device volumes",
+        tr("WebSettingsQtIncludeDevices"),
         None,
         Control::Toggle(
             profile.include_device_volumes,
@@ -402,7 +433,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
             .any(|e| ordinal_ignore_case(&e.id, &key));
         rows.push(Row {
             chips: if missing {
-                vec!["Not connected".into()]
+                vec![tr("WebSettingsQtNotConnected").into()]
             } else {
                 vec![]
             },
@@ -426,7 +457,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         });
     }
     if devices.is_empty() {
-        rows.push(indented(note("No device volume saved.")));
+        rows.push(indented(note(tr("WebSettingsQtNoDeviceEntries"))));
     }
     let unused: Vec<_> = audio
         .snapshot
@@ -439,7 +470,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         })
         .collect();
     if !unused.is_empty() {
-        let mut options = vec!["+ Add a device".to_string()];
+        let mut options = vec![format!("+ {}", tr("WebSettingsQtAddDevice"))];
         let mut ids = vec![String::new()];
         for d in unused {
             options.push(format!("{} · {}%", d.name, percent(d.volume)));
@@ -457,7 +488,7 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
     }
     // App volumes, one entry per app key.
     rows.push(indented(row(
-        "App volumes",
+        tr("WebSettingsQtIncludeApps"),
         None,
         Control::Toggle(
             profile.include_app_volumes,
@@ -498,11 +529,11 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         });
     }
     if keys.is_empty() {
-        rows.push(indented(note("No app volume saved.")));
+        rows.push(indented(note(tr("WebSettingsQtNoAppEntries"))));
     } else {
         rows.push(indented(row(
-            "Send apps back to their device",
-            Some("Pins each app to the output it was playing on when saved."),
+            tr("WebSettingsQtRouteApps"),
+            Some(tr("WebSettingsQtRouteAppsDesc")),
             Control::Toggle(
                 profile.route_apps,
                 Set::PresetInclude(index, Include::Route),
@@ -510,12 +541,16 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         )));
     }
     rows.push(indented(row(
-        "Rename",
+        tr("WebSettingsRename"),
         None,
         Control::Input {
             field: Field::Rename,
-            placeholder: "Preset name",
-            buttons: vec![button("Rename", None, Action::PresetRename(index))],
+            placeholder: tr("WebSettingsPresetName"),
+            buttons: vec![button(
+                tr("WebSettingsRename"),
+                None,
+                Action::PresetRename(index),
+            )],
         },
     )));
     rows.push(indented(row(
@@ -523,13 +558,22 @@ fn preset_details(index: usize, profile: &VolumeProfile, audio: &Audio) -> Vec<R
         None,
         Control::Buttons(vec![
             button(
-                "Update with current mix",
+                tr("WebSettingsQtUpdateFromCurrent"),
                 Some(GLYPH_REFRESH),
                 Action::PresetUpdate(index),
             )
-            .confirm("Overwrite values?"),
-            button("Export", Some(GLYPH_EXPORT), Action::PresetExport(index)),
-            button("Delete", Some(GLYPH_DELETE), Action::PresetDelete(index)).confirm("Delete?"),
+            .confirm(tr("WebSettingsQtUpdateConfirm")),
+            button(
+                tr("SettingsProfileExport"),
+                Some(GLYPH_EXPORT),
+                Action::PresetExport(index),
+            ),
+            button(
+                tr("SettingsProfileDelete"),
+                Some(GLYPH_DELETE),
+                Action::PresetDelete(index),
+            )
+            .confirm(tr("WebSettingsConfirmDelete")),
         ]),
     )));
     rows
@@ -548,10 +592,15 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
         None,
         Control::Input {
             field: Field::Exe,
-            placeholder: "Application executable",
+            placeholder: tr("AppRulesAddPlaceholderText"),
             buttons: vec![
-                button("Browse", None, Action::RuleBrowse),
-                button("Add", Some(GLYPH_ADD), Action::RuleAdd).primary(),
+                button(tr("AppRulesBrowseButtonText"), None, Action::RuleBrowse),
+                button(
+                    tr("AppRulesAddRuleButtonText"),
+                    Some(GLYPH_ADD),
+                    Action::RuleAdd,
+                )
+                .primary(),
             ],
         },
     )];
@@ -570,7 +619,8 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
                 &name,
                 Some(&format!("{exe}.exe")),
                 Control::Buttons(vec![
-                    icon(GLYPH_DELETE, Action::RuleRemove(exe.clone())).confirm("Delete?"),
+                    icon(GLYPH_DELETE, Action::RuleRemove(exe.clone()))
+                        .confirm(tr("WebSettingsConfirmDelete")),
                 ]),
             )
         });
@@ -579,14 +629,18 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
         }
     }
     if list.is_empty() {
-        rows.push(note("Nothing configured yet."));
+        rows.push(note(tr("WebSettingsEmpty")));
     } else {
         rows.push(row(
             "",
             None,
             Control::Buttons(vec![
-                button("Clear all rules", Some(GLYPH_DELETE), Action::RuleClear)
-                    .confirm("Clear all rules?"),
+                button(
+                    tr("AppRulesClearAllButtonText"),
+                    Some(GLYPH_DELETE),
+                    Action::RuleClear,
+                )
+                .confirm(tr("WebSettingsConfirmClearAll")),
             ]),
         ));
     }
@@ -594,7 +648,7 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
         "",
         None,
         Control::Buttons(vec![button(
-            "Add folder",
+            tr("FolderVolumeRulesAddButtonText"),
             Some(GLYPH_NEW_FOLDER),
             Action::FolderAdd,
         )]),
@@ -616,7 +670,7 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
         });
         if open {
             folder_rows.push(indented(row(
-                "Target volume",
+                tr("AppRulesTargetVolumeText"),
                 None,
                 volume(rule.volume_percent, Set::FolderVolume(id.clone())),
             )));
@@ -625,28 +679,32 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
                 None,
                 Control::Buttons(vec![
                     button(
-                        "Change folder",
+                        tr("FolderVolumeRulesBrowseButtonText"),
                         Some(GLYPH_FOLDER),
                         Action::FolderBrowse(id.clone()),
                     ),
-                    button("Delete", Some(GLYPH_DELETE), Action::FolderRemove(id))
-                        .confirm("Delete?"),
+                    button(
+                        tr("SettingsProfileDelete"),
+                        Some(GLYPH_DELETE),
+                        Action::FolderRemove(id),
+                    )
+                    .confirm(tr("WebSettingsConfirmDelete")),
                 ]),
             )));
         }
     }
     if folders.is_empty() {
-        folder_rows.push(note("No folder defaults."));
+        folder_rows.push(note(tr("FolderVolumeRulesEmptyText")));
     }
     vec![
         section(
-            "Application rules",
-            Some("Persistent mute and volume behavior per app."),
+            tr("AppRulesListHeaderText"),
+            Some(tr("AppRulesListHeaderDesc")),
             rows,
         ),
         section(
-            "Folder defaults",
-            Some("Starting volume for apps launched from a folder."),
+            tr("FolderVolumeRulesHeaderText"),
+            Some(tr("FolderVolumeRulesHeaderDesc")),
             folder_rows,
         ),
     ]
@@ -656,16 +714,24 @@ pub fn rules(core: &mut Core, state: &PageState) -> Vec<Section> {
 fn rule_badges(rule: &AppRuleEntry) -> Vec<String> {
     let mut parts = vec![];
     if rule.hard_muted {
-        parts.push("Keep muted".into());
+        parts.push(tr("AppRulesHardMuteColumnText").into());
     }
     if rule.focus_lost_enabled {
-        parts.push("Focus lost".into());
+        parts.push(tr("AppRulesFocusLostColumnText").into());
     }
     if rule.volume_mode == VolumeRuleMode::LAUNCH {
-        parts.push(format!("{}% · Set at launch", rule.volume_percent));
+        parts.push(format!(
+            "{}% · {}",
+            rule.volume_percent,
+            tr("AppRulesModeLaunchText")
+        ));
     }
     if rule.volume_mode == VolumeRuleMode::LOCK {
-        parts.push(format!("{}% · Lock", rule.volume_percent));
+        parts.push(format!(
+            "{}% · {}",
+            rule.volume_percent,
+            tr("AppRulesModeLockText")
+        ));
     }
     parts
 }
@@ -673,20 +739,26 @@ fn rule_badges(rule: &AppRuleEntry) -> Vec<String> {
 fn rule_details(exe: &str, rule: &AppRuleEntry) -> Vec<Row> {
     let mut rows = vec![
         indented(row(
-            "Keep muted",
+            tr("AppRulesHardMuteColumnText"),
             None,
             Control::Toggle(rule.hard_muted, Set::RuleHardMute(exe.into())),
         )),
         indented(row(
-            "Focus lost",
+            tr("AppRulesFocusLostColumnText"),
             None,
             Control::Toggle(rule.focus_lost_enabled, Set::RuleFocusLost(exe.into())),
         )),
         indented(row(
-            "Volume behavior",
+            tr("AppRulesVolumeBehaviorText"),
             None,
             Control::Choice {
-                options: ["None", "Set at launch", "Lock"].map(String::from).to_vec(),
+                options: [
+                    tr("AppRulesModeNoneText"),
+                    tr("AppRulesModeLaunchText"),
+                    tr("AppRulesModeLockText"),
+                ]
+                .map(String::from)
+                .to_vec(),
                 selected: rule.volume_mode.0.clamp(0, 2) as usize,
                 set: Set::RuleMode(exe.into()),
             },
@@ -694,7 +766,7 @@ fn rule_details(exe: &str, rule: &AppRuleEntry) -> Vec<Row> {
     ];
     if rule.volume_mode.0 > 0 {
         rows.push(indented(row(
-            "Target volume",
+            tr("AppRulesTargetVolumeText"),
             None,
             volume(rule.volume_percent, Set::RuleVolume(exe.into())),
         )));
@@ -710,7 +782,9 @@ pub fn device_shortcuts(core: &Core) -> Vec<Row> {
     devices
         .iter()
         .map(|d| Row {
-            badge: d.is_default.then(|| "Default".into()),
+            badge: d
+                .is_default
+                .then(|| tr("WebSettingsDefaultDeviceBadge").into()),
             ..row(
                 &d.name,
                 None,
@@ -941,13 +1015,16 @@ pub fn run(
         }
         Action::PresetImport => {
             let filters = [
-                PROFILE_FILTERS[0],
-                PROFILE_FILTERS[1],
-                ("All Files (*.*)", "*.*"),
+                profile_filters()[0],
+                profile_filters()[1],
+                (tr("FileFilterAllFiles"), "*.*"),
             ];
-            let Some(path) =
-                dialog::open_file(owner, "Import Volume Profile", &filters, "btprofile")
-            else {
+            let Some(path) = dialog::open_file(
+                owner,
+                tr("ImportVolumeProfileDialogTitle"),
+                &filters,
+                "btprofile",
+            ) else {
                 return effect;
             };
             let Some(json) = read_text(&path) else {
@@ -973,8 +1050,8 @@ pub fn run(
             };
             if let Some(path) = dialog::save_file(
                 owner,
-                "Export QuickTrumpet Preset",
-                &PROFILE_FILTERS,
+                tr("ExportQuickTrumpetPresetDialogTitle"),
+                &profile_filters(),
                 "btprofile",
                 &file,
             ) {
@@ -1037,8 +1114,12 @@ pub fn run(
             texts.exe.clear();
         }
         Action::RuleBrowse => {
-            let filters = [("Applications (*.exe)", "*.exe")];
-            if let Some(path) = dialog::open_file(owner, "Pick an application", &filters, "exe") {
+            // AppRulesBrowseDialogFilter: "Applications (*.exe)|*.exe".
+            let filter = tr("AppRulesBrowseDialogFilter");
+            let filters = [(filter.split('|').next().unwrap_or(filter), "*.exe")];
+            if let Some(path) =
+                dialog::open_file(owner, tr("AppRulesBrowseDialogTitle"), &filters, "exe")
+            {
                 let full = path.to_string_lossy().into_owned();
                 let exe = normalize_exe_name(Some(&full));
                 add_rule(core, &exe, Some(&full));
@@ -1057,7 +1138,8 @@ pub fn run(
             store.flush();
         }
         Action::FolderAdd => {
-            if let Some(path) = dialog::pick_folder(owner, "Choose a folder") {
+            if let Some(path) = dialog::pick_folder(owner, tr("FolderVolumeRulesBrowseDialogTitle"))
+            {
                 let path = path.to_string_lossy().into_owned();
                 if core.add_folder_rule(&path, folders::DEFAULT_VOLUME).is_ok() {
                     let added = core.folder_rules().into_iter().find(|r| {
@@ -1079,7 +1161,8 @@ pub fn run(
             else {
                 return effect;
             };
-            if let Some(path) = dialog::pick_folder(owner, "Choose a folder") {
+            if let Some(path) = dialog::pick_folder(owner, tr("FolderVolumeRulesBrowseDialogTitle"))
+            {
                 let _ = core.update_folder_rule(id, &path.to_string_lossy(), rule.volume_percent);
             }
         }
@@ -1110,6 +1193,13 @@ fn add_rule(core: &mut Core, exe: &str, path: Option<&str>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn role_labels_are_resource_keys() {
+        for key in ROLE_LABELS {
+            assert!(bt_app::i18n::KEYS.contains(&key), "{key}");
+        }
+    }
 
     #[test]
     fn export_file_names_replace_invalid_characters() {

@@ -11,6 +11,7 @@
 //! editing are here for the settings window's QuickTrumpet page.
 #![allow(dead_code)]
 use crate::{core::Core, rules, store::Store};
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::clock::{self, WindowsZone};
 use bt_audio::{Role, Snapshot};
 use bt_core::{
@@ -707,23 +708,23 @@ const SEPARATOR: &str = " · ";
 
 fn count_devices(n: usize) -> String {
     if n == 1 {
-        "1 device".into()
+        tr("QuickTrumpetSummaryDeviceOne").into()
     } else {
-        format!("{n} devices")
+        trf("QuickTrumpetSummaryDevicesFormat", &[("0", &n.to_string())])
     }
 }
 
 fn count_apps(n: usize) -> String {
     if n == 1 {
-        "1 app".into()
+        tr("QuickTrumpetSummaryAppOne").into()
     } else {
-        format!("{n} apps")
+        trf("QuickTrumpetSummaryAppsFormat", &[("0", &n.to_string())])
     }
 }
 
 /// QuickTrumpetToastTitleFormat.
 pub fn toast_title(name: &str) -> String {
-    format!("“{name}” applied")
+    trf("QuickTrumpetToastTitleFormat", &[("0", name)])
 }
 
 /// DescribeResult: "Output → Speakers · 2 devices · 3 apps", plus a
@@ -746,13 +747,13 @@ pub fn describe_result(result: &ApplyResult) -> String {
         if base.is_some_and(|b| ordinal_ignore_case(b, id)) {
             continue;
         }
-        let label = match role {
-            Role::Playback => "Output",
-            Role::PlaybackCommunications => "Calls output",
-            Role::Recording => "Mic",
-            Role::RecordingCommunications => "Calls mic",
+        let format = match role {
+            Role::Playback => "QuickTrumpetSummaryPlaybackFormat",
+            Role::PlaybackCommunications => "QuickTrumpetSummaryPlaybackCommsFormat",
+            Role::Recording => "QuickTrumpetSummaryRecordingFormat",
+            Role::RecordingCommunications => "QuickTrumpetSummaryRecordingCommsFormat",
         };
-        parts.push(format!("{label} → {}", name.as_deref().unwrap_or_default()));
+        parts.push(trf(format, &[("0", name.as_deref().unwrap_or_default())]));
     }
     if result.devices_applied > 0 {
         parts.push(count_devices(result.devices_applied));
@@ -761,12 +762,16 @@ pub fn describe_result(result: &ApplyResult) -> String {
         parts.push(count_apps(result.apps_applied));
     }
     let mut text = if parts.is_empty() {
-        "Nothing to change".into()
+        tr("QuickTrumpetSummaryNothing").into()
     } else {
         parts.join(SEPARATOR)
     };
     if !result.devices_missing.is_empty() {
-        text += &format!("\nNot connected: {}", result.devices_missing.join(", "));
+        text.push('\n');
+        text += &trf(
+            "QuickTrumpetSummaryMissingFormat",
+            &[("0", &result.devices_missing.join(", "))],
+        );
     }
     text
 }
@@ -822,7 +827,7 @@ pub fn describe_profile(profile: &VolumeProfile) -> String {
         parts.push(count_apps(apps));
     }
     if parts.is_empty() {
-        "Empty preset".into()
+        tr("QuickTrumpetSummaryEmpty").into()
     } else {
         parts.join(SEPARATOR)
     }

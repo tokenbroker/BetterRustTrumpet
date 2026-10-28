@@ -19,6 +19,7 @@ use crate::{
     core::{Core, HiddenEntry},
     focus, hotkeys, profiles,
 };
+use bt_app::i18n::{tr, trf};
 use bt_app::win32::{
     gfx::Gfx,
     menu::{self as native_menu, Item},
@@ -146,10 +147,10 @@ fn with<R>(f: impl FnOnce(&mut Ui) -> R) -> Option<R> {
 /// (USB)" from the device description and enumerator, under 64 characters.
 fn tooltip(devices: &Snapshot) -> String {
     let Some(d) = devices.devices.iter().find(|d| d.is_default) else {
-        return "BetterTrumpet: No playback devices".into();
+        return tr("NoDeviceTrayText").into();
     };
     let state = if d.muted {
-        "Muted".to_string()
+        tr("MutedText").to_string()
     } else {
         format!("{}%", (d.volume * 100.0).round() as i32)
     };
@@ -270,7 +271,7 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     );
     save(
         "tip-flyout-light.png",
-        tip.render("Pin window", tip::Look::Wpf { light: true }),
+        tip.render(tr("FlyoutPinWindowToolTip"), tip::Look::Wpf { light: true }),
     );
     // Menus: the tray look (over its acrylic tint) and a window's context
     // menu, dark and light, one item lit; and a submenu.
@@ -278,15 +279,23 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         Item::check("Speakers (Realtek(R) Audio)", 1, true),
         Item::command("Headphones (USB Audio)", 2),
         Item::Separator,
-        Item::Submenu("Hidden app entries (2)".into(), vec![Item::command("a", 3)]),
+        Item::Submenu(
+            trf("ContextMenuHiddenAppsTitleFormat", &[("0", "2")]),
+            vec![Item::command("a", 3)],
+        ),
         Item::Separator,
-        Item::icon("Open volume mixer", 4, traymenu::SLIDERS_HORIZONTAL, 1.02),
-        Item::icon("Open settings (beta)", 5, traymenu::GEAR_SIX, 0.96),
-        Item::icon("Open settings", 6, traymenu::LIST_BULLETS, 0.94),
+        Item::icon(
+            tr("TrayOpenVolumeMixer"),
+            4,
+            traymenu::SLIDERS_HORIZONTAL,
+            1.02,
+        ),
+        Item::icon(tr("TrayOpenSettingsNew"), 5, traymenu::GEAR_SIX, 0.96),
+        Item::icon(tr("TrayOpenSettings"), 6, traymenu::LIST_BULLETS, 0.94),
         Item::Separator,
-        Item::disabled("No playback devices found"),
+        Item::disabled(tr("ContextMenuNoDevices")),
         Item::Separator,
-        Item::command("Exit", 7),
+        Item::command(tr("ContextMenuExitTitle"), 7),
     ];
     for light in [false, true] {
         let mut look = theme.clone();
@@ -384,34 +393,44 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
 fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
     use quick::{Command as C, Entry as E};
     let mut list = vec![
-        E::new("Undo", "Ctrl+Z", &["undo", "revert", "back"], C::Undo),
-        E::new("Redo", "Ctrl+Y", &["redo", "forward"], C::Redo),
         E::new(
-            "Open Volume Mixer",
+            tr("CommandPaletteUndo"),
+            "Ctrl+Z",
+            &["undo", "revert", "back"],
+            C::Undo,
+        ),
+        E::new(
+            tr("CommandPaletteRedo"),
+            "Ctrl+Y",
+            &["redo", "forward"],
+            C::Redo,
+        ),
+        E::new(
+            tr("CommandPaletteOpenMixer"),
             "",
             &["mixer", "full", "window", "volume"],
             C::Mixer,
         ),
         E::new(
-            "Open Settings",
+            tr("CommandPaletteOpenSettings"),
             "",
             &["settings", "preferences", "config", "options"],
             C::Settings,
         ),
         E::new(
-            "Open Playback Devices",
+            tr("CommandPaletteOpenPlaybackDevices"),
             "",
             &["playback", "output", "speakers", "devices", "control panel"],
             C::ControlPanel("playback"),
         ),
         E::new(
-            "Open Recording Devices",
+            tr("CommandPaletteOpenRecordingDevices"),
             "",
             &["recording", "input", "microphone", "mic", "devices"],
             C::ControlPanel("recording"),
         ),
         E::new(
-            "Open Sound Settings",
+            tr("CommandPaletteOpenSoundSettings"),
             "",
             &["sound", "settings", "windows", "system"],
             C::SoundSettings,
@@ -421,7 +440,7 @@ fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
         let (id, name) = (device.device.id.clone(), device.device.name.clone());
         let lower = name.to_lowercase();
         let mut entry = E::new(
-            format!("Mute/Unmute: {name}"),
+            trf("CommandPaletteToggleMuteFormat", &[("Name", &name)]),
             "",
             &["mute", "unmute", "toggle"],
             C::ToggleDeviceMute(id.clone(), name.clone()),
@@ -429,7 +448,7 @@ fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
         entry.tokens.push(lower.clone());
         list.push(entry);
         let mut entry = E::new(
-            format!("Set Default: {name}"),
+            trf("CommandPaletteSetDefaultFormat", &[("Name", &name)]),
             "",
             &["default", "output", "device"],
             C::SetDefault(id.clone()),
@@ -439,7 +458,7 @@ fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
         for app in device.apps.iter().filter(|a| !a.hidden) {
             let app_name = app.app.display_name.clone();
             let mut entry = E::new(
-                format!("Mute/Unmute: {app_name}"),
+                trf("CommandPaletteToggleMuteFormat", &[("Name", &app_name)]),
                 "",
                 &["mute", "unmute", "app"],
                 C::ToggleAppMute(id.clone(), app.app.key.clone(), app_name.clone()),
@@ -450,7 +469,7 @@ fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
         }
     }
     list.push(E::new(
-        "Exit BetterTrumpet",
+        tr("CommandPaletteExit"),
         "",
         &["exit", "quit", "close", "shutdown"],
         C::Exit,
@@ -630,8 +649,10 @@ impl Ui {
     /// ShowDeviceChangeNotification (NotifyOnDeviceHotkeyChange).
     fn device_switch_notification(&self, name: &str) {
         if self.core.store.bool(Key::NotifyOnDeviceHotkeyChange) {
-            self.tray
-                .notify("Playback device", &format!("Now using {name}"));
+            self.tray.notify(
+                tr("DefaultDeviceChangedNotificationTitle"),
+                &trf("DefaultDeviceChangedNotificationFormat", &[("0", name)]),
+            );
         }
     }
 

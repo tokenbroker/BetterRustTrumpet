@@ -4,6 +4,7 @@
 //! controls; expanded, the cover art above them.
 use super::anim::{self, EASE_IN_SHARP, EASE_OUT, GROW, RISE};
 use crate::core::Core;
+use bt_app::i18n::tr;
 use bt_app::win32::{
     gfx::{self, Align, Canvas, Gfx, Image, Rect, Rgba, Surface, TextStyle},
     wnd::{self, Button, Event, Window},
@@ -138,7 +139,7 @@ fn time(ms: i64) -> String {
 /// "Artist - Title", like GetCurrentMediaInfo.
 fn title_text(now: Option<&NowPlaying>) -> String {
     let Some(now) = now else {
-        return "No media playing".into();
+        return tr("MediaPopupNoMediaText").into();
     };
     let title = if now.title.is_empty() {
         now.source_app.clone()
@@ -148,7 +149,7 @@ fn title_text(now: Option<&NowPlaying>) -> String {
     if !now.artist.is_empty() {
         format!("{} - {}", now.artist, title)
     } else if title.is_empty() {
-        "No media playing".into()
+        tr("MediaPopupNoMediaText").into()
     } else {
         title
     }
@@ -231,7 +232,7 @@ impl Media {
             app: None,
             expanded,
             resize: None,
-            title: "No media playing".into(),
+            title: tr("MediaPopupNoMediaText").into(),
             title_change: None,
             marquee: 0.0,
             marquee_at: now,
@@ -414,7 +415,7 @@ impl Media {
         self.track = key;
         let text = title_text(now_playing.as_ref());
         if text != self.title {
-            if changed && self.title != "No media playing" && self.visible {
+            if changed && self.title != tr("MediaPopupNoMediaText") && self.visible {
                 self.title_change = Some((self.title.clone(), Instant::now()));
             }
             self.title = text;
