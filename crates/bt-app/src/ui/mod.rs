@@ -262,7 +262,15 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     save("media-expanded.png", media.render(&core, tray, true));
     let mut tip = tip::Tip::new(gfx.clone())?;
     let devices = core.audio.devices().unwrap_or_default();
-    save("tip.png", tip.render(&tooltip(&devices)));
+    save("tip.png", tip.render(&tooltip(&devices), tip::Look::Tray));
+    save(
+        "tip-flyout-dark.png",
+        tip.render("Microsoft Edge", tip::Look::Wpf { light: false }),
+    );
+    save(
+        "tip-flyout-light.png",
+        tip.render("Pin window", tip::Look::Wpf { light: true }),
+    );
     let mut quick = quick::Quick::new(gfx.clone())?;
     save("quick.png", quick.render(palette_entries(&mut core), ""));
     save(
@@ -867,6 +875,11 @@ impl Ui {
         if window == self.tip.window {
             if let Event::Timer(id) = event {
                 self.tip.timer(id);
+            }
+        }
+        if window == self.flyout.tip.window {
+            if let Event::Timer(id) = event {
+                self.flyout.tip.timer(id);
             }
         }
         None

@@ -1,9 +1,15 @@
-//! The tray hover tooltip shown above the media popup while it is up (the
-//! original blanks the native one then): 12 DIP semibold white on
-//! #E81C1C1E, a 1 DIP #46FFFFFF border, radius 8. It ignores the pointer.
+//! Tooltips, drawn in a click-through window that never takes focus.
+//!
+//! - `Look::Tray`: the tray hover tooltip shown above the media popup while
+//!   it is up (the original blanks the native one then): 12 DIP semibold
+//!   white on #E81C1C1E, a 1 DIP #46FFFFFF border, radius 8.
+//! - `Look::Wpf`: the original's ToolTip style (App.xaml) on WPF's Aero2
+//!   template, used in the flyout: 12 DIP Segoe UI, padding 4, a 1 DIP
+//!   {Theme}ChromeDisabledLow border on {Theme}ChromeMediumLow, opacity
+//!   0.92, square corners and the 5 DIP system drop shadow.
 use super::anim::{self, Curve};
 use bt_app::win32::{
-    gfx::{Gfx, Rect, Rgba, Surface, TextStyle},
+    gfx::{Align, Gfx, Rect, Rgba, Surface, TextStyle},
     wnd::{self, Window},
 };
 use std::{rc::Rc, time::Instant};
@@ -13,6 +19,16 @@ const FONT: &str = "Segoe UI Variable Text";
 /// Room around the box for its shadow.
 const MARGIN: f32 = 8.0;
 const HEIGHT: f32 = 40.0;
+/// The WPF tooltip's font, padding plus border, and shadow margin.
+const WPF_FONT: &str = "Segoe UI";
+const WPF_INSET: f32 = 5.0;
+const WPF_SHADOW: f32 = 5.0;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Look {
+    Tray,
+    Wpf { light: bool },
+}
 
 pub struct Tip {
     pub window: Window,
@@ -24,6 +40,7 @@ pub struct Tip {
     size: (f32, f32),
     position: (i32, i32),
     scale: f32,
+    look: Look,
 }
 
 impl Tip {
@@ -45,11 +62,48 @@ impl Tip {
             size: (0.0, HEIGHT),
             position: (0, 0),
             scale: 1.0,
+            look: Look::Tray,
         })
     }
 
     fn style() -> TextStyle {
         TextStyle::new(FONT, 12.0).weight(600)
+    }
+
+    fn wpf_style() -> TextStyle {
+        TextStyle::new(WPF_FONT, 12.0)
+    }
+
+    /// The WPF look's window size in DIPs (box plus shadow margin).
+    fn wpf_size(&self, text: &str) -> (f32, f32) {
+        let (w, h) = self.gfx.measure(text, &Self::wpf_style());
+        (
+            w.ceil() + 2.0 * WPF_INSET + WPF_SHADOW,
+            h.ceil() + 2.0 * WPF_INSET + WPF_SHADOW,
+        )
+    }
+
+    /// Shows `text` in the original's ToolTip style with its top-left
+    /// corner at screen pixel (`x`, `y`). Where it would cross the bottom
+    /// of the work area it moves up to end at `flip_bottom` instead (WPF
+    /// flips a popup that does not fit); it stays inside horizontally.
+    pub fn show_at(&mut self, text: &str, x: i32, y: i32, flip_bottom: i32, light: bool) {
+        let monitor = wnd::monitor_at(x, y);
+        self.scale = monitor.scale;
+        self.look = Look::Wpf { light };
+        self.size = self.wpf_size(text);
+        let width = (self.size.0 * self.scale).round() as i32;
+        let height = (self.size.1 * self.scale).round() as i32;
+        let (wx, wy, ww, wh) = monitor.work;
+        let x = x.clamp(wx, (wx + ww - width).max(wx));
+        let y = if y + height > wy + wh {
+            (flip_bottom - height).max(wy)
+        } else {
+            y.max(wy)
+        };
+        self.text = text.into();
+        self.position = (x, y);
+        self.appear();
     }
 
     /// Shows `text` centred on `center_x` with its bottom edge at `bottom`
@@ -69,6 +123,11 @@ impl Tip {
         let y = (bottom - height).max(wy + inset);
         self.position = (x, y);
         self.text = text.into();
+        self.look = Look::Tray;
+        self.appear();
+    }
+
+    fn appear(&mut self) {
         if !self.visible {
             self.shown = Instant::now();
             self.visible = true;
@@ -91,10 +150,16 @@ impl Tip {
         }
     }
 
-    /// Draws `text` without showing the window.
-    pub fn render(&mut self, text: &str) -> Option<(u32, u32, Vec<u8>)> {
-        let (text_w, _) = self.gfx.measure(text, &Self::style());
-        self.size = (text_w.ceil() + 20.0 + 2.0 * MARGIN, HEIGHT);
+    /// Draws `text` in `look` without showing the window.
+    pub fn render(&mut self, text: &str, look: Look) -> Option<(u32, u32, Vec<u8>)> {
+        self.look = look;
+        self.size = match look {
+            Look::Tray => {
+                let (text_w, _) = self.gfx.measure(text, &Self::style());
+                (text_w.ceil() + 20.0 + 2.0 * MARGIN, HEIGHT)
+            }
+            Look::Wpf { .. } => self.wpf_size(text),
+        };
         self.scale = wnd::monitor_at(0, 0).scale;
         self.text = text.into();
         self.shown = Instant::now() - std::time::Duration::from_secs(5);
@@ -125,6 +190,42 @@ impl Tip {
             return;
         };
         let text = self.text.clone();
+        if let Look::Wpf { light } = self.look {
+            surface.draw(pixels.0, pixels.1, self.scale, |canvas| {
+                let rect = Rect::new(0.0, 0.0, w - WPF_SHADOW, h - WPF_SHADOW);
+                // SystemDropShadowChrome: #71000000 offset 5 DIP, soft edges.
+                for i in 0..4 {
+                    let spread = i as f32;
+                    canvas.round_rect(
+                        rect.offset(WPF_SHADOW - 1.0, WPF_SHADOW - 1.0)
+                            .inset(spread - 1.0, spread - 1.0),
+                        3.0 - spread * 0.5,
+                        Rgba::rgba(0, 0, 0, 0.44 / 4.0),
+                    );
+                }
+                let (background, border, foreground) = if light {
+                    (Rgba::rgb(242, 242, 242), Rgba::rgb(122, 122, 122), Rgba::BLACK)
+                } else {
+                    (Rgba::rgb(43, 43, 43), Rgba::rgb(133, 133, 133), Rgba::WHITE)
+                };
+                canvas.rect(rect, border);
+                canvas.rect(rect.inset(1.0, 1.0), background);
+                canvas.text(
+                    &text,
+                    rect.inset(WPF_INSET, WPF_INSET),
+                    &Self::wpf_style(),
+                    foreground,
+                );
+            });
+            surface.present(
+                self.window.raw(),
+                self.position.0,
+                self.position.1,
+                0.92 * fade,
+            );
+            self.surface = Some(surface);
+            return;
+        }
         surface.draw(pixels.0, pixels.1, self.scale, |canvas| {
             // The box sits 6 DIP above the window's bottom edge.
             let (_, text_h) = canvas.gfx().measure(&text, &Self::style());
@@ -143,7 +244,7 @@ impl Tip {
             canvas.text(
                 &text,
                 rect,
-                &Self::style().align(bt_app::win32::gfx::Align::Center),
+                &Self::style().align(Align::Center),
                 Rgba::WHITE,
             );
         });
