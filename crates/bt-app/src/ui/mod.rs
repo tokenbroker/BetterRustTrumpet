@@ -600,6 +600,17 @@ impl Ui {
         self.after_volume_change();
     }
 
+    /// For the settings window after it saves: redraws the tray icon
+    /// (UseLegacyIcon, TrayIconShowsDeviceType) and registers the hotkeys
+    /// again (shortcut settings, VolumeProfilesJson, DeviceHotkey:<id>).
+    #[allow(dead_code)] // Called by the settings window once it lands.
+    pub fn settings_changed(&mut self) {
+        self.icon = None;
+        self.form_factor = None;
+        self.reregister_hotkeys();
+        self.present_tooltip();
+    }
+
     /// Opens the settings window. A stub until the settings window lands
     /// (another change builds it); the tray menu, the palette and the
     /// settings hotkey all come through here.
