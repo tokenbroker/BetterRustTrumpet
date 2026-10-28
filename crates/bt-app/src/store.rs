@@ -54,8 +54,7 @@ fn xml(value: &Value) -> Option<String> {
         }
         Value::Float(v) => format!("{HEADER}<double>{v}</double>"),
         Value::Text(text) => return text.clone(),
-        // Hotkeys are edited in the settings window, which is not ported yet.
-        Value::Hotkey(_) => return None,
+        Value::Hotkey(hotkey) => legacy_xml::encode_hotkey(*hotkey),
     })
 }
 
@@ -198,6 +197,11 @@ impl Store {
         if let Some(text) = stored.as_ref().and_then(xml) {
             self.write(key.storage_key(), &text);
         }
+    }
+
+    /// Saves a string setting outside `Key` (the colour settings) as-is.
+    pub fn set_text(&mut self, key: &str, text: &str) {
+        self.write(key, text);
     }
 
     fn write(&mut self, key: &str, text: &str) {

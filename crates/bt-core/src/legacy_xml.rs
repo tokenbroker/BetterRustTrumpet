@@ -601,6 +601,67 @@ fn placement(cursor: &mut Cursor<'_>) -> Result<WindowPlacement, Error> {
     Ok(value)
 }
 
+/// `[Flags]` Keys text as XmlSerializer writes it: a single defined name
+/// for an exact value, else the Shift/Control/Alt flags followed by the key
+/// code's name(s). Duplicate names (Return/Enter) use the first listed;
+/// both read back to the same value in the original and in `decode`.
+fn flags_text(value: i32) -> String {
+    let exact = |v: i32| {
+        keys::KEY_NAMES
+            .iter()
+            .find(|(_, n)| *n == v)
+            .map(|(name, _)| *name)
+    };
+    if let Some(name) = exact(value) {
+        return name.into();
+    }
+    let mut parts: Vec<&str> = vec![];
+    let mut low = value & 0xffff;
+    if let Some(name) = exact(low).filter(|_| low != 0) {
+        parts.push(name);
+        low = 0;
+    }
+    // No single name: decompose the key code like XmlSerializer's FromEnum.
+    for (name, id) in keys::KEY_NAMES {
+        if low == 0 {
+            break;
+        }
+        if *id > 0 && *id <= 0xffff && id & low == *id {
+            parts.push(name);
+            low &= !id;
+        }
+    }
+    let mut text: Vec<&str> = [
+        ("Shift", 0x1_0000),
+        ("Control", 0x2_0000),
+        ("Alt", 0x4_0000),
+    ]
+    .into_iter()
+    .filter(|(_, bit)| value & bit == *bit)
+    .map(|(name, _)| name)
+    .collect();
+    text.extend(parts);
+    if text.is_empty() {
+        "None".into()
+    } else {
+        text.join(" ")
+    }
+}
+
+/// The original's XmlSerializer text for a HotkeyData setting value
+/// (`SettingsBag.Set<HotkeyData>`), `None` as the nil element.
+pub fn encode_hotkey(value: Option<HotkeyData>) -> String {
+    const HEADER: &str = r#"<?xml version="1.0" encoding="utf-16"?><HotkeyData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema""#;
+    match value {
+        None => format!(r#"{HEADER} xsi:nil="true" />"#),
+        Some(h) => format!(
+            "{HEADER}><Modifiers>{}</Modifiers><Key>{}</Key></HotkeyData>",
+            flags_text(h.modifiers),
+            flags_text(h.key)
+        ),
+    }
+}
+
 /// Decodes one legacy XmlSerializer value with the original reader semantics.
 pub fn decode(xml: &str, kind: Kind) -> Result<Value, Error> {
     let mut cursor = Cursor::new(xml);
