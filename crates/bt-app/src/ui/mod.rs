@@ -163,6 +163,8 @@ pub fn run(core: Core) -> windows::core::Result<()> {
     if std::env::args().any(|a| a == "--media") {
         hidden.post(APP_SHOW_MEDIA);
     }
+    // The `bt` CLI's pipe; its commands run on this thread.
+    let _pipe = crate::ipc::start(hidden.poster());
     wnd::run();
     // Gives focus-lost apps their volume back.
     with(|ui| ui.focus.stop(&mut ui.core));
@@ -395,6 +397,7 @@ impl Ui {
                 self.after_volume_change();
             }
             Event::App(APP_SHOW) => self.show_flyout(),
+            Event::App(crate::ipc::APP_IPC) => crate::ipc::drain(&mut self.core),
             Event::App(APP_SHOW_MEDIA) => {
                 if let Some(rect) = self.tray.rect() {
                     self.media.show(&self.core, rect);

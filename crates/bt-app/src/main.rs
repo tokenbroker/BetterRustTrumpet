@@ -9,6 +9,7 @@ mod core;
 mod focus;
 mod folders;
 mod hotkeys;
+mod ipc;
 mod rules;
 mod store;
 mod ui;
