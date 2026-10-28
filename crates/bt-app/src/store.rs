@@ -10,6 +10,7 @@ use bt_core::{
     app_rules::{AppRules, Effect, Environment},
     hidden::{HiddenApps, HiddenDevices},
     legacy_xml::{self, Kind},
+    models::HotkeyData,
     newtonsoft::{Date, DateKind},
     overrides::EncodedValue,
     registry_snapshot::RegistrySnapshot,
@@ -136,6 +137,14 @@ impl Store {
         match self.read(key, Request::Value(Kind::String)) {
             Read::StringUtf16(units) => Some(String::from_utf16_lossy(&units)),
             Read::Value(legacy_xml::Value::String(text)) => text,
+            _ => None,
+        }
+    }
+
+    /// A hotkey stored under a dynamic name ("DeviceHotkey:<id>").
+    pub fn hotkey(&self, name: &str) -> Option<HotkeyData> {
+        match self.read(name, Request::Value(Kind::Hotkey)) {
+            Read::Value(legacy_xml::Value::Hotkey(v)) => v,
             _ => None,
         }
     }

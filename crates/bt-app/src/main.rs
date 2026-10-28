@@ -7,6 +7,7 @@
 
 mod core;
 mod hotkeys;
+mod profiles;
 mod rules;
 mod store;
 mod ui;

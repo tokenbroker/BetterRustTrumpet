@@ -83,6 +83,8 @@ pub enum Event {
     /// Wheel delta (120 per notch, positive away from the user).
     Wheel(i16, f32, f32),
     Key(u16, Modifiers),
+    /// A typed character (WM_CHAR, control characters excluded).
+    Char(char),
     Activate(bool),
     CaptureLost,
     Timer(usize),
@@ -99,6 +101,7 @@ pub enum Event {
 }
 
 const WM_MOUSELEAVE: u32 = 0x02a3;
+const WM_CHAR: u32 = 0x0102;
 
 /// Messages this module posts.
 const WM_APP_POST: u32 = WM_APP + 1;
@@ -232,6 +235,9 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
             ))
         }
         WM_KEYDOWN | WM_SYSKEYDOWN => Some(Event::Key(wparam.0 as u16, modifiers())),
+        WM_CHAR => char::from_u32(wparam.0 as u32)
+            .filter(|c| !c.is_control())
+            .map(Event::Char),
         WM_ACTIVATE => Some(Event::Activate((wparam.0 & 0xffff) != 0)),
         WM_MOUSEACTIVATE if flags & NO_ACTIVATE != 0 => {
             return LRESULT(MA_NOACTIVATE as isize);

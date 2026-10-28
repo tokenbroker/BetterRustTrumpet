@@ -21,6 +21,7 @@ bt-media = { path = "../bt-media" }
 [target.'cfg(windows)'.dependencies]
 bt-core = { path = "../bt-core" }
 bt-storage = { path = "../bt-storage" }
+serde_json.workspace = true
 windows-numerics = "0.3.1"
 windows = { workspace = true, features = [
     "Win32_Foundation",
