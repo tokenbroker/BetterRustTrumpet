@@ -49,6 +49,8 @@ const APP_WHEEL_DOWN: usize = 5;
 const APP_SHOW_MEDIA: usize = 6;
 /// Opens (or brings back) the settings window.
 pub const APP_SETTINGS: usize = 7;
+/// A media session's playback state changed (bt-media's watch).
+const APP_MEDIA: usize = 60;
 
 // Timers on the hidden window.
 const TRAY_POLL: usize = 1;
@@ -57,6 +59,8 @@ const MEDIA_HIDE: usize = 3;
 const AUDIO: usize = 4;
 /// Re-applies routed preset apps once the move has settled.
 const PRESET_SETTLE: usize = 5;
+/// The tray icon's playback animation, only while it runs.
+const TRAY_ANIMATION: usize = 60;
 
 /// The original's popup hide delay after the pointer leaves.
 const MEDIA_HIDE_GRACE: u32 = 800;
@@ -127,6 +131,9 @@ pub struct Ui {
     windows_11: bool,
     /// What the tray icon shows now (redrawn only when it changes).
     icon: Option<trayicon::State>,
+    /// The static icon the default output calls for, under any animation.
+    icon_base: Option<trayicon::State>,
+    animator: trayicon::Animator,
     /// The default output's form factor, cached per device id.
     form_factor: Option<(String, Option<u32>)>,
     /// Routed preset apps re-applied by PRESET_SETTLE, and ticks left.
@@ -211,6 +218,8 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         focus: focus::FocusLost::new(hidden, hidden.poster()),
         windows_11: icon_adapter::is_windows_11(),
         icon: None,
+        icon_base: None,
+        animator: trayicon::Animator::default(),
         form_factor: None,
         settle: vec![],
         settle_ticks: 0,
@@ -339,41 +348,57 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         trayicon::Glyph::Headphones,
         trayicon::Glyph::Monitor,
     ];
-    let looks = [(false, false), (false, true), (true, false), (true, true)];
     for size in [16u32, 24, 32] {
-        for (row, (legacy, light)) in looks.into_iter().enumerate() {
-            let columns = (kinds.len() * glyphs.len()) as u32;
-            let mut sheet = vec![0u8; (size * columns * size * 4) as usize];
-            let mut column = 0;
-            for glyph in glyphs {
-                for kind in kinds {
-                    let state = trayicon::State {
+        // Modern dark, modern light, legacy dark, legacy light, then high
+        // contrast (legacy and "no device" recoloured): WindowText, and
+        // HighlightText under the pointer.
+        let contrast = theme::HighContrast::sample();
+        let looks = [
+            (false, false, None),
+            (false, true, None),
+            (true, false, None),
+            (true, true, None),
+            (true, false, Some(contrast.tray_icon(false))),
+            (true, false, Some(contrast.tray_icon(true))),
+        ];
+        for (row, (legacy, light, contrast)) in looks.into_iter().enumerate() {
+            let states: Vec<_> = glyphs
+                .iter()
+                .flat_map(|&glyph| {
+                    kinds.iter().map(move |&kind| trayicon::State {
                         kind,
                         glyph,
                         light,
                         legacy,
                         size,
-                    };
-                    if let Some(pixels) = trayicon::pixels(state) {
-                        for y in 0..size {
-                            for x in 0..size {
-                                let from = ((y * size + x) * 4) as usize;
-                                let to = ((y * size * columns + column * size + x) * 4) as usize;
-                                // BGRA to RGBA.
-                                sheet[to] = pixels[from + 2];
-                                sheet[to + 1] = pixels[from + 1];
-                                sheet[to + 2] = pixels[from];
-                                sheet[to + 3] = pixels[from + 3];
-                            }
-                        }
-                    }
-                    column += 1;
-                }
+                        frame: None,
+                        contrast,
+                    })
+                })
+                .collect();
+            save(&format!("tray-{size}-{row}.png"), trayicon::sheet(&states));
+        }
+        // Every frame of each glyph's playback loop, dark then light.
+        for glyph in glyphs {
+            for light in [false, true] {
+                let states: Vec<_> = (0..trayicon::frame_count(glyph))
+                    .map(|frame| trayicon::State {
+                        kind: trayicon::Kind::Bars(3),
+                        glyph,
+                        light,
+                        legacy: false,
+                        size,
+                        frame: Some(frame),
+                        contrast: None,
+                    })
+                    .collect();
+                let name = format!("{glyph:?}").to_lowercase();
+                let look = if light { "light" } else { "dark" };
+                save(
+                    &format!("tray-anim-{name}-{size}-{look}.png"),
+                    trayicon::sheet(&states),
+                );
             }
-            save(
-                &format!("tray-{size}-{row}.png"),
-                Some((size * columns, size, sheet)),
-            );
         }
     }
     // Every settings page at full length.
@@ -897,6 +922,14 @@ impl Ui {
                 APP_WHEEL_DOWN
             });
         });
+        // Playback changes drive the tray animation; the current state is
+        // read once now (the hidden window handles the post after startup).
+        if let Some(media) = &self.core.media {
+            let poster = self.hidden.poster();
+            let _ = media.watch(move || poster.post(APP_MEDIA));
+        }
+        self.hidden.post(APP_MEDIA);
+        self.animator.legacy_playing = crate::legacy_media::current(&self.core).is_some();
     }
 
     fn reload_theme(&mut self) {
@@ -1030,6 +1063,20 @@ impl Ui {
                     self.present_tooltip();
                 }
             }
+            Event::Timer(TRAY_ANIMATION) => {
+                if let Some(base) = self.icon_base {
+                    self.animator.tick(&base);
+                    self.show_icon();
+                }
+            }
+            Event::App(APP_MEDIA) => {
+                self.animator.session_playing = self
+                    .core
+                    .media
+                    .as_ref()
+                    .is_some_and(|m| m.any_playing().unwrap_or(false));
+                self.animate();
+            }
             Event::Timer(focus::FADE_TIMER) => self.focus.timer(&mut self.core),
             Event::App(focus::APP_FOREGROUND) => self.focus.foreground_changed(&mut self.core),
             Event::Timer(AUDIO) => {
@@ -1124,6 +1171,8 @@ impl Ui {
             }
         }
         self.devices_changed = false;
+        // A session started or stopped playing: maybe a legacy player.
+        self.animator.legacy_playing = crate::legacy_media::current(&self.core).is_some();
         self.core.enforce_rules();
         self.focus.audio_changed(&mut self.core);
         self.present_tooltip();
@@ -1211,11 +1260,7 @@ impl Ui {
             return;
         }
         let only_playing = self.core.store.bool(Key::MediaPopupShowOnlyWhenPlaying);
-        let playing = self
-            .core
-            .media
-            .as_ref()
-            .and_then(|m| m.now_playing().ok().flatten())
+        let playing = crate::legacy_media::now_playing(&self.core)
             .is_some_and(|now| now.playing || !only_playing);
         let Some(rect) = self.tray_rect.or_else(|| self.tray.rect()) else {
             return;
@@ -1288,11 +1333,44 @@ impl Ui {
             light: bt_app::win32::theme::system_light(),
             legacy,
             size: icon_adapter::small_icon_size(dpi),
+            frame: None,
+            contrast: self.theme.hc.map(|hc| hc.tray_icon(self.tray_hover)),
         };
+        self.icon_base = Some(state);
+        self.animate();
+    }
+
+    /// Starts or stops the playback animation for the current icon (and
+    /// its timer, which runs only while animating), then shows the icon.
+    fn animate(&mut self) {
+        let Some(base) = self.icon_base else {
+            return;
+        };
+        if self.animator.update(&base) {
+            if self.animator.running() {
+                self.hidden.set_timer(TRAY_ANIMATION, trayicon::FRAME_MS);
+            } else {
+                self.hidden.kill_timer(TRAY_ANIMATION);
+            }
+        }
+        self.show_icon();
+    }
+
+    /// Pushes the icon to the shell only when what it shows changed (the
+    /// animation's repeated poses included, GitHub #74).
+    fn show_icon(&mut self) {
+        let Some(base) = self.icon_base else {
+            return;
+        };
+        let state = self.animator.shown(base);
         if self.icon == Some(state) {
             return;
         }
-        if let Some(icon) = trayicon::make(state) {
+        let icon = self
+            .animator
+            .pixels(state)
+            .and_then(|pixels| icon_adapter::from_bgra(state.size, &pixels));
+        if let Some(icon) = icon {
             self.tray.set_icon(icon);
             self.icon = Some(state);
         }

@@ -404,10 +404,7 @@ impl Media {
     /// Reads the media session and the media app's volume.
     pub fn refresh(&mut self, core: &Core) {
         self.last_refresh = Instant::now();
-        let now_playing = core
-            .media
-            .as_ref()
-            .and_then(|m| m.now_playing().ok().flatten());
+        let now_playing = crate::legacy_media::now_playing(core);
         let key = now_playing
             .as_ref()
             .map(|n| format!("{}\u{1}{}\u{1}{}", n.source_app, n.title, n.artist));

@@ -10,6 +10,7 @@ mod focus;
 mod folders;
 mod hotkeys;
 mod ipc;
+mod legacy_media;
 mod profiles;
 mod rules;
 mod settings_file;

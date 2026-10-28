@@ -7,6 +7,7 @@ pub mod gfx;
 pub mod icons;
 pub mod instance;
 pub mod locale;
+pub mod mainwindow;
 pub mod menu;
 pub mod package;
 pub mod paths;
