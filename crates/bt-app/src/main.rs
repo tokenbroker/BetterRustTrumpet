@@ -12,6 +12,7 @@ mod hotkeys;
 mod ipc;
 mod profiles;
 mod rules;
+mod settings_file;
 mod store;
 mod ui;
 

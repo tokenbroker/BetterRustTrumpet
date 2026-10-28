@@ -717,13 +717,43 @@ impl Ui {
     /// (UseLegacyIcon, TrayIconShowsDeviceType) and registers the hotkeys
     /// again (shortcut settings, VolumeProfilesJson, DeviceHotkey:<id>);
     /// services that cache settings re-read them (focus lost).
-    #[allow(dead_code)] // Called by the settings window once it lands.
     pub fn settings_changed(&mut self) {
         self.focus.settings_changed(&mut self.core);
         self.icon = None;
         self.form_factor = None;
         self.reregister_hotkeys();
         self.present_tooltip();
+    }
+
+    /// Settings > About's Export button, after its Save dialog
+    /// (SettingsExportService.ExportToFile).
+    #[allow(dead_code)] // Called by the settings window once it lands.
+    pub fn export_settings(&mut self, path: &std::path::Path) -> bool {
+        self.core.export_settings(path)
+    }
+
+    /// Settings > About's Import button, after its Open dialog; `bt
+    /// import-settings` comes here too. Reloads everything that caches
+    /// settings: theme, hotkeys, focus lost, tray icon, the settings window.
+    #[allow(dead_code)] // Called by the settings window once it lands.
+    pub fn import_settings(&mut self, path: &std::path::Path) -> bool {
+        let ok = self.core.import_settings(path);
+        if ok {
+            self.settings_imported();
+        }
+        ok
+    }
+
+    fn settings_imported(&mut self) {
+        self.settings_changed();
+        self.reload_theme();
+        if self.flyout.visible {
+            self.flyout.window.set_acrylic(self.theme.acrylic);
+            self.flyout.paint(&self.theme);
+        }
+        if let Some(settings) = &mut self.settings {
+            settings.refresh(&mut self.core);
+        }
     }
 
     /// The original opens its own mixer window (not ported); Windows'
@@ -1020,7 +1050,9 @@ impl Ui {
             Event::App(APP_SHOW) => self.show_flyout(),
             Event::App(crate::ipc::APP_IPC) => {
                 let effects = crate::ipc::drain(&mut self.core);
-                if effects.hotkeys {
+                if effects.reload {
+                    self.settings_imported();
+                } else if effects.hotkeys {
                     self.reload_hotkeys();
                 }
                 if !effects.settle.is_empty() {

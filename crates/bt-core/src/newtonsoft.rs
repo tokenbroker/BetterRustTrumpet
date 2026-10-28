@@ -1071,7 +1071,7 @@ pub fn format_double(value: f64) -> String {
 }
 /// .NET Core 3.0+ `double.ToString("R")`: shortest digits, scientific when the
 /// decimal point position is beyond 17 digits or before -3.
-fn round_trip(value: f64) -> String {
+pub(crate) fn round_trip(value: f64) -> String {
     let sign = if value.is_sign_negative() { "-" } else { "" };
     if value == 0.0 {
         return format!("{sign}0");
@@ -1117,7 +1117,7 @@ fn serialized_string(token: &Token) -> Option<String> {
     }
 }
 /// `bool.TryParse`: trims whitespace and NULs, ordinal ignore-case.
-fn parse_bool(value: &str) -> Option<bool> {
+pub(crate) fn parse_bool(value: &str) -> Option<bool> {
     let value = value.trim_matches(|c: char| c.is_whitespace() || c == '\0');
     if text::ordinal_ignore_case(value, "True") {
         Some(true)

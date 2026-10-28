@@ -621,3 +621,49 @@ fn doctor(provider: &mut impl Provider) -> String {
         }),
     ))
 }
+
+/// What `export-settings` and `import-settings` need from the app, which
+/// owns the store and the file system (SettingsExportService).
+pub trait SettingsFiles {
+    /// `_getSettings()` returned settings.
+    fn settings_available(&self) -> bool;
+    /// The desktop folder and today's local date for the default file.
+    fn default_export_path(&self) -> String;
+    /// `File.Exists`.
+    fn file_exists(&self, path: &str) -> bool;
+    /// ExportToFile: false when capture or writing failed.
+    fn export_to(&mut self, path: &str) -> bool;
+    /// ImportFromFile: false when reading or parsing failed (Q13).
+    fn import_from(&mut self, path: &str) -> bool;
+}
+
+/// CliHandler.ExportSettings. Relative paths resolve in the app process.
+pub fn export_settings(files: &mut impl SettingsFiles, args: &[String]) -> String {
+    if !files.settings_available() {
+        return error("settings not available");
+    }
+    let path = match args.first() {
+        Some(path) => path.clone(),
+        None => files.default_export_path(),
+    };
+    let ok = files.export_to(&path);
+    json(&responses::SettingsPathResponse { ok, path })
+}
+
+/// CliHandler.ImportSettings.
+pub fn import_settings(files: &mut impl SettingsFiles, args: &[String]) -> String {
+    let Some(path) = args.first() else {
+        return error("usage: import-settings <path>");
+    };
+    if !files.file_exists(path) {
+        return error(format!("file not found: {path}"));
+    }
+    if !files.settings_available() {
+        return error("settings not available");
+    }
+    let ok = files.import_from(path);
+    json(&responses::SettingsPathResponse {
+        ok,
+        path: path.clone(),
+    })
+}

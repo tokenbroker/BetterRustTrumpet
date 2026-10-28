@@ -662,6 +662,12 @@ pub fn encode_hotkey(value: Option<HotkeyData>) -> String {
     }
 }
 
+/// `SettingsBag.Set<string>(key, null)`: the bag serializes a null string as
+/// XML (a non-null string is stored as-is).
+pub fn encode_null_string() -> &'static str {
+    r#"<?xml version="1.0" encoding="utf-16"?><string p1:nil="true" xmlns:p1="http://www.w3.org/2001/XMLSchema-instance" />"#
+}
+
 /// Decodes one legacy XmlSerializer value with the original reader semantics.
 pub fn decode(xml: &str, kind: Kind) -> Result<Value, Error> {
     let mut cursor = Cursor::new(xml);

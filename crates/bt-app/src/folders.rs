@@ -74,7 +74,7 @@ pub fn volume_target(
 }
 
 /// Persists the rules after a change that saved them.
-fn persist(store: &mut Store, outcome: Outcome) {
+pub fn persist(store: &mut Store, outcome: Outcome) {
     if outcome.saved {
         if let Some(json) = store.folder_rules.stored().map(str::to_owned) {
             store.write_text(crate::store::FOLDER_RULES, &json);
