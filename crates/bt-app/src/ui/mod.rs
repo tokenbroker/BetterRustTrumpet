@@ -883,7 +883,10 @@ impl Ui {
         if self.settings.is_none() {
             match settings::Settings::new(self.gfx.clone(), &mut self.core, self.icon_font) {
                 Ok(window) => self.settings = Some(window),
-                Err(e) => eprintln!("BetterTrumpet: the settings window failed to open: {e}"),
+                Err(e) => {
+                    eprintln!("BetterTrumpet: the settings window failed to open: {e}");
+                    bt_app::log::line(format!("Settings window failed to open: {e}"));
+                }
             }
         }
         if let Some(settings) = &mut self.settings {
@@ -1109,11 +1112,17 @@ impl Ui {
                 }
             }
             Event::App(APP_MEDIA) => {
-                self.animator.session_playing = self
+                let playing = self
                     .core
                     .media
                     .as_ref()
                     .is_some_and(|m| m.any_playing().unwrap_or(false));
+                if playing != self.animator.session_playing {
+                    bt_app::log::line(format!(
+                        "MediaSessionService: Playback state changed - IsPlaying={playing}"
+                    ));
+                }
+                self.animator.session_playing = playing;
                 self.animate();
             }
             Event::Timer(focus::FADE_TIMER) => self.focus.timer(&mut self.core),
@@ -1211,7 +1220,16 @@ impl Ui {
         }
         self.devices_changed = false;
         // A session started or stopped playing: maybe a legacy player.
-        self.animator.legacy_playing = crate::legacy_media::current(&self.core).is_some();
+        let legacy = crate::legacy_media::current(&self.core);
+        if legacy.is_some() != self.animator.legacy_playing {
+            bt_app::log::line(match &legacy {
+                Some(player) => {
+                    format!("LegacyMediaPlayerService: {} is playing", player.exe_name())
+                }
+                None => "LegacyMediaPlayerService: no legacy player playing".to_owned(),
+            });
+        }
+        self.animator.legacy_playing = legacy.is_some();
         self.core.enforce_rules();
         self.focus.audio_changed(&mut self.core);
         self.present_tooltip();
@@ -1386,6 +1404,11 @@ impl Ui {
             return;
         };
         if self.animator.update(&base) {
+            bt_app::log::line(if self.animator.running() {
+                "TaskbarIconSource: Animation started"
+            } else {
+                "TaskbarIconSource: Animation stopped"
+            });
             if self.animator.running() {
                 self.hidden.set_timer(TRAY_ANIMATION, trayicon::FRAME_MS);
             } else {

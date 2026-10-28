@@ -1185,6 +1185,12 @@ impl Settings {
                 let _ = std::process::Command::new("explorer").arg(url).spawn();
                 return;
             }
+            Action::ExportDiagnostics => {
+                // Message boxes are modal: a pressed state must not stick.
+                self.pressed = None;
+                crate::diagnostics::export(self.window.raw(), core);
+                return;
+            }
             Action::RestoreApp { .. }
             | Action::RestoreAllApps
             | Action::RestoreDevice(_)
