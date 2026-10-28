@@ -49,8 +49,8 @@ use windows::{
                 WM_MOUSEWHEEL, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
                 WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE,
                 WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER, WNDCLASSEXW,
-                WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
-                WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP,
+                WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
+                WS_EX_TRANSPARENT, WS_OVERLAPPEDWINDOW, WS_POPUP, WS_SYSMENU,
             },
         },
     },
@@ -497,7 +497,21 @@ pub fn create_app(title: &str, size: (f32, f32), min: (f32, f32)) -> windows::co
         )?;
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, APP);
         MIN_SIZE.with(|m| m.borrow_mut().push((hwnd.0 as isize, min)));
-        for (kind, metric) in [(ICON_BIG, SM_CXICON), (ICON_SMALL, SM_CXSMICON)] {
+        set_app_icons(hwnd, module);
+        Ok(Window(hwnd.0 as isize))
+    }
+}
+
+/// Gives a window the application icon (taskbar button, Alt+Tab).
+///
+/// # Safety
+/// `hwnd` is a window of this thread and `module` this executable.
+unsafe fn set_app_icons(hwnd: HWND, module: windows::Win32::Foundation::HMODULE) {
+    for (kind, metric) in [(ICON_BIG, SM_CXICON), (ICON_SMALL, SM_CXSMICON)] {
+        // SAFETY: plain query; the icons are shared resources of this
+        // module (LR_SHARED), never destroyed; WM_SETICON goes to our
+        // window (the caller's contract).
+        unsafe {
             let px = GetSystemMetrics(metric);
             // MAKEINTRESOURCE(1): the application icon.
             if let Ok(icon) = LoadImageW(
@@ -516,6 +530,38 @@ pub fn create_app(title: &str, size: (f32, f32), min: (f32, f32)) -> windows::co
                 );
             }
         }
+    }
+}
+
+/// Creates a hidden borderless layered window that takes focus and has a
+/// taskbar button with the app icon (a WPF `WindowStyle="None"`,
+/// `AllowsTransparency` window): not topmost, drawn with
+/// `Surface::present`. It receives `Close` (Alt+F4); show it with
+/// `Window::present_app` and remove it with `Window::destroy`.
+pub fn create_layered_app(title: &str) -> windows::core::Result<Window> {
+    if !register_class() {
+        return Err(windows::core::Error::from_thread());
+    }
+    // SAFETY: creates a window of our registered class; the title is an
+    // HSTRING that outlives the call; the icons are set on that window.
+    unsafe {
+        let module = GetModuleHandleW(None)?;
+        let hwnd = CreateWindowExW(
+            WS_EX_LAYERED | WS_EX_APPWINDOW,
+            CLASS,
+            &HSTRING::from(title),
+            WS_POPUP | WS_SYSMENU,
+            0,
+            0,
+            1,
+            1,
+            None,
+            None,
+            Some(module.into()),
+            None,
+        )?;
+        SetWindowLongPtrW(hwnd, GWLP_USERDATA, APP);
+        set_app_icons(hwnd, module);
         Ok(Window(hwnd.0 as isize))
     }
 }
@@ -664,6 +710,14 @@ pub fn button_pressed() -> bool {
     [VK_LBUTTON, VK_RBUTTON, VK_MBUTTON]
         .into_iter()
         .any(|vk| unsafe { GetAsyncKeyState(i32::from(vk.0)) } != 0)
+}
+
+/// Whether a key is held down right now (the asynchronous state, as
+/// WPF's `Keyboard.IsKeyDown` at startup; `vk` is a virtual-key code).
+pub fn key_down(vk: u16) -> bool {
+    // SAFETY: plain query of the asynchronous key state.
+    let state = unsafe { GetAsyncKeyState(i32::from(vk)) };
+    state < 0
 }
 
 /// Ends the message loop.

@@ -21,12 +21,12 @@ use windows::{
                 D2D1_DRAW_TEXT_OPTIONS_CLIP, D2D1_ELLIPSE, D2D1_EXTEND_MODE_CLAMP,
                 D2D1_FACTORY_TYPE_SINGLE_THREADED, D2D1_FEATURE_LEVEL_DEFAULT, D2D1_GAMMA_2_2,
                 D2D1_LAYER_OPTIONS_NONE, D2D1_LAYER_PARAMETERS,
-                D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES, D2D1_RENDER_TARGET_PROPERTIES,
-                D2D1_RENDER_TARGET_TYPE_SOFTWARE, D2D1_RENDER_TARGET_USAGE_NONE, D2D1_ROUNDED_RECT,
-                D2D1_SWEEP_DIRECTION_CLOCKWISE, D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
-                D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE, D2D1CreateFactory, ID2D1Bitmap,
-                ID2D1DCRenderTarget, ID2D1Factory, ID2D1Geometry, ID2D1PathGeometry,
-                ID2D1SolidColorBrush,
+                D2D1_LINEAR_GRADIENT_BRUSH_PROPERTIES, D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES,
+                D2D1_RENDER_TARGET_PROPERTIES, D2D1_RENDER_TARGET_TYPE_SOFTWARE,
+                D2D1_RENDER_TARGET_USAGE_NONE, D2D1_ROUNDED_RECT, D2D1_SWEEP_DIRECTION_CLOCKWISE,
+                D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE, D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE,
+                D2D1CreateFactory, ID2D1Bitmap, ID2D1DCRenderTarget, ID2D1Factory, ID2D1Geometry,
+                ID2D1PathGeometry, ID2D1SolidColorBrush,
             },
             DirectWrite::{
                 DWRITE_FACTORY_TYPE_SHARED, DWRITE_FONT_STRETCH_NORMAL, DWRITE_FONT_STYLE_NORMAL,
@@ -45,9 +45,10 @@ use windows::{
                 DeleteObject, GetDC, HBITMAP, HDC, HGDIOBJ, ReleaseDC, SRCCOPY, SelectObject,
             },
             Imaging::{
-                CLSID_WICImagingFactory, GUID_WICPixelFormat32bppPBGRA, IWICBitmapSource,
-                IWICImagingFactory, WICBitmapDitherTypeNone, WICBitmapInterpolationModeFant,
-                WICBitmapPaletteTypeCustom, WICDecodeMetadataCacheOnDemand,
+                CLSID_WICImagingFactory, GUID_WICPixelFormat32bppPBGRA, IWICBitmapDecoder,
+                IWICBitmapSource, IWICImagingFactory, IWICStream, WICBitmapDitherTypeNone,
+                WICBitmapInterpolationModeFant, WICBitmapPaletteTypeCustom,
+                WICDecodeMetadataCacheOnDemand,
             },
         },
         System::Com::{CLSCTX_INPROC_SERVER, CoCreateInstance},
@@ -588,6 +589,72 @@ pub fn decode_image(bytes: &[u8], max: u32) -> Option<Rc<Image>> {
     }
 }
 
+/// The frames of an image file with several (an animated GIF), decoded
+/// one at a time on demand so only the frame being shown is in memory.
+pub struct Frames {
+    factory: IWICImagingFactory,
+    decoder: IWICBitmapDecoder,
+    _stream: IWICStream,
+    pub count: u32,
+}
+
+impl Frames {
+    /// Opens `bytes` (kept for the program's life, as the stream reads
+    /// from them).
+    pub fn open(bytes: &'static [u8]) -> Option<Self> {
+        // SAFETY: WIC objects are created and used on this thread (COM is
+        // initialised by the app); `bytes` is static, so it outlives the
+        // stream that reads it.
+        unsafe {
+            let factory: IWICImagingFactory =
+                CoCreateInstance(&CLSID_WICImagingFactory, None, CLSCTX_INPROC_SERVER).ok()?;
+            let stream = factory.CreateStream().ok()?;
+            stream.InitializeFromMemory(bytes).ok()?;
+            let decoder = factory
+                .CreateDecoderFromStream(&stream, std::ptr::null(), WICDecodeMetadataCacheOnDemand)
+                .ok()?;
+            let count = decoder.GetFrameCount().ok()?;
+            Some(Self {
+                factory,
+                decoder,
+                _stream: stream,
+                count,
+            })
+        }
+    }
+
+    /// Frame `index` as it is stored (for a GIF, its own rectangle, not
+    /// composited), premultiplied BGRA: width, height, pixels.
+    pub fn frame(&self, index: u32) -> Option<(u32, u32, Vec<u8>)> {
+        // SAFETY: as in `open`; the pixel buffer is sized for the copy.
+        unsafe {
+            let frame = self.decoder.GetFrame(index).ok()?;
+            let (mut w, mut h) = (0u32, 0u32);
+            frame.GetSize(&mut w, &mut h).ok()?;
+            if w == 0 || h == 0 {
+                return None;
+            }
+            let source: IWICBitmapSource = frame.cast().ok()?;
+            let converter = self.factory.CreateFormatConverter().ok()?;
+            converter
+                .Initialize(
+                    &source,
+                    &GUID_WICPixelFormat32bppPBGRA,
+                    WICBitmapDitherTypeNone,
+                    None,
+                    0.0,
+                    WICBitmapPaletteTypeCustom,
+                )
+                .ok()?;
+            let mut pixels = vec![0u8; (w * h * 4) as usize];
+            converter
+                .CopyPixels(std::ptr::null(), w * 4, &mut pixels)
+                .ok()?;
+            Some((w, h, pixels))
+        }
+    }
+}
+
 /// A layered window's backing store: a 32-bit DIB in a memory DC with a
 /// Direct2D render target bound to it.
 pub struct Surface {
@@ -1077,6 +1144,59 @@ impl Canvas<'_> {
                 self.surface
                     .target
                     .CreateLinearGradientBrush(&properties, None, &collection)
+            else {
+                return;
+            };
+            let rounded = D2D1_ROUNDED_RECT {
+                rect: rect.d2d(),
+                radiusX: radius,
+                radiusY: radius,
+            };
+            self.surface.target.FillRoundedRectangle(&rounded, &brush);
+        }
+    }
+
+    /// Fills `rect` (corner `radius`) with an elliptical radial gradient
+    /// centred at (`cx`, `cy`) with radii `rx`, `ry` (WPF
+    /// `RadialGradientBrush` with its origin at the centre).
+    #[allow(clippy::too_many_arguments)]
+    pub fn radial(
+        &mut self,
+        rect: Rect,
+        radius: f32,
+        cx: f32,
+        cy: f32,
+        rx: f32,
+        ry: f32,
+        stops: &[(f32, Rgba)],
+    ) {
+        let stops: Vec<D2D1_GRADIENT_STOP> = stops
+            .iter()
+            .map(|(position, color)| D2D1_GRADIENT_STOP {
+                position: *position,
+                color: color.d2d(),
+            })
+            .collect();
+        // SAFETY: creates a transient gradient brush on our target and fills
+        // with it.
+        unsafe {
+            let Ok(collection) = self.surface.target.CreateGradientStopCollection(
+                &stops,
+                D2D1_GAMMA_2_2,
+                D2D1_EXTEND_MODE_CLAMP,
+            ) else {
+                return;
+            };
+            let properties = D2D1_RADIAL_GRADIENT_BRUSH_PROPERTIES {
+                center: Vector2 { X: cx, Y: cy },
+                gradientOriginOffset: Vector2 { X: 0.0, Y: 0.0 },
+                radiusX: rx,
+                radiusY: ry,
+            };
+            let Ok(brush) =
+                self.surface
+                    .target
+                    .CreateRadialGradientBrush(&properties, None, &collection)
             else {
                 return;
             };
