@@ -208,7 +208,9 @@ fn open_menu(request: MenuRequest) {
         above,
     } = request;
     wnd::post_task(owner, move || {
-        let chosen = menu::popup(owner, &items, x, y, above);
+        // Menus follow the same system theme as the flyout.
+        let dark = !bt_app::win32::theme::system_light();
+        let chosen = menu::popup(owner, &items, x, y, above, dark);
         let command = chosen.and_then(|id| commands.get(id as usize - 1).cloned());
         with(|ui| {
             if let Some(command) = command {
