@@ -9,7 +9,7 @@ mod slider;
 mod theme;
 mod tip;
 
-use crate::{core::Core, hotkeys};
+use crate::{core::Core, focus, hotkeys};
 use bt_app::win32::{
     gfx::Gfx,
     menu::{self, Item},
@@ -80,6 +80,7 @@ pub struct Ui {
     /// The action for hotkey id `i + 1`.
     hotkeys: Vec<hotkeys::Action>,
     devices_changed: bool,
+    focus: focus::FocusLost,
 }
 
 thread_local! {
@@ -141,11 +142,13 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         shortcuts: vec![],
         hotkeys: vec![],
         devices_changed: false,
+        focus: focus::FocusLost::new(hidden, hidden.poster()),
     };
     ui.register_hotkeys();
     ui.watch();
     // Launch rules for apps already playing, plus Lock and hard mute.
     ui.core.enforce_rules();
+    ui.focus.start(&mut ui.core);
     UI.with(|cell| *cell.borrow_mut() = Some(ui));
     wnd::set_handler(|window, event| {
         let menu = with(|ui| ui.event(window, event)).flatten();
@@ -161,6 +164,8 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         hidden.post(APP_SHOW_MEDIA);
     }
     wnd::run();
+    // Gives focus-lost apps their volume back.
+    with(|ui| ui.focus.stop(&mut ui.core));
     // Removes the tray icon and releases everything before exiting.
     UI.with(|cell| cell.borrow_mut().take());
     Ok(())
@@ -270,6 +275,13 @@ impl Ui {
         });
     }
 
+    /// The settings window changed settings: services that cache them
+    /// re-read them (focus lost).
+    #[allow(dead_code)] // Called by the settings window (not ported yet).
+    pub(crate) fn settings_changed(&mut self) {
+        self.focus.settings_changed(&mut self.core);
+    }
+
     fn reload_theme(&mut self) {
         self.theme = theme::Theme::load(&self.core.store, self.icon_font);
     }
@@ -361,6 +373,8 @@ impl Ui {
                     self.present_tooltip();
                 }
             }
+            Event::Timer(focus::FADE_TIMER) => self.focus.timer(&mut self.core),
+            Event::App(focus::APP_FOREGROUND) => self.focus.foreground_changed(&mut self.core),
             Event::Timer(AUDIO) => {
                 self.hidden.kill_timer(AUDIO);
                 self.audio_changed();
@@ -423,6 +437,7 @@ impl Ui {
     fn audio_changed(&mut self) {
         self.devices_changed = false;
         self.core.enforce_rules();
+        self.focus.audio_changed(&mut self.core);
         self.present_tooltip();
         if self.flyout.showing() {
             self.flyout.refresh(&mut self.core);
