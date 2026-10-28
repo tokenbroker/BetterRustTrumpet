@@ -8,6 +8,7 @@ mod flyout;
 mod media;
 mod menu;
 mod quick;
+mod rows;
 mod settings;
 mod slider;
 mod theme;
