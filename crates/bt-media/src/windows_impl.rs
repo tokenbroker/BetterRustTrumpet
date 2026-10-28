@@ -1,6 +1,10 @@
 //! WinRT side of the media engine. Everything here runs on the worker thread.
 use crate::{Command, MediaError, NowPlaying, Repeat};
-use std::{cell::RefCell, sync::mpsc, thread};
+use std::{
+    cell::RefCell,
+    sync::{Arc, mpsc},
+    thread,
+};
 use windows::{
     Media::{
         Control::{
@@ -81,7 +85,7 @@ impl Engine {
 /// Cover art is read once per track rather than on every poll.
 struct Art {
     key: String,
-    url: Option<String>,
+    bytes: Option<Arc<Vec<u8>>>,
 }
 
 struct Backend {
@@ -90,24 +94,6 @@ struct Backend {
 }
 
 const TICKS_PER_MS: i64 = 10_000;
-
-fn base64(data: &[u8]) -> String {
-    const TABLE: &[u8; 64] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    let mut out = String::with_capacity(data.len().div_ceil(3) * 4);
-    for group in data.chunks(3) {
-        let n = (u32::from(group[0]) << 16)
-            | (u32::from(*group.get(1).unwrap_or(&0)) << 8)
-            | u32::from(*group.get(2).unwrap_or(&0));
-        for i in 0..4 {
-            if i <= group.len() {
-                out.push(TABLE[(n >> (18 - 6 * i) & 63) as usize] as char);
-            } else {
-                out.push('=');
-            }
-        }
-    }
-    out
-}
 
 impl Backend {
     fn new() -> Result<Self, MediaError> {
@@ -121,7 +107,7 @@ impl Backend {
             .GetCurrentSession()
             .map_err(|_| MediaError::NoSession)
     }
-    fn read_art(session: &Session) -> windows::core::Result<Option<String>> {
+    fn read_art(session: &Session) -> windows::core::Result<Option<Arc<Vec<u8>>>> {
         let properties = session.TryGetMediaPropertiesAsync()?.join()?;
         let Ok(thumbnail) = properties.Thumbnail() else {
             return Ok(None);
@@ -131,17 +117,11 @@ impl Backend {
         if size == 0 || size > 8 * 1024 * 1024 {
             return Ok(None);
         }
-        let content_type = stream.ContentType()?.to_string();
         let reader = DataReader::CreateDataReader(&stream)?;
         reader.LoadAsync(size)?.join()?;
         let mut bytes = vec![0u8; size as usize];
         reader.ReadBytes(&mut bytes)?;
-        let mime = if content_type.starts_with("image/") {
-            content_type
-        } else {
-            "image/png".into()
-        };
-        Ok(Some(format!("data:{mime};base64,{}", base64(&bytes))))
+        Ok(Some(Arc::new(bytes)))
     }
     fn now_playing(&self) -> Result<Option<NowPlaying>, MediaError> {
         let Ok(session) = self.session() else {
@@ -188,16 +168,16 @@ impl Backend {
             .borrow()
             .as_ref()
             .filter(|a| a.key == key)
-            .map(|a| a.url.clone());
+            .map(|a| a.bytes.clone());
         let art = match cached {
-            Some(url) => url,
+            Some(bytes) => bytes,
             None => {
-                let url = Self::read_art(&session).ok().flatten();
+                let bytes = Self::read_art(&session).ok().flatten();
                 *self.art.borrow_mut() = Some(Art {
                     key,
-                    url: url.clone(),
+                    bytes: bytes.clone(),
                 });
-                url
+                bytes
             }
         };
         Ok(Some(NowPlaying {

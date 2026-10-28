@@ -50,8 +50,10 @@ pub struct NowPlaying {
     /// while playing (apps update the timeline only occasionally).
     pub position_ms: i64,
     pub duration_ms: i64,
-    /// `data:` URL of the cover art, when the app provides one.
-    pub art: Option<String>,
+    /// Encoded cover art (PNG, JPEG, ...), when the app provides one. The
+    /// same `Arc` is returned until the track changes.
+    #[serde(skip)]
+    pub art: Option<std::sync::Arc<Vec<u8>>>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
