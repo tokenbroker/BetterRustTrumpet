@@ -8,6 +8,7 @@ use bt_app::win32::{
 };
 use bt_core::{
     app_rules::{AppRules, Effect, Environment},
+    folder_rules::FolderRuleStore,
     hidden::{HiddenApps, HiddenDevices},
     legacy_xml::{self, Kind},
     newtonsoft::{Date, DateKind},
@@ -23,6 +24,7 @@ const HIDDEN_APPS: &str = "HiddenAppEntriesJson";
 const HIDDEN_DEVICES: &str = "HiddenDeviceEntriesJson";
 const APP_RULES: &str = "AppRuleEntriesJson";
 const LEGACY_HARD_MUTED: &str = "HardMutedAppEntriesJson";
+pub const FOLDER_RULES: &str = "FolderVolumeRuleEntriesJson";
 
 pub struct Store {
     archive: RegistrySnapshot,
@@ -33,6 +35,7 @@ pub struct Store {
     pub hidden_apps: HiddenApps,
     pub hidden_devices: HiddenDevices,
     pub rules: AppRules,
+    pub folder_rules: FolderRuleStore,
 }
 
 fn directory() -> Option<PathBuf> {
@@ -105,6 +108,7 @@ impl Store {
             hidden_apps: HiddenApps::default(),
             hidden_devices: HiddenDevices::default(),
             rules: AppRules::default(),
+            folder_rules: FolderRuleStore::default(),
         };
         for &key in Key::ALL {
             if let Some(value) = store.load(key) {
@@ -117,6 +121,7 @@ impl Store {
         store.hidden_apps = HiddenApps::new(store.text(HIDDEN_APPS));
         store.hidden_devices = HiddenDevices::new(store.text(HIDDEN_DEVICES));
         store.rules = AppRules::new(store.text(APP_RULES), store.text(LEGACY_HARD_MUTED));
+        store.folder_rules = FolderRuleStore::new(store.text(FOLDER_RULES));
         store
     }
 
@@ -198,6 +203,11 @@ impl Store {
         if let Some(text) = stored.as_ref().and_then(xml) {
             self.write(key.storage_key(), &text);
         }
+    }
+
+    /// Saves a string setting as-is (lists the app keeps itself).
+    pub fn write_text(&mut self, key: &str, text: &str) {
+        self.write(key, text);
     }
 
     fn write(&mut self, key: &str, text: &str) {

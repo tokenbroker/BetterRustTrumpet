@@ -1,8 +1,10 @@
 //! App identity as the original's settings key it, and its rule
 //! enforcement (DeviceViewModel.ApplyRuleToApp).
-use crate::store::{Store, with_env};
+use crate::{
+    folders,
+    store::{Store, with_env},
+};
 use bt_audio::{AppSession, AudioEngine, Snapshot};
-use bt_core::models::VolumeRuleMode;
 use std::collections::HashSet;
 
 /// The original's AppId: the process image path, or the system sounds id.
@@ -46,6 +48,11 @@ impl LaunchTracker {
             self.claimed.remove(pid);
         }
     }
+    /// Marks processes as handled (LaunchVolumeTracker.TryClaim).
+    pub fn claim(&mut self, pids: &[u32]) {
+        self.claimed
+            .extend(pids.iter().copied().filter(|pid| *pid > 0));
+    }
 }
 
 fn percent(volume: f32) -> i32 {
@@ -79,19 +86,21 @@ pub fn enforce(
                     .filter(|pid| *pid > 0 && !tracker.claimed.contains(pid))
                     .collect();
                 tracker.claimed.extend(&fresh);
-                let Some(rule) = store.rules.get(Some(&exe_name(app)), env) else {
-                    continue;
-                };
-                let target = rule.volume_percent.clamp(0, 100);
-                let set_volume = (rule.volume_mode == VolumeRuleMode::LOCK
-                    && percent(app.volume) != target)
-                    || (rule.volume_mode == VolumeRuleMode::LAUNCH && !fresh.is_empty());
-                if set_volume {
+                let rule = store.rules.get(Some(&exe_name(app)), env);
+                // Lock, then Launch, then a folder default (ApplyRuleToApp).
+                let target = folders::volume_target(
+                    rule.as_ref(),
+                    percent(app.volume),
+                    !fresh.is_empty(),
+                    || folders::matched_volume(&mut store.folder_rules, &app_id(app)),
+                );
+                let set_volume = target.is_some();
+                if let Some(target) = target {
                     let _ = audio.set_app_volume(&device.id, &app.key, target as f32 / 100.0);
                     changed = true;
                 }
                 // After the volume: a non-zero volume can clear a mute.
-                if rule.hard_muted && (!app.muted || set_volume) {
+                if rule.is_some_and(|r| r.hard_muted) && (!app.muted || set_volume) {
                     let _ = audio.set_app_mute(&device.id, &app.key, true);
                     changed = true;
                 }
@@ -110,5 +119,5 @@ pub fn any_active(store: &mut Store) -> bool {
             .sorted(env, compare)
             .iter()
             .any(|r| r.hard_muted || r.has_volume_rule())
-    })
+    }) || folders::any(&mut store.folder_rules)
 }
