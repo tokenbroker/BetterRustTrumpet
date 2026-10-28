@@ -6,9 +6,13 @@
 //! A new page is a `PageId`, an entry in `GROUPS` and a `build` arm; a new
 //! row kind is a `Control` variant drawn in `widgets` and laid out in the
 //! window module.
-use super::super::theme::{self, CHANNEL_KEYS};
+use super::{
+    super::theme::{self, CHANNEL_KEYS},
+    lists,
+};
 use crate::{core::Core, hotkeys, store::with_env};
 use bt_app::win32::{gfx::Rgba, startup};
+use bt_audio::Role;
 use bt_core::{
     hidden::AppKey,
     models::HotkeyData,
@@ -115,10 +119,145 @@ pub struct Row {
     pub desc: Option<String>,
     pub control: Control,
     pub enabled: bool,
+    /// An accent pill after the label ("Last applied", "Default").
+    pub badge: Option<String>,
+    /// Quiet pills left of the control ("50%", "Keep muted").
+    pub chips: Vec<String>,
+    /// Buttons right of the control (Apply, mute, remove).
+    pub trail: Vec<Button>,
+    /// An expandable list item: clicking the line runs the action; the
+    /// flag is whether it is open (its chevron points up).
+    pub expand: Option<(Action, bool)>,
+    /// A detail row of the open list item above it.
+    pub indent: bool,
+}
+
+impl Default for Row {
+    fn default() -> Self {
+        Self {
+            label: String::new(),
+            desc: None,
+            control: Control::None,
+            enabled: true,
+            badge: None,
+            chips: vec![],
+            trail: vec![],
+            expand: None,
+            indent: false,
+        }
+    }
+}
+
+/// What a shortcut control records into.
+#[derive(Clone, Debug, PartialEq)]
+pub enum HotkeyTarget {
+    Setting(Key),
+    /// A QuickTrumpet preset, by list index (SetProfileHotkey).
+    Preset(usize),
+    /// DeviceHotkey:<id>.
+    Device(String),
+}
+
+/// The window's text boxes.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Field {
+    Theme,
+    Preset,
+    Rename,
+    Exe,
+}
+
+/// The open list item.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Expand {
+    /// By id (or slug, or name).
+    Preset(String),
+    /// By exe name.
+    Rule(String),
+    /// By id.
+    Folder(String),
+}
+
+/// A preset's three parts (SetProfileIncludes).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Include {
+    Devices,
+    Apps,
+    Route,
+}
+
+/// The capture form's option lists.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Choose {
+    Defaults,
+    Devices,
+}
+
+/// The QuickTrumpet capture form (PresetCapture's state).
+#[derive(Clone, Debug, PartialEq)]
+pub struct CaptureForm {
+    pub defaults: bool,
+    /// Role indexes 0..4 (Output, Calls output, Microphone, Calls microphone).
+    pub roles: Vec<usize>,
+    pub device_volumes: bool,
+    /// `None` follows the default output until devices are picked.
+    pub device_ids: Option<Vec<String>>,
+    pub app_volumes: bool,
+    pub route_apps: bool,
+    pub open: Option<Choose>,
+}
+
+impl Default for CaptureForm {
+    fn default() -> Self {
+        Self {
+            defaults: false,
+            roles: vec![0, 1, 2, 3],
+            device_volumes: true,
+            device_ids: None,
+            app_volumes: true,
+            route_apps: false,
+            open: None,
+        }
+    }
+}
+
+/// What the text boxes hold.
+#[derive(Default)]
+pub struct Texts {
+    pub theme: String,
+    pub preset: String,
+    pub rename: String,
+    pub exe: String,
+}
+
+impl Texts {
+    pub fn get(&self, field: Field) -> &str {
+        match field {
+            Field::Theme => &self.theme,
+            Field::Preset => &self.preset,
+            Field::Rename => &self.rename,
+            Field::Exe => &self.exe,
+        }
+    }
+    pub fn get_mut(&mut self, field: Field) -> &mut String {
+        match field {
+            Field::Theme => &mut self.theme,
+            Field::Preset => &mut self.preset,
+            Field::Rename => &mut self.rename,
+            Field::Exe => &mut self.exe,
+        }
+    }
+}
+
+/// Window state the pages are built from.
+#[derive(Default)]
+pub struct PageState {
+    pub expanded: Option<Expand>,
+    pub capture: CaptureForm,
 }
 
 /// Where a control's value goes (`apply`).
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Set {
     Bool(Key),
     /// Stored inverted (showWhenPaused vs MediaPopupShowOnlyWhenPlaying).
@@ -135,6 +274,44 @@ pub enum Set {
     IntChoice(Key, &'static [i32]),
     /// A choice whose second option is `true`.
     BoolChoice(Key),
+    // QuickTrumpet presets, by list index.
+    PresetInclude(usize, Include),
+    PresetDeviceVolume(usize, String),
+    PresetAppVolume(usize, String),
+    /// A default-device slot; option `i` is endpoint `ids[i]` ("" leaves
+    /// the default alone).
+    PresetDefault(usize, Role, Vec<String>),
+    /// "+ Add a device": option `i` adds `ids[i]` (the first is the label).
+    PresetAddDevice(usize, Vec<String>),
+    // The capture form.
+    CaptureDefaults,
+    CaptureRole(usize),
+    CaptureDevices,
+    CaptureDevice(String),
+    CaptureApps,
+    CaptureRoute,
+    // App rules, by exe name.
+    RuleHardMute(String),
+    RuleFocusLost(String),
+    RuleMode(String),
+    RuleVolume(String),
+    /// A folder rule's volume, by id.
+    FolderVolume(String),
+}
+
+impl Set {
+    /// Whether the value lives in VolumeProfilesJson (preset shortcuts
+    /// are registered again after it changes).
+    pub fn presets(&self) -> bool {
+        matches!(
+            self,
+            Set::PresetInclude(..)
+                | Set::PresetDeviceVolume(..)
+                | Set::PresetAppVolume(..)
+                | Set::PresetDefault(..)
+                | Set::PresetAddDevice(..)
+        )
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -160,13 +337,68 @@ pub enum Action {
     RestoreDevice(String),
     RestoreAllDevices,
     OpenUrl(&'static str),
+    /// Saves the theme named in the theme box.
+    ThemeSave,
+    // QuickTrumpet presets, by list index.
+    PresetToggle(Expand),
+    PresetApply(usize),
+    /// Captures a preset from the form and the name box.
+    PresetCapture,
+    PresetImport,
+    PresetExport(usize),
+    PresetUpdate(usize),
+    PresetDelete(usize),
+    /// Renames to the rename box's text.
+    PresetRename(usize),
+    PresetDeviceMute(usize, String, bool),
+    PresetDeviceRemove(usize, String),
+    PresetAppMute(usize, String, bool),
+    PresetAppRemove(usize, String),
+    CaptureChoose(Choose),
+    // App rules.
+    RuleToggle(Expand),
+    /// Adds the exe typed in the exe box.
+    RuleAdd,
+    RuleBrowse,
+    RuleRemove(String),
+    RuleClear,
+    // Folder rules, by id.
+    FolderToggle(Expand),
+    FolderAdd,
+    FolderBrowse(String),
+    FolderRemove(String),
 }
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Button {
     pub label: String,
     pub glyph: Option<&'static str>,
     pub action: Action,
     pub primary: bool,
+    /// Two-step buttons (ConfirmButton) show this until clicked again.
+    pub confirm: Option<&'static str>,
+}
+
+/// A standard button; `label` may be empty for an icon button.
+pub fn button(label: &str, glyph: Option<&'static str>, action: Action) -> Button {
+    Button {
+        label: label.into(),
+        glyph,
+        action,
+        primary: false,
+        confirm: None,
+    }
+}
+
+impl Button {
+    pub fn primary(mut self) -> Self {
+        self.primary = true;
+        self
+    }
+    pub fn confirm(mut self, text: &'static str) -> Self {
+        self.confirm = Some(text);
+        self
+    }
 }
 
 pub struct ThemeChip {
@@ -180,6 +412,10 @@ pub struct ThemeChip {
 pub enum Control {
     None,
     Toggle(bool, Set),
+    /// A checkbox left of the label (the capture form).
+    Check(bool, Set),
+    /// A small overline heading inside a card.
+    Heading,
     Slider {
         value: f64,
         min: f64,
@@ -193,10 +429,10 @@ pub enum Control {
         selected: usize,
         set: Set,
     },
-    /// A hotkey setting; `text` is the stored shortcut ("" when unset),
+    /// A shortcut; `text` is the stored shortcut ("" when unset),
     /// `fallback` what is registered instead.
     Hotkey {
-        key: Key,
+        target: HotkeyTarget,
         text: String,
         fallback: Option<String>,
     },
@@ -211,20 +447,25 @@ pub enum Control {
     Chip(String),
     /// Full width: the theme palette chips.
     Themes(Vec<ThemeChip>),
-    /// Full width: a theme name box and Save.
-    SaveTheme,
+    /// A text box with buttons; Enter runs the primary (or first) one.
+    /// Full width without a label, else on the right.
+    Input {
+        field: Field,
+        placeholder: &'static str,
+        buttons: Vec<Button>,
+    },
 }
 
-fn row(label: &str, desc: Option<&str>, control: Control) -> Row {
+pub fn row(label: &str, desc: Option<&str>, control: Control) -> Row {
     Row {
         label: label.into(),
         desc: desc.map(Into::into),
         control,
-        enabled: true,
+        ..Row::default()
     }
 }
 
-fn toggle(core: &Core, key: Key, label: &str, desc: Option<&str>) -> Row {
+pub fn toggle(core: &Core, key: Key, label: &str, desc: Option<&str>) -> Row {
     row(
         label,
         desc,
@@ -232,7 +473,7 @@ fn toggle(core: &Core, key: Key, label: &str, desc: Option<&str>) -> Row {
     )
 }
 
-fn section(title: &str, desc: Option<&str>, rows: Vec<Row>) -> Section {
+pub fn section(title: &str, desc: Option<&str>, rows: Vec<Row>) -> Section {
     Section {
         title: title.into(),
         desc: desc.map(Into::into),
@@ -365,14 +606,14 @@ fn hotkey_row(core: &Core, key: Key, label: &str, desc: &str) -> Row {
         label,
         Some(desc),
         Control::Hotkey {
-            key,
+            target: HotkeyTarget::Setting(key),
             text,
             fallback,
         },
     )
 }
 
-fn note(text: &str) -> Row {
+pub fn note(text: &str) -> Row {
     row(text, None, Control::None)
 }
 
@@ -399,21 +640,13 @@ fn rgb(c: bt_core::themes::Rgb) -> Rgba {
     Rgba::rgb(c.0, c.1, c.2)
 }
 
-pub fn build(page: PageId, core: &mut Core) -> Vec<Section> {
+pub fn build(page: PageId, core: &mut Core, state: &PageState) -> Vec<Section> {
     match page {
         PageId::General => general(core),
         PageId::Mouse => mouse(core),
         PageId::Shortcuts => shortcuts(core),
-        PageId::QuickTrumpet => quicktrumpet(core),
-        PageId::AppRules => vec![section(
-            "App profiles",
-            Some(
-                "A profile stays here until you remove it. Each behavior below can be enabled independently.",
-            ),
-            vec![note(
-                "App rules are edited from the flyout's app menu for now; this page is still being built.",
-            )],
-        )],
+        PageId::QuickTrumpet => quicktrumpet(core, state),
+        PageId::AppRules => lists::rules(core, state),
         PageId::Media => media(core),
         PageId::Appearance => appearance(core),
         PageId::Performance => performance(core),
@@ -490,14 +723,7 @@ fn general(core: &mut Core) -> Vec<Section> {
     let compare = |a: &str, b: &str| a.to_lowercase().cmp(&b.to_lowercase());
     let apps = with_env(|env| store.hidden_apps.sorted(env, compare));
     let devices = with_env(|env| store.hidden_devices.sorted(env, compare));
-    let restore = |action| {
-        Control::Buttons(vec![Button {
-            label: "Restore".into(),
-            glyph: None,
-            action,
-            primary: false,
-        }])
-    };
+    let restore = |action| Control::Buttons(vec![button("Restore", None, action)]);
     let mut rows: Vec<Row> = apps
         .iter()
         .map(|entry| {
@@ -516,7 +742,7 @@ fn general(core: &mut Core) -> Vec<Section> {
                     app: entry.app_id.clone().unwrap_or_default(),
                     exe: entry.exe_name.clone().unwrap_or_default(),
                 }),
-                enabled: true,
+                ..Row::default()
             }
         })
         .collect();
@@ -526,12 +752,11 @@ fn general(core: &mut Core) -> Vec<Section> {
         rows.push(row(
             "",
             None,
-            Control::Buttons(vec![Button {
-                label: "Restore hidden app entries".into(),
-                glyph: None,
-                action: Action::RestoreAllApps,
-                primary: false,
-            }]),
+            Control::Buttons(vec![button(
+                "Restore hidden app entries",
+                None,
+                Action::RestoreAllApps,
+            )]),
         ));
     }
     sections.push(section(
@@ -555,12 +780,11 @@ fn general(core: &mut Core) -> Vec<Section> {
         rows.push(row(
             "",
             None,
-            Control::Buttons(vec![Button {
-                label: "Restore all devices".into(),
-                glyph: None,
-                action: Action::RestoreAllDevices,
-                primary: false,
-            }]),
+            Control::Buttons(vec![button(
+                "Restore all devices",
+                None,
+                Action::RestoreAllDevices,
+            )]),
         ));
         sections.push(section("Hidden devices", None, rows));
     }
@@ -735,17 +959,20 @@ fn shortcuts(core: &mut Core) -> Vec<Section> {
         section(
             "Device shortcuts",
             Some("Switch the default playback device with one shortcut."),
-            vec![toggle(
-                core,
-                Key::ShowDeviceSwitchNotification,
-                "Show a notification when switching devices",
-                Some("Display a toast when a device shortcut switches the default device."),
-            )],
+            lists::device_shortcuts(core)
+                .into_iter()
+                .chain([toggle(
+                    core,
+                    Key::ShowDeviceSwitchNotification,
+                    "Show a notification when switching devices",
+                    Some("Display a toast when a device shortcut switches the default device."),
+                )])
+                .collect(),
         ),
     ]
 }
 
-fn quicktrumpet(core: &mut Core) -> Vec<Section> {
+fn quicktrumpet(core: &mut Core, state: &PageState) -> Vec<Section> {
     let confirmation = core.store.bool(Key::ShowQuickTrumpetConfirmation);
     let mut rows = vec![toggle(
         core,
@@ -769,13 +996,11 @@ fn quicktrumpet(core: &mut Core) -> Vec<Section> {
     }
     vec![
         section(
-            "QuickTrumpet presets",
+            "Presets",
             Some(
-                "A preset can switch your default output and microphone, set device volumes and set app volumes · any mix of the three. Apply it here, with a shortcut or with the bt CLI.",
+                "A preset can switch your default output and microphone, set device volumes and set app volumes.",
             ),
-            vec![note(
-                "Presets are managed from the tray menu for now; this list is still being built.",
-            )],
+            lists::presets(core, state),
         ),
         section(
             "Cycle through presets",
@@ -945,21 +1170,19 @@ fn appearance(core: &mut Core) -> Vec<Section> {
             "",
             None,
             Control::Buttons(vec![
-                Button {
-                    label: "Randomize colors".into(),
-                    glyph: Some("\u{E8B1}"),
-                    action: Action::Randomize,
-                    primary: false,
-                },
-                Button {
-                    label: "Reset to Default".into(),
-                    glyph: Some("\u{E72C}"),
-                    action: Action::ResetColors,
-                    primary: false,
-                },
+                button("Randomize colors", Some("\u{E8B1}"), Action::Randomize),
+                button("Reset to Default", Some("\u{E72C}"), Action::ResetColors),
             ]),
         ),
-        row("", None, Control::SaveTheme),
+        row(
+            "",
+            None,
+            Control::Input {
+                field: Field::Theme,
+                placeholder: "Theme name",
+                buttons: vec![button("Save", Some("\u{E74E}"), Action::ThemeSave).primary()],
+            },
+        ),
     ]);
     vec![
         section(
@@ -1110,12 +1333,11 @@ fn about(core: &mut Core) -> Vec<Section> {
         vec![row(
             "",
             None,
-            Control::Buttons(vec![Button {
-                label: "GitHub Repository".into(),
-                glyph: None,
-                action: Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
-                primary: false,
-            }]),
+            Control::Buttons(vec![button(
+                "GitHub Repository",
+                None,
+                Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
+            )]),
         )],
     )];
     if core.store.bool(Key::MonkeyTickSoundUnlocked) {
@@ -1135,9 +1357,9 @@ fn about(core: &mut Core) -> Vec<Section> {
 
 /// Writes a control's new value; `value` is the toggle state (0/1), the
 /// slider value or the chosen option index.
-pub fn apply(core: &mut Core, set: Set, value: f64) {
+pub fn apply(core: &mut Core, state: &mut PageState, set: &Set, value: f64) {
     let store = &mut core.store;
-    match set {
+    match set.clone() {
         Set::Bool(key) => store.set(key, Value::Bool(value != 0.0)),
         Set::NotBool(key) => store.set(key, Value::Bool(value == 0.0)),
         Set::Startup => {
@@ -1161,6 +1383,7 @@ pub fn apply(core: &mut Core, set: Set, value: f64) {
             }
         }
         Set::BoolChoice(key) => store.set(key, Value::Bool(value != 0.0)),
+        other => lists::apply(core, state, other, value),
     }
 }
 

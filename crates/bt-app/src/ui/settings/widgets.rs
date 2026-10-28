@@ -144,6 +144,41 @@ pub fn toggle(canvas: &mut Canvas, p: &Palette, rect: Rect, on: bool, state: Sta
     }
 }
 
+/// A 20x20 checkbox; checked ones are accent-filled with a check mark.
+pub fn checkbox(
+    canvas: &mut Canvas,
+    p: &Palette,
+    rect: Rect,
+    on: bool,
+    icon_font: &'static str,
+    state: State,
+) {
+    if on {
+        let fill = if state.hover {
+            p.accent_hover
+        } else {
+            p.accent
+        };
+        canvas.round_rect(rect, 4.0, fill);
+        canvas.text(
+            "\u{E73E}",
+            rect,
+            &TextStyle::new(icon_font, 12.0).align(Align::Center),
+            p.on_accent,
+        );
+    } else {
+        let fill = if state.pressed {
+            p.control_pressed
+        } else if state.hover {
+            p.control_hover
+        } else {
+            p.control
+        };
+        canvas.round_rect(rect, 4.0, fill);
+        canvas.stroke_round_rect(rect.inset(0.5, 0.5), 3.5, 1.0, p.strong_stroke);
+    }
+}
+
 /// A horizontal slider at `fraction` (0..1).
 pub fn slider(canvas: &mut Canvas, p: &Palette, rect: Rect, fraction: f32, state: State) {
     let y = rect.y + rect.h / 2.0;

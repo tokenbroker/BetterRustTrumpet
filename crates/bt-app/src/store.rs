@@ -213,7 +213,11 @@ impl Store {
         }
     }
 
-    /// Saves a string setting as-is (lists the app keeps itself).
+    /// Saves a hotkey under a dynamic name (SetDeviceHotkey).
+    pub fn set_hotkey(&mut self, name: &str, hotkey: HotkeyData) {
+        self.write(name, &legacy_xml::encode_hotkey(Some(hotkey)));
+    }
+
     /// Saves a string setting outside `Key` (the colour settings) as-is.
     pub fn set_text(&mut self, key: &str, text: &str) {
         self.write_text(key, text);

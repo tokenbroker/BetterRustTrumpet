@@ -3,6 +3,7 @@
 //! Windows 11, a sidebar of pages grouped like the original's and a
 //! scrolling page of setting cards. Every change is written through the
 //! Store at once. Closing destroys the window and its pixels.
+mod lists;
 mod pages;
 mod themes;
 mod widgets;
@@ -10,7 +11,10 @@ mod widgets;
 pub use pages::PageId;
 
 use self::{
-    pages::{Action, Control, Section, Unit},
+    pages::{
+        Action, Button as ButtonData, Control, Expand, Field, HotkeyTarget, PageState, Section,
+        Texts, Unit,
+    },
     widgets::{DISPLAY, Palette, State, label_style},
 };
 use super::{MenuCommand, MenuRequest};
@@ -22,10 +26,7 @@ use bt_app::win32::{
     theme as system,
     wnd::{self, Button, Event, Modifiers, Window},
 };
-use bt_core::{
-    models::HotkeyData,
-    settings::{Key, Value},
-};
+use bt_core::models::HotkeyData;
 use std::rc::Rc;
 
 /// The original's window size and minimum (WebSettingsWindow.xaml).
@@ -36,6 +37,10 @@ const PAD: f32 = 40.0;
 const MAX_CONTENT: f32 = 860.0;
 const PICKER_H: f32 = 196.0;
 const CARET: usize = 1;
+/// Detail rows of an open list item sit this far in.
+const INDENT: f32 = 28.0;
+/// The expand chevron's column.
+const CHEVRON: f32 = 28.0;
 
 // Virtual keys.
 const VK_BACK: u16 = 0x08;
@@ -74,8 +79,12 @@ enum Part {
     Sv,
     Hue,
     Hex,
+    /// A text box.
     Name,
-    Save,
+    /// A trailing button.
+    Trail(usize),
+    /// The line of an expandable list item.
+    Header,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -104,6 +113,8 @@ pub struct Outcome {
     /// Shortcut recording started (true: suspend the app's hotkeys) or
     /// ended.
     pub capture: Option<bool>,
+    /// Apply this QuickTrumpet preset (with its confirmation).
+    pub apply_preset: Option<usize>,
     pub close: bool,
 }
 
@@ -117,7 +128,7 @@ struct Picker {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Editing {
-    Name,
+    Field(Field),
     Hex,
 }
 
@@ -128,6 +139,9 @@ struct RowLayout {
     label: Rect,
     desc: Option<Rect>,
     parts: Vec<(Part, Rect)>,
+    badge: Option<Rect>,
+    chips: Vec<Rect>,
+    chevron: Option<Rect>,
 }
 
 #[derive(Default)]
@@ -167,14 +181,18 @@ pub struct Settings {
     scroll_drag: Option<(f32, f32)>,
     picker: Option<Picker>,
     picker_drag: Option<Part>,
-    recording: Option<Key>,
+    recording: Option<HotkeyTarget>,
     editing: Option<Editing>,
-    theme_name: String,
+    texts: Texts,
     hex: String,
     surrogate: Option<u16>,
     caret: bool,
     /// A custom theme whose delete button was clicked once.
     armed: Option<usize>,
+    /// A two-step button clicked once, by its action.
+    confirming: Option<Action>,
+    /// Open list items and the capture form.
+    state: PageState,
 }
 
 fn palette(mica: bool) -> Palette {
@@ -242,11 +260,13 @@ impl Settings {
             picker_drag: None,
             recording: None,
             editing: None,
-            theme_name: String::new(),
+            texts: Texts::default(),
             hex: String::new(),
             surrogate: None,
             caret: true,
             armed: None,
+            confirming: None,
+            state: PageState::default(),
         };
         settings.rebuild(core);
         Ok(settings)
@@ -267,9 +287,15 @@ impl Settings {
         self.recording.is_some()
     }
 
+    /// Shows values the app changed (an applied preset's badge).
+    pub fn refresh(&mut self, core: &mut Core) {
+        self.rebuild(core);
+        self.paint();
+    }
+
     /// Re-reads every value shown from the settings.
     fn rebuild(&mut self, core: &mut Core) {
-        self.sections = pages::build(self.page, core);
+        self.sections = pages::build(self.page, core, &self.state);
         if let Some(p) = &self.picker {
             let still = matches!(
                 self.control(p.row),
@@ -296,6 +322,8 @@ impl Settings {
             self.picker = None;
             self.editing = None;
             self.armed = None;
+            self.confirming = None;
+            self.state.expanded = None;
         }
         self.rebuild(core);
     }
@@ -311,23 +339,62 @@ impl Settings {
     }
 
     fn button_width(&self, label: &str, glyph: bool) -> f32 {
+        if label.is_empty() {
+            return 32.0;
+        }
         let (w, _) = self.gfx.measure(label, &label_style(14.0));
         (w + 24.0 + if glyph { 24.0 } else { 0.0 }).ceil().max(96.0)
     }
 
+    /// Whether a two-step button waits for its second click.
+    fn is_confirming(&self, b: &ButtonData) -> bool {
+        b.confirm.is_some() && self.confirming.as_ref() == Some(&b.action)
+    }
+
+    /// A button's label and glyph as drawn now.
+    fn button_face<'a>(&self, b: &'a ButtonData) -> (&'a str, Option<&'static str>) {
+        match b.confirm {
+            Some(text) if self.is_confirming(b) => (text, None),
+            _ => (&b.label, b.glyph),
+        }
+    }
+
+    fn data_button_width(&self, b: &ButtonData) -> f32 {
+        let (label, glyph) = self.button_face(b);
+        self.button_width(label, glyph.is_some())
+    }
+
+    fn buttons_width(&self, buttons: &[ButtonData]) -> f32 {
+        buttons
+            .iter()
+            .map(|b| self.data_button_width(b) + 8.0)
+            .sum::<f32>()
+    }
+
+    /// A pill's width; long ones are cut off with an ellipsis.
+    fn chip_width(&self, text: &str) -> f32 {
+        (self.gfx.measure(text, &label_style(12.0)).0 + 20.0)
+            .ceil()
+            .min(220.0)
+    }
+
     /// Width of a control on the right of its row (0 for full-width ones).
-    fn control_width(&self, control: &Control) -> f32 {
-        match control {
-            Control::None | Control::Themes(_) | Control::SaveTheme => 0.0,
+    fn control_width(&self, row: &pages::Row) -> f32 {
+        match &row.control {
+            Control::None | Control::Themes(_) | Control::Check(..) | Control::Heading => 0.0,
+            Control::Input { buttons, .. } => {
+                if row.label.is_empty() {
+                    0.0
+                } else {
+                    240.0 + 8.0 + self.buttons_width(buttons)
+                }
+            }
             Control::Toggle(..) => 40.0,
             Control::Slider { .. } => 272.0,
             Control::Choice { .. } => 240.0,
             Control::Hotkey { .. } => 252.0,
             Control::Color { .. } => 136.0,
-            Control::Buttons(buttons) => buttons
-                .iter()
-                .map(|b| self.button_width(&b.label, b.glyph.is_some()) + 8.0)
-                .sum::<f32>(),
+            Control::Buttons(buttons) => self.buttons_width(buttons),
             Control::Chip(text) => self.gfx.measure(text, &label_style(14.0)).0 + 24.0,
         }
     }
@@ -388,29 +455,55 @@ impl Settings {
     }
 
     fn layout_row(&self, at: RowRef, row: &pages::Row, frame: Rect) -> (RowLayout, f32) {
-        let control_w = self.control_width(&row.control);
-        let text_w = (frame.w
-            - 32.0
+        let indent = if row.indent { INDENT } else { 0.0 };
+        let x = frame.x + 16.0 + indent;
+        let end = frame.right() - 16.0;
+        let right_edge = end - if row.expand.is_some() { CHEVRON } else { 0.0 };
+        let control_w = self.control_width(row);
+        let trail_w = self.buttons_width(&row.trail);
+        let chip_ws: Vec<f32> = row.chips.iter().map(|c| self.chip_width(c)).collect();
+        let chips_w = chip_ws.iter().map(|w| w + 6.0).sum::<f32>();
+        let check_w = if matches!(row.control, Control::Check(..)) {
+            32.0
+        } else {
+            0.0
+        };
+        let badge_w = row
+            .badge
+            .as_deref()
+            .map_or(0.0, |b| self.chip_width(b) + 8.0);
+        let text_w = (right_edge
+            - x
+            - check_w
             - if control_w > 0.0 {
                 control_w + 24.0
             } else {
                 0.0
-            })
+            }
+            - trail_w
+            - if chips_w > 0.0 { chips_w + 6.0 } else { 0.0 })
         .max(80.0);
-        let title_style = label_style(14.0).weight(600).wrap().top();
+        let heading = matches!(row.control, Control::Heading);
+        let title_style = if heading {
+            label_style(12.0).weight(600).wrap().top()
+        } else {
+            label_style(14.0).weight(600).wrap().top()
+        };
         let desc_style = label_style(12.0).wrap().top();
-        let label_h = self.measure_wrapped(&row.label, &title_style, text_w);
+        let label_h = self.measure_wrapped(&row.label, &title_style, (text_w - badge_w).max(40.0));
         let desc_h = row
             .desc
             .as_deref()
             .map_or(0.0, |d| self.measure_wrapped(d, &desc_style, text_w));
         let text_h = label_h + if desc_h > 0.0 { desc_h + 2.0 } else { 0.0 };
-        let mut line_h = (text_h + 26.0).max(if desc_h > 0.0 { 64.0 } else { 52.0 });
-        let x = frame.x + 16.0;
-        let right = frame.right() - 16.0;
+        let mut line_h = if heading {
+            36.0
+        } else {
+            (text_h + 26.0).max(if desc_h > 0.0 { 64.0 } else { 52.0 })
+        };
         let mut parts = vec![];
-        match &row.control {
-            Control::Themes(chips) => {
+        if matches!(row.control, Control::Themes(_)) {
+            if let Control::Themes(chips) = &row.control {
                 let (cw, ch, gap) = (184.0, 52.0, 8.0);
                 let cols = (((frame.w - 32.0 + gap) / (cw + gap)).floor() as usize).max(1);
                 let rows = chips.len().div_ceil(cols);
@@ -432,65 +525,108 @@ impl Settings {
                     }
                 }
             }
-            Control::SaveTheme => {
-                line_h = 64.0;
-                let save_w = self.button_width("Save", true);
-                let box_w = (frame.w - 32.0 - save_w - 8.0).min(320.0);
-                let cy = frame.y + line_h / 2.0;
-                parts.push((Part::Name, Rect::new(x, cy - 16.0, box_w, 32.0)));
-                parts.push((
-                    Part::Save,
-                    Rect::new(x + box_w + 8.0, cy - 16.0, save_w, 32.0),
-                ));
+        }
+        if matches!(row.control, Control::Input { .. }) && row.label.is_empty() {
+            line_h = 64.0;
+        }
+        let cy = frame.y + line_h / 2.0;
+        // Trailing buttons, right to left; the control sits left of them.
+        let mut right = right_edge;
+        for (i, b) in row.trail.iter().enumerate().rev() {
+            let bw = self.data_button_width(b);
+            right -= bw;
+            parts.push((Part::Trail(i), Rect::new(right, cy - 16.0, bw, 32.0)));
+            right -= 8.0;
+        }
+        match &row.control {
+            Control::Toggle(..) => {
+                parts.push((Part::Main, Rect::new(right - 40.0, cy - 10.0, 40.0, 20.0)))
             }
-            control => {
-                let cy = frame.y + line_h / 2.0;
-                match control {
-                    Control::Toggle(..) => {
-                        parts.push((Part::Main, Rect::new(right - 40.0, cy - 10.0, 40.0, 20.0)))
-                    }
-                    Control::Slider { .. } => parts.push((
-                        Part::Main,
-                        Rect::new(right - 64.0 - 200.0, cy - 16.0, 200.0, 32.0),
-                    )),
-                    Control::Choice { .. } => {
-                        parts.push((Part::Main, Rect::new(right - 240.0, cy - 16.0, 240.0, 32.0)))
-                    }
-                    Control::Hotkey { text, .. } => {
-                        let clear = !text.is_empty() && self.recording.is_none();
-                        let end = if clear { right - 36.0 } else { right };
-                        parts.push((Part::Main, Rect::new(end - 212.0, cy - 16.0, 212.0, 32.0)));
-                        if clear {
-                            parts.push((
-                                Part::Clear,
-                                Rect::new(right - 32.0, cy - 16.0, 32.0, 32.0),
-                            ));
-                        }
-                    }
-                    Control::Color { .. } => {
-                        parts.push((Part::Main, Rect::new(right - 48.0, cy - 14.0, 48.0, 28.0)))
-                    }
-                    Control::Buttons(buttons) => {
-                        // Action rows without a label start on the left.
-                        let mut bx = if row.label.is_empty() {
-                            x
-                        } else {
-                            right - control_w + 8.0
-                        };
-                        for (i, b) in buttons.iter().enumerate() {
-                            let bw = self.button_width(&b.label, b.glyph.is_some());
-                            parts.push((Part::Item(i), Rect::new(bx, cy - 16.0, bw, 32.0)));
-                            bx += bw + 8.0;
-                        }
-                    }
-                    _ => {}
+            Control::Check(..) => parts.push((Part::Main, Rect::new(x, cy - 10.0, 20.0, 20.0))),
+            Control::Slider { .. } => parts.push((
+                Part::Main,
+                Rect::new(right - 64.0 - 200.0, cy - 16.0, 200.0, 32.0),
+            )),
+            Control::Choice { .. } => {
+                parts.push((Part::Main, Rect::new(right - 240.0, cy - 16.0, 240.0, 32.0)))
+            }
+            Control::Hotkey { target, text, .. } => {
+                let clear = !text.is_empty() && self.recording.as_ref() != Some(target);
+                let end = if clear { right - 36.0 } else { right };
+                parts.push((Part::Main, Rect::new(end - 212.0, cy - 16.0, 212.0, 32.0)));
+                if clear {
+                    parts.push((Part::Clear, Rect::new(right - 32.0, cy - 16.0, 32.0, 32.0)));
                 }
             }
+            Control::Color { .. } => {
+                parts.push((Part::Main, Rect::new(right - 48.0, cy - 14.0, 48.0, 28.0)))
+            }
+            Control::Buttons(buttons) => {
+                // Action rows without a label start on the left.
+                let mut bx = if row.label.is_empty() {
+                    x
+                } else {
+                    right - control_w + 8.0
+                };
+                for (i, b) in buttons.iter().enumerate() {
+                    let bw = self.data_button_width(b);
+                    parts.push((Part::Item(i), Rect::new(bx, cy - 16.0, bw, 32.0)));
+                    bx += bw + 8.0;
+                }
+            }
+            Control::Input { buttons, .. } => {
+                let buttons_w = self.buttons_width(buttons);
+                let (bx, box_w) = if row.label.is_empty() {
+                    (x, (right - x - buttons_w).clamp(120.0, 420.0))
+                } else {
+                    (right - control_w + 8.0, 240.0)
+                };
+                parts.push((Part::Name, Rect::new(bx, cy - 16.0, box_w, 32.0)));
+                let mut bx = bx + box_w + 8.0;
+                for (i, b) in buttons.iter().enumerate() {
+                    let bw = self.data_button_width(b);
+                    parts.push((Part::Item(i), Rect::new(bx, cy - 16.0, bw, 32.0)));
+                    bx += bw + 8.0;
+                }
+            }
+            _ => {}
         }
+        // Chips sit left of the control.
+        let mut chips = vec![];
+        let mut cx = right
+            - if control_w > 0.0 {
+                control_w + 12.0
+            } else {
+                0.0
+            };
+        for w in chip_ws.iter().rev() {
+            cx -= w;
+            chips.push(Rect::new(cx, cy - 12.0, *w, 24.0));
+            cx -= 6.0;
+        }
+        chips.reverse();
         let line = Rect::new(frame.x, frame.y, frame.w, line_h);
-        let top = frame.y + ((line_h - text_h) / 2.0).max(13.0);
-        let label = Rect::new(x, top, text_w, label_h);
-        let desc = (desc_h > 0.0).then(|| Rect::new(x, top + label_h + 2.0, text_w, desc_h));
+        let top = if heading {
+            frame.y + 14.0
+        } else {
+            frame.y + ((line_h - text_h) / 2.0).max(13.0)
+        };
+        let label_x = x + check_w;
+        let label = Rect::new(label_x, top, text_w, label_h);
+        let desc = (desc_h > 0.0).then(|| Rect::new(label_x, top + label_h + 2.0, text_w, desc_h));
+        let badge = row.badge.as_deref().map(|b| {
+            let (w, _) = self.gfx.measure(&row.label, &title_style);
+            let bw = self.chip_width(b);
+            let bx = (label_x + w + 8.0).min(label_x + text_w - bw);
+            Rect::new(bx, top - 1.0, bw, 22.0)
+        });
+        let chevron = row
+            .expand
+            .is_some()
+            .then(|| Rect::new(end - CHEVRON + 4.0, cy - 12.0, 24.0, 24.0));
+        if row.expand.is_some() {
+            parts.push((Part::Header, line));
+        }
         let mut height = line_h;
         if self.picker.as_ref().is_some_and(|p| p.row == at) {
             let sv = Rect::new(x, line.bottom() + 4.0, 240.0, 140.0);
@@ -509,6 +645,9 @@ impl Settings {
                 label,
                 desc,
                 parts,
+                badge,
+                chips,
+                chevron,
             },
             height,
         )
@@ -579,8 +718,13 @@ impl Settings {
             if let Some((part, _)) = parts.into_iter().find(|(_, r)| r.contains(x, y)) {
                 return Some(Target::Row(row.at, *part));
             }
-            // A toggle row toggles anywhere on its line, like a label.
-            if row.line.contains(x, y) && matches!(self.control(row.at), Some(Control::Toggle(..)))
+            // A toggle or checkbox row toggles anywhere on its line, like a
+            // label.
+            if row.line.contains(x, y)
+                && matches!(
+                    self.control(row.at),
+                    Some(Control::Toggle(..) | Control::Check(..))
+                )
             {
                 return Some(Target::Row(row.at, Part::Main));
             }
@@ -685,9 +829,8 @@ impl Settings {
         let mut out = Outcome::default();
         if command.page == self.page {
             if let Some(Control::Choice { set, .. }) = self.control(command.row) {
-                let set = *set;
-                pages::apply(core, set, command.index as f64);
-                self.changed(core, &mut out);
+                let set = set.clone();
+                self.set_value(core, &set, command.index as f64, &mut out);
             }
         }
         self.paint();
@@ -699,6 +842,15 @@ impl Settings {
     fn changed(&mut self, core: &mut Core, out: &mut Outcome) {
         out.theme = true;
         self.rebuild(core);
+    }
+
+    /// Writes a control's value; preset edits register shortcuts again.
+    fn set_value(&mut self, core: &mut Core, set: &pages::Set, value: f64, out: &mut Outcome) {
+        pages::apply(core, &mut self.state, set, value);
+        if set.presets() {
+            out.hotkeys = true;
+        }
+        self.changed(core, out);
     }
 
     fn mouse_move(&mut self, x: f32, y: f32) {
@@ -764,7 +916,9 @@ impl Settings {
         }
         if let Some(editing) = self.editing {
             let keep = match editing {
-                Editing::Name => matches!(target, Some(Target::Row(_, Part::Name | Part::Save))),
+                Editing::Field(_) => {
+                    matches!(target, Some(Target::Row(_, Part::Name | Part::Item(_))))
+                }
                 Editing::Hex => matches!(target, Some(Target::Row(_, Part::Hex))),
             };
             if !keep {
@@ -773,6 +927,14 @@ impl Settings {
         }
         if !matches!(target, Some(Target::Row(_, Part::Delete(_)))) {
             self.armed = None;
+        }
+        if self.confirming.is_some()
+            && target
+                .and_then(|t| self.target_button(t))
+                .map(|b| &b.action)
+                != self.confirming.as_ref()
+        {
+            self.confirming = None;
         }
         self.pressed = target;
         if let Some(t) = target {
@@ -809,9 +971,25 @@ impl Settings {
         match target {
             Some(Target::Row(at, Part::Main)) => matches!(
                 self.control(at),
-                Some(Control::Hotkey { key, .. }) if Some(*key) == self.recording
+                Some(Control::Hotkey { target, .. }) if Some(target) == self.recording.as_ref()
             ),
             _ => false,
+        }
+    }
+
+    /// The button under a target (row buttons, text box buttons, trailing
+    /// buttons).
+    fn target_button(&self, target: Target) -> Option<&ButtonData> {
+        let Target::Row(at, part) = target else {
+            return None;
+        };
+        let row = self.row(at)?;
+        match (&row.control, part) {
+            (Control::Buttons(buttons) | Control::Input { buttons, .. }, Part::Item(i)) => {
+                buttons.get(i)
+            }
+            (_, Part::Trail(i)) => row.trail.get(i),
+            _ => None,
         }
     }
 
@@ -820,9 +998,8 @@ impl Settings {
         if let Some((at, value)) = self.slider.take() {
             self.window.release_capture();
             if let Some(Control::Slider { set, .. }) = self.control(at) {
-                let set = *set;
-                pages::apply(core, set, value);
-                self.changed(core, out);
+                let set = set.clone();
+                self.set_value(core, &set, value, out);
             }
             return;
         }
@@ -874,10 +1051,9 @@ impl Settings {
             return;
         };
         match (control, part) {
-            (Control::Toggle(on, set), Part::Main) => {
-                let (on, set) = (*on, *set);
-                pages::apply(core, set, if on { 0.0 } else { 1.0 });
-                self.changed(core, out);
+            (Control::Toggle(on, set) | Control::Check(on, set), Part::Main) => {
+                let (on, set) = (*on, set.clone());
+                self.set_value(core, &set, if on { 0.0 } else { 1.0 }, out);
             }
             (
                 Control::Choice {
@@ -887,18 +1063,16 @@ impl Settings {
             ) => {
                 out.menu = self.choice_menu(at, options, *selected);
             }
-            (Control::Hotkey { key, .. }, Part::Main) => {
-                let key = *key;
-                if self.recording == Some(key) {
+            (Control::Hotkey { target, .. }, Part::Main) => {
+                if self.recording.as_ref() == Some(target) {
                     return;
                 }
-                self.recording = Some(key);
+                self.recording = Some(target.clone());
                 out.capture = Some(true);
             }
-            (Control::Hotkey { key, .. }, Part::Clear) => {
-                let key = *key;
-                core.store
-                    .set(key, Value::Hotkey(Some(HotkeyData::default())));
+            (Control::Hotkey { target, .. }, Part::Clear) => {
+                let target = target.clone();
+                lists::set_hotkey(core, &target, HotkeyData::default());
                 out.hotkeys = true;
                 self.rebuild(core);
             }
@@ -920,8 +1094,13 @@ impl Settings {
                 self.editing = None;
             }
             (Control::Color { .. }, Part::Hex) => self.start_editing(Editing::Hex),
-            (Control::Buttons(buttons), Part::Item(i)) => {
-                if let Some(action) = buttons.get(i).map(|b| b.action.clone()) {
+            (Control::Buttons(_) | Control::Input { .. }, Part::Item(_)) | (_, Part::Trail(_)) => {
+                if let Some(b) = self.target_button(target).cloned() {
+                    self.press(core, &b, out);
+                }
+            }
+            (_, Part::Header) => {
+                if let Some((action, _)) = self.row(at).and_then(|r| r.expand.clone()) {
                     self.run(core, action, out);
                 }
             }
@@ -943,15 +1122,43 @@ impl Settings {
                     self.armed = Some(i);
                 }
             }
-            (Control::SaveTheme, Part::Name) => self.start_editing(Editing::Name),
-            (Control::SaveTheme, Part::Save) => {
-                let name = std::mem::take(&mut self.theme_name);
-                themes::save(core, &name);
-                self.editing = None;
-                out.theme = true;
-                self.rebuild(core);
+            (Control::Input { field, .. }, Part::Name) => {
+                let field = *field;
+                self.start_editing(Editing::Field(field));
             }
             _ => {}
+        }
+    }
+
+    /// A button click: two-step buttons arm first, like the original's
+    /// ConfirmButton.
+    fn press(&mut self, core: &mut Core, b: &ButtonData, out: &mut Outcome) {
+        if b.confirm.is_some() && !self.is_confirming(b) {
+            self.confirming = Some(b.action.clone());
+            return;
+        }
+        self.confirming = None;
+        self.run(core, b.action.clone(), out);
+    }
+
+    /// Enter in a text box runs its primary (or first) button.
+    fn submit(&mut self, core: &mut Core, field: Field, out: &mut Outcome) {
+        let button = self
+            .sections
+            .iter()
+            .flat_map(|s| &s.rows)
+            .find_map(|r| match &r.control {
+                Control::Input {
+                    field: f, buttons, ..
+                } if *f == field => buttons
+                    .iter()
+                    .find(|b| b.primary)
+                    .or(buttons.first())
+                    .cloned(),
+                _ => None,
+            });
+        if let Some(b) = button {
+            self.run(core, b.action, out);
         }
     }
 
@@ -961,14 +1168,70 @@ impl Settings {
             Action::ThemeDelete(name) => themes::delete(core, name),
             Action::Randomize => themes::randomize(core),
             Action::ResetColors => themes::reset(core),
+            Action::ThemeSave => {
+                let name = std::mem::take(&mut self.texts.theme);
+                themes::save(core, &name);
+                self.editing = None;
+            }
             Action::OpenUrl(url) => {
                 let _ = std::process::Command::new("explorer").arg(url).spawn();
                 return;
             }
-            restore => pages::restore(core, restore),
+            Action::RestoreApp { .. }
+            | Action::RestoreAllApps
+            | Action::RestoreDevice(_)
+            | Action::RestoreAllDevices => pages::restore(core, &action),
+            list => {
+                // File dialogs are modal: a pressed state must not stick.
+                self.pressed = None;
+                self.editing = None;
+                let owner = self.window.raw();
+                let effect = lists::run(core, &mut self.state, &mut self.texts, owner, list);
+                out.hotkeys |= effect.presets;
+                out.apply_preset = effect.apply;
+                self.rebuild(core);
+                if let Some(expanded) = self.state.expanded.clone() {
+                    self.reveal_item(&expanded);
+                }
+                return;
+            }
         }
         out.theme = true;
         self.rebuild(core);
+    }
+
+    /// Scrolls a newly opened list item's details into view.
+    fn reveal_item(&mut self, item: &Expand) {
+        self.layout = self.compute_layout();
+        let header = self.layout.rows.iter().position(|r| {
+            self.row(r.at)
+                .and_then(|row| row.expand.as_ref())
+                .is_some_and(|(action, open)| {
+                    *open
+                        && matches!(action,
+                            Action::PresetToggle(e) | Action::RuleToggle(e) | Action::FolderToggle(e)
+                            if e == item)
+                })
+        });
+        let Some(i) = header else {
+            return;
+        };
+        // The header and its detail rows, up to the next unindented row.
+        let top = self.layout.rows[i].line.y;
+        let mut bottom = self.layout.rows[i].line.bottom();
+        for r in &self.layout.rows[i + 1..] {
+            if !self.row(r.at).is_some_and(|row| row.indent) {
+                break;
+            }
+            bottom = r.line.bottom();
+        }
+        let view = self.layout.view;
+        if bottom > view.bottom() - 16.0 {
+            let by = bottom - (view.bottom() - 16.0);
+            let max_by = (top - (view.y + 16.0)).max(0.0);
+            self.scroll = (self.scroll + by.min(max_by)).min(self.max_scroll());
+            self.layout = self.compute_layout();
+        }
     }
 
     fn choice_menu(&self, at: RowRef, options: &[String], selected: usize) -> Option<MenuRequest> {
@@ -999,7 +1262,7 @@ impl Settings {
     }
 
     fn key(&mut self, core: &mut Core, vk: u16, m: Modifiers, out: &mut Outcome) {
-        if let Some(key) = self.recording {
+        if let Some(target) = self.recording.clone() {
             if MODIFIER_KEYS.contains(&vk) {
                 return;
             }
@@ -1009,7 +1272,7 @@ impl Settings {
             } else {
                 pages::hotkey_from(vk, m.ctrl, m.alt, m.shift, m.win)
             };
-            core.store.set(key, Value::Hotkey(Some(hotkey)));
+            lists::set_hotkey(core, &target, hotkey);
             self.recording = None;
             out.capture = Some(false);
             out.hotkeys = true;
@@ -1036,12 +1299,15 @@ impl Settings {
                 self.focus = list.get(next).copied();
                 if let Some(t) = self.focus {
                     self.reveal(t);
-                    if matches!(t, Target::Row(_, Part::Name | Part::Hex)) {
-                        self.start_editing(if matches!(t, Target::Row(_, Part::Name)) {
-                            Editing::Name
-                        } else {
-                            Editing::Hex
-                        });
+                    match t {
+                        Target::Row(at, Part::Name) => {
+                            if let Some(Control::Input { field, .. }) = self.control(at) {
+                                let field = *field;
+                                self.start_editing(Editing::Field(field));
+                            }
+                        }
+                        Target::Row(_, Part::Hex) => self.start_editing(Editing::Hex),
+                        _ => {}
                     }
                 }
             }
@@ -1053,6 +1319,7 @@ impl Settings {
             VK_ESCAPE => {
                 self.picker = None;
                 self.armed = None;
+                self.confirming = None;
             }
             VK_UP | VK_DOWN | VK_LEFT | VK_RIGHT => {
                 let forward = matches!(vk, VK_DOWN | VK_RIGHT);
@@ -1104,9 +1371,11 @@ impl Settings {
                 ..
             } => {
                 let next = value + if forward { *step } else { -*step };
-                (*set, next.clamp(*min, *max))
+                (set.clone(), next.clamp(*min, *max))
             }
-            Control::Toggle(on, set) if *on != forward => (*set, if forward { 1.0 } else { 0.0 }),
+            Control::Toggle(on, set) | Control::Check(on, set) if *on != forward => {
+                (set.clone(), if forward { 1.0 } else { 0.0 })
+            }
             Control::Choice {
                 options,
                 selected,
@@ -1117,12 +1386,11 @@ impl Settings {
                 } else {
                     selected.saturating_sub(1)
                 };
-                (*set, next as f64)
+                (set.clone(), next as f64)
             }
             _ => return,
         };
-        pages::apply(core, set, value);
-        self.changed(core, out);
+        self.set_value(core, &set, value, out);
     }
 
     fn char(&mut self, core: &mut Core, c: u16, out: &mut Outcome) {
@@ -1131,7 +1399,7 @@ impl Settings {
         };
         self.caret = true;
         let text = match editing {
-            Editing::Name => &mut self.theme_name,
+            Editing::Field(field) => self.texts.get_mut(field),
             Editing::Hex => &mut self.hex,
         };
         match c {
@@ -1143,12 +1411,7 @@ impl Settings {
             0x0d => {
                 self.editing = None;
                 match editing {
-                    Editing::Name => {
-                        let name = std::mem::take(&mut self.theme_name);
-                        themes::save(core, &name);
-                        out.theme = true;
-                        self.rebuild(core);
-                    }
+                    Editing::Field(field) => self.submit(core, field, out),
                     Editing::Hex => self.commit_hex(core, out),
                 }
             }
@@ -1242,6 +1505,30 @@ impl Settings {
         self.size.1 = self.layout.content.max(SIZE.1);
         self.draw_now(None);
         self.surface.as_ref()?.rgba()
+    }
+
+    /// `render` with the page's first list item open and, on the
+    /// QuickTrumpet page, the capture form's option lists out.
+    pub fn render_open(&mut self, core: &mut Core, page: PageId) -> Option<(u32, u32, Vec<u8>)> {
+        self.navigate(core, page);
+        let first = self.sections.iter().flat_map(|s| &s.rows).find_map(|r| {
+            match r.expand.as_ref().map(|(a, _)| a) {
+                Some(Action::PresetToggle(e) | Action::RuleToggle(e) | Action::FolderToggle(e)) => {
+                    Some(e.clone())
+                }
+                _ => None,
+            }
+        });
+        self.state.expanded = first;
+        let capture = std::mem::take(&mut self.state.capture);
+        if page == PageId::QuickTrumpet {
+            self.state.capture.defaults = true;
+            self.state.capture.open = Some(pages::Choose::Defaults);
+        }
+        let image = self.render(core, page, None, false);
+        self.state.capture = capture;
+        self.state.expanded = None;
+        image
     }
 
     pub fn paint(&mut self) {
@@ -1383,25 +1670,75 @@ impl Settings {
         let Some(data) = self.row(row.at) else {
             return;
         };
+        let inset = if data.indent { INDENT } else { 0.0 };
         if row.at.row > 0 {
             canvas.rect(
-                Rect::new(row.line.x + 1.0, row.line.y, row.line.w - 2.0, 1.0),
+                Rect::new(
+                    row.line.x + 1.0 + inset,
+                    row.line.y,
+                    row.line.w - 2.0 - inset,
+                    1.0,
+                ),
                 p.divider,
             );
+        }
+        if data.expand.is_some() {
+            let state = self.state(Target::Row(row.at, Part::Header));
+            if state.hover {
+                let fill = if state.pressed {
+                    p.subtle_pressed
+                } else {
+                    p.subtle_hover
+                };
+                canvas.round_rect(row.line.inset(1.0, 1.0), 4.0, fill);
+            }
         }
         if !data.enabled {
             canvas.push_layer(0.4, None);
         }
-        let plain = matches!(data.control, Control::None);
+        // A plain note: secondary text, unless it is an item's title.
+        let plain = matches!(data.control, Control::None) && data.expand.is_none();
+        let heading = matches!(data.control, Control::Heading);
         canvas.text(
             &data.label,
             row.label,
-            &label_style(14.0)
+            &label_style(if heading { 12.0 } else { 14.0 })
                 .weight(if plain { 400 } else { 600 })
                 .wrap()
                 .top(),
-            if plain { p.secondary } else { p.text },
+            if plain || heading {
+                p.secondary
+            } else {
+                p.text
+            },
         );
+        if let (Some(r), Some(badge)) = (row.badge, &data.badge) {
+            canvas.round_rect(r, r.h / 2.0, p.accent.alpha(0.18));
+            canvas.text(
+                badge,
+                r,
+                &label_style(12.0).weight(600).align(Align::Center),
+                p.accent,
+            );
+        }
+        for (r, chip) in row.chips.iter().zip(&data.chips) {
+            canvas.round_rect(*r, r.h / 2.0, p.control);
+            canvas.stroke_round_rect(r.inset(0.5, 0.5), r.h / 2.0 - 0.5, 1.0, p.control_stroke);
+            canvas.text(
+                chip,
+                r.inset(10.0, 0.0),
+                &label_style(12.0).align(Align::Center).ellipsis(),
+                p.secondary,
+            );
+        }
+        if let (Some(r), Some((_, open))) = (row.chevron, &data.expand) {
+            canvas.text(
+                if *open { "\u{E70E}" } else { "\u{E70D}" },
+                r,
+                &TextStyle::new(self.icon_font, 12.0).align(Align::Center),
+                p.secondary,
+            );
+        }
         if let (Some(r), Some(desc)) = (row.desc, &data.desc) {
             canvas.text(desc, r, &label_style(12.0).wrap().top(), p.secondary);
         }
@@ -1413,6 +1750,13 @@ impl Settings {
                     widgets::toggle(canvas, &p, r, *on, self.state(target(Part::Main)));
                 }
             }
+            Control::Check(on, _) => {
+                if let Some(r) = part(Part::Main) {
+                    let state = self.state(target(Part::Main));
+                    widgets::checkbox(canvas, &p, r, *on, self.icon_font, state);
+                }
+            }
+            Control::Heading => {}
             Control::Slider {
                 value,
                 min,
@@ -1451,10 +1795,10 @@ impl Settings {
                 }
             }
             Control::Hotkey {
-                key,
+                target,
                 text,
                 fallback,
-            } => self.draw_hotkey(canvas, row, *key, text, fallback.as_deref()),
+            } => self.draw_hotkey(canvas, row, target, text, fallback.as_deref()),
             Control::Color { color, set, .. } => {
                 let shown = match &self.picker {
                     Some(pk) if pk.row == row.at => widgets::hsv(pk.h, pk.s, pk.v),
@@ -1478,20 +1822,12 @@ impl Settings {
             Control::Buttons(buttons) => {
                 for (i, b) in buttons.iter().enumerate() {
                     if let Some(r) = part(Part::Item(i)) {
-                        widgets::button(
-                            canvas,
-                            &p,
-                            r,
-                            &b.label,
-                            b.glyph.map(|g| (self.icon_font, g)),
-                            b.primary,
-                            self.state(target(Part::Item(i))),
-                        );
+                        self.draw_button(canvas, r, b, self.state(target(Part::Item(i))));
                     }
                 }
             }
             Control::Chip(text) => {
-                let w = self.control_width(&data.control);
+                let w = self.control_width(data);
                 let r = Rect::new(
                     row.line.right() - 16.0 - w,
                     row.line.y + row.line.h / 2.0 - 14.0,
@@ -1502,32 +1838,35 @@ impl Settings {
                 canvas.text(text, r, &label_style(14.0).align(Align::Center), p.text);
             }
             Control::Themes(chips) => self.draw_chips(canvas, row, chips),
-            Control::SaveTheme => {
+            Control::Input {
+                field,
+                placeholder,
+                buttons,
+            } => {
                 if let Some(r) = part(Part::Name) {
                     widgets::text_box(
                         canvas,
                         &p,
                         r,
-                        &self.theme_name,
-                        "Theme name",
-                        self.editing == Some(Editing::Name),
+                        self.texts.get(*field),
+                        placeholder,
+                        self.editing == Some(Editing::Field(*field)),
                         self.caret,
                         self.state(target(Part::Name)),
                     );
                 }
-                if let Some(r) = part(Part::Save) {
-                    widgets::button(
-                        canvas,
-                        &p,
-                        r,
-                        "Save",
-                        Some((self.icon_font, "\u{E74E}")),
-                        true,
-                        self.state(target(Part::Save)),
-                    );
+                for (i, b) in buttons.iter().enumerate() {
+                    if let Some(r) = part(Part::Item(i)) {
+                        self.draw_button(canvas, r, b, self.state(target(Part::Item(i))));
+                    }
                 }
             }
             Control::None => {}
+        }
+        for (i, b) in data.trail.iter().enumerate() {
+            if let Some(r) = part(Part::Trail(i)) {
+                self.draw_button(canvas, r, b, self.state(target(Part::Trail(i))));
+            }
         }
         if self.picker.as_ref().is_some_and(|pk| pk.row == row.at) {
             self.draw_picker(canvas, row);
@@ -1539,10 +1878,10 @@ impl Settings {
             if let Some(Target::Row(at, focused)) = self.focus {
                 if at == row.at {
                     if let Some(r) = part(focused) {
-                        let radius = if matches!(data.control, Control::Toggle(..)) {
-                            10.0
-                        } else {
-                            4.0
+                        let radius = match (&data.control, focused) {
+                            (Control::Toggle(..), Part::Main) => 10.0,
+                            (_, Part::Header) => 6.0,
+                            _ => 4.0,
                         };
                         widgets::focus_ring(canvas, &p, r, radius);
                     }
@@ -1551,11 +1890,54 @@ impl Settings {
         }
     }
 
+    /// A button as it looks now: an armed two-step button shows its
+    /// question on red.
+    fn draw_button(&self, canvas: &mut Canvas, r: Rect, b: &ButtonData, state: State) {
+        let p = self.palette;
+        if self.is_confirming(b) {
+            canvas.round_rect(r, 4.0, Rgba::rgb(196, 43, 28));
+            canvas.text(
+                b.confirm.unwrap_or_default(),
+                r,
+                &label_style(14.0).weight(600).align(Align::Center),
+                Rgba::WHITE,
+            );
+            return;
+        }
+        if b.label.is_empty() {
+            // Icon buttons are subtle until hovered.
+            if state.hover {
+                let fill = if state.pressed {
+                    p.subtle_pressed
+                } else {
+                    p.subtle_hover
+                };
+                canvas.round_rect(r, 4.0, fill);
+            }
+            canvas.text(
+                b.glyph.unwrap_or_default(),
+                r,
+                &TextStyle::new(self.icon_font, 14.0).align(Align::Center),
+                p.text,
+            );
+            return;
+        }
+        widgets::button(
+            canvas,
+            &p,
+            r,
+            &b.label,
+            b.glyph.map(|g| (self.icon_font, g)),
+            b.primary,
+            state,
+        );
+    }
+
     fn draw_hotkey(
         &self,
         canvas: &mut Canvas,
         row: &RowLayout,
-        key: Key,
+        target: &HotkeyTarget,
         text: &str,
         fallback: Option<&str>,
     ) {
@@ -1565,7 +1947,7 @@ impl Settings {
             return;
         };
         let state = self.state(Target::Row(row.at, Part::Main));
-        if self.recording == Some(key) {
+        if self.recording.as_ref() == Some(target) {
             widgets::button(canvas, &p, r, "Press keys · Esc clears", None, true, state);
         } else if text.is_empty() {
             let label = match fallback {

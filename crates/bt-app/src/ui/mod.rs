@@ -332,6 +332,10 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         "settings-general-light.png",
         settings.render(&mut core, settings::PageId::General, Some(true), false),
     );
+    for page in [settings::PageId::QuickTrumpet, settings::PageId::AppRules] {
+        let name = format!("settings-{}-open.png", format!("{page:?}").to_lowercase());
+        save(&name, settings.render_open(&mut core, page));
+    }
     settings.close();
     Ok(())
 }
@@ -747,6 +751,12 @@ impl Ui {
             Some(false) => self.reload_hotkeys(),
             None if outcome.hotkeys => self.reload_hotkeys(),
             None => {}
+        }
+        if let Some(index) = outcome.apply_preset {
+            self.apply_preset(index);
+            if let Some(settings) = &mut self.settings {
+                settings.refresh(&mut self.core);
+            }
         }
         if outcome.close {
             if let Some(settings) = self.settings.take() {
