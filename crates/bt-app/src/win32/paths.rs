@@ -1,10 +1,30 @@
 //! Path resolution and ID allocation for folder volume rules: .NET 8's
-//! `Path.GetFullPath` on Windows and `Guid.NewGuid().ToString("N")`.
+//! `Path.GetFullPath` on Windows and `Guid.NewGuid().ToString("N")`; the
+//! desktop folder.
 use bt_core::folders::{PathError, WindowsPathResolver};
+use std::ffi::c_void;
 use windows::{
-    Win32::{Storage::FileSystem::GetFullPathNameW, System::Com::CoCreateGuid},
+    Win32::{
+        Storage::FileSystem::GetFullPathNameW,
+        System::Com::{CoCreateGuid, CoTaskMemFree},
+        UI::Shell::{FOLDERID_Desktop, KF_FLAG_DONT_VERIFY, SHGetKnownFolderPath},
+    },
     core::PCWSTR,
 };
+
+/// `Environment.GetFolderPath(SpecialFolder.Desktop)`: empty on failure.
+pub fn desktop() -> String {
+    // SAFETY: a constant folder id and no token; the returned string is
+    // copied, then freed with CoTaskMemFree as the API requires.
+    unsafe {
+        let Ok(path) = SHGetKnownFolderPath(&FOLDERID_Desktop, KF_FLAG_DONT_VERIFY, None) else {
+            return String::new();
+        };
+        let text = path.to_string().unwrap_or_default();
+        CoTaskMemFree(Some(path.0 as *const c_void));
+        text
+    }
+}
 
 /// `Path.GetFullPath`: empty or NUL-containing input is an ArgumentException,
 /// `\\?\` paths are returned unchanged, everything else goes through

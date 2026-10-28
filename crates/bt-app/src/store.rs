@@ -57,7 +57,9 @@ fn xml(value: &Value) -> Option<String> {
             )
         }
         Value::Float(v) => format!("{HEADER}<double>{v}</double>"),
-        Value::Text(text) => return text.clone(),
+        Value::Text(Some(text)) => text.clone(),
+        // A null string is serialized like any other non-string value.
+        Value::Text(None) => legacy_xml::encode_null_string().into(),
         Value::Hotkey(hotkey) => legacy_xml::encode_hotkey(*hotkey),
     })
 }
@@ -100,7 +102,17 @@ impl Store {
             .and_then(|d| registry::migrate_legacy_settings(d).ok())
             .map(|m| m.snapshot)
             .unwrap_or_default();
-        let file = dir.as_deref().and_then(|d| EditableFile::open(d).ok());
+        Self::with(archive, dir.as_deref())
+    }
+
+    /// A store over an empty archive in `dir`, for tests.
+    #[cfg(test)]
+    pub fn in_directory(dir: &std::path::Path) -> Self {
+        Self::with(RegistrySnapshot::default(), Some(dir))
+    }
+
+    fn with(archive: RegistrySnapshot, dir: Option<&std::path::Path>) -> Self {
+        let file = dir.and_then(|d| EditableFile::open(d).ok());
         let mut store = Self {
             archive,
             file,
