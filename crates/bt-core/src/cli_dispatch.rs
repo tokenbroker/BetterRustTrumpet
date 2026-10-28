@@ -5,10 +5,9 @@
 use crate::{
     cli,
     cli_responses::{
-        self as responses, AppResponse, DefaultResponse, DeviceApp, DeviceResponse,
-        ErrorResponse, GetVolumeResponse, HealthAudio, HealthSettings, MuteResponse,
-        RouteResponse, SetDefaultResponse, SetVolumeResponse, Target, WatchApp, WatchDevice,
-        WatchResponse,
+        self as responses, AppResponse, DefaultResponse, DeviceApp, DeviceResponse, ErrorResponse,
+        GetVolumeResponse, HealthAudio, HealthSettings, MuteResponse, RouteResponse,
+        SetDefaultResponse, SetVolumeResponse, Target, WatchApp, WatchDevice, WatchResponse,
     },
     cli_rules,
     cli_validation::{self, AppCandidate, CommandCulture, Volume},
@@ -114,7 +113,9 @@ fn json(value: &impl Serialize) -> String {
 }
 
 fn unavailable(command: &str) -> String {
-    error(format!("{command} is not available in BetterTrumpet Rust yet"))
+    error(format!(
+        "{command} is not available in BetterTrumpet Rust yet"
+    ))
 }
 
 /// The ping answer, or `None` when `line` is another command. The original

@@ -162,7 +162,7 @@ pub fn indent_json(text: &str) -> Option<String> {
                 while let Some(c) = chars.next() {
                     out.push(c);
                     match c {
-                        '\\' =>out.extend(chars.next()),
+                        '\\' => out.extend(chars.next()),
                         '"' => break,
                         _ => {}
                     }

@@ -77,7 +77,10 @@ fn entry_point_classification_matches_cli_entry_point() {
         None
     );
     assert_eq!(protocol::remote_command(&strings(&["---x"])), "-x");
-    assert_eq!(protocol::remote_command(&strings(&["a \"b\" c"])), "\"a \"b\" c\"");
+    assert_eq!(
+        protocol::remote_command(&strings(&["a \"b\" c"])),
+        "\"a \"b\" c\""
+    );
 }
 
 #[test]

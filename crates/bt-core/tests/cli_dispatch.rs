@@ -20,11 +20,13 @@ impl Provider for Fake {
         self.devices.clone()
     }
     fn set_device_volume(&mut self, device: &Device, volume: i32) {
-        self.calls.push(format!("device-volume {} {volume}", device.id));
+        self.calls
+            .push(format!("device-volume {} {volume}", device.id));
         self.device(&device.id).volume = volume;
     }
     fn set_device_mute(&mut self, device: &Device, muted: bool) {
-        self.calls.push(format!("device-mute {} {muted}", device.id));
+        self.calls
+            .push(format!("device-mute {} {muted}", device.id));
         self.device(&device.id).is_muted = muted;
     }
     fn set_app_volume(&mut self, device: &Device, app: &App, volume: i32) {
@@ -46,7 +48,8 @@ impl Provider for Fake {
         true
     }
     fn route_processes(&mut self, name: &str, device: &Device) -> usize {
-        self.calls.push(format!("route-processes {name} {}", device.id));
+        self.calls
+            .push(format!("route-processes {name} {}", device.id));
         self.processes
     }
     fn profiles_json(&self) -> Option<Option<String>> {
@@ -92,7 +95,10 @@ fn fake() -> Fake {
                 volume: 50,
                 is_muted: false,
                 is_default: true,
-                apps: vec![app("Spotify", "Spotify", 10, 80), app("Discord", "Discord", 20, 60)],
+                apps: vec![
+                    app("Spotify", "Spotify", 10, 80),
+                    app("Discord", "Discord", 20, 60),
+                ],
             },
             Device {
                 id: "{headset}".into(),
@@ -242,25 +248,41 @@ fn errors_use_the_original_messages() {
         ("mute --device nothing", "device not found"),
         ("set-default", "usage: set-default DEVICE_NAME"),
         ("set-default Nothing Here", "device not found: Nothing Here"),
-        ("set-device spotify", "usage: set-device APP_EXE DEVICE_NAME"),
+        (
+            "set-device spotify",
+            "usage: set-device APP_EXE DEVICE_NAME",
+        ),
         (
             "set-device nothing.exe headset",
             "app not found or no processes running: nothing.exe",
         ),
         ("resolve-apps", "usage: resolve-apps QUERY [QUERY...]"),
-        (
-            "batch",
-            "usage: batch <command...> [<command...>]",
-        ),
+        ("batch", "usage: batch <command...> [<command...>]"),
     ] {
         assert_eq!(run(&mut p, line), json!({ "error": message }), "{line}");
     }
     let mut none = Fake::default();
-    for line in ["list-devices", "list-apps", "get-default", "watch", "rule preview --keep a=1"] {
-        assert_eq!(run(&mut none, line), json!({"error":"audio not ready"}), "{line}");
+    for line in [
+        "list-devices",
+        "list-apps",
+        "get-default",
+        "watch",
+        "rule preview --keep a=1",
+    ] {
+        assert_eq!(
+            run(&mut none, line),
+            json!({"error":"audio not ready"}),
+            "{line}"
+        );
     }
-    assert_eq!(run(&mut none, "get-volume"), json!({"error":"device not found"}));
-    assert_eq!(run(&mut none, "mute spotify"), json!({"error":"app not found: spotify"}));
+    assert_eq!(
+        run(&mut none, "get-volume"),
+        json!({"error":"device not found"})
+    );
+    assert_eq!(
+        run(&mut none, "mute spotify"),
+        json!({"error":"app not found: spotify"})
+    );
 }
 
 #[test]
@@ -326,7 +348,10 @@ fn rules_apply_live_changes_and_keep_pascal_case_plans() {
 fn batch_keeps_nested_property_order_and_error_rule() {
     let mut p = fake();
     assert_eq!(
-        raw(&mut p, "batch --set-volume 67 --app discord get-default --mute --app nothing"),
+        raw(
+            &mut p,
+            "batch --set-volume 67 --app discord get-default --mute --app nothing"
+        ),
         concat!(
             r#"{"ok":false,"results":["#,
             r#"{"command":"set-volume 67 --app discord","response":{"ok":true,"app":"Discord","volume":67}},"#,
@@ -408,8 +433,14 @@ fn extension_handles_unported_commands_when_present() {
         }
     }
     let mut p = WithProfiles(fake());
-    assert_eq!(cli_dispatch::process(&mut p, "Night Mode"), "apply:Night|Mode");
-    assert_eq!(cli_dispatch::process(&mut p, "preset load a b"), "apply:a|b");
+    assert_eq!(
+        cli_dispatch::process(&mut p, "Night Mode"),
+        "apply:Night|Mode"
+    );
+    assert_eq!(
+        cli_dispatch::process(&mut p, "preset load a b"),
+        "apply:a|b"
+    );
 }
 
 #[test]
