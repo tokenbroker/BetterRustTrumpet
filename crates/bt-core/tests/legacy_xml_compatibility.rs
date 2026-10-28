@@ -72,3 +72,28 @@ fn hotkey_encoding_matches_xml_serializer_samples_and_round_trips() {
         assert_eq!(decode(&legacy_xml::encode_hotkey(value)), value);
     }
 }
+
+#[test]
+fn placement_encoding_matches_xml_serializer_samples() {
+    let decode = |xml: &str| match legacy_xml::decode(xml, Kind::OptionalPlacement).unwrap() {
+        legacy_xml::Value::Placement(p) => p,
+        other => panic!("{other:?}"),
+    };
+    let mut checked = 0;
+    for case in reference()["samples"].as_array().unwrap() {
+        let xml = case["xml"].as_str().unwrap_or_default();
+        // The samples as XmlSerializer wrote them (with both namespaces).
+        if !xml.starts_with(r#"<?xml version="1.0" encoding="utf-16"?><WINDOWPLACEMENT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="#) {
+            continue;
+        }
+        let Ok(legacy_xml::Value::Placement(value)) =
+            legacy_xml::decode(xml, Kind::OptionalPlacement)
+        else {
+            continue;
+        };
+        assert_eq!(legacy_xml::encode_placement(value.as_ref()), xml);
+        assert_eq!(decode(&legacy_xml::encode_placement(value.as_ref())), value);
+        checked += 1;
+    }
+    assert!(checked >= 2);
+}

@@ -6,35 +6,33 @@ use super::{
     MenuRequest,
     anim::{self, BACK_OUT, Curve, EASE_IN, EASE_OUT, FADE_OUT_QUAD},
     blur,
+    rows::{
+        self, APP_ROW_H, APPS_PAD, BLUR_RADIUS, DEVICE_ROW_H, PopupKind, RowPaint, RowPart,
+        SliderKey, TITLE_H, Ticker, Tool, ToolStep, UI_FONT, glyph, mute_rect, percent,
+        slider_rect, sorted_apps,
+    },
     slider::Slider,
     theme::Theme,
     tip::Tip,
 };
-use crate::core::{AppView, Core, DeviceView, HiddenEntry, RuleKind, View};
-use bt_app::i18n::{tr, trf};
+use crate::core::{Core, DeviceView, View};
+use bt_app::i18n::tr;
 use bt_app::win32::{
     gfx::{Align, Canvas, Gfx, Image, Rect, Surface, TextStyle},
-    icons,
     menu::Item,
-    sound,
     wnd::{self, Button, Event, Modifiers, Window},
 };
-use bt_core::{
-    models::VolumeRuleMode,
-    settings::{Key, Value},
-};
+use bt_core::settings::{Key, Value};
 use std::{
     collections::HashMap,
     rc::Rc,
     time::{Duration, Instant},
 };
 
+pub use super::rows::Command;
+
 /// The original's flyout width (`WindowAndItemSize`).
 pub const WIDTH: f32 = 360.0;
-const TITLE_H: f32 = 48.0;
-const DEVICE_ROW_H: f32 = 60.0;
-const APP_ROW_H: f32 = 52.0;
-const APPS_PAD: f32 = 6.0;
 const FRAME: usize = 1;
 /// Tooltip timers: the initial show delay and ShowDuration.
 const TIP_SHOW: usize = 2;
@@ -44,55 +42,12 @@ const TIP_HIDE: usize = 3;
 const TIP_DELAY: u32 = 400;
 const TIP_BETWEEN: u128 = 100;
 const TIP_DURATION: u32 = 5000;
-const TICK_WAV: &[u8] = include_bytes!("../../assets/tick.wav");
-const UI_FONT: &str = "Segoe UI";
-/// WindowBlurRadius: the blur of the flyout behind a popup.
-const BLUR_RADIUS: f32 = 10.0;
 
 // Segoe MDL2 / Fluent glyphs.
-const GLYPH_MUTE: char = '\u{E74F}';
-const GLYPH_BARS: [char; 4] = ['\u{E992}', '\u{E993}', '\u{E994}', '\u{E995}'];
-const GLYPH_SYSTEM_SOUNDS: char = '\u{E7F5}';
 const GLYPH_CHEVRON: char = '\u{E010}';
 const GLYPH_RESTORE: char = '\u{E18B}';
 const GLYPH_PIN: char = '\u{E840}';
 const GLYPH_PINNED: char = '\u{E841}';
-const GLYPH_LOCK: char = '\u{E72E}';
-const GLYPH_LAUNCH: char = '\u{E768}';
-const GLYPH_FOCUS: char = '\u{E7F4}';
-const GLYPH_HIDE: char = '\u{E18B}';
-const GLYPH_ROUTE: char = '\u{E8AB}';
-const GLYPH_MORE: char = '\u{E10C}';
-const GLYPH_CLOSE: char = '\u{E8BB}';
-
-/// Which slider: a device, an app, or one process of an app; `popup` for
-/// the copies shown in the popups.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
-pub struct SliderKey {
-    device: String,
-    app: Option<String>,
-    pid: Option<u32>,
-    popup: bool,
-}
-
-impl SliderKey {
-    fn device(device: &str, popup: bool) -> Self {
-        Self {
-            device: device.into(),
-            app: None,
-            pid: None,
-            popup,
-        }
-    }
-    fn app(device: &str, key: &str, pid: Option<u32>, popup: bool) -> Self {
-        Self {
-            device: device.into(),
-            app: Some(key.into()),
-            pid,
-            popup,
-        }
-    }
-}
 
 #[derive(Clone, Debug, PartialEq)]
 enum Hit {
@@ -112,18 +67,6 @@ enum Hit {
     PopupBody,
     Scrollbar,
     Header,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-enum ToolAction {
-    Lock,
-    Launch,
-    Focus,
-    HardMute,
-    Hide,
-    Route,
-    More,
-    Close,
 }
 
 /// Where a tooltip opens: to the right of a control (window DIPs), or
@@ -146,18 +89,6 @@ struct TipTarget {
     done: bool,
 }
 
-struct Tool {
-    glyph: char,
-    action: ToolAction,
-    active: bool,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-enum PopupKind {
-    App { device: String, key: String },
-    Device { device: String },
-}
-
 struct Popup {
     kind: PopupKind,
     title: String,
@@ -166,18 +97,6 @@ struct Popup {
     anchor_top: f32,
     offset: f32,
     opened: Instant,
-}
-
-/// Commands chosen from the flyout's menus.
-#[derive(Clone, Debug)]
-pub enum Command {
-    Rule(String, String, RuleKind),
-    Route(String, Option<String>),
-    SetDefault(String),
-    HideDevice(String, String),
-    Unhide(String, HiddenEntry),
-    UnhideAll(String),
-    Nothing,
 }
 
 /// A row in the list or a popup, in window coordinates.
@@ -239,49 +158,13 @@ pub struct Flyout {
     scale: f32,
     max_height: f32,
     tray: Option<(i32, i32, i32, i32)>,
-    last_tick: Instant,
+    ticker: Ticker,
     last_peaks: Instant,
     pointer: Option<(f32, f32)>,
     /// The flyout's tooltips (app names, the header buttons).
     pub tip: Tip,
     tip_target: Option<TipTarget>,
     tip_closed: Option<Instant>,
-}
-
-fn percent(volume: f32) -> i32 {
-    (volume * 100.0).round() as i32
-}
-
-fn exe_file(app: &AppView) -> &str {
-    let path = app.app.executable.as_deref().unwrap_or("");
-    match path.rsplit(['\\', '/']).next() {
-        Some(name) if !name.is_empty() => name,
-        _ => &app.app.display_name,
-    }
-}
-
-/// Apps by executable name, ordinal (AppItemViewModel's comparer); System
-/// sounds last.
-fn sorted_apps(device: &DeviceView) -> Vec<&AppView> {
-    let mut apps: Vec<&AppView> = device.apps.iter().filter(|a| !a.hidden).collect();
-    apps.sort_by(|a, b| {
-        a.app
-            .is_system_sounds
-            .cmp(&b.app.is_system_sounds)
-            .then_with(|| exe_file(a).cmp(exe_file(b)))
-    });
-    apps
-}
-
-fn glyph(c: char) -> String {
-    c.to_string()
-}
-
-fn first_letter(name: &str) -> String {
-    name.trim()
-        .chars()
-        .find(|c| c.is_alphanumeric())
-        .map_or("?".into(), |c| c.to_uppercase().collect())
 }
 
 impl Flyout {
@@ -328,7 +211,7 @@ impl Flyout {
             scale: 1.0,
             max_height: 900.0,
             tray: None,
-            last_tick: now,
+            ticker: Ticker::new(),
             last_peaks: now,
             pointer: None,
             tip,
@@ -429,33 +312,11 @@ impl Flyout {
     // ---------- popup layout ----------
 
     fn popup_rows(&self) -> Vec<SliderKey> {
-        match &self.popup {
-            Some(Popup {
-                kind: PopupKind::App { device, key },
-                ..
-            }) => {
-                let Some(app) = self.view.app(device, key) else {
-                    return vec![];
-                };
-                if app.app.sessions.is_empty() {
-                    vec![SliderKey::app(device, key, None, true)]
-                } else {
-                    app.app
-                        .sessions
-                        .iter()
-                        .map(|s| SliderKey::app(device, key, Some(s.process_id), true))
-                        .collect()
-                }
-            }
-            Some(Popup {
-                kind: PopupKind::Device { device },
-                ..
-            }) => vec![SliderKey::device(device, true)],
-            None => vec![],
-        }
+        self.popup
+            .as_ref()
+            .map_or(vec![], |p| rows::popup_keys(&self.view, &p.kind))
     }
 
-    /// The popup's frame and its rows, in window coordinates.
     fn popup_layout(&self) -> Option<(Rect, Vec<Row>)> {
         let popup = self.popup.as_ref()?;
         let keys = self.popup_rows();
@@ -486,38 +347,12 @@ impl Flyout {
     }
 
     fn tool_rects(&self, frame: Rect) -> Vec<Rect> {
-        let Some(popup) = &self.popup else {
-            return vec![];
-        };
-        let n = popup.tools.len() as f32;
-        (0..popup.tools.len())
-            .map(|i| {
-                Rect::new(
-                    frame.right() - 1.0 - (n - i as f32) * 48.0,
-                    frame.y + 1.0,
-                    48.0,
-                    48.0,
-                )
-            })
-            .collect()
+        self.popup
+            .as_ref()
+            .map_or(vec![], |p| rows::tool_rects(frame, p.tools.len()))
     }
 
     // ---------- row geometry ----------
-
-    fn mute_rect(row: Rect) -> Rect {
-        Rect::new(row.x + 24.5, row.y + row.h / 2.0 - 14.0, 28.0, 28.0)
-    }
-    fn slider_rect(row: Rect) -> Rect {
-        Rect::new(
-            row.x + 72.0,
-            row.y + row.h / 2.0 - 16.0,
-            row.w - 140.0,
-            32.0,
-        )
-    }
-    fn value_rect(row: Rect) -> Rect {
-        Rect::new(row.right() - 69.0, row.y, 69.0, row.h)
-    }
 
     fn header_buttons(&self, header: Rect) -> (Rect, Rect) {
         let bar = if self.scrollable() { 16.0 } else { 0.0 };
@@ -583,41 +418,21 @@ impl Flyout {
     }
 
     fn row_hit(row: &Row, x: f32, y: f32) -> Option<Hit> {
-        if !row.rect.contains(x, y) {
-            return None;
-        }
-        if Self::mute_rect(row.rect).contains(x, y) {
-            return Some(Hit::Mute(row.key.clone()));
-        }
-        if Self::slider_rect(row.rect).contains(x, y) {
-            return Some(Hit::Slider(row.key.clone()));
-        }
-        Some(Hit::Row(row.key.clone()))
+        Some(match rows::row_part(row.rect, x, y)? {
+            RowPart::Mute => Hit::Mute(row.key.clone()),
+            RowPart::Slider => Hit::Slider(row.key.clone()),
+            RowPart::Row => Hit::Row(row.key.clone()),
+        })
     }
 
     // ---------- state from the view ----------
 
     fn volume_of(&self, key: &SliderKey) -> Option<(f32, bool)> {
-        let device = self.view.device(&key.device)?;
-        match (&key.app, key.pid) {
-            (None, _) => Some((device.device.volume, device.device.muted)),
-            (Some(app), None) => {
-                let app = device.apps.iter().find(|a| &a.app.key == app)?;
-                Some((app.app.volume, app.app.muted))
-            }
-            (Some(app), Some(pid)) => {
-                let app = device.apps.iter().find(|a| &a.app.key == app)?;
-                let s = app.app.sessions.iter().find(|s| s.process_id == pid)?;
-                Some((s.volume, s.muted))
-            }
-        }
+        rows::volume_of(&self.view, key)
     }
 
     fn locked(&self, key: &SliderKey) -> bool {
-        key.app
-            .as_ref()
-            .and_then(|app| self.view.app(&key.device, app))
-            .is_some_and(AppView::locked)
+        rows::locked(&self.view, key)
     }
 
     fn slider(&mut self, key: &SliderKey) -> &mut Slider {
@@ -634,24 +449,17 @@ impl Flyout {
     }
 
     fn sync(&mut self) {
-        let now = Instant::now();
         let mut keys: Vec<SliderKey> = self.layout().rows.into_iter().map(|r| r.key).collect();
         if let Some((_, rows)) = self.popup_layout() {
             keys.extend(rows.into_iter().map(|r| r.key));
         }
-        self.sliders.retain(|k, _| keys.contains(k));
-        for key in keys {
-            if let Some((volume, _)) = self.volume_of(&key) {
-                self.slider(&key).update(percent(volume), now);
-            }
-        }
+        rows::sync_sliders(&self.view, &mut self.sliders, keys);
         // A popup whose app or device went away closes.
-        let gone = match self.popup.as_ref().map(|p| &p.kind) {
-            Some(PopupKind::App { device, key }) => self.view.app(device, key).is_none(),
-            Some(PopupKind::Device { device }) => self.view.device(device).is_none(),
-            None => false,
-        };
-        if gone {
+        if self
+            .popup
+            .as_ref()
+            .is_some_and(|p| rows::popup_gone(&self.view, &p.kind))
+        {
             self.popup = None;
             self.dismiss_out = None;
         }
@@ -864,167 +672,27 @@ impl Flyout {
     }
 
     fn read_peaks(&mut self, core: &Core) {
-        let Ok(peaks) = core.audio.peaks() else {
-            return;
-        };
-        let popup = self.popup.as_ref().map(|p| p.kind.clone());
-        for p in peaks {
-            let Some(device) = self.view.device(&p.device_id) else {
-                continue;
-            };
-            let device_volume = device.device.volume;
-            match (&p.app_key, p.process_id) {
-                (None, _) => {
-                    for popup_copy in [false, true] {
-                        let key = SliderKey::device(&p.device_id, popup_copy);
-                        if let Some(s) = self.sliders.get_mut(&key) {
-                            s.set_peaks(p.channels, device_volume);
-                        }
-                    }
-                }
-                (Some(app_key), pid) => {
-                    let Some(app) = device.apps.iter().find(|a| &a.app.key == app_key) else {
-                        continue;
-                    };
-                    let volume = match pid {
-                        None => app.app.volume,
-                        Some(pid) => app
-                            .app
-                            .sessions
-                            .iter()
-                            .find(|s| s.process_id == pid)
-                            .map_or(app.app.volume, |s| s.volume),
-                    };
-                    let in_popup = matches!(&popup, Some(PopupKind::App { device, key })
-                        if device == &p.device_id && key == app_key);
-                    let mut keys = vec![];
-                    if pid.is_none() {
-                        keys.push(SliderKey::app(&p.device_id, app_key, None, false));
-                    }
-                    if in_popup {
-                        keys.push(SliderKey::app(&p.device_id, app_key, pid, true));
-                    }
-                    for key in keys {
-                        if let Some(s) = self.sliders.get_mut(&key) {
-                            s.set_peaks(p.channels, volume);
-                        }
-                    }
-                }
-            }
-        }
+        let popup = self.popup.as_ref().map(|p| &p.kind);
+        rows::read_peaks(core, &self.view, &mut self.sliders, popup);
     }
 
     // ---------- actions ----------
 
-    fn play_tick(&mut self, theme: &Theme, value: i32) {
-        let now = Instant::now();
-        if !theme.tick_sound || now.duration_since(self.last_tick) < Duration::from_millis(50) {
-            return;
-        }
-        self.last_tick = now;
-        sound::play(TICK_WAV, value as f32 / 100.0);
-    }
-
     /// A slider value chosen by the user.
     fn apply_value(&mut self, core: &mut Core, theme: &Theme, key: &SliderKey, value: i32) {
-        let volume = value as f32 / 100.0;
-        self.play_tick(theme, value);
-        match (&key.app, key.pid) {
-            (None, _) => {
-                let Some(device) = self.view.device_mut(&key.device) else {
-                    return;
-                };
-                let previous = percent(device.device.volume);
-                device.device.volume = volume;
-                let name = device.device.name.clone();
-                core.set_device_volume(&key.device, &name, volume, previous);
-            }
-            (Some(app_key), None) => {
-                let Some(app) = self.view.app_mut(&key.device, app_key) else {
-                    return;
-                };
-                let previous = percent(app.app.volume);
-                app.app.volume = volume;
-                let name = app.app.display_name.clone();
-                core.set_app_volume(&key.device, app_key, &name, volume, previous);
-            }
-            (Some(app_key), Some(pid)) => {
-                if let Some(s) = self
-                    .view
-                    .app_mut(&key.device, app_key)
-                    .and_then(|a| a.app.sessions.iter_mut().find(|s| s.process_id == pid))
-                {
-                    s.volume = volume;
-                }
-                core.set_process_volume(&key.device, app_key, pid, volume);
-            }
-        }
-        // The other copy of this slider (list or popup) follows.
-        let twin = SliderKey {
-            popup: !key.popup,
-            ..key.clone()
-        };
-        if let Some(s) = self.sliders.get_mut(&twin) {
-            s.value = value;
-        }
+        self.ticker.play(theme, value);
+        rows::apply_value(&mut self.view, &mut self.sliders, core, key, value);
     }
 
     fn toggle_mute(&mut self, core: &mut Core, key: &SliderKey) {
-        match (&key.app, key.pid) {
-            (None, _) => {
-                let Some(device) = self.view.device_mut(&key.device) else {
-                    return;
-                };
-                device.device.muted = !device.device.muted;
-                let (muted, name) = (device.device.muted, device.device.name.clone());
-                core.set_device_mute(&key.device, &name, muted);
-            }
-            (Some(app_key), None) => {
-                let Some(app) = self.view.app_mut(&key.device, app_key) else {
-                    return;
-                };
-                app.app.muted = !app.app.muted;
-                let (muted, name) = (app.app.muted, app.app.display_name.clone());
-                core.set_app_mute(&key.device, app_key, &name, muted);
-            }
-            (Some(app_key), Some(pid)) => {
-                let Some(session) = self
-                    .view
-                    .app_mut(&key.device, app_key)
-                    .and_then(|a| a.app.sessions.iter_mut().find(|s| s.process_id == pid))
-                else {
-                    return;
-                };
-                session.muted = !session.muted;
-                let muted = session.muted;
-                core.set_process_mute(&key.device, app_key, pid, muted);
-            }
-        }
+        rows::toggle_mute(&mut self.view, core, key);
         self.refresh(core);
     }
 
     /// Mutes every other app on the device and unmutes this one; if it is
     /// already soloed, unmutes everything.
     fn solo(&mut self, core: &mut Core, device: &str, key: &str) {
-        let Some(view) = self.view.device(device) else {
-            return;
-        };
-        let apps: Vec<(String, String, bool)> = view
-            .apps
-            .iter()
-            .filter(|a| !a.hidden)
-            .map(|a| (a.app.key.clone(), a.app.display_name.clone(), a.app.muted))
-            .collect();
-        let soloed = apps.len() > 1
-            && apps
-                .iter()
-                .all(|(k, _, muted)| if k == key { !muted } else { *muted });
-        for (k, name, muted) in apps {
-            let target = !soloed && k != key;
-            if muted != target {
-                core.set_app_mute(device, &k, &name, target);
-            }
-        }
+        rows::solo(&self.view, core, device, key);
         self.refresh(core);
     }
 
@@ -1041,22 +709,8 @@ impl Flyout {
     }
 
     pub fn command(&mut self, core: &mut Core, theme: &Theme, command: Command) {
-        match command {
-            Command::Rule(device, key, kind) => {
-                if let Some(app) = self.view.app(&device, &key).cloned() {
-                    core.app_rule(&device, &app, kind);
-                }
-            }
-            Command::Route(key, device) => {
-                let _ = core.audio.set_app_device(&key, device.as_deref());
-            }
-            Command::SetDefault(device) => {
-                let _ = core.audio.set_default_device(&device);
-            }
-            Command::HideDevice(device, name) => core.hide_device(&device, &name),
-            Command::Unhide(device, entry) => core.unhide_app(&device, &entry),
-            Command::UnhideAll(device) => core.unhide_device_apps(&device),
-            Command::Nothing => return,
+        if !rows::run_command(&self.view, core, command) {
+            return;
         }
         self.close_popup();
         self.refresh(core);
@@ -1066,33 +720,6 @@ impl Flyout {
     }
 
     // ---------- popups ----------
-
-    fn rule_tools(&self, app: &AppView) -> Vec<Tool> {
-        let rule = app.rule.as_ref();
-        let mode = rule.map_or(VolumeRuleMode::NONE, |r| r.volume_mode);
-        vec![
-            Tool {
-                glyph: GLYPH_LOCK,
-                action: ToolAction::Lock,
-                active: mode == VolumeRuleMode::LOCK,
-            },
-            Tool {
-                glyph: GLYPH_LAUNCH,
-                action: ToolAction::Launch,
-                active: mode == VolumeRuleMode::LAUNCH,
-            },
-            Tool {
-                glyph: GLYPH_FOCUS,
-                action: ToolAction::Focus,
-                active: rule.is_some_and(|r| r.focus_lost_enabled),
-            },
-            Tool {
-                glyph: GLYPH_MUTE,
-                action: ToolAction::HardMute,
-                active: rule.is_some_and(|r| r.hard_muted),
-            },
-        ]
-    }
 
     fn open_app_popup(&mut self, device: &str, key: &str) {
         let Some(app) = self.view.app(device, key).cloned() else {
@@ -1106,28 +733,7 @@ impl Flyout {
         else {
             return;
         };
-        let mut tools = if app.exe_name.is_empty() {
-            vec![]
-        } else {
-            self.rule_tools(&app)
-        };
-        tools.push(Tool {
-            glyph: GLYPH_HIDE,
-            action: ToolAction::Hide,
-            active: false,
-        });
-        if !app.app.is_system_sounds {
-            tools.push(Tool {
-                glyph: GLYPH_ROUTE,
-                action: ToolAction::Route,
-                active: false,
-            });
-        }
-        tools.push(Tool {
-            glyph: GLYPH_CLOSE,
-            action: ToolAction::Close,
-            active: false,
-        });
+        let tools = rows::app_tools(&app);
         self.popup = Some(Popup {
             kind: PopupKind::App {
                 device: device.into(),
@@ -1144,51 +750,7 @@ impl Flyout {
     }
 
     fn device_menu(&self, device: &str, commands: &mut Vec<Command>) -> Vec<Item> {
-        let Some(view) = self.view.device(device) else {
-            return vec![];
-        };
-        let mut items = vec![];
-        let mut add = |items: &mut Vec<Item>, text: &str, command: Command| {
-            commands.push(command);
-            items.push(Item::command(text, commands.len() as u32));
-        };
-        if !view.device.is_default {
-            add(
-                &mut items,
-                tr("SetAsDefaultDeviceText"),
-                Command::SetDefault(device.into()),
-            );
-            if self.visible_count() > 1 {
-                add(
-                    &mut items,
-                    tr("HideDeviceButtonText"),
-                    Command::HideDevice(device.into(), view.device.name.clone()),
-                );
-            }
-        }
-        if !view.hidden_apps.is_empty() {
-            let restore = Self::restore_items(view, commands);
-            items.push(Item::Submenu(
-                tr("RestoreHiddenAppsForDevice").into(),
-                restore,
-            ));
-        }
-        items
-    }
-
-    fn restore_items(view: &DeviceView, commands: &mut Vec<Command>) -> Vec<Item> {
-        let mut items = vec![];
-        for entry in &view.hidden_apps {
-            commands.push(Command::Unhide(view.device.id.clone(), entry.clone()));
-            items.push(Item::command(entry.label(), commands.len() as u32));
-        }
-        items.push(Item::Separator);
-        commands.push(Command::UnhideAll(view.device.id.clone()));
-        items.push(Item::command(
-            tr("RestoreHiddenAppsForDeviceAll"),
-            commands.len() as u32,
-        ));
-        items
+        rows::device_menu(&self.view, device, self.visible_count(), commands)
     }
 
     fn open_device_popup(&mut self, device: &str) {
@@ -1212,18 +774,7 @@ impl Flyout {
                 device: device.into(),
             },
             title: view.device.name.clone(),
-            tools: vec![
-                Tool {
-                    glyph: GLYPH_MORE,
-                    action: ToolAction::More,
-                    active: false,
-                },
-                Tool {
-                    glyph: GLYPH_CLOSE,
-                    action: ToolAction::Close,
-                    active: false,
-                },
-            ],
+            tools: rows::device_tools(),
             anchor_top: row.rect.y,
             offset: TITLE_H + APPS_PAD,
             opened: Instant::now(),
@@ -1268,147 +819,34 @@ impl Flyout {
         let (frame, _) = self.popup_layout()?;
         let button = *self.tool_rects(frame).get(index)?;
         let (x, y) = self.screen_below(button);
-        let mut commands = vec![];
-        let mut items = vec![];
-        let mut add = |items: &mut Vec<Item>,
-                       item: fn(String, u32) -> Item,
-                       text: String,
-                       command: Command| {
-            commands.push(command);
-            items.push(item(text, commands.len() as u32));
-        };
-        let checked = |checked: bool| -> fn(String, u32) -> Item {
-            if checked {
-                |t, id| Item::check(t, id, true)
-            } else {
-                |t, id| Item::check(t, id, false)
-            }
-        };
-        match (&popup.kind, action) {
-            (_, ToolAction::Close) => {
+        match rows::tool_step(&self.view, &popup.kind, action, self.visible_count())? {
+            ToolStep::Close => {
                 self.close_popup();
-                return None;
+                None
             }
-            (PopupKind::App { device, key }, ToolAction::Hide) => {
-                let (device, key) = (device.clone(), key.clone());
+            ToolStep::Hide(device, key) => {
                 self.close_popup();
                 self.hide_app(&device, &key);
-                return None;
+                None
             }
-            (PopupKind::App { device, key }, ToolAction::Lock) => {
-                let app = self.view.app(device, key)?.clone();
-                let current = percent(app.app.volume);
-                let kind = if app.locked() {
-                    RuleKind::None
-                } else {
-                    RuleKind::Lock(current)
-                };
-                // Lock is direct: it locks the volume where it is.
-                let device = device.clone();
+            ToolStep::Rule(device, app, kind) => {
                 self.close_popup();
                 core.app_rule(&device, &app, kind);
                 self.refresh(core);
-                return None;
+                None
             }
-            (PopupKind::App { device, key }, ToolAction::Launch) => {
-                let app = self.view.app(device, key)?;
-                let rule = app.rule.as_ref();
-                let mode = rule.map_or(VolumeRuleMode::NONE, |r| r.volume_mode);
-                let percent_now = percent(app.app.volume);
-                for v in [10, 20, 30, 50, 75] {
-                    let on = mode == VolumeRuleMode::LAUNCH
-                        && rule.is_some_and(|r| r.volume_percent == v);
-                    add(
-                        &mut items,
-                        checked(on),
-                        format!("{v}%"),
-                        Command::Rule(device.clone(), key.clone(), RuleKind::Launch(v)),
-                    );
-                }
-                items.push(Item::Separator);
-                add(
-                    &mut items,
-                    checked(false),
-                    trf(
-                        "VolumeRuleUseCurrentFormatText",
-                        &[("0", &percent_now.to_string())],
-                    ),
-                    Command::Rule(device.clone(), key.clone(), RuleKind::Launch(percent_now)),
-                );
-                items.push(Item::Separator);
-                add(
-                    &mut items,
-                    checked(mode == VolumeRuleMode::NONE),
-                    tr("VolumeRuleMenuNoneText").into(),
-                    Command::Rule(device.clone(), key.clone(), RuleKind::None),
-                );
-            }
-            (PopupKind::App { device, key }, ToolAction::Focus) => {
-                let app = self.view.app(device, key)?;
-                let on = app.rule.as_ref().is_some_and(|r| r.focus_lost_enabled);
-                let text = if on {
-                    tr("FocusLostAppMenuDisableText")
-                } else {
-                    tr("FocusLostAppMenuText")
-                };
-                add(
-                    &mut items,
-                    checked(on),
-                    text.into(),
-                    Command::Rule(device.clone(), key.clone(), RuleKind::FocusLost),
-                );
-            }
-            (PopupKind::App { device, key }, ToolAction::HardMute) => {
-                let app = self.view.app(device, key)?;
-                let on = app.rule.as_ref().is_some_and(|r| r.hard_muted);
-                let text = if on {
-                    tr("HardMuteAppMenuDisableText")
-                } else {
-                    tr("HardMuteAppMenuText")
-                };
-                add(
-                    &mut items,
-                    checked(on),
-                    text.into(),
-                    Command::Rule(device.clone(), key.clone(), RuleKind::HardMute),
-                );
-            }
-            (PopupKind::App { device, key }, ToolAction::Route) => {
-                let app = self.view.app(device, key)?;
-                let current = app.app.routed_device_id.clone();
-                add(
-                    &mut items,
-                    checked(current.is_none()),
-                    tr("DefaultDeviceText").into(),
-                    Command::Route(key.clone(), None),
-                );
-                items.push(Item::Separator);
-                for d in &self.view.devices {
-                    add(
-                        &mut items,
-                        checked(current.as_deref() == Some(d.device.id.as_str())),
-                        d.device.name.clone(),
-                        Command::Route(key.clone(), Some(d.device.id.clone())),
-                    );
-                }
-            }
-            (PopupKind::Device { device }, ToolAction::More) => {
-                let device = device.clone();
-                items = self.device_menu(&device, &mut commands);
-            }
-            _ => return None,
+            ToolStep::Menu(items, commands) => Some(MenuRequest {
+                owner: self.window,
+                items,
+                commands: commands
+                    .into_iter()
+                    .map(super::MenuCommand::Flyout)
+                    .collect(),
+                x,
+                y,
+                above: false,
+            }),
         }
-        Some(MenuRequest {
-            owner: self.window,
-            items,
-            commands: commands
-                .into_iter()
-                .map(super::MenuCommand::Flyout)
-                .collect(),
-            x,
-            y,
-            above: false,
-        })
     }
 
     fn restore_menu(&self) -> Option<MenuRequest> {
@@ -1416,7 +854,7 @@ impl Flyout {
         let header = self.layout().header?;
         let (_, restore) = self.header_buttons(header);
         let mut commands = vec![];
-        let items = Self::restore_items(device, &mut commands);
+        let items = rows::restore_items(device, &mut commands);
         let (x, y) = self.screen_below(restore);
         Some(MenuRequest {
             owner: self.window,
@@ -1738,8 +1176,8 @@ impl Flyout {
             Hit::Mute(key) => match &key.app {
                 Some(app) => {
                     let view = self.view.app(&key.device, app)?;
-                    let cell = Self::mute_rect(self.row_rect(key)?);
-                    let badge = Rect::new(cell.right() - 9.0, cell.bottom() - 9.0, 10.0, 10.0);
+                    let cell = mute_rect(self.row_rect(key)?);
+                    let badge = rows::lock_badge(cell);
                     if view.locked() && badge.contains(x, y) {
                         return Some(target(tr("AppRulesModeLockText"), 0, TipAnchor::Mouse));
                     }
@@ -1852,7 +1290,7 @@ impl Flyout {
         };
         rows.into_iter()
             .find(|r| &r.key == key)
-            .map(|r| Self::slider_rect(r.rect))
+            .map(|r| slider_rect(r.rect))
     }
 
     fn click(&mut self, core: &mut Core, hit: Hit, m: Modifiers) -> Option<MenuRequest> {
@@ -1921,14 +1359,8 @@ impl Flyout {
 
     // ---------- painting ----------
 
-    fn icon(&mut self, path: &str) -> Option<Rc<Image>> {
-        let size = (28.0 * self.scale).round() as u32;
-        self.icons
-            .entry((path.into(), size))
-            .or_insert_with(|| {
-                icons::bgra(path, size).map(|pixels| Image::from_straight_bgra(size, size, pixels))
-            })
-            .clone()
+    fn icon(&mut self, path: &str) {
+        rows::load_icon(&mut self.icons, path, self.scale);
     }
 
     pub fn paint(&mut self, theme: &Theme) {
@@ -2095,7 +1527,7 @@ impl Flyout {
                 .iter()
                 .find(|r| r.key == SliderKey::device(&block.device, false))
             {
-                self.draw_device_row(canvas, theme, row);
+                self.painter().device_row(canvas, theme, row.rect, &row.key);
             }
             Self::pop_cascade(canvas, pushed);
         }
@@ -2111,11 +1543,11 @@ impl Flyout {
                 canvas.push_layer(1.0 - t, None);
                 let (cx, cy) = row.rect.center();
                 canvas.push_transform(-12.0 * t, 0.0, 1.0 - 0.015 * t, cx, cy);
-                self.draw_app_row(canvas, theme, row);
+                self.painter().app_row(canvas, theme, row.rect, &row.key);
                 canvas.pop_transform();
                 canvas.pop();
             } else {
-                self.draw_app_row(canvas, theme, row);
+                self.painter().app_row(canvas, theme, row.rect, &row.key);
             }
             Self::pop_cascade(canvas, pushed);
         }
@@ -2146,9 +1578,7 @@ impl Flyout {
             return;
         }
         if let Some(row) = self.focus.and_then(|f| rows.get(f)) {
-            // 2 px Text over 3 px background, inset.
-            canvas.stroke_rect(row.rect, 2.0, theme.text);
-            canvas.stroke_rect(row.rect.inset(2.0, 2.0), 1.0, theme.popup_bg);
+            rows::draw_focus_ring(canvas, theme, row.rect);
         }
     }
 
@@ -2208,145 +1638,20 @@ impl Flyout {
         );
     }
 
-    fn draw_device_row(&self, canvas: &mut Canvas, theme: &Theme, row: &Row) {
-        let Some(device) = self.view.device(&row.key.device) else {
-            return;
-        };
-        let d = &device.device;
-        let mute = Self::mute_rect(row.rect);
-        let icons = TextStyle::new(theme.icon_font, 24.0).align(Align::Center);
-        let hovered = self.hover.as_ref() == Some(&Hit::Mute(row.key.clone()));
-        let (ghost, level) = if d.muted {
-            (GLYPH_MUTE, GLYPH_MUTE)
-        } else {
-            let v = d.volume;
-            let level = if v > 0.66 {
-                GLYPH_BARS[3]
-            } else if v > 0.33 {
-                GLYPH_BARS[2]
-            } else if v > 0.0 {
-                GLYPH_BARS[1]
-            } else {
-                GLYPH_BARS[0]
-            };
-            (GLYPH_BARS[3], level)
-        };
-        let pressed = self.pressed.as_ref() == Some(&Hit::Mute(row.key.clone())) && hovered;
-        if pressed {
-            let (cx, cy) = mute.center();
-            canvas.push_transform(0.0, 0.0, 0.8, cx, cy);
-        }
-        canvas.text(
-            &glyph(ghost),
-            mute.inset(-8.0, -8.0),
-            &icons,
-            theme.text.alpha(0.4),
-        );
-        canvas.text(
-            &glyph(level),
-            mute.inset(-8.0, -8.0),
-            &icons,
-            theme.text.alpha(if hovered { 0.95 } else { 0.9 }),
-        );
-        if pressed {
-            canvas.pop_transform();
-        }
-        if let Some(slider) = self.sliders.get(&row.key) {
-            slider.paint(canvas, Self::slider_rect(row.rect), theme, 1.0);
-            let value = TextStyle::new(UI_FONT, 24.0).align(Align::Center);
-            canvas.text(
-                &slider.value.to_string(),
-                Self::value_rect(row.rect),
-                &value,
-                theme.text,
-            );
-        }
-    }
-
-    fn draw_app_row(&self, canvas: &mut Canvas, theme: &Theme, row: &Row) {
-        let Some(app_key) = &row.key.app else {
-            return;
-        };
-        let Some(app) = self.view.app(&row.key.device, app_key) else {
-            return;
-        };
-        let muted = self.volume_of(&row.key).is_some_and(|(_, m)| m);
-        let locked = app.locked();
-        let faded = if muted { 0.4 } else { 1.0 };
-        let cell = Self::mute_rect(row.rect);
-        let icon = app
-            .app
-            .executable
-            .as_ref()
-            .and_then(|p| {
-                self.icons
-                    .get(&(p.clone(), (28.0 * self.scale).round() as u32))
-            })
-            .cloned()
-            .flatten();
-        match icon {
-            Some(image) => canvas.image(&image, cell, faded),
-            None => {
-                canvas.rect(cell, theme.accent.alpha(faded));
-                let (text, style) = if app.app.is_system_sounds {
-                    (
-                        glyph(GLYPH_SYSTEM_SOUNDS),
-                        TextStyle::new(theme.icon_font, 16.0),
-                    )
-                } else {
-                    let name = match row.key.pid {
-                        Some(pid) => app
-                            .app
-                            .sessions
-                            .iter()
-                            .find(|s| s.process_id == pid)
-                            .map_or(app.app.display_name.as_str(), |s| s.display_name.as_str()),
-                        None => app.app.display_name.as_str(),
-                    };
-                    (
-                        first_letter(name),
-                        TextStyle::new(UI_FONT, 16.0).weight(600),
-                    )
-                };
-                canvas.text(
-                    &text,
-                    cell.offset(0.0, -0.5),
-                    &style.align(Align::Center),
-                    theme.text.alpha(faded),
-                );
+    fn painter(&self) -> RowPaint<'_> {
+        fn mute(hit: &Option<Hit>) -> Option<&SliderKey> {
+            match hit {
+                Some(Hit::Mute(key)) => Some(key),
+                _ => None,
             }
         }
-        if muted {
-            let icons = TextStyle::new(theme.icon_font, 24.0).align(Align::Center);
-            canvas.text(
-                &glyph(GLYPH_MUTE),
-                cell.inset(-8.0, -8.0),
-                &icons,
-                theme.text.alpha(0.8),
-            );
-        }
-        if locked {
-            // Lock badge: a 10 DIP accent dot with the lock glyph.
-            let (bx, by) = (cell.right() + 1.0 - 5.0, cell.bottom() + 1.0 - 5.0);
-            canvas.circle(bx, by, 5.0, theme.accent);
-            let badge = TextStyle::new(theme.icon_font, 6.0).align(Align::Center);
-            canvas.text(
-                &glyph(GLYPH_LOCK),
-                Rect::new(bx - 5.0, by - 5.0, 10.0, 10.0),
-                &badge,
-                theme.text,
-            );
-        }
-        if let Some(slider) = self.sliders.get(&row.key) {
-            let opacity = faded * if locked { 0.5 } else { 1.0 };
-            slider.paint(canvas, Self::slider_rect(row.rect), theme, opacity);
-            let value = TextStyle::new(UI_FONT, 18.0).align(Align::Center);
-            canvas.text(
-                &slider.value.to_string(),
-                Self::value_rect(row.rect),
-                &value,
-                theme.text.alpha(faded),
-            );
+        RowPaint {
+            view: &self.view,
+            sliders: &self.sliders,
+            icons: &self.icons,
+            scale: self.scale,
+            hover: mute(&self.hover),
+            pressed: mute(&self.pressed),
         }
     }
 
@@ -2369,48 +1674,24 @@ impl Flyout {
         };
         let fade = anim::progress(popup.opened, 0.0, 150.0, now);
         canvas.push_layer(fade, None);
-        canvas.rect(frame, theme.popup_bg);
-        canvas.stroke_rect(frame, 1.0, theme.accent);
-        let header = Rect::new(frame.x + 1.0, frame.y + 1.0, frame.w - 2.0, TITLE_H);
-        canvas.rect(header, theme.accent_30);
-        let tools = self.tool_rects(frame);
-        let title_right = tools.first().map_or(header.right(), |r| r.x);
-        canvas.text(
+        let tool = |hit: &Option<Hit>| match hit {
+            Some(Hit::Tool(i)) => Some(*i),
+            _ => None,
+        };
+        let hover = tool(&self.hover);
+        let pressed = tool(&self.pressed).filter(|p| hover == Some(*p));
+        rows::draw_popup_frame(
+            canvas,
+            theme,
+            frame,
             &popup.title,
-            Rect::new(
-                header.x + 12.0,
-                header.y,
-                (title_right - header.x - 24.0).max(0.0),
-                TITLE_H,
-            ),
-            &TextStyle::new(UI_FONT, 15.0).ellipsis(),
-            theme.text,
+            &popup.tools,
+            hover,
+            pressed,
         );
-        for (i, (tool, rect)) in popup.tools.iter().zip(&tools).enumerate() {
-            if tool.active {
-                canvas.rect(*rect, theme.accent_22);
-            }
-            match (&self.hover, &self.pressed) {
-                (Some(Hit::Tool(h)), Some(Hit::Tool(p))) if *h == i && *p == i => {
-                    canvas.rect(*rect, theme.pressed)
-                }
-                (Some(Hit::Tool(h)), _) if *h == i => canvas.rect(*rect, theme.hover),
-                _ => {}
-            }
-            let size = if tool.action == ToolAction::Close {
-                10.0
-            } else {
-                16.0
-            };
-            let style = TextStyle::new(theme.icon_font, size).align(Align::Center);
-            canvas.text(&glyph(tool.glyph), *rect, &style, theme.text);
-        }
+        let painter = self.painter();
         for row in &rows {
-            if row.key.app.is_some() {
-                self.draw_app_row(canvas, theme, row);
-            } else {
-                self.draw_device_row(canvas, theme, row);
-            }
+            painter.row(canvas, theme, row.rect, &row.key);
         }
         self.draw_focus(canvas, theme, &rows);
         canvas.pop();

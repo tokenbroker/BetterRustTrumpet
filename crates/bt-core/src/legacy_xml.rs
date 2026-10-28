@@ -662,6 +662,36 @@ pub fn encode_hotkey(value: Option<HotkeyData>) -> String {
     }
 }
 
+/// The original's XmlSerializer text for a `WINDOWPLACEMENT?` setting value
+/// (`SettingsBag.Set<WINDOWPLACEMENT?>`), `None` as the nil element.
+pub fn encode_placement(value: Option<&WindowPlacement>) -> String {
+    const HEADER: &str = r#"<?xml version="1.0" encoding="utf-16"?><WINDOWPLACEMENT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema""#;
+    match value {
+        None => format!(r#"{HEADER} xsi:nil="true" />"#),
+        Some(p) => format!(
+            concat!(
+                "{}><length>{}</length><flags>{}</flags><showCmd>{}</showCmd>",
+                "<ptMinPosition><x>{}</x><y>{}</y></ptMinPosition>",
+                "<ptMaxPosition><x>{}</x><y>{}</y></ptMaxPosition>",
+                "<rcNormalPosition><Left>{}</Left><Top>{}</Top>",
+                "<Right>{}</Right><Bottom>{}</Bottom></rcNormalPosition></WINDOWPLACEMENT>"
+            ),
+            HEADER,
+            p.length,
+            p.flags,
+            p.show_cmd,
+            p.pt_min_position.x,
+            p.pt_min_position.y,
+            p.pt_max_position.x,
+            p.pt_max_position.y,
+            p.rc_normal_position.left,
+            p.rc_normal_position.top,
+            p.rc_normal_position.right,
+            p.rc_normal_position.bottom
+        ),
+    }
+}
+
 /// `SettingsBag.Set<string>(key, null)`: the bag serializes a null string as
 /// XML (a non-null string is stored as-is).
 pub fn encode_null_string() -> &'static str {

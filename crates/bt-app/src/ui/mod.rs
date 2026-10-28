@@ -8,8 +8,10 @@ mod flyout;
 mod gif;
 mod media;
 mod menu;
+mod mixer;
 mod onboarding;
 mod quick;
+mod rows;
 mod settings;
 mod slider;
 mod theme;
@@ -74,6 +76,8 @@ const MEDIA_HIDE_GRACE: u32 = 800;
 #[derive(Clone, Debug)]
 pub enum MenuCommand {
     Flyout(flyout::Command),
+    /// From the mixer window's menus.
+    MixerWindow(flyout::Command),
     Device(String),
     /// Device id, hidden entry.
     UnhideApp(String, HiddenEntry),
@@ -123,6 +127,8 @@ pub struct Ui {
     toasts: toast::Toasts,
     /// The default output last seen, for NotifyOnDefaultDeviceChange.
     last_default: Option<String>,
+    /// The mixer window while it is open.
+    mixer: Option<mixer::Mixer>,
     gfx: std::rc::Rc<Gfx>,
     theme: theme::Theme,
     icon_font: &'static str,
@@ -221,6 +227,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
             .iter()
             .find(|d| d.is_default)
             .map(|d| d.id.clone()),
+        mixer: None,
         gfx: gfx.clone(),
         theme: theme::Theme::load(&core.store, icon_font),
         icon_font,
@@ -275,6 +282,12 @@ pub fn run(core: Core) -> windows::core::Result<()> {
     // The `bt` CLI's pipe; its commands run on this thread.
     let _pipe = crate::ipc::start(hidden.poster());
     wnd::run();
+    // An open mixer keeps its placement, as when it is closed.
+    with(|ui| {
+        if let Some(mixer) = ui.mixer.as_mut() {
+            mixer.close(&mut ui.core);
+        }
+    });
     // Gives focus-lost apps their volume back.
     with(|ui| ui.focus.stop(&mut ui.core));
     // Removes the tray icon and releases everything before exiting.
@@ -381,6 +394,21 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         "menu-flyout-hc.png",
         menu::render(&gfx, &contrast, &sample[..3], false, Some(1)),
     );
+    // The mixer in the app theme, dark and light, and with a popup open.
+    let mut mixer = mixer::Mixer::new(gfx.clone(), &theme)?;
+    save(
+        "mixer-dark.png",
+        mixer.render(&mut core, &theme, false, false),
+    );
+    save(
+        "mixer-light.png",
+        mixer.render(&mut core, &theme, true, false),
+    );
+    save(
+        "mixer-popup.png",
+        mixer.render(&mut core, &theme, false, true),
+    );
+    mixer.destroy();
     let mut quick = quick::Quick::new(gfx.clone())?;
     save("quick.png", quick.render(palette_entries(&mut core), ""));
     save(
@@ -627,6 +655,9 @@ fn open_menu(request: MenuRequest) {
             if ui.flyout.showing() && owner == ui.flyout.window {
                 ui.flyout.window.focus();
             }
+            if let Some(mixer) = ui.mixer.as_ref().filter(|m| m.window == owner) {
+                mixer.window.focus();
+            }
         });
     });
 }
@@ -709,7 +740,7 @@ impl Ui {
                     self.show_flyout();
                 }
             }
-            A::OpenMixer => self.open_mixer(),
+            A::OpenMixer => self.toggle_mixer(),
             A::OpenSettings => self.open_settings(),
             A::VolumeUp => self.core.step_all_devices(2),
             A::VolumeDown => self.core.step_all_devices(-2),
@@ -869,12 +900,48 @@ impl Ui {
         if let Some(settings) = &mut self.settings {
             settings.refresh(&mut self.core);
         }
+        if let Some(mixer) = &mut self.mixer {
+            mixer.retheme(&self.theme);
+        }
     }
 
-    /// The original opens its own mixer window (not ported); Windows'
-    /// volume mixer stands in.
+    /// WindowHolder.OpenOrBringToFront: the tray menu, the palette and the
+    /// command palette open the mixer window or bring it forward.
     pub fn open_mixer(&mut self) {
-        open("ms-settings:apps-volume");
+        if let Some(mixer) = self.mixer.as_mut().filter(|m| !m.closing()) {
+            mixer.raise();
+            return;
+        }
+        if let Some(mixer) = self.mixer.take() {
+            mixer.destroy();
+        }
+        match mixer::Mixer::new(self.gfx.clone(), &self.theme) {
+            Ok(mut mixer) => {
+                mixer.open(&mut self.core);
+                self.mixer = Some(mixer);
+            }
+            Err(e) => eprintln!("BetterTrumpet: the mixer window failed to open: {e}"),
+        }
+    }
+
+    /// WindowHolder.OpenOrClose (the mixer shortcut).
+    fn toggle_mixer(&mut self) {
+        match self.mixer.as_mut().filter(|m| !m.closing()) {
+            Some(mixer) => {
+                mixer.close(&mut self.core);
+                self.reap_mixer();
+            }
+            None => self.open_mixer(),
+        }
+    }
+
+    /// Destroys the mixer window once its exit fade has played.
+    fn reap_mixer(&mut self) {
+        if self.mixer.as_ref().is_some_and(|m| m.closed) {
+            if let Some(mixer) = self.mixer.take() {
+                mixer.destroy();
+            }
+        }
     }
 
     /// Ctrl+Shift+P: the command palette.
@@ -1002,6 +1069,9 @@ impl Ui {
                 self.flyout.window.set_acrylic(self.theme.acrylic);
                 self.flyout.paint(&self.theme);
             }
+            if let Some(mixer) = &mut self.mixer {
+                mixer.retheme(&self.theme);
+            }
         }
         // Recording a shortcut must not trigger the registered ones.
         match outcome.capture {
@@ -1081,10 +1151,11 @@ impl Ui {
             }
             return None;
         }
-        if window == self.flyout.window {
-            // The original opens the palette from its mixer window, which
-            // is not ported; the flyout takes the same shortcut.
-            if let Event::Key(
+        // Ctrl+Shift+P: the command palette, from the mixer window as in the
+        // original, and from the flyout too.
+        let palette = matches!(
+            event,
+            Event::Key(
                 0x50,
                 Modifiers {
                     ctrl: true,
@@ -1092,8 +1163,33 @@ impl Ui {
                     alt: false,
                     win: false,
                 },
-            ) = event
-            {
+            )
+        );
+        if self.mixer.as_ref().is_some_and(|m| m.window == window) {
+            let menu = if palette {
+                self.open_palette();
+                None
+            } else {
+                let mixer = self.mixer.as_mut()?;
+                match event {
+                    Event::Timer(id) => {
+                        mixer.timer(id, &mut self.core);
+                        None
+                    }
+                    event => mixer.event(&mut self.core, event),
+                }
+            };
+            self.reap_mixer();
+            return menu;
+        }
+        if let Some(mixer) = self.mixer.as_mut().filter(|m| m.tip.window == window) {
+            if let Event::Timer(id) = event {
+                mixer.tip.timer(id);
+            }
+            return None;
+        }
+        if window == self.flyout.window {
+            if palette {
                 self.open_palette();
                 return None;
             }
@@ -1295,6 +1391,9 @@ impl Ui {
                 if self.flyout.visible {
                     self.flyout.paint(&self.theme);
                 }
+                if let Some(mixer) = &mut self.mixer {
+                    mixer.retheme(&self.theme);
+                }
             }
             _ => {}
         }
@@ -1306,6 +1405,9 @@ impl Ui {
         if self.flyout.showing() {
             self.flyout.refresh(&mut self.core);
             self.flyout.paint(&self.theme);
+        }
+        if let Some(mixer) = &mut self.mixer {
+            mixer.refresh(&mut self.core);
         }
     }
 
@@ -1342,6 +1444,9 @@ impl Ui {
         if self.flyout.showing() {
             self.flyout.refresh(&mut self.core);
             self.flyout.paint(&self.theme);
+        }
+        if let Some(mixer) = &mut self.mixer {
+            mixer.refresh(&mut self.core);
         }
     }
 
@@ -1581,6 +1686,11 @@ impl Ui {
         match command {
             MenuCommand::Flyout(command) => {
                 self.flyout.command(&mut self.core, &self.theme, command)
+            }
+            MenuCommand::MixerWindow(command) => {
+                if let Some(mixer) = &mut self.mixer {
+                    mixer.command(&mut self.core, command);
+                }
             }
             MenuCommand::Device(id) => {
                 let _ = self.core.audio.set_default_device(&id);
