@@ -1,0 +1,25 @@
+[package]
+name = "bt-cli"
+description = "BetterTrumpet Rust port: the `bt` command-line client"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file = "../../../LICENSE"
+
+[[bin]]
+name = "bt"
+path = "src/main.rs"
+
+[dependencies]
+bt-core = { path = "../bt-core" }
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Authorization",
+    "Win32_Storage_FileSystem",
+    "Win32_System_RemoteDesktop",
+    "Win32_System_Threading",
+] }
