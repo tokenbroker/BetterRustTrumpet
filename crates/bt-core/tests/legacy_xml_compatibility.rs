@@ -46,3 +46,29 @@ fn xml_reader_values_namespaces_nulls_duplicates_and_failures_match_source() {
         )
     );
 }
+
+#[test]
+fn hotkey_encoding_matches_xml_serializer_samples_and_round_trips() {
+    use bt_core::models::HotkeyData;
+    let decode = |xml: &str| match legacy_xml::decode(xml, Kind::Hotkey).unwrap() {
+        legacy_xml::Value::Hotkey(h) => h,
+        other => panic!("{other:?}"),
+    };
+    for case in reference()["samples"].as_array().unwrap() {
+        if case["kind"] != "Hotkey" {
+            continue;
+        }
+        let xml = case["xml"].as_str().unwrap();
+        assert_eq!(legacy_xml::encode_hotkey(decode(xml)), xml);
+    }
+    for (modifiers, key) in [
+        (0x7_0000, 112),
+        (0x1_0000 | 91, 77),
+        (0x2_0000, 13),
+        (0x4_0000, 33),
+        (0, 0x7),
+    ] {
+        let value = Some(HotkeyData { modifiers, key });
+        assert_eq!(decode(&legacy_xml::encode_hotkey(value)), value);
+    }
+}

@@ -6,6 +6,7 @@ pub mod anim;
 mod flyout;
 mod media;
 mod quick;
+mod settings;
 mod slider;
 mod theme;
 mod tip;
@@ -43,6 +44,8 @@ const APP_SESSIONS: usize = 3;
 const APP_WHEEL_UP: usize = 4;
 const APP_WHEEL_DOWN: usize = 5;
 const APP_SHOW_MEDIA: usize = 6;
+/// Opens (or brings back) the settings window.
+pub const APP_SETTINGS: usize = 7;
 
 // Timers on the hidden window.
 const TRAY_POLL: usize = 1;
@@ -75,6 +78,7 @@ pub enum MenuCommand {
     ControlPanel(&'static str),
     /// An ms-settings: page.
     SystemSettings(&'static str),
+    SettingsChoice(settings::Command),
     Quit,
 }
 
@@ -98,6 +102,9 @@ pub struct Ui {
     media: media::Media,
     tip: tip::Tip,
     quick: quick::Quick,
+    /// The settings window while it is open.
+    settings: Option<settings::Settings>,
+    gfx: std::rc::Rc<Gfx>,
     theme: theme::Theme,
     icon_font: &'static str,
     tray_hover: bool,
@@ -175,6 +182,8 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         media: media::Media::new(gfx.clone(), media_expanded)?,
         tip: tip::Tip::new(gfx.clone())?,
         quick: quick::Quick::new(gfx.clone())?,
+        settings: None,
+        gfx: gfx.clone(),
         theme: theme::Theme::load(&core.store, icon_font),
         icon_font,
         core,
@@ -253,7 +262,7 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     let mut tip = tip::Tip::new(gfx.clone())?;
     let devices = core.audio.devices().unwrap_or_default();
     save("tip.png", tip.render(&tooltip(&devices)));
-    let mut quick = quick::Quick::new(gfx)?;
+    let mut quick = quick::Quick::new(gfx.clone())?;
     save("quick.png", quick.render(palette_entries(&mut core), ""));
     save(
         "quick-filtered.png",
@@ -309,6 +318,21 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
             );
         }
     }
+    // Every settings page at full length.
+    let mut settings = settings::Settings::new(gfx, &mut core, icon_font)?;
+    for page in settings::PageId::all() {
+        let name = format!("settings-{}.png", format!("{page:?}").to_lowercase());
+        save(&name, settings.render(&mut core, page, None, false));
+    }
+    save(
+        "settings-appearance-picker.png",
+        settings.render(&mut core, settings::PageId::Appearance, None, true),
+    );
+    save(
+        "settings-general-light.png",
+        settings.render(&mut core, settings::PageId::General, Some(true), false),
+    );
+    settings.close();
     Ok(())
 }
 
@@ -620,13 +644,6 @@ impl Ui {
         self.present_tooltip();
     }
 
-    /// Opens the settings window. A stub until the settings window lands
-    /// (another change builds it); the tray menu, the palette and the
-    /// settings hotkey all come through here.
-    pub fn open_settings(&mut self) {
-        eprintln!("BetterTrumpet: the settings window is not ported yet");
-    }
-
     /// The original opens its own mixer window (not ported); Windows'
     /// volume mixer stands in.
     pub fn open_mixer(&mut self) {
@@ -678,6 +695,71 @@ impl Ui {
         self.after_volume_change();
     }
 
+    fn unregister_hotkeys(&mut self) {
+        for id in 1..=self.hotkeys.len() {
+            wnd::unregister_hotkey(self.hidden, id as i32);
+        }
+        self.hotkeys.clear();
+        self.shortcuts.clear();
+    }
+
+    /// Registers the shortcuts again after the settings changed them.
+    fn reload_hotkeys(&mut self) {
+        self.unregister_hotkeys();
+        self.register_hotkeys();
+    }
+
+    // ---------- settings window ----------
+
+    /// Opens (or brings forward) the settings window; the tray menu, the
+    /// palette and the settings hotkey all come through here.
+    pub fn open_settings(&mut self) {
+        if self.settings.is_none() {
+            match settings::Settings::new(self.gfx.clone(), &mut self.core, self.icon_font) {
+                Ok(window) => self.settings = Some(window),
+                Err(e) => eprintln!("BetterTrumpet: the settings window failed to open: {e}"),
+            }
+        }
+        if let Some(settings) = &mut self.settings {
+            settings.present();
+        }
+    }
+
+    /// Applies what a settings change asks of the rest of the app: the
+    /// flyout theme, hotkey registration and closing.
+    fn settings_outcome(&mut self, outcome: settings::Outcome) -> Option<MenuRequest> {
+        if outcome.theme {
+            // Every setting change lands here: services that cache
+            // settings re-read them and the tray icon is redrawn.
+            self.focus.settings_changed(&mut self.core);
+            self.icon = None;
+            self.form_factor = None;
+            self.present_tooltip();
+            self.reload_theme();
+            if self.flyout.visible {
+                self.flyout.window.set_acrylic(self.theme.acrylic);
+                self.flyout.paint(&self.theme);
+            }
+        }
+        // Recording a shortcut must not trigger the registered ones.
+        match outcome.capture {
+            Some(true) => self.unregister_hotkeys(),
+            Some(false) => self.reload_hotkeys(),
+            None if outcome.hotkeys => self.reload_hotkeys(),
+            None => {}
+        }
+        if outcome.close {
+            if let Some(settings) = self.settings.take() {
+                let recording = settings.recording();
+                settings.close();
+                if recording {
+                    self.reload_hotkeys();
+                }
+            }
+        }
+        outcome.menu
+    }
+
     /// Windows' change notifications and the tray wheel post to the hidden
     /// window; bursts are coalesced into one refresh.
     fn watch(&mut self) {
@@ -722,6 +804,7 @@ impl Ui {
                     ctrl: true,
                     shift: true,
                     alt: false,
+                    win: false,
                 },
             ) = event
             {
@@ -772,6 +855,13 @@ impl Ui {
                 },
             }
             return None;
+        }
+        if self.settings.as_ref().is_some_and(|s| s.window == window) {
+            let outcome = self
+                .settings
+                .as_mut()
+                .map(|s| s.event(&mut self.core, event))?;
+            return self.settings_outcome(outcome);
         }
         if window == self.tip.window {
             if let Event::Timer(id) = event {
@@ -836,6 +926,7 @@ impl Ui {
             Event::Hotkey(id) => self.hotkey(id),
             Event::App(APP_SHOW) => self.show_flyout(),
             Event::App(crate::ipc::APP_IPC) => crate::ipc::drain(&mut self.core),
+            Event::App(APP_SETTINGS) => self.open_settings(),
             Event::App(APP_SHOW_MEDIA) => {
                 if let Some(rect) = self.tray.rect() {
                     self.media.show(&self.core, rect);
@@ -1098,6 +1189,17 @@ impl Ui {
             MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
             MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
             MenuCommand::SystemSettings(page) => open(&format!("ms-settings:{page}")),
+            MenuCommand::SettingsChoice(choice) => {
+                if let Some(outcome) = self
+                    .settings
+                    .as_mut()
+                    .map(|s| s.command(&mut self.core, choice))
+                {
+                    if let Some(menu) = self.settings_outcome(outcome) {
+                        open_menu(menu);
+                    }
+                }
+            }
             MenuCommand::Quit => wnd::quit(),
         }
     }

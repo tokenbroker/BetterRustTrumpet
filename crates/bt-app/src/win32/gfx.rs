@@ -40,8 +40,8 @@ use windows::{
             Dxgi::Common::DXGI_FORMAT_B8G8R8A8_UNORM,
             Gdi::{
                 AC_SRC_ALPHA, AC_SRC_OVER, BI_RGB, BITMAPINFO, BITMAPINFOHEADER, BLENDFUNCTION,
-                CreateCompatibleDC, CreateDIBSection, DIB_RGB_COLORS, DeleteDC, DeleteObject,
-                HBITMAP, HDC, HGDIOBJ, SelectObject,
+                BitBlt, CreateCompatibleDC, CreateDIBSection, DIB_RGB_COLORS, DeleteDC,
+                DeleteObject, GetDC, HBITMAP, HDC, HGDIOBJ, ReleaseDC, SRCCOPY, SelectObject,
             },
             Imaging::{
                 CLSID_WICImagingFactory, GUID_WICPixelFormat32bppPBGRA, IWICBitmapSource,
@@ -730,6 +730,37 @@ impl Surface {
                 Some(&blend),
                 ULW_ALPHA,
             );
+        }
+    }
+
+    /// Copies the surface into a normal window's client area (top-left
+    /// aligned). Alpha is kept, so transparent pixels show a DWM backdrop
+    /// extended into the client area.
+    pub fn blit(&self, hwnd: isize) {
+        if self.bitmap.is_none() {
+            return;
+        }
+        let hwnd = HWND(hwnd as *mut c_void);
+        // SAFETY: `hwnd` is a window of this process (a stale handle only
+        // makes the calls fail); the window DC is released once and our DC
+        // holds the DIB of `size`.
+        unsafe {
+            let dc = GetDC(Some(hwnd));
+            if dc.is_invalid() {
+                return;
+            }
+            let _ = BitBlt(
+                dc,
+                0,
+                0,
+                self.size.0,
+                self.size.1,
+                Some(self.dc),
+                0,
+                0,
+                SRCCOPY,
+            );
+            ReleaseDC(Some(hwnd), dc);
         }
     }
 

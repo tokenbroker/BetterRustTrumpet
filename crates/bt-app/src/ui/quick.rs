@@ -290,7 +290,10 @@ impl Quick {
                 self.hide();
                 return Reply::None;
             }
-            Event::Char(c) => {
+            Event::Char(unit) => {
+                let Some(c) = char::from_u32(u32::from(unit)).filter(|c| !c.is_control()) else {
+                    return Reply::None;
+                };
                 self.edit(|chars, caret| {
                     chars.insert(*caret, c);
                     *caret += 1;
