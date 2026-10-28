@@ -12,12 +12,12 @@ use windows::{
         Devices::FunctionDiscovery::{PKEY_Device_DeviceDesc, PKEY_Device_FriendlyName},
         Foundation::{CloseHandle, PROPERTYKEY},
         Media::Audio::{
-            AudioSessionStateExpired, DEVICE_STATE_ACTIVE, Endpoints::IAudioEndpointVolume,
-            Endpoints::IAudioEndpointVolumeCallback, Endpoints::IAudioMeterInformation,
-            IAudioSessionControl, IAudioSessionControl2, IAudioSessionEvents,
-            IAudioSessionManager2, IAudioSessionNotification, IMMDevice, IMMDeviceEnumerator,
-            IMMNotificationClient, ISimpleAudioVolume, MMDeviceEnumerator, eConsole, eMultimedia,
-            eRender,
+            AudioSessionStateActive, AudioSessionStateExpired, DEVICE_STATE_ACTIVE,
+            Endpoints::IAudioEndpointVolume, Endpoints::IAudioEndpointVolumeCallback,
+            Endpoints::IAudioMeterInformation, IAudioSessionControl, IAudioSessionControl2,
+            IAudioSessionEvents, IAudioSessionManager2, IAudioSessionNotification, IMMDevice,
+            IMMDeviceEnumerator, IMMNotificationClient, ISimpleAudioVolume, MMDeviceEnumerator,
+            eConsole, eMultimedia, eRender,
         },
         Storage::FileSystem::{GetFileVersionInfoSizeW, GetFileVersionInfoW, VerQueryValueW},
         System::{
@@ -75,6 +75,7 @@ mod policy {
 }
 use policy::IPolicyConfig;
 
+mod active;
 mod roles;
 const CLSID_POLICY_CONFIG: GUID = GUID::from_u128(0x870af99c_171d_4f9e_af0d_e63df40c2bc9);
 
@@ -338,6 +339,8 @@ struct SessionInfo {
     executable: Option<String>,
     pid: u32,
     system: bool,
+    /// AudioSessionStateActive: producing sound now.
+    active: bool,
     volume: ISimpleAudioVolume,
     meter: IAudioMeterInformation,
 }
@@ -630,7 +633,8 @@ impl Backend {
             let sessions = manager.GetSessionEnumerator()?;
             for i in 0..sessions.GetCount()? {
                 let control = sessions.GetSession(i)?;
-                if control.GetState()? == AudioSessionStateExpired {
+                let state = control.GetState()?;
+                if state == AudioSessionStateExpired {
                     continue;
                 }
                 let control2: IAudioSessionControl2 = control.cast()?;
@@ -664,6 +668,7 @@ impl Backend {
                     executable,
                     pid,
                     system,
+                    active: state == AudioSessionStateActive,
                     volume: control.cast()?,
                     meter: control.cast()?,
                 });

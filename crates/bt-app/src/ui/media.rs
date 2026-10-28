@@ -2,6 +2,9 @@
 //! window holding a rounded card (margin 8, radius 12, 20 DIP shadow) with
 //! the track title, timeline, the playing app's volume and the transport
 //! controls; expanded, the cover art above them.
+//!
+//! High contrast only changes the card (FlyoutBackground: Window, with a
+//! WindowFrame edge); the original hard-codes the rest of the popup white.
 use super::anim::{self, EASE_IN_SHARP, EASE_OUT, GROW, RISE};
 use crate::core::Core;
 use bt_app::i18n::tr;
@@ -124,6 +127,8 @@ pub struct Media {
     scale: f32,
     position: (i32, i32),
     tray: Option<(i32, i32, i32, i32)>,
+    /// High contrast's system colours, set by the UI with the theme.
+    pub contrast: Option<super::theme::HighContrast>,
 }
 
 fn time(ms: i64) -> String {
@@ -243,6 +248,7 @@ impl Media {
             scale: 1.0,
             position: (0, 0),
             tray: None,
+            contrast: None,
         })
     }
 
@@ -404,10 +410,7 @@ impl Media {
     /// Reads the media session and the media app's volume.
     pub fn refresh(&mut self, core: &Core) {
         self.last_refresh = Instant::now();
-        let now_playing = core
-            .media
-            .as_ref()
-            .and_then(|m| m.now_playing().ok().flatten());
+        let now_playing = crate::legacy_media::now_playing(core);
         let key = now_playing
             .as_ref()
             .map(|n| format!("{}\u{1}{}\u{1}{}", n.source_app, n.title, n.artist));
@@ -839,8 +842,15 @@ impl Media {
                 Rgba::rgba(0, 0, 0, alpha),
             );
         }
-        canvas.round_rect(l.card, 12.0, Rgba::rgba(43, 43, 43, 0.96));
-        canvas.stroke_round_rect(l.card, 12.0, 1.0, Rgba::rgba(255, 255, 255, 0.08));
+        let (card, edge) = self.contrast.map_or(
+            (
+                Rgba::rgba(43, 43, 43, 0.96),
+                Rgba::rgba(255, 255, 255, 0.08),
+            ),
+            |hc| (hc.window, hc.window_frame),
+        );
+        canvas.round_rect(l.card, 12.0, card);
+        canvas.stroke_round_rect(l.card, 12.0, 1.0, edge);
         canvas.push_layer(1.0, Some((l.card, 12.0)));
         self.draw_content(canvas, &l, now);
         canvas.pop();

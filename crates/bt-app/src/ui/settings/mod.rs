@@ -166,6 +166,9 @@ pub struct Settings {
     app_icon: Option<Rc<Image>>,
     mica: bool,
     palette: Palette,
+    /// The palette `render` uses instead of the system's (high-contrast
+    /// renders).
+    forced: Option<Palette>,
     scale: f32,
     size: (f32, f32),
     page: PageId,
@@ -197,6 +200,9 @@ pub struct Settings {
 }
 
 fn palette(mica: bool) -> Palette {
+    if let Some(hc) = super::theme::HighContrast::current() {
+        return Palette::high_contrast(&hc);
+    }
     let accent = Rgba::hex(&system::accent()).unwrap_or(Rgba::rgb(0, 120, 215));
     let dark1 = Rgba::hex(&system::accent_dark1()).unwrap_or(Rgba::rgb(0, 90, 158));
     Palette::new(!system::apps_light(), mica, accent, dark1)
@@ -245,6 +251,7 @@ impl Settings {
             app_icon,
             mica,
             palette: palette(mica),
+            forced: None,
             scale: window.scale(),
             size: SIZE,
             page: PageId::General,
@@ -1178,6 +1185,12 @@ impl Settings {
                 let _ = std::process::Command::new("explorer").arg(url).spawn();
                 return;
             }
+            Action::ExportDiagnostics => {
+                // Message boxes are modal: a pressed state must not stick.
+                self.pressed = None;
+                crate::diagnostics::export(self.window.raw(), core);
+                return;
+            }
             Action::RestoreApp { .. }
             | Action::RestoreAllApps
             | Action::RestoreDevice(_)
@@ -1460,6 +1473,19 @@ impl Settings {
 
     // ---------- painting ----------
 
+    /// `render` in high contrast's colours.
+    pub fn render_contrast(
+        &mut self,
+        core: &mut Core,
+        page: PageId,
+        hc: &super::theme::HighContrast,
+    ) -> Option<(u32, u32, Vec<u8>)> {
+        self.forced = Some(Palette::high_contrast(hc));
+        let image = self.render(core, page, None, false);
+        self.forced = None;
+        image
+    }
+
     /// Draws a whole page without showing the window: in the system theme
     /// or `light`, and with the colour picker open on the first colour row
     /// if `picker`.
@@ -1476,6 +1502,9 @@ impl Settings {
             let accent = Rgba::hex(&system::accent()).unwrap_or(Rgba::rgb(0, 120, 215));
             let dark1 = Rgba::hex(&system::accent_dark1()).unwrap_or(Rgba::rgb(0, 90, 158));
             self.palette = Palette::new(!light, false, accent, dark1);
+        }
+        if let Some(forced) = self.forced {
+            self.palette = forced;
         }
         self.scale = 1.0;
         self.navigate(core, page);

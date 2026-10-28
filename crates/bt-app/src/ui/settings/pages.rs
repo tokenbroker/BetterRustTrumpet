@@ -337,6 +337,8 @@ pub enum Action {
     RestoreDevice(String),
     RestoreAllDevices,
     OpenUrl(&'static str),
+    /// Settings > About's "Export diagnostic report" (local files only).
+    ExportDiagnostics,
     /// Settings > About's Export & Import buttons (.btsettings).
     SettingsExport,
     SettingsImport,
@@ -1344,11 +1346,19 @@ fn about(core: &mut Core) -> Vec<Section> {
         vec![row(
             "",
             None,
-            Control::Buttons(vec![button(
-                tr("AboutGitHub"),
-                None,
-                Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
-            )]),
+            Control::Buttons(vec![
+                button(
+                    tr("AboutGitHub"),
+                    None,
+                    Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
+                ),
+                // The About page's TroubleshootEarTrumpetText link.
+                button(
+                    tr("TroubleshootEarTrumpetText"),
+                    None,
+                    Action::ExportDiagnostics,
+                ),
+            ]),
         )],
     )];
     sections.push(section(

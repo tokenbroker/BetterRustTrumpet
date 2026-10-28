@@ -179,6 +179,12 @@ pub fn bgra(path: &str, size: u32) -> Option<Vec<u8>> {
     Some(pixels)
 }
 
+/// The executable's icon as an RGBA PNG, `size` square (a media player's
+/// icon standing in for missing cover art).
+pub fn png_file_icon(path: &str, size: u32) -> Option<Vec<u8>> {
+    rgba(path, size).map(|pixels| png(&pixels, size))
+}
+
 /// `data:image/png;base64,...` for the executable's icon, if it has one.
 pub fn data_url(path: &str, size: u32) -> Option<String> {
     let pixels = rgba(path, size)?;

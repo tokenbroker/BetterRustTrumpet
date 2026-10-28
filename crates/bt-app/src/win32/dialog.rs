@@ -11,7 +11,9 @@ use windows::{
             FileOpenDialog, FileSaveDialog, IFileDialog, IFileOpenDialog, IFileSaveDialog,
             SIGDN_FILESYSPATH,
         },
-        UI::WindowsAndMessaging::{MB_ICONERROR, MB_ICONINFORMATION, MB_OK, MessageBoxW},
+        UI::WindowsAndMessaging::{
+            IDOK, MB_ICONERROR, MB_ICONINFORMATION, MB_OK, MB_OKCANCEL, MessageBoxW,
+        },
     },
     core::{HSTRING, Interface, PCWSTR},
 };
@@ -33,6 +35,20 @@ pub fn message(owner: isize, title: &str, text: &str, error: bool) {
             MB_OK | icon,
         );
     }
+}
+
+/// An information box with OK and Cancel; `true` for OK.
+pub fn confirm(owner: isize, title: &str, text: &str) -> bool {
+    // SAFETY: as `message`.
+    let result = unsafe {
+        MessageBoxW(
+            Some(HWND(owner as *mut c_void)),
+            &HSTRING::from(text),
+            &HSTRING::from(title),
+            MB_OKCANCEL | MB_ICONINFORMATION,
+        )
+    };
+    result == IDOK
 }
 
 /// A file type: its name ("BetterTrumpet Profile (*.btprofile)") and

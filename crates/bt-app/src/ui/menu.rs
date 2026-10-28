@@ -81,10 +81,33 @@ pub struct Palette {
     /// transparency effects off.
     tint: Option<u32>,
     tint_color: Rgba,
+    /// High contrast: AcrylicMenuBorder (ControlText), since the menu gets
+    /// neither acrylic nor DWM rounding there.
+    outline: Option<Rgba>,
+    /// High contrast: the hovered item's text and glyphs (HighlightText).
+    hover_text: Option<Rgba>,
 }
 
 impl Palette {
     pub fn new(theme: &Theme) -> Self {
+        if let Some(hc) = theme.hc {
+            // MenuText on Menu, GrayText when disabled, ControlText marks
+            // and separators, HighlightText on Highlight when hovered.
+            return Self {
+                text: hc.menu_text,
+                secondary: hc.control_text,
+                disabled: hc.gray_text,
+                highlight: hc.highlight,
+                separator: hc.control_text,
+                background: hc.menu,
+                border: hc.control_text,
+                veil: hc.menu,
+                tint: None,
+                tint_color: hc.menu,
+                outline: Some(hc.control_text),
+                hover_text: Some(hc.highlight_text),
+            };
+        }
         let light = theme.light;
         let ink = if light { Rgba::BLACK } else { Rgba::WHITE };
         // AcrylicColor_Menu / AcrylicMenuBackground: accent mode
@@ -122,6 +145,8 @@ impl Palette {
             veil: base.alpha(if theme.transparency { 0.36 } else { 0.86 }),
             tint,
             tint_color: base.alpha(0.7),
+            outline: None,
+            hover_text: None,
         }
     }
 }
@@ -484,7 +509,12 @@ impl<'a> Level<'a> {
     ) {
         let frame = self.frame;
         match self.look {
-            Look::Acrylic => canvas.round_rect(frame, RADIUS, palette.veil),
+            Look::Acrylic => {
+                canvas.round_rect(frame, RADIUS, palette.veil);
+                if let Some(outline) = palette.outline {
+                    canvas.stroke_round_rect(frame.inset(0.5, 0.5), RADIUS - 0.5, 1.0, outline);
+                }
+            }
             Look::Solid => {
                 // DropShadowEffect: blur 16, depth 4 down-right, 0.3.
                 for i in 0..6 {
@@ -520,15 +550,18 @@ impl<'a> Level<'a> {
                 canvas.round_rect(*rect, 4.0, color.alpha(glow));
             }
             let enabled = selectable(item);
+            // High contrast swaps to HighlightText over the highlight.
+            let lit = palette.hover_text.filter(|_| enabled && glow >= 0.5);
             let ink = if enabled {
-                palette.text
+                lit.unwrap_or(palette.text)
             } else {
                 palette.disabled
             };
+            let mark = lit.unwrap_or(palette.secondary);
             let column = Rect::new(rect.x, rect.y, ICON_COLUMN, rect.h);
             let glyph = |canvas: &mut Canvas, text: &str, size: f32| {
                 let style = TextStyle::new(GLYPHS, size).align(Align::Center);
-                canvas.text(text, column, &style, palette.secondary);
+                canvas.text(text, column, &style, mark);
             };
             match item {
                 Item::Command(_, _, true, _) => glyph(canvas, GLYPH_CHECK, 12.0),

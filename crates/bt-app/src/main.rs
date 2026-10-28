@@ -6,10 +6,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod core;
+mod diagnostics;
 mod focus;
 mod folders;
 mod hotkeys;
 mod ipc;
+mod legacy_media;
 mod profiles;
 mod rules;
 mod settings_file;
@@ -45,6 +47,17 @@ fn main() {
         }
     };
     let _instance = instance;
+    // Local log files and the in-memory trace (ErrorReporter); a running
+    // copy only, not `--render`.
+    if render.is_none() {
+        bt_app::log::init(&diagnostics::log_dir());
+        bt_app::log::log_panics();
+        bt_app::log::line(format!(
+            "BetterTrumpet v{} starting (Rust port) - OS: {}",
+            env!("CARGO_PKG_VERSION"),
+            bt_app::win32::diag::build_label()
+        ));
+    }
     // The UI language; BT_CULTURE overrides it for checking translations.
     let culture = (render.is_some() || cfg!(debug_assertions))
         .then(|| std::env::var("BT_CULTURE").ok())
@@ -55,12 +68,19 @@ fn main() {
         Ok(audio) => audio,
         Err(e) => {
             eprintln!("BetterTrumpet: audio engine failed to start: {e}");
+            bt_app::log::line(format!("## FATAL ## audio engine failed to start: {e}"));
+            bt_app::log::flush();
             std::process::exit(1);
         }
     };
+    let media = MediaEngine::start()
+        .inspect_err(|e| {
+            bt_app::log::line(format!("MediaSessionService: Initialization failed - {e}"))
+        })
+        .ok();
     let core = core::Core {
         audio,
-        media: MediaEngine::start().ok(),
+        media,
         store: store::Store::open(),
         undo: UndoHistory::default(),
         launch: rules::LaunchTracker::default(),
@@ -71,6 +91,10 @@ fn main() {
     }
     if let Err(e) = ui::run(core) {
         eprintln!("BetterTrumpet: the UI failed to start: {e}");
+        bt_app::log::line(format!("## FATAL ## the UI failed to start: {e}"));
+        bt_app::log::flush();
         std::process::exit(1);
     }
+    bt_app::log::line("BetterTrumpet exiting");
+    bt_app::log::flush();
 }

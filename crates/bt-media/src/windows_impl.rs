@@ -2,10 +2,15 @@
 use crate::{Command, MediaError, NowPlaying, Repeat};
 use std::{
     cell::RefCell,
-    sync::{Arc, mpsc},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+        mpsc,
+    },
     thread,
 };
 use windows::{
+    Foundation::TypedEventHandler,
     Media::{
         Control::{
             GlobalSystemMediaTransportControlsSession as Session,
@@ -80,6 +85,25 @@ impl Engine {
     pub fn send(&self, command: Command) -> Result<(), MediaError> {
         self.call(move |b| b.send(command))
     }
+    pub fn watch(&self, listener: Arc<dyn Fn() + Send + Sync>) -> Result<(), MediaError> {
+        self.call(move |b| b.watch(listener))
+    }
+    pub fn any_playing(&self) -> Result<bool, MediaError> {
+        self.call(|b| Ok(b.any_playing()))
+    }
+}
+
+/// The change subscriptions: the manager's two events, and
+/// PlaybackInfoChanged on every session (re-made when the sessions change,
+/// like the original's SubscribeToAllSessions).
+struct Watch {
+    listener: Arc<dyn Fn() + Send + Sync>,
+    /// Set by the manager's handlers; the next call on the worker thread
+    /// re-subscribes the sessions. Handlers never hold the job sender, so
+    /// the worker still ends when the engine is dropped.
+    stale: Arc<AtomicBool>,
+    manager_tokens: [i64; 2],
+    sessions: Vec<(Session, i64)>,
 }
 
 /// Cover art is read once per track rather than on every poll.
@@ -91,6 +115,21 @@ struct Art {
 struct Backend {
     manager: Manager,
     art: RefCell<Option<Art>>,
+    watch: RefCell<Option<Watch>>,
+}
+
+impl Drop for Backend {
+    fn drop(&mut self) {
+        if let Some(watch) = self.watch.get_mut().take() {
+            let _ = self
+                .manager
+                .RemoveCurrentSessionChanged(watch.manager_tokens[0]);
+            let _ = self.manager.RemoveSessionsChanged(watch.manager_tokens[1]);
+            for (session, token) in watch.sessions {
+                let _ = session.RemovePlaybackInfoChanged(token);
+            }
+        }
+    }
 }
 
 const TICKS_PER_MS: i64 = 10_000;
@@ -100,6 +139,93 @@ impl Backend {
         Ok(Self {
             manager: Manager::RequestAsync()?.join()?,
             art: RefCell::new(None),
+            watch: RefCell::new(None),
+        })
+    }
+    /// Subscribes once; a second call only replaces the listener.
+    fn watch(&self, listener: Arc<dyn Fn() + Send + Sync>) -> Result<(), MediaError> {
+        if let Some(watch) = self.watch.borrow_mut().as_mut() {
+            watch.listener = listener;
+            return Ok(());
+        }
+        let stale = Arc::new(AtomicBool::new(false));
+        let handler = |listener: &Arc<dyn Fn() + Send + Sync>, stale: &Arc<AtomicBool>| {
+            let (listener, stale) = (listener.clone(), stale.clone());
+            move || {
+                stale.store(true, Ordering::Release);
+                listener();
+            }
+        };
+        let current = handler(&listener, &stale);
+        let sessions = handler(&listener, &stale);
+        let manager_tokens = [
+            self.manager
+                .CurrentSessionChanged(&TypedEventHandler::new(move |_, _| {
+                    current();
+                    Ok(())
+                }))?,
+            self.manager
+                .SessionsChanged(&TypedEventHandler::new(move |_, _| {
+                    sessions();
+                    Ok(())
+                }))?,
+        ];
+        *self.watch.borrow_mut() = Some(Watch {
+            listener,
+            stale,
+            manager_tokens,
+            sessions: vec![],
+        });
+        self.resubscribe();
+        Ok(())
+    }
+    /// Re-subscribes PlaybackInfoChanged on the current list of sessions.
+    fn resubscribe(&self) {
+        let mut watch = self.watch.borrow_mut();
+        let Some(watch) = watch.as_mut() else {
+            return;
+        };
+        watch.stale.store(false, Ordering::Release);
+        for (session, token) in watch.sessions.drain(..) {
+            let _ = session.RemovePlaybackInfoChanged(token);
+        }
+        let Ok(list) = self.manager.GetSessions() else {
+            return;
+        };
+        for session in list {
+            let listener = watch.listener.clone();
+            let token = session.PlaybackInfoChanged(&TypedEventHandler::new(move |_, _| {
+                listener();
+                Ok(())
+            }));
+            if let Ok(token) = token {
+                watch.sessions.push((session, token));
+            }
+        }
+    }
+    /// Brings the session subscriptions up to date after a manager event.
+    fn refresh_watch(&self) {
+        let stale = self
+            .watch
+            .borrow()
+            .as_ref()
+            .is_some_and(|w| w.stale.load(Ordering::Acquire));
+        if stale {
+            self.resubscribe();
+        }
+    }
+    /// MediaSessionService.CheckIfAnyMediaPlaying: any session (not only
+    /// the current one) is playing.
+    fn any_playing(&self) -> bool {
+        self.refresh_watch();
+        let Ok(list) = self.manager.GetSessions() else {
+            return false;
+        };
+        list.into_iter().any(|session| {
+            session
+                .GetPlaybackInfo()
+                .and_then(|info| info.PlaybackStatus())
+                .is_ok_and(|status| status == Status::Playing)
         })
     }
     fn session(&self) -> Result<Session, MediaError> {
@@ -124,6 +250,7 @@ impl Backend {
         Ok(Some(Arc::new(bytes)))
     }
     fn now_playing(&self) -> Result<Option<NowPlaying>, MediaError> {
+        self.refresh_watch();
         let Ok(session) = self.session() else {
             return Ok(None);
         };
