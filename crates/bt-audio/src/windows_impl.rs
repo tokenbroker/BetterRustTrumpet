@@ -74,6 +74,8 @@ mod policy {
     }
 }
 use policy::IPolicyConfig;
+
+mod roles;
 const CLSID_POLICY_CONFIG: GUID = GUID::from_u128(0x870af99c_171d_4f9e_af0d_e63df40c2bc9);
 
 impl From<windows::core::Error> for AudioError {

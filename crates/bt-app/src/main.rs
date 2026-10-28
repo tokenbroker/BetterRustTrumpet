@@ -10,6 +10,7 @@ mod focus;
 mod folders;
 mod hotkeys;
 mod ipc;
+mod profiles;
 mod rules;
 mod store;
 mod ui;

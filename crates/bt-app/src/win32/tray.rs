@@ -1,5 +1,8 @@
 //! The notification-area icon (Shell_NotifyIcon, NOTIFYICON_VERSION_4).
-use super::wnd::{WM_TRAY, Window};
+use super::{
+    trayicon::Icon,
+    wnd::{WM_TRAY, Window},
+};
 use windows::{
     Win32::{
         Foundation::{HANDLE, HWND},
@@ -7,8 +10,9 @@ use windows::{
         UI::{
             HiDpi::GetSystemMetricsForDpi,
             Shell::{
-                NIF_ICON, NIF_MESSAGE, NIF_SHOWTIP, NIF_TIP, NIM_ADD, NIM_DELETE, NIM_MODIFY,
-                NIM_SETVERSION, NOTIFYICON_VERSION_4, NOTIFYICONDATAW, NOTIFYICONIDENTIFIER,
+                NIF_ICON, NIF_INFO, NIF_MESSAGE, NIF_SHOWTIP, NIF_TIP, NIIF_INFO,
+                NIIF_RESPECT_QUIET_TIME, NIM_ADD, NIM_DELETE, NIM_MODIFY, NIM_SETVERSION,
+                NOTIFYICON_VERSION_4, NOTIFYICONDATAW, NOTIFYICONIDENTIFIER,
                 Shell_NotifyIconGetRect, Shell_NotifyIconW,
             },
             WindowsAndMessaging::{
@@ -25,11 +29,13 @@ const ID: u32 = 1;
 pub struct Tray {
     window: Window,
     icon: HICON,
+    /// The drawn icon that replaces the application icon once set.
+    drawn: Option<Icon>,
     tip: String,
 }
 
-fn copy_tip(text: &str, out: &mut [u16; 128]) {
-    let wide: Vec<u16> = text.encode_utf16().take(127).collect();
+fn copy_tip(text: &str, out: &mut [u16]) {
+    let wide: Vec<u16> = text.encode_utf16().take(out.len() - 1).collect();
     out.fill(0);
     out[..wide.len()].copy_from_slice(&wide);
 }
@@ -64,6 +70,7 @@ impl Tray {
         let tray = Self {
             window,
             icon: load_icon(dpi),
+            drawn: None,
             tip: tip.into(),
         };
         tray.add();
@@ -77,7 +84,7 @@ impl Tray {
             uID: ID,
             uFlags: NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_SHOWTIP,
             uCallbackMessage: WM_TRAY,
-            hIcon: self.icon,
+            hIcon: self.drawn.as_ref().map_or(self.icon, Icon::handle),
             ..Default::default()
         };
         copy_tip(&self.tip, &mut data.szTip);
@@ -102,6 +109,30 @@ impl Tray {
         }
         self.tip = tip.into();
         let data = self.data();
+        // SAFETY: as above.
+        unsafe {
+            let _ = Shell_NotifyIconW(NIM_MODIFY, &data);
+        }
+    }
+
+    /// Replaces the icon (the previous drawn one is destroyed after the
+    /// shell has the new one).
+    pub fn set_icon(&mut self, icon: Icon) {
+        let _previous = self.drawn.replace(icon);
+        let data = self.data();
+        // SAFETY: as above; the new icon outlives the call.
+        unsafe {
+            let _ = Shell_NotifyIconW(NIM_MODIFY, &data);
+        }
+    }
+
+    /// A notification from the icon (title and text), shown by the shell.
+    pub fn notify(&self, title: &str, text: &str) {
+        let mut data = self.data();
+        data.uFlags |= NIF_INFO;
+        data.dwInfoFlags = NIIF_INFO | NIIF_RESPECT_QUIET_TIME;
+        copy_tip(title, &mut data.szInfoTitle);
+        copy_tip(text, &mut data.szInfo);
         // SAFETY: as above.
         unsafe {
             let _ = Shell_NotifyIconW(NIM_MODIFY, &data);

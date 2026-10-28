@@ -15,7 +15,7 @@ use windows::{
 
 /// Renders `icon` into a 32-bit top-down DIB over a solid background and
 /// returns BGRA pixels.
-fn render(icon: HICON, size: u32, background: u8) -> Option<Vec<u8>> {
+pub(super) fn render(icon: HICON, size: u32, background: u8) -> Option<Vec<u8>> {
     let info = BITMAPINFO {
         bmiHeader: BITMAPINFOHEADER {
             biSize: size_of::<BITMAPINFOHEADER>() as u32,

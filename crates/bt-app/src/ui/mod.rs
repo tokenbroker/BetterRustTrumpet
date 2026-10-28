@@ -5,22 +5,33 @@
 pub mod anim;
 mod flyout;
 mod media;
+mod quick;
 mod slider;
 mod theme;
 mod tip;
+mod trayicon;
+mod traymenu;
 
-use crate::{core::Core, focus, hotkeys};
+use crate::{
+    core::{Core, HiddenEntry},
+    focus, hotkeys, profiles,
+};
 use bt_app::win32::{
     gfx::Gfx,
     menu::{self, Item},
-    startup,
     tray::Tray,
-    wheel,
-    wnd::{self, Event, TrayEvent, Window},
+    trayicon as icon_adapter, wheel,
+    wnd::{self, Event, Modifiers, TrayEvent, Window},
 };
 use bt_audio::Snapshot;
-use bt_core::settings::{Key, Value};
-use std::{cell::RefCell, time::Duration};
+use bt_core::{
+    models::AppVolumeEntry,
+    settings::{Key, Value},
+};
+use std::{
+    cell::RefCell,
+    time::{Duration, Instant},
+};
 
 /// The hidden window's title, which a second launch looks for.
 pub const HIDDEN_TITLE: &str = "BetterTrumpet Rust";
@@ -38,6 +49,8 @@ const TRAY_POLL: usize = 1;
 const MEDIA_SHOW: usize = 2;
 const MEDIA_HIDE: usize = 3;
 const AUDIO: usize = 4;
+/// Re-applies routed preset apps once the move has settled.
+const PRESET_SETTLE: usize = 5;
 
 /// The original's popup hide delay after the pointer leaves.
 const MEDIA_HIDE_GRACE: u32 = 800;
@@ -46,9 +59,22 @@ const MEDIA_HIDE_GRACE: u32 = 800;
 pub enum MenuCommand {
     Flyout(flyout::Command),
     Device(String),
-    Startup,
+    /// Device id, hidden entry.
+    UnhideApp(String, HiddenEntry),
+    UnhideDeviceApps(String),
+    UnhideAllApps,
+    UnhideDevice(String),
+    UnhideAllDevices,
+    /// A QuickTrumpet preset by list index.
+    Preset(usize),
     Mixer,
-    Sound,
+    Settings,
+    LegacySettings,
+    GitHub,
+    LegacyMixer,
+    ControlPanel(&'static str),
+    /// An ms-settings: page.
+    SystemSettings(&'static str),
     Quit,
 }
 
@@ -71,16 +97,31 @@ pub struct Ui {
     flyout: flyout::Flyout,
     media: media::Media,
     tip: tip::Tip,
+    quick: quick::Quick,
     theme: theme::Theme,
     icon_font: &'static str,
     tray_hover: bool,
     tray_rect: Option<(i32, i32, i32, i32)>,
-    /// Registered shortcut labels for the tray menu ("action: keys").
-    shortcuts: Vec<String>,
-    /// The action for hotkey id `i + 1`.
-    hotkeys: Vec<hotkeys::Action>,
+    /// Registered shortcut labels ("action: keys", with conflicts), for a
+    /// settings page.
+    pub shortcuts: Vec<String>,
+    /// The actions for hotkey id `i + 1` (bindings sharing keys, in the
+    /// original's dispatch order).
+    hotkeys: Vec<Vec<hotkeys::Action>>,
+    /// The outputs whose DeviceHotkey shortcuts are registered.
+    hotkey_devices: Vec<String>,
+    last_cycle: Option<Instant>,
+    last_preset: Option<(String, Instant)>,
     devices_changed: bool,
     focus: focus::FocusLost,
+    windows_11: bool,
+    /// What the tray icon shows now (redrawn only when it changes).
+    icon: Option<trayicon::State>,
+    /// The default output's form factor, cached per device id.
+    form_factor: Option<(String, Option<u32>)>,
+    /// Routed preset apps re-applied by PRESET_SETTLE, and ticks left.
+    settle: Vec<AppVolumeEntry>,
+    settle_ticks: u32,
 }
 
 thread_local! {
@@ -133,6 +174,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         flyout: flyout::Flyout::new(gfx.clone(), &core.store)?,
         media: media::Media::new(gfx.clone(), media_expanded)?,
         tip: tip::Tip::new(gfx.clone())?,
+        quick: quick::Quick::new(gfx.clone())?,
         theme: theme::Theme::load(&core.store, icon_font),
         icon_font,
         core,
@@ -141,10 +183,19 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         tray_rect: None,
         shortcuts: vec![],
         hotkeys: vec![],
+        hotkey_devices: vec![],
+        last_cycle: None,
+        last_preset: None,
         devices_changed: false,
         focus: focus::FocusLost::new(hidden, hidden.poster()),
+        windows_11: icon_adapter::is_windows_11(),
+        icon: None,
+        form_factor: None,
+        settle: vec![],
+        settle_ticks: 0,
     };
     ui.register_hotkeys();
+    ui.present_tooltip();
     ui.watch();
     // Launch rules for apps already playing, plus Lock and hard mute.
     ui.core.enforce_rules();
@@ -199,10 +250,144 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     let mut media = media::Media::new(gfx.clone(), false)?;
     save("media.png", media.render(&core, tray, false));
     save("media-expanded.png", media.render(&core, tray, true));
-    let mut tip = tip::Tip::new(gfx)?;
+    let mut tip = tip::Tip::new(gfx.clone())?;
     let devices = core.audio.devices().unwrap_or_default();
     save("tip.png", tip.render(&tooltip(&devices)));
+    let mut quick = quick::Quick::new(gfx)?;
+    save("quick.png", quick.render(palette_entries(&mut core), ""));
+    save(
+        "quick-filtered.png",
+        quick.render(palette_entries(&mut core), "mute"),
+    );
+    // Every tray icon at 16, 24 and 32 pixels: one sheet per size and
+    // look (modern dark, modern light, legacy dark, legacy light).
+    let kinds = [
+        trayicon::Kind::Bars(3),
+        trayicon::Kind::Muted,
+        trayicon::Kind::Bars(1),
+        trayicon::Kind::NoDevice,
+    ];
+    let glyphs = [
+        trayicon::Glyph::Speaker,
+        trayicon::Glyph::Headphones,
+        trayicon::Glyph::Monitor,
+    ];
+    let looks = [(false, false), (false, true), (true, false), (true, true)];
+    for size in [16u32, 24, 32] {
+        for (row, (legacy, light)) in looks.into_iter().enumerate() {
+            let columns = (kinds.len() * glyphs.len()) as u32;
+            let mut sheet = vec![0u8; (size * columns * size * 4) as usize];
+            let mut column = 0;
+            for glyph in glyphs {
+                for kind in kinds {
+                    let state = trayicon::State {
+                        kind,
+                        glyph,
+                        light,
+                        legacy,
+                        size,
+                    };
+                    if let Some(pixels) = trayicon::pixels(state) {
+                        for y in 0..size {
+                            for x in 0..size {
+                                let from = ((y * size + x) * 4) as usize;
+                                let to = ((y * size * columns + column * size + x) * 4) as usize;
+                                // BGRA to RGBA.
+                                sheet[to] = pixels[from + 2];
+                                sheet[to + 1] = pixels[from + 1];
+                                sheet[to + 2] = pixels[from];
+                                sheet[to + 3] = pixels[from + 3];
+                            }
+                        }
+                    }
+                    column += 1;
+                }
+            }
+            save(
+                &format!("tray-{size}-{row}.png"),
+                Some((size * columns, size, sheet)),
+            );
+        }
+    }
     Ok(())
+}
+
+/// CommandPaletteHelper.BuildCommands from the current devices and apps.
+fn palette_entries(core: &mut Core) -> Vec<quick::Entry> {
+    use quick::{Command as C, Entry as E};
+    let mut list = vec![
+        E::new("Undo", "Ctrl+Z", &["undo", "revert", "back"], C::Undo),
+        E::new("Redo", "Ctrl+Y", &["redo", "forward"], C::Redo),
+        E::new(
+            "Open Volume Mixer",
+            "",
+            &["mixer", "full", "window", "volume"],
+            C::Mixer,
+        ),
+        E::new(
+            "Open Settings",
+            "",
+            &["settings", "preferences", "config", "options"],
+            C::Settings,
+        ),
+        E::new(
+            "Open Playback Devices",
+            "",
+            &["playback", "output", "speakers", "devices", "control panel"],
+            C::ControlPanel("playback"),
+        ),
+        E::new(
+            "Open Recording Devices",
+            "",
+            &["recording", "input", "microphone", "mic", "devices"],
+            C::ControlPanel("recording"),
+        ),
+        E::new(
+            "Open Sound Settings",
+            "",
+            &["sound", "settings", "windows", "system"],
+            C::SoundSettings,
+        ),
+    ];
+    for device in core.view().devices {
+        let (id, name) = (device.device.id.clone(), device.device.name.clone());
+        let lower = name.to_lowercase();
+        let mut entry = E::new(
+            format!("Mute/Unmute: {name}"),
+            "",
+            &["mute", "unmute", "toggle"],
+            C::ToggleDeviceMute(id.clone(), name.clone()),
+        );
+        entry.tokens.push(lower.clone());
+        list.push(entry);
+        let mut entry = E::new(
+            format!("Set Default: {name}"),
+            "",
+            &["default", "output", "device"],
+            C::SetDefault(id.clone()),
+        );
+        entry.tokens.push(lower);
+        list.push(entry);
+        for app in device.apps.iter().filter(|a| !a.hidden) {
+            let app_name = app.app.display_name.clone();
+            let mut entry = E::new(
+                format!("Mute/Unmute: {app_name}"),
+                "",
+                &["mute", "unmute", "app"],
+                C::ToggleAppMute(id.clone(), app.app.key.clone(), app_name.clone()),
+            );
+            entry.tokens.push(app_name.to_lowercase());
+            entry.tokens.push(app.exe_name.to_lowercase());
+            list.push(entry);
+        }
+    }
+    list.push(E::new(
+        "Exit BetterTrumpet",
+        "",
+        &["exit", "quit", "close", "shutdown"],
+        C::Exit,
+    ));
+    list
 }
 
 fn open_menu(request: MenuRequest) {
@@ -232,11 +417,29 @@ fn open_menu(request: MenuRequest) {
 }
 
 impl Ui {
+    /// Registers every binding (AppSettings.RegisterHotkeys, the preset
+    /// shortcuts and the active outputs' DeviceHotkey shortcuts); keys
+    /// shared by several bindings are registered once.
     fn register_hotkeys(&mut self) {
-        let bindings = hotkeys::bindings(&self.core.store);
-        for (i, binding) in bindings.iter().enumerate() {
-            let registered =
-                wnd::register_hotkey(self.hidden, i as i32 + 1, binding.modifiers, binding.vk);
+        let presets = profiles::read(&self.core.store);
+        let devices: Vec<String> = self
+            .core
+            .audio
+            .devices()
+            .map(|s| s.devices.into_iter().map(|d| d.id).collect())
+            .unwrap_or_default();
+        let bindings = hotkeys::bindings(&self.core.store, &presets, &devices);
+        let mut keys: Vec<(u32, u32)> = vec![];
+        for binding in bindings {
+            if let Some(i) = keys
+                .iter()
+                .position(|&k| k == (binding.modifiers, binding.vk))
+            {
+                self.hotkeys[i].push(binding.action);
+                continue;
+            }
+            let id = self.hotkeys.len() as i32 + 1;
+            let registered = wnd::register_hotkey(self.hidden, id, binding.modifiers, binding.vk);
             let source = if binding.from_settings {
                 " (from BetterTrumpet)"
             } else {
@@ -249,11 +452,230 @@ impl Ui {
             };
             self.shortcuts.push(format!(
                 "{}: {}{source}{status}",
-                hotkeys::describe(binding.action),
+                hotkeys::describe(&binding.action),
                 binding.label
             ));
-            self.hotkeys.push(binding.action);
+            keys.push((binding.modifiers, binding.vk));
+            self.hotkeys.push(vec![binding.action]);
         }
+        self.hotkey_devices = devices;
+    }
+
+    /// Unregisters and registers every hotkey again: after the presets,
+    /// the shortcut settings or the outputs change.
+    pub fn reregister_hotkeys(&mut self) {
+        for id in 1..=self.hotkeys.len() as i32 {
+            wnd::unregister_hotkey(self.hidden, id);
+        }
+        self.hotkeys.clear();
+        self.shortcuts.clear();
+        self.register_hotkeys();
+    }
+
+    fn hotkey(&mut self, id: i32) {
+        let Some(actions) = self.hotkeys.get((id - 1).max(0) as usize).cloned() else {
+            return;
+        };
+        // The first AppSettings binding wins; device shortcuts fire too.
+        let main = actions.iter().find(|a| !a.is_device()).cloned();
+        let device = actions.iter().find(|a| a.is_device()).cloned();
+        for action in main.into_iter().chain(device) {
+            self.run_hotkey(action);
+        }
+    }
+
+    fn run_hotkey(&mut self, action: hotkeys::Action) {
+        use hotkeys::Action as A;
+        match action {
+            A::ToggleFlyout => {
+                if self.flyout.visible {
+                    self.flyout.hide();
+                } else {
+                    self.show_flyout();
+                }
+            }
+            A::OpenMixer => self.open_mixer(),
+            A::OpenSettings => self.open_settings(),
+            A::VolumeUp => self.core.step_all_devices(2),
+            A::VolumeDown => self.core.step_all_devices(-2),
+            A::SwitchDevice => self.cycle_default_device(),
+            A::PresetNext | A::PresetPrevious => {
+                // WM_HOTKEY repeats while held: one step per 350 ms.
+                if self
+                    .last_cycle
+                    .is_some_and(|t| t.elapsed() < Duration::from_millis(350))
+                {
+                    return;
+                }
+                self.last_cycle = Some(Instant::now());
+                let direction = if action == A::PresetNext { 1 } else { -1 };
+                let target = profiles::Service::open(&mut self.core).cycle_target(direction);
+                if let Some(index) = target {
+                    self.apply_preset(index);
+                }
+                return;
+            }
+            A::Preset(key) => {
+                // The same preset's shortcut is ignored for 700 ms.
+                if self.last_preset.as_ref().is_some_and(|(last, t)| {
+                    last.to_lowercase() == key.to_lowercase()
+                        && t.elapsed() < Duration::from_millis(700)
+                }) {
+                    return;
+                }
+                self.last_preset = Some((key.clone(), Instant::now()));
+                let target = profiles::Service::open(&mut self.core).find(&key);
+                if let Some(index) = target {
+                    self.apply_preset(index);
+                }
+                return;
+            }
+            A::Device(id) => {
+                if self.core.audio.set_default_device(&id).is_ok() {
+                    let name = self.device_name(&id);
+                    self.device_switch_notification(&name);
+                }
+            }
+        }
+        self.after_volume_change();
+    }
+
+    fn device_name(&self, id: &str) -> String {
+        self.core
+            .audio
+            .endpoints(false)
+            .unwrap_or_default()
+            .into_iter()
+            .find(|e| e.id == id)
+            .map(|e| e.name)
+            .unwrap_or_default()
+    }
+
+    /// ShowDeviceChangeNotification (NotifyOnDeviceHotkeyChange).
+    fn device_switch_notification(&self, name: &str) {
+        if self.core.store.bool(Key::NotifyOnDeviceHotkeyChange) {
+            self.tray
+                .notify("Playback device", &format!("Now using {name}"));
+        }
+    }
+
+    /// CycleDefaultDevice: the next active output in Windows' order.
+    fn cycle_default_device(&mut self) {
+        let list = self.core.audio.endpoints(false).unwrap_or_default();
+        if list.len() < 2 {
+            return;
+        }
+        let current = self
+            .core
+            .audio
+            .default_endpoint(bt_audio::Role::Playback)
+            .ok()
+            .flatten();
+        let index = current
+            .and_then(|c| list.iter().position(|e| e.id == c.id))
+            .map_or(0, |i| (i + 1) % list.len());
+        let next = &list[index];
+        if self.core.audio.set_default_device(&next.id).is_ok()
+            && self.core.store.bool(Key::ShowDeviceSwitchNotification)
+        {
+            self.device_switch_notification(&next.name);
+        }
+    }
+
+    /// Applies a QuickTrumpet preset and shows its confirmation
+    /// (ShowQuickTrumpetConfirmation) as a tray notification. Settings
+    /// pages call this too.
+    pub fn apply_preset(&mut self, index: usize) {
+        let mut service = profiles::Service::open(&mut self.core);
+        let name = service
+            .profiles()
+            .get(index)
+            .and_then(|p| p.name.clone())
+            .unwrap_or_default();
+        let result = service.apply(index);
+        if !result.settle.is_empty() {
+            self.settle = result.settle.clone();
+            self.settle_ticks = 3;
+            self.hidden.set_timer(PRESET_SETTLE, 250);
+        }
+        if self.core.store.bool(Key::ShowQuickTrumpetConfirmation) {
+            self.tray.notify(
+                &profiles::toast_title(&name),
+                &profiles::describe_result(&result),
+            );
+        }
+        self.after_volume_change();
+    }
+
+    /// For the settings window after it saves: redraws the tray icon
+    /// (UseLegacyIcon, TrayIconShowsDeviceType) and registers the hotkeys
+    /// again (shortcut settings, VolumeProfilesJson, DeviceHotkey:<id>);
+    /// services that cache settings re-read them (focus lost).
+    #[allow(dead_code)] // Called by the settings window once it lands.
+    pub fn settings_changed(&mut self) {
+        self.focus.settings_changed(&mut self.core);
+        self.icon = None;
+        self.form_factor = None;
+        self.reregister_hotkeys();
+        self.present_tooltip();
+    }
+
+    /// Opens the settings window. A stub until the settings window lands
+    /// (another change builds it); the tray menu, the palette and the
+    /// settings hotkey all come through here.
+    pub fn open_settings(&mut self) {
+        eprintln!("BetterTrumpet: the settings window is not ported yet");
+    }
+
+    /// The original opens its own mixer window (not ported); Windows'
+    /// volume mixer stands in.
+    pub fn open_mixer(&mut self) {
+        open("ms-settings:apps-volume");
+    }
+
+    /// Ctrl+Shift+P: the command palette.
+    fn open_palette(&mut self) {
+        let entries = palette_entries(&mut self.core);
+        self.quick.show(entries);
+    }
+
+    fn palette_command(&mut self, command: quick::Command) {
+        use quick::Command as C;
+        match command {
+            C::Undo => {
+                self.core.replay(true);
+            }
+            C::Redo => {
+                self.core.replay(false);
+            }
+            C::Mixer => self.open_mixer(),
+            C::Settings => self.open_settings(),
+            C::ControlPanel(panel) => traymenu::control_panel(panel),
+            C::SoundSettings => open("ms-settings:sound"),
+            C::ToggleDeviceMute(id, name) => {
+                let muted = self
+                    .core
+                    .audio
+                    .devices()
+                    .ok()
+                    .and_then(|s| s.devices.into_iter().find(|d| d.id == id))
+                    .is_some_and(|d| d.muted);
+                self.core.set_device_mute(&id, &name, !muted);
+            }
+            C::SetDefault(id) => {
+                let _ = self.core.audio.set_default_device(&id);
+            }
+            C::ToggleAppMute(device, key, name) => {
+                let muted = self
+                    .core
+                    .view()
+                    .app(&device, &key)
+                    .is_some_and(|a| a.app.muted);
+                self.core.set_app_mute(&device, &key, &name, !muted);
+            }
+            C::Exit => wnd::quit(),
+        }
+        self.after_volume_change();
     }
 
     /// Windows' change notifications and the tray wheel post to the hidden
@@ -277,13 +699,6 @@ impl Ui {
         });
     }
 
-    /// The settings window changed settings: services that cache them
-    /// re-read them (focus lost).
-    #[allow(dead_code)] // Called by the settings window (not ported yet).
-    pub(crate) fn settings_changed(&mut self) {
-        self.focus.settings_changed(&mut self.core);
-    }
-
     fn reload_theme(&mut self) {
         self.theme = theme::Theme::load(&self.core.store, self.icon_font);
     }
@@ -292,7 +707,27 @@ impl Ui {
         if window == self.hidden {
             return self.hidden_event(event);
         }
+        if window == self.quick.window {
+            if let quick::Reply::Run(command) = self.quick.event(event) {
+                self.palette_command(command);
+            }
+            return None;
+        }
         if window == self.flyout.window {
+            // The original opens the palette from its mixer window, which
+            // is not ported; the flyout takes the same shortcut.
+            if let Event::Key(
+                0x50,
+                Modifiers {
+                    ctrl: true,
+                    shift: true,
+                    alt: false,
+                },
+            ) = event
+            {
+                self.open_palette();
+                return None;
+            }
             return match event {
                 Event::Timer(id) => {
                     self.flyout.timer(id, &mut self.core, &self.theme);
@@ -354,7 +789,14 @@ impl Ui {
             }
             Event::Tray(TrayEvent::Context(x, y)) => return Some(self.tray_menu(x, y)),
             Event::Tray(TrayEvent::Move) => self.tray_enter(),
-            Event::Tray(TrayEvent::MiddleUp) => {}
+            // TertiaryInvoke: mute or unmute the default output.
+            Event::Tray(TrayEvent::MiddleUp) => {
+                let devices = self.core.audio.devices().unwrap_or_default();
+                if let Some(d) = devices.devices.iter().find(|d| d.is_default) {
+                    self.core.set_device_mute(&d.id, &d.name, !d.muted);
+                }
+                self.after_volume_change();
+            }
             Event::Timer(TRAY_POLL) => {
                 let (x, y) = wnd::cursor_pos();
                 let inside = self.tray.rect().is_some_and(|(rx, ry, rw, rh)| {
@@ -381,21 +823,17 @@ impl Ui {
                 self.hidden.kill_timer(AUDIO);
                 self.audio_changed();
             }
-            Event::Hotkey(id) => {
-                match self.hotkeys.get((id - 1).max(0) as usize).copied() {
-                    Some(hotkeys::Action::ToggleFlyout) => {
-                        if self.flyout.visible {
-                            self.flyout.hide();
-                        } else {
-                            self.show_flyout();
-                        }
-                    }
-                    Some(hotkeys::Action::VolumeUp) => self.core.step_all_devices(2),
-                    Some(hotkeys::Action::VolumeDown) => self.core.step_all_devices(-2),
-                    None => {}
+            Event::Timer(PRESET_SETTLE) => {
+                for app in &self.settle {
+                    profiles::apply_app_state(&self.core, app);
                 }
-                self.after_volume_change();
+                self.settle_ticks = self.settle_ticks.saturating_sub(1);
+                if self.settle_ticks == 0 {
+                    self.hidden.kill_timer(PRESET_SETTLE);
+                    self.settle.clear();
+                }
             }
+            Event::Hotkey(id) => self.hotkey(id),
             Event::App(APP_SHOW) => self.show_flyout(),
             Event::App(crate::ipc::APP_IPC) => crate::ipc::drain(&mut self.core),
             Event::App(APP_SHOW_MEDIA) => {
@@ -409,15 +847,25 @@ impl Ui {
                 self.hidden.set_timer(AUDIO, 120);
             }
             Event::App(code @ (APP_WHEEL_UP | APP_WHEEL_DOWN)) => {
-                if self.tray_hover {
+                // UseScrollWheelInTray; with the global wheel hook the
+                // flyout takes the wheel while it is open.
+                let store = &self.core.store;
+                let enabled = store.bool(Key::UseScrollWheelInTray)
+                    && (!store.bool(Key::UseGlobalMouseWheelHook) || !self.flyout.visible);
+                if self.tray_hover && enabled {
                     self.core
                         .step_default_device(if code == APP_WHEEL_UP { 1 } else { -1 });
                     self.after_volume_change();
                 }
             }
-            Event::TaskbarCreated => self.tray.add(),
+            Event::TaskbarCreated => {
+                self.tray.add();
+                self.icon = None;
+                self.present_tooltip();
+            }
             Event::SettingChange => {
                 self.reload_theme();
+                self.present_tooltip();
                 if self.flyout.visible {
                     self.flyout.paint(&self.theme);
                 }
@@ -438,6 +886,17 @@ impl Ui {
     /// Windows reported device or session changes: enforce rules and bring
     /// the tooltip and an open flyout up to date.
     fn audio_changed(&mut self) {
+        if self.devices_changed {
+            let ids: Vec<String> = self
+                .core
+                .audio
+                .devices()
+                .map(|s| s.devices.into_iter().map(|d| d.id).collect())
+                .unwrap_or_default();
+            if ids != self.hotkey_devices {
+                self.reregister_hotkeys();
+            }
+        }
         self.devices_changed = false;
         self.core.enforce_rules();
         self.focus.audio_changed(&mut self.core);
@@ -545,12 +1004,11 @@ impl Ui {
     /// is up the native tooltip is blanked and the text shows above the
     /// popup instead (only while the pointer is on the icon).
     fn present_tooltip(&mut self) {
-        let text = self
-            .core
-            .audio
-            .devices()
-            .map(|d| tooltip(&d))
-            .unwrap_or_default();
+        let devices = self.core.audio.devices();
+        if let Ok(devices) = &devices {
+            self.refresh_icon(devices);
+        }
+        let text = devices.map(|d| tooltip(&d)).unwrap_or_default();
         if self.media.showing() {
             self.tray.set_tip("");
             match (self.tray_hover, self.media.tray_anchor()) {
@@ -572,51 +1030,49 @@ impl Ui {
         }
     }
 
-    // ---------- menus ----------
+    // ---------- tray icon ----------
 
-    /// The tray menu: output devices (checked = default), then app actions.
-    fn tray_menu(&mut self, x: i32, y: i32) -> MenuRequest {
-        let mut items = vec![];
-        let mut commands = vec![];
-        let devices = self.core.audio.devices().unwrap_or_default();
-        if devices.devices.is_empty() {
-            items.push(Item::disabled("No output devices"));
+    /// TaskbarIconSource: redraws the icon when the default output's level
+    /// or mute, its kind, the theme, the taskbar DPI or UseLegacyIcon
+    /// change.
+    fn refresh_icon(&mut self, devices: &Snapshot) {
+        let store = &self.core.store;
+        let legacy = store.bool(Key::UseLegacyIcon);
+        let shows_type = store.bool(Key::TrayIconShowsDeviceType);
+        let default = devices.devices.iter().find(|d| d.is_default);
+        let form = match default {
+            Some(d) if shows_type && !legacy => match &self.form_factor {
+                Some((id, form)) if *id == d.id => *form,
+                _ => {
+                    let form = self.core.audio.form_factor(&d.id).ok().flatten();
+                    self.form_factor = Some((d.id.clone(), form));
+                    form
+                }
+            },
+            _ => None,
+        };
+        let monitor = match self.tray.rect() {
+            Some((x, y, w, h)) => wnd::monitor_at(x + w / 2, y + h / 2),
+            None => wnd::monitor_at(0, 0),
+        };
+        let dpi = (monitor.scale * 96.0).round() as u32;
+        let state = trayicon::State {
+            kind: trayicon::kind(default.map(|d| (d.volume, d.muted)), self.windows_11),
+            glyph: trayicon::glyph(form, shows_type, legacy),
+            light: bt_app::win32::theme::system_light(),
+            legacy,
+            size: icon_adapter::small_icon_size(dpi),
+        };
+        if self.icon == Some(state) {
+            return;
         }
-        for device in &devices.devices {
-            commands.push(MenuCommand::Device(device.id.clone()));
-            items.push(Item::check(
-                &device.name,
-                commands.len() as u32,
-                device.is_default,
-            ));
-        }
-        items.push(Item::Separator);
-        commands.push(MenuCommand::Startup);
-        items.push(Item::check(
-            "Start with Windows",
-            commands.len() as u32,
-            startup::is_enabled(),
-        ));
-        if !self.shortcuts.is_empty() {
-            let shortcuts = self.shortcuts.iter().map(Item::disabled).collect();
-            items.push(Item::Submenu("Keyboard shortcuts".into(), shortcuts));
-        }
-        commands.push(MenuCommand::Mixer);
-        items.push(Item::command("Volume mixer", commands.len() as u32));
-        commands.push(MenuCommand::Sound);
-        items.push(Item::command("Sound settings", commands.len() as u32));
-        items.push(Item::Separator);
-        commands.push(MenuCommand::Quit);
-        items.push(Item::command("Exit", commands.len() as u32));
-        MenuRequest {
-            owner: self.hidden,
-            items,
-            commands,
-            x,
-            y,
-            above: true,
+        if let Some(icon) = trayicon::make(state) {
+            self.tray.set_icon(icon);
+            self.icon = Some(state);
         }
     }
+
+    // ---------- menus ----------
 
     fn menu_command(&mut self, command: MenuCommand) {
         match command {
@@ -625,19 +1081,23 @@ impl Ui {
             }
             MenuCommand::Device(id) => {
                 let _ = self.core.audio.set_default_device(&id);
-                self.present_tooltip();
-                if self.flyout.showing() {
-                    self.flyout.refresh(&mut self.core);
-                    self.flyout.paint(&self.theme);
-                }
+                self.after_volume_change();
             }
-            MenuCommand::Startup => {
-                if let Ok(exe) = std::env::current_exe() {
-                    let _ = startup::set_enabled(!startup::is_enabled(), &exe);
-                }
+            command @ (MenuCommand::UnhideApp(..)
+            | MenuCommand::UnhideDeviceApps(_)
+            | MenuCommand::UnhideAllApps
+            | MenuCommand::UnhideDevice(_)
+            | MenuCommand::UnhideAllDevices) => {
+                self.unhide(&command);
+                self.after_volume_change();
             }
-            MenuCommand::Mixer => open("ms-settings:apps-volume"),
-            MenuCommand::Sound => open("ms-settings:sound"),
+            MenuCommand::Preset(index) => self.apply_preset(index),
+            MenuCommand::Mixer => self.open_mixer(),
+            MenuCommand::Settings | MenuCommand::LegacySettings => self.open_settings(),
+            MenuCommand::GitHub => open("https://github.com/xammen/BetterTrumpet"),
+            MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
+            MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
+            MenuCommand::SystemSettings(page) => open(&format!("ms-settings:{page}")),
             MenuCommand::Quit => wnd::quit(),
         }
     }

@@ -1,18 +1,39 @@
 //! Global hotkeys. Uses the user's existing BetterTrumpet bindings (from its
-//! settings, see `store`) when present, otherwise defaults. WinForms `Keys`
-//! values (the original's HotkeyData) carry the virtual-key code in their
-//! low 16 bits, so they map straight onto RegisterHotKey.
+//! settings, see `store`) when present, otherwise defaults for the flyout
+//! and volume keys. The other actions (AppSettings.RegisterHotkeys, the
+//! QuickTrumpet preset shortcuts and App.RegisterDeviceHotkeys) are only
+//! registered when set, as in the original. WinForms `Keys` values (the
+//! original's HotkeyData) carry the virtual-key code in their low 16 bits,
+//! so they map straight onto RegisterHotKey.
 use crate::store::Store;
 use bt_core::{
-    models::HotkeyData,
+    models::{HotkeyData, VolumeProfile},
+    profiles,
     settings::{Key, Value},
 };
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Action {
     ToggleFlyout,
+    OpenMixer,
+    OpenSettings,
     VolumeUp,
     VolumeDown,
+    SwitchDevice,
+    PresetNext,
+    PresetPrevious,
+    /// A QuickTrumpet preset, by slug (or name when it has none).
+    Preset(String),
+    /// Makes this output the default (DeviceHotkey:<id>).
+    Device(String),
+}
+
+impl Action {
+    /// Device shortcuts have their own handler in the original and fire
+    /// alongside whichever AppSettings action shares the keys.
+    pub fn is_device(&self) -> bool {
+        matches!(self, Action::Device(_))
+    }
 }
 
 pub struct Binding {
@@ -103,13 +124,14 @@ fn from_hotkey(hotkey: &HotkeyData) -> Option<(u32, u32, String)> {
     Some((modifiers, hotkey.key as u32, label))
 }
 
-fn defaults(action: Action) -> (u32, u32, String) {
+fn defaults(action: &Action) -> Option<(u32, u32, String)> {
     let ctrl_alt = MOD_CONTROL | MOD_ALT;
-    match action {
+    Some(match action {
         Action::ToggleFlyout => (ctrl_alt, u32::from(b'V'), "Ctrl+Alt+V".into()),
         Action::VolumeUp => (ctrl_alt, 0x21, "Ctrl+Alt+PageUp".into()),
         Action::VolumeDown => (ctrl_alt, 0x22, "Ctrl+Alt+PageDown".into()),
-    }
+        _ => return None,
+    })
 }
 
 /// The user's BetterTrumpet hotkey for `key`, if one is set.
@@ -120,35 +142,68 @@ fn legacy(store: &Store, key: Key) -> Option<HotkeyData> {
     }
 }
 
-/// Bindings for every supported action: the user's BetterTrumpet setting
-/// when it maps to a hotkey, otherwise this build's default.
-pub fn bindings(store: &Store) -> Vec<Binding> {
-    [
-        (Action::ToggleFlyout, Key::FlyoutHotkey),
-        (Action::VolumeUp, Key::AbsoluteVolumeUpHotkey),
-        (Action::VolumeDown, Key::AbsoluteVolumeDownHotkey),
-    ]
-    .into_iter()
-    .map(|(action, setting)| {
-        let from = legacy(store, setting).as_ref().and_then(from_hotkey);
-        let from_settings = from.is_some();
-        let (modifiers, vk, label) = from.unwrap_or_else(|| defaults(action));
-        Binding {
-            action,
-            modifiers,
-            vk,
-            label,
-            from_settings,
-        }
+fn binding(action: Action, hotkey: Option<HotkeyData>) -> Option<Binding> {
+    let from = hotkey
+        .filter(|h| !h.is_empty())
+        .as_ref()
+        .and_then(from_hotkey);
+    let from_settings = from.is_some();
+    let (modifiers, vk, label) = from.or_else(|| defaults(&action))?;
+    Some(Binding {
+        action,
+        modifiers,
+        vk,
+        label,
+        from_settings,
     })
-    .collect()
 }
 
-pub fn describe(action: Action) -> &'static str {
+/// Bindings in the original's dispatch order: the AppSettings chain
+/// (flyout, settings, mixer, volume up/down, switch device, next/previous
+/// preset, preset shortcuts in list order), then the shortcuts of the
+/// active outputs `devices`.
+pub fn bindings(store: &Store, presets: &[VolumeProfile], devices: &[String]) -> Vec<Binding> {
+    let mut out: Vec<Binding> = [
+        (Action::ToggleFlyout, Key::FlyoutHotkey),
+        (Action::OpenSettings, Key::SettingsHotkey),
+        (Action::OpenMixer, Key::MixerHotkey),
+        (Action::VolumeUp, Key::AbsoluteVolumeUpHotkey),
+        (Action::VolumeDown, Key::AbsoluteVolumeDownHotkey),
+        (Action::SwitchDevice, Key::SwitchDeviceHotkey),
+        (Action::PresetNext, Key::QuickTrumpetNextHotkey),
+        (Action::PresetPrevious, Key::QuickTrumpetPreviousHotkey),
+    ]
+    .into_iter()
+    .filter_map(|(action, setting)| binding(action, legacy(store, setting)))
+    .collect();
+    for preset in presets {
+        let key = profiles::get_slug(preset);
+        let key = if key.trim().is_empty() {
+            preset.name.clone().unwrap_or_default()
+        } else {
+            key
+        };
+        out.extend(binding(Action::Preset(key), preset.hotkey));
+    }
+    for id in devices {
+        let hotkey = store.hotkey(&format!("DeviceHotkey:{id}"));
+        out.extend(binding(Action::Device(id.clone()), hotkey));
+    }
+    out
+}
+
+pub fn describe(action: &Action) -> String {
     match action {
-        Action::ToggleFlyout => "Open volume flyout",
-        Action::VolumeUp => "Volume up",
-        Action::VolumeDown => "Volume down",
+        Action::ToggleFlyout => "Open volume flyout".into(),
+        Action::OpenMixer => "Open volume mixer".into(),
+        Action::OpenSettings => "Open settings".into(),
+        Action::VolumeUp => "Volume up".into(),
+        Action::VolumeDown => "Volume down".into(),
+        Action::SwitchDevice => "Switch playback device".into(),
+        Action::PresetNext => "Next QuickTrumpet preset".into(),
+        Action::PresetPrevious => "Previous QuickTrumpet preset".into(),
+        Action::Preset(key) => format!("QuickTrumpet preset {key}"),
+        Action::Device(id) => format!("Default device {id}"),
     }
 }
 
