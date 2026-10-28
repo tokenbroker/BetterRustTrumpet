@@ -337,6 +337,9 @@ pub enum Action {
     RestoreDevice(String),
     RestoreAllDevices,
     OpenUrl(&'static str),
+    /// Settings > About's Export & Import buttons (.btsettings).
+    SettingsExport,
+    SettingsImport,
     /// Saves the theme named in the theme box.
     ThemeSave,
     // QuickTrumpet presets, by list index.
@@ -1348,6 +1351,18 @@ fn about(core: &mut Core) -> Vec<Section> {
             )]),
         )],
     )];
+    sections.push(section(
+        tr("SettingsExportImport"),
+        Some(tr("SettingsExportImportDesc")),
+        vec![row(
+            "",
+            None,
+            Control::Buttons(vec![
+                button(tr("SettingsExportSettings"), None, Action::SettingsExport),
+                button(tr("SettingsImportSettings"), None, Action::SettingsImport),
+            ]),
+        )],
+    ));
     if core.store.bool(Key::MonkeyTickSoundUnlocked) {
         sections.push(section(
             tr("AlternateVolumeSoundTitle"),

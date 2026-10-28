@@ -1188,8 +1188,10 @@ impl Settings {
                 self.editing = None;
                 let owner = self.window.raw();
                 let effect = lists::run(core, &mut self.state, &mut self.texts, owner, list);
-                out.hotkeys |= effect.presets;
+                out.hotkeys |= effect.presets || effect.imported;
                 out.apply_preset = effect.apply;
+                // An import changes appearance and behaviour settings too.
+                out.theme |= effect.imported;
                 self.rebuild(core);
                 if let Some(expanded) = self.state.expanded.clone() {
                     self.reveal_item(&expanded);

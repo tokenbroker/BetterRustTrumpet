@@ -77,6 +77,20 @@
   <data name="AboutPreviewCredits" xml:space="preserve">
     <value>Rust preview. © 2026 xmn. Based on EarTrumpet; MIT License.</value>
   </data>
+  <data name="SettingsExportFailed" xml:space="preserve">
+    <value>Failed to export settings:
+{0}</value>
+  </data>
+  <data name="SettingsExportErrorTitle" xml:space="preserve">
+    <value>Export Error</value>
+  </data>
+  <data name="SettingsImportFailed" xml:space="preserve">
+    <value>Failed to import settings:
+{0}</value>
+  </data>
+  <data name="SettingsImportErrorTitle" xml:space="preserve">
+    <value>Import Error</value>
+  </data>
   <data name="AlternateVolumeSoundTitle" xml:space="preserve">
     <value>Alternate volume sound</value>
   </data>

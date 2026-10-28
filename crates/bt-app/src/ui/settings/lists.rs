@@ -62,6 +62,8 @@ pub struct Effect {
     pub presets: bool,
     /// Apply this preset (and show its confirmation).
     pub apply: Option<usize>,
+    /// Settings were imported: everything that caches them reloads.
+    pub imported: bool,
 }
 
 fn role_index(role: Role) -> usize {
@@ -993,6 +995,51 @@ pub fn run(
             }
         }
         Action::PresetApply(index) => effect.apply = Some(*index),
+        // ExportSettings_Click / ImportSettings_Click.
+        Action::SettingsExport => {
+            use bt_core::settings_export as export;
+            let (name, pattern) = export::FILE_FILTER
+                .split_once('|')
+                .unwrap_or((export::FILE_FILTER, "*.btsettings"));
+            let ticks = bt_app::win32::clock::local_now_ms() * 10_000;
+            if let Some(path) = dialog::save_file(
+                owner,
+                export::EXPORT_TITLE,
+                &[(name, pattern)],
+                export::EXTENSION.trim_start_matches('.'),
+                &export::default_file_name(ticks),
+            ) {
+                if !core.export_settings(&path) {
+                    let text = trf("SettingsExportFailed", &[("0", &path.to_string_lossy())]);
+                    dialog::message(owner, tr("SettingsExportErrorTitle"), &text, true);
+                }
+            }
+        }
+        Action::SettingsImport => {
+            use bt_core::settings_export as export;
+            let (name, pattern) = export::FILE_FILTER
+                .split_once('|')
+                .unwrap_or((export::FILE_FILTER, "*.btsettings"));
+            if let Some(path) = dialog::open_file(
+                owner,
+                export::IMPORT_TITLE,
+                &[(name, pattern)],
+                export::EXTENSION.trim_start_matches('.'),
+            ) {
+                if core.import_settings(&path) {
+                    effect.imported = true;
+                    dialog::message(
+                        owner,
+                        tr("SettingsImportTitle"),
+                        tr("SettingsImportSuccess"),
+                        false,
+                    );
+                } else {
+                    let text = trf("SettingsImportFailed", &[("0", &path.to_string_lossy())]);
+                    dialog::message(owner, tr("SettingsImportErrorTitle"), &text, true);
+                }
+            }
+        }
         Action::PresetCapture => {
             let Some(options) = capture_options(&state.capture, &audio(core)) else {
                 return effect;

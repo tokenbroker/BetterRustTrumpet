@@ -11,9 +11,29 @@ use windows::{
             FileOpenDialog, FileSaveDialog, IFileDialog, IFileOpenDialog, IFileSaveDialog,
             SIGDN_FILESYSPATH,
         },
+        UI::WindowsAndMessaging::{MB_ICONERROR, MB_ICONINFORMATION, MB_OK, MessageBoxW},
     },
     core::{HSTRING, Interface, PCWSTR},
 };
+
+/// A message box with an OK button (information or error icon).
+pub fn message(owner: isize, title: &str, text: &str, error: bool) {
+    let icon = if error {
+        MB_ICONERROR
+    } else {
+        MB_ICONINFORMATION
+    };
+    // SAFETY: a modal message box owned by our window; the strings are
+    // HSTRINGs that outlive the call.
+    unsafe {
+        MessageBoxW(
+            Some(HWND(owner as *mut c_void)),
+            &HSTRING::from(text),
+            &HSTRING::from(title),
+            MB_OK | icon,
+        );
+    }
+}
 
 /// A file type: its name ("BetterTrumpet Profile (*.btprofile)") and
 /// pattern ("*.btprofile").
