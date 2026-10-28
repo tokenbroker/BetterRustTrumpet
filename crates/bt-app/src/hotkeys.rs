@@ -1,11 +1,12 @@
 //! Global hotkeys. Uses the user's existing BetterTrumpet bindings (from its
-//! settings, see `store`) when present, otherwise defaults.
+//! settings, see `store`) when present, otherwise defaults. WinForms `Keys`
+//! values (the original's HotkeyData) carry the virtual-key code in their
+//! low 16 bits, so they map straight onto RegisterHotKey.
 use crate::store::Store;
 use bt_core::{
     models::HotkeyData,
     settings::{Key, Value},
 };
-use tauri_plugin_global_shortcut::{Code, Modifiers, Shortcut};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Action {
@@ -16,7 +17,9 @@ pub enum Action {
 
 pub struct Binding {
     pub action: Action,
-    pub shortcut: Shortcut,
+    /// RegisterHotKey MOD_* flags.
+    pub modifiers: u32,
+    pub vk: u32,
     pub label: String,
     /// True when taken from the user's BetterTrumpet settings.
     pub from_settings: bool,
@@ -27,164 +30,85 @@ const SHIFT: i32 = 0x0001_0000;
 const CONTROL: i32 = 0x0002_0000;
 const ALT: i32 = 0x0004_0000;
 const LWIN: i32 = 91;
+// RegisterHotKey modifiers.
+const MOD_ALT: u32 = 0x1;
+const MOD_CONTROL: u32 = 0x2;
+const MOD_SHIFT: u32 = 0x4;
+const MOD_WIN: u32 = 0x8;
 
-fn code(key: i32) -> Option<(Code, String)> {
-    let letter = |i: i32| char::from(b'A' + i as u8).to_string();
-    let codes_letters = [
-        Code::KeyA,
-        Code::KeyB,
-        Code::KeyC,
-        Code::KeyD,
-        Code::KeyE,
-        Code::KeyF,
-        Code::KeyG,
-        Code::KeyH,
-        Code::KeyI,
-        Code::KeyJ,
-        Code::KeyK,
-        Code::KeyL,
-        Code::KeyM,
-        Code::KeyN,
-        Code::KeyO,
-        Code::KeyP,
-        Code::KeyQ,
-        Code::KeyR,
-        Code::KeyS,
-        Code::KeyT,
-        Code::KeyU,
-        Code::KeyV,
-        Code::KeyW,
-        Code::KeyX,
-        Code::KeyY,
-        Code::KeyZ,
-    ];
-    let digits = [
-        Code::Digit0,
-        Code::Digit1,
-        Code::Digit2,
-        Code::Digit3,
-        Code::Digit4,
-        Code::Digit5,
-        Code::Digit6,
-        Code::Digit7,
-        Code::Digit8,
-        Code::Digit9,
-    ];
-    let functions = [
-        Code::F1,
-        Code::F2,
-        Code::F3,
-        Code::F4,
-        Code::F5,
-        Code::F6,
-        Code::F7,
-        Code::F8,
-        Code::F9,
-        Code::F10,
-        Code::F11,
-        Code::F12,
-        Code::F13,
-        Code::F14,
-        Code::F15,
-        Code::F16,
-        Code::F17,
-        Code::F18,
-        Code::F19,
-        Code::F20,
-        Code::F21,
-        Code::F22,
-        Code::F23,
-        Code::F24,
-    ];
-    let numpad = [
-        Code::Numpad0,
-        Code::Numpad1,
-        Code::Numpad2,
-        Code::Numpad3,
-        Code::Numpad4,
-        Code::Numpad5,
-        Code::Numpad6,
-        Code::Numpad7,
-        Code::Numpad8,
-        Code::Numpad9,
-    ];
+/// A key's display name, or `None` for keys the original cannot bind.
+fn key_name(key: i32) -> Option<String> {
     Some(match key {
-        65..=90 => (codes_letters[(key - 65) as usize], letter(key - 65)),
-        48..=57 => (digits[(key - 48) as usize], (key - 48).to_string()),
-        96..=105 => (numpad[(key - 96) as usize], format!("Num {}", key - 96)),
-        112..=135 => (functions[(key - 112) as usize], format!("F{}", key - 111)),
-        32 => (Code::Space, "Space".into()),
-        33 => (Code::PageUp, "PageUp".into()),
-        34 => (Code::PageDown, "PageDown".into()),
-        35 => (Code::End, "End".into()),
-        36 => (Code::Home, "Home".into()),
-        37 => (Code::ArrowLeft, "Left".into()),
-        38 => (Code::ArrowUp, "Up".into()),
-        39 => (Code::ArrowRight, "Right".into()),
-        40 => (Code::ArrowDown, "Down".into()),
-        45 => (Code::Insert, "Insert".into()),
-        46 => (Code::Delete, "Delete".into()),
-        106 => (Code::NumpadMultiply, "Num *".into()),
-        107 => (Code::NumpadAdd, "Num +".into()),
-        109 => (Code::NumpadSubtract, "Num -".into()),
-        111 => (Code::NumpadDivide, "Num /".into()),
-        173 => (Code::AudioVolumeMute, "Mute".into()),
-        174 => (Code::AudioVolumeDown, "Volume Down".into()),
-        175 => (Code::AudioVolumeUp, "Volume Up".into()),
-        176 => (Code::MediaTrackNext, "Next Track".into()),
-        177 => (Code::MediaTrackPrevious, "Previous Track".into()),
-        179 => (Code::MediaPlayPause, "Play/Pause".into()),
-        186 => (Code::Semicolon, ";".into()),
-        187 => (Code::Equal, "=".into()),
-        188 => (Code::Comma, ",".into()),
-        189 => (Code::Minus, "-".into()),
-        190 => (Code::Period, ".".into()),
-        191 => (Code::Slash, "/".into()),
-        192 => (Code::Backquote, "`".into()),
-        219 => (Code::BracketLeft, "[".into()),
-        220 => (Code::Backslash, "\\".into()),
-        221 => (Code::BracketRight, "]".into()),
-        222 => (Code::Quote, "'".into()),
+        65..=90 => char::from(key as u8).to_string(),
+        48..=57 => (key - 48).to_string(),
+        96..=105 => format!("Num {}", key - 96),
+        112..=135 => format!("F{}", key - 111),
+        32 => "Space".into(),
+        33 => "PageUp".into(),
+        34 => "PageDown".into(),
+        35 => "End".into(),
+        36 => "Home".into(),
+        37 => "Left".into(),
+        38 => "Up".into(),
+        39 => "Right".into(),
+        40 => "Down".into(),
+        45 => "Insert".into(),
+        46 => "Delete".into(),
+        106 => "Num *".into(),
+        107 => "Num +".into(),
+        109 => "Num -".into(),
+        111 => "Num /".into(),
+        173 => "Mute".into(),
+        174 => "Volume Down".into(),
+        175 => "Volume Up".into(),
+        176 => "Next Track".into(),
+        177 => "Previous Track".into(),
+        179 => "Play/Pause".into(),
+        186 => ";".into(),
+        187 => "=".into(),
+        188 => ",".into(),
+        189 => "-".into(),
+        190 => ".".into(),
+        191 => "/".into(),
+        192 => "`".into(),
+        219 => "[".into(),
+        220 => "\\".into(),
+        221 => "]".into(),
+        222 => "'".into(),
         _ => return None,
     })
 }
 
-/// A BetterTrumpet HotkeyData as a global shortcut and its display label.
-fn from_hotkey(hotkey: &HotkeyData) -> Option<(Shortcut, String)> {
-    let (code, key_label) = code(hotkey.key)?;
-    let mut modifiers = Modifiers::empty();
+/// A BetterTrumpet HotkeyData as RegisterHotKey arguments and a label.
+fn from_hotkey(hotkey: &HotkeyData) -> Option<(u32, u32, String)> {
+    let name = key_name(hotkey.key)?;
+    let mut modifiers = 0;
     let mut label = String::new();
     let m = hotkey.modifiers;
-    for (flag, modifier, name) in [
-        (CONTROL, Modifiers::CONTROL, "Ctrl+"),
-        (ALT, Modifiers::ALT, "Alt+"),
-        (SHIFT, Modifiers::SHIFT, "Shift+"),
+    for (flag, modifier, text) in [
+        (CONTROL, MOD_CONTROL, "Ctrl+"),
+        (ALT, MOD_ALT, "Alt+"),
+        (SHIFT, MOD_SHIFT, "Shift+"),
     ] {
         if m & flag == flag {
             modifiers |= modifier;
-            label.push_str(name);
+            label.push_str(text);
         }
     }
     if m & LWIN == LWIN {
-        modifiers |= Modifiers::SUPER;
+        modifiers |= MOD_WIN;
         label.insert_str(0, "Win+");
     }
-    label.push_str(&key_label);
-    Some((Shortcut::new(Some(modifiers), code), label))
+    label.push_str(&name);
+    Some((modifiers, hotkey.key as u32, label))
 }
 
-fn defaults(action: Action) -> (Shortcut, String) {
-    let ctrl_alt = Some(Modifiers::CONTROL | Modifiers::ALT);
+fn defaults(action: Action) -> (u32, u32, String) {
+    let ctrl_alt = MOD_CONTROL | MOD_ALT;
     match action {
-        Action::ToggleFlyout => (Shortcut::new(ctrl_alt, Code::KeyV), "Ctrl+Alt+V".into()),
-        Action::VolumeUp => (
-            Shortcut::new(ctrl_alt, Code::PageUp),
-            "Ctrl+Alt+PageUp".into(),
-        ),
-        Action::VolumeDown => (
-            Shortcut::new(ctrl_alt, Code::PageDown),
-            "Ctrl+Alt+PageDown".into(),
-        ),
+        Action::ToggleFlyout => (ctrl_alt, u32::from(b'V'), "Ctrl+Alt+V".into()),
+        Action::VolumeUp => (ctrl_alt, 0x21, "Ctrl+Alt+PageUp".into()),
+        Action::VolumeDown => (ctrl_alt, 0x22, "Ctrl+Alt+PageDown".into()),
     }
 }
 
@@ -197,7 +121,7 @@ fn legacy(store: &Store, key: Key) -> Option<HotkeyData> {
 }
 
 /// Bindings for every supported action: the user's BetterTrumpet setting
-/// when it maps to a shortcut, otherwise this build's default.
+/// when it maps to a hotkey, otherwise this build's default.
 pub fn bindings(store: &Store) -> Vec<Binding> {
     [
         (Action::ToggleFlyout, Key::FlyoutHotkey),
@@ -205,25 +129,18 @@ pub fn bindings(store: &Store) -> Vec<Binding> {
         (Action::VolumeDown, Key::AbsoluteVolumeDownHotkey),
     ]
     .into_iter()
-    .map(
-        |(action, setting)| match legacy(store, setting).as_ref().and_then(from_hotkey) {
-            Some((shortcut, label)) => Binding {
-                action,
-                shortcut,
-                label,
-                from_settings: true,
-            },
-            None => {
-                let (shortcut, label) = defaults(action);
-                Binding {
-                    action,
-                    shortcut,
-                    label,
-                    from_settings: false,
-                }
-            }
-        },
-    )
+    .map(|(action, setting)| {
+        let from = legacy(store, setting).as_ref().and_then(from_hotkey);
+        let from_settings = from.is_some();
+        let (modifiers, vk, label) = from.unwrap_or_else(|| defaults(action));
+        Binding {
+            action,
+            modifiers,
+            vk,
+            label,
+            from_settings,
+        }
+    })
     .collect()
 }
 
@@ -232,5 +149,35 @@ pub fn describe(action: Action) -> &'static str {
         Action::ToggleFlyout => "Open volume flyout",
         Action::VolumeUp => "Volume up",
         Action::VolumeDown => "Volume down",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn maps_winforms_keys_to_hotkeys() {
+        let hotkey = HotkeyData {
+            modifiers: CONTROL | SHIFT,
+            key: 77,
+        };
+        assert_eq!(
+            from_hotkey(&hotkey),
+            Some((MOD_CONTROL | MOD_SHIFT, 77, "Ctrl+Shift+M".into()))
+        );
+        let win = HotkeyData {
+            modifiers: LWIN | ALT,
+            key: 112,
+        };
+        assert_eq!(
+            from_hotkey(&win),
+            Some((MOD_ALT | MOD_WIN, 112, "Win+Alt+F1".into()))
+        );
+        let unknown = HotkeyData {
+            modifiers: 0,
+            key: 3,
+        };
+        assert_eq!(from_hotkey(&unknown), None);
     }
 }

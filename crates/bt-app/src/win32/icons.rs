@@ -1,4 +1,4 @@
-//! Executable icons as PNG data URLs for the flyout.
+//! Executable icons for the flyout.
 use windows::{
     Win32::{
         Graphics::Gdi::{
@@ -117,8 +117,13 @@ fn chunk(out: &mut Vec<u8>, kind: &[u8; 4], data: &[u8]) {
 }
 /// Minimal RGBA PNG with stored (uncompressed) deflate blocks.
 fn png(rgba: &[u8], size: u32) -> Vec<u8> {
-    let mut raw = Vec::with_capacity(rgba.len() + size as usize);
-    for row in rgba.chunks_exact(size as usize * 4) {
+    png_rect(rgba, size, size)
+}
+
+/// A `width` x `height` RGBA PNG (uncompressed), for debug renders.
+pub fn png_rect(rgba: &[u8], width: u32, height: u32) -> Vec<u8> {
+    let mut raw = Vec::with_capacity(rgba.len() + height as usize);
+    for row in rgba.chunks_exact(width as usize * 4) {
         raw.push(0);
         raw.extend(row);
     }
@@ -139,8 +144,8 @@ fn png(rgba: &[u8], size: u32) -> Vec<u8> {
     zlib.extend(((b << 16) | a).to_be_bytes());
     let mut out = b"\x89PNG\r\n\x1a\n".to_vec();
     let mut header = vec![];
-    header.extend(size.to_be_bytes());
-    header.extend(size.to_be_bytes());
+    header.extend(width.to_be_bytes());
+    header.extend(height.to_be_bytes());
     header.extend([8, 6, 0, 0, 0]);
     chunk(&mut out, b"IHDR", &header);
     chunk(&mut out, b"IDAT", &zlib);
@@ -163,6 +168,15 @@ fn base64(data: &[u8]) -> String {
         }
     }
     out
+}
+
+/// The executable's icon as straight-alpha BGRA pixels, `size` square.
+pub fn bgra(path: &str, size: u32) -> Option<Vec<u8>> {
+    let mut pixels = rgba(path, size)?;
+    for p in pixels.chunks_exact_mut(4) {
+        p.swap(0, 2);
+    }
+    Some(pixels)
 }
 
 /// `data:image/png;base64,...` for the executable's icon, if it has one.

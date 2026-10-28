@@ -27,14 +27,15 @@ cargo run -p bt-audio --example sessions # print devices and sessions
 ```
 
 The release binary is `rust/target/release/BetterTrumpet.exe`. Requires
-Windows 10/11 with the WebView2 runtime (preinstalled on Windows 11).
+Windows 10/11; no runtime is needed (native Win32 and Direct2D, no web view).
 
 ## Workspace
 
 `bt-core` contains portable compatibility behavior. `bt-audio` is the Core
 Audio engine (preview scope so far: endpoints, app sessions, volume, mute,
-peaks on a dedicated COM thread). `bt-app` is the Tauri v2 tray app. Media,
-IPC and CLI crates follow in their milestones.
+peaks on a dedicated COM thread). `bt-media` reads the Windows media
+session. `bt-app` is the native tray app (Win32 windows drawn with Direct2D,
+see D48). IPC and CLI crates follow in their milestones.
 
 Model golden fixtures can be regenerated on Windows with .NET 8 desktop runtime:
 

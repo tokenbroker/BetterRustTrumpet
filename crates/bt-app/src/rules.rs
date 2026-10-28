@@ -1,12 +1,8 @@
-//! The flyout's view of the settings (hidden entries, app rules) and the
-//! original's rule enforcement (DeviceViewModel.ApplyRuleToApp).
+//! App identity as the original's settings key it, and its rule
+//! enforcement (DeviceViewModel.ApplyRuleToApp).
 use crate::store::{Store, with_env};
 use bt_audio::{AppSession, AudioEngine, Snapshot};
-use bt_core::{
-    hidden::AppKey,
-    models::{AppRuleEntry, VolumeRuleMode},
-};
-use serde_json::{Value as Json, json};
+use bt_core::models::VolumeRuleMode;
 use std::collections::HashSet;
 
 /// The original's AppId: the process image path, or the system sounds id.
@@ -31,80 +27,10 @@ pub fn exe_name(app: &AppSession) -> String {
     }
 }
 
-fn mode_name(mode: VolumeRuleMode) -> &'static str {
-    match mode {
-        VolumeRuleMode::LAUNCH => "Launch",
-        VolumeRuleMode::LOCK => "Lock",
-        _ => "None",
-    }
-}
-
-fn rule_json(rule: &AppRuleEntry) -> Json {
-    json!({
-        "volumeMode": mode_name(rule.volume_mode),
-        "volumePercent": rule.volume_percent,
-        "hardMuted": rule.hard_muted,
-        "focusLostEnabled": rule.focus_lost_enabled,
-    })
-}
-
 fn compare(a: &str, b: &str) -> std::cmp::Ordering {
     a.to_lowercase()
         .cmp(&b.to_lowercase())
         .then_with(|| a.cmp(b))
-}
-
-/// The snapshot with what the flyout needs from the settings: per device
-/// `hidden` and its `hiddenApps`; per app `appId`, `exeName`, `hidden`
-/// and its `rule`.
-pub fn annotate(snapshot: &Snapshot, store: &mut Store) -> Json {
-    let mut out = serde_json::to_value(snapshot).unwrap_or_else(|_| json!({ "devices": [] }));
-    with_env(|env| {
-        let Some(devices) = out.get_mut("devices").and_then(Json::as_array_mut) else {
-            return;
-        };
-        for (device, source) in devices.iter_mut().zip(&snapshot.devices) {
-            let id = source.id.as_str();
-            let hidden_apps: Vec<Json> = store
-                .hidden_apps
-                .for_device(Some(id), env, compare)
-                .into_iter()
-                .map(|e| {
-                    json!({
-                        "appId": e.app_id.unwrap_or_default(),
-                        "exeName": e.exe_name.unwrap_or_default(),
-                        "displayName": e.display_name.unwrap_or_default(),
-                    })
-                })
-                .collect();
-            device["hidden"] = json!(store.hidden_devices.is_hidden(Some(id), env));
-            device["hiddenApps"] = json!(hidden_apps);
-            let Some(apps) = device.get_mut("apps").and_then(Json::as_array_mut) else {
-                continue;
-            };
-            for (app, session) in apps.iter_mut().zip(&source.apps) {
-                let (app_id, exe) = (app_id(session), exe_name(session));
-                let hidden = store.hidden_apps.is_hidden(
-                    AppKey {
-                        device_id: Some(id),
-                        app_id: Some(&app_id),
-                        exe_name: Some(&exe),
-                    },
-                    env,
-                );
-                app["rule"] = store
-                    .rules
-                    .get(Some(&exe), env)
-                    .map_or(Json::Null, |r| rule_json(&r));
-                app["appId"] = json!(app_id);
-                app["exeName"] = json!(exe);
-                app["hidden"] = json!(hidden);
-            }
-        }
-    });
-    // Reading may migrate the legacy hard-mute list; keep what it wrote.
-    store.flush();
-    out
 }
 
 /// Process ids whose Launch rule has been applied (LaunchVolumeTracker).
