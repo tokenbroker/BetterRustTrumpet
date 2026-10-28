@@ -24,16 +24,18 @@ pub const EXPORT_TITLE: &str = "Export BetterTrumpet Settings";
 pub const IMPORT_TITLE: &str = "Import BetterTrumpet Settings";
 pub const EXTENSION: &str = ".btsettings";
 
-/// `BetterTrumpet_Settings_{DateTime.Now:yyyy-MM-dd}`: the Save dialog's
-/// file name (its default extension adds `.btsettings`).
-pub fn default_file_name(year: i32, month: u32, day: u32) -> String {
+/// `BetterTrumpet_Settings_{DateTime.Now:yyyy-MM-dd}` for local wall-clock
+/// ticks: the Save dialog's file name (its default extension adds
+/// `.btsettings`).
+pub fn default_file_name(local_ticks: i64) -> String {
+    let (year, month, day) = newtonsoft::civil_from_days(local_ticks / newtonsoft::TICKS_PER_DAY);
     format!("BetterTrumpet_Settings_{year:04}-{month:02}-{day:02}")
 }
 
 /// The CLI's path when `export-settings` has none: the desktop folder.
-pub fn default_cli_path(desktop: &str, year: i32, month: u32, day: u32) -> String {
+pub fn default_cli_path(desktop: &str, local_ticks: i64) -> String {
     // Path.Combine adds a separator unless the folder already ends in one.
-    let name = default_file_name(year, month, day) + EXTENSION;
+    let name = default_file_name(local_ticks) + EXTENSION;
     if desktop.is_empty() {
         name
     } else if desktop.ends_with(['\\', '/', ':']) {
@@ -729,13 +731,19 @@ mod tests {
 
     #[test]
     fn paths() {
+        // 2026-03-04 23:59 local.
+        let ticks = 639_082_655_400_000_000;
         assert_eq!(
-            default_cli_path(r"C:\Users\a\Desktop", 2026, 3, 4),
+            default_cli_path(r"C:\Users\a\Desktop", ticks),
             r"C:\Users\a\Desktop\BetterTrumpet_Settings_2026-03-04.btsettings"
         );
         assert_eq!(
-            default_file_name(999, 12, 31),
-            "BetterTrumpet_Settings_0999-12-31"
+            default_cli_path(r"C:\", ticks),
+            r"C:\BetterTrumpet_Settings_2026-03-04.btsettings"
+        );
+        assert_eq!(
+            default_cli_path("", 0),
+            "BetterTrumpet_Settings_0001-01-01.btsettings"
         );
     }
 
