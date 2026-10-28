@@ -4,6 +4,7 @@
 pub mod app_rules;
 
 pub mod cli;
+pub mod cli_dispatch;
 pub mod cli_responses;
 pub mod cli_rules;
 pub mod cli_validation;
