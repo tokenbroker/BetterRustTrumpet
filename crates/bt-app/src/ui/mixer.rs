@@ -1285,11 +1285,6 @@ impl Mixer {
                     }
                 }
             }
-            Event::MouseDown(Button::Right, x, y, _)
-                if matches!(self.hit(x, y), Some(Hit::Dismiss)) =>
-            {
-                self.close_popup();
-            }
             Event::MouseUp(Button::Right, x, y, _) => match self.hit(x, y) {
                 Some(Hit::Mute(key) | Hit::Slider(key) | Hit::Row(key)) if !key.popup => {
                     match &key.app {
@@ -1298,6 +1293,7 @@ impl Mixer {
                     }
                 }
                 Some(Hit::DeviceTitle(device)) => self.open_device_popup(&device),
+                Some(Hit::Dismiss) => self.close_popup(),
                 _ => {}
             },
             Event::Wheel(delta, x, y) => {
