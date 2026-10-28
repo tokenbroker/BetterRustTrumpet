@@ -225,6 +225,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         settle_ticks: 0,
     };
     ui.register_hotkeys();
+    ui.share_contrast();
     ui.present_tooltip();
     ui.watch();
     // Launch rules for apps already playing, plus Lock and hard mute.
@@ -329,6 +330,30 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
             menu::render(&gfx, &look, &sample[..3], false, Some(1)),
         );
     }
+    // High contrast, with Windows 11's "Night sky" colours: the flyout,
+    // media popup, tooltips and menus.
+    let hc = theme::HighContrast::sample();
+    let contrast = theme.clone().high_contrast(hc);
+    save("flyout-hc.png", flyout.render(&mut core, &contrast, false));
+    media.contrast = Some(hc);
+    save("media-hc.png", media.render(&core, tray, true));
+    tip.contrast = Some(hc);
+    save(
+        "tip-hc.png",
+        tip.render(&tooltip(&devices), tip::Look::Tray),
+    );
+    save(
+        "tip-flyout-hc.png",
+        tip.render("Microsoft Edge", tip::Look::Wpf { light: false }),
+    );
+    save(
+        "menu-tray-hc.png",
+        menu::render(&gfx, &contrast, &sample, true, Some(5)),
+    );
+    save(
+        "menu-flyout-hc.png",
+        menu::render(&gfx, &contrast, &sample[..3], false, Some(1)),
+    );
     let mut quick = quick::Quick::new(gfx.clone())?;
     save("quick.png", quick.render(palette_entries(&mut core), ""));
     save(
@@ -410,6 +435,10 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     save(
         "settings-appearance-picker.png",
         settings.render(&mut core, settings::PageId::Appearance, None, true),
+    );
+    save(
+        "settings-general-hc.png",
+        settings.render_contrast(&mut core, settings::PageId::General, &hc),
     );
     save(
         "settings-general-light.png",
@@ -934,6 +963,16 @@ impl Ui {
 
     fn reload_theme(&mut self) {
         self.theme = theme::Theme::load(&self.core.store, self.icon_font);
+        self.share_contrast();
+    }
+
+    /// Hands the high-contrast colours to the windows that draw their own
+    /// look (tooltips, the media popup).
+    fn share_contrast(&mut self) {
+        let hc = self.theme.hc;
+        self.tip.contrast = hc;
+        self.flyout.tip.contrast = hc;
+        self.media.contrast = hc;
     }
 
     fn event(&mut self, window: Window, event: Event) -> Option<MenuRequest> {

@@ -1,6 +1,7 @@
 //! Native settings controls drawn with the Canvas: toggle switch, slider,
 //! drop-down, buttons, colour swatch, key caps, text box, focus ring, and
 //! the window palette (Windows 11 light and dark control colours).
+use crate::ui::theme::HighContrast;
 use bt_app::win32::gfx::{Align, Canvas, Rect, Rgba, TextStyle};
 
 pub const FONT: &str = "Segoe UI Variable Text";
@@ -94,6 +95,35 @@ impl Palette {
                 field: Rgba::WHITE,
                 focus: Rgba::BLACK,
             }
+        }
+    }
+
+    /// High contrast (the settings window's HighContrast branches):
+    /// WindowText on Window, ControlText edges, GrayText for secondary
+    /// text, Highlight / HighlightText for checked and selected controls.
+    pub fn high_contrast(hc: &HighContrast) -> Self {
+        Self {
+            dark: !hc.light(),
+            background: hc.window,
+            card: hc.window,
+            card_stroke: hc.control_text,
+            divider: hc.gray_text,
+            text: hc.window_text,
+            secondary: hc.window_text,
+            tertiary: hc.gray_text,
+            accent: hc.highlight,
+            accent_hover: hc.highlight,
+            on_accent: hc.highlight_text,
+            control: hc.window,
+            control_hover: hc.hover(),
+            control_pressed: hc.highlight.alpha(0.5),
+            control_stroke: hc.control_text,
+            subtle_hover: hc.hover(),
+            subtle_pressed: hc.highlight.alpha(0.5),
+            strong_stroke: hc.control_text,
+            rail: hc.control_text,
+            field: hc.window,
+            focus: hc.window_text,
         }
     }
 }

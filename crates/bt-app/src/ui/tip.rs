@@ -7,7 +7,13 @@
 //!   template, used in the flyout: 12 DIP Segoe UI, padding 4, a 1 DIP
 //!   {Theme}ChromeDisabledLow border on {Theme}ChromeMediumLow, opacity
 //!   0.92, square corners and the 5 DIP system drop shadow.
-use super::anim::{self, Curve};
+//!
+//! Under high contrast both take WindowText on Window with a WindowFrame
+//! border (the ToolTip style's HighContrast branches).
+use super::{
+    anim::{self, Curve},
+    theme::HighContrast,
+};
 use bt_app::win32::{
     gfx::{Align, Gfx, Rect, Rgba, Surface, TextStyle},
     wnd::{self, Window},
@@ -41,6 +47,8 @@ pub struct Tip {
     position: (i32, i32),
     scale: f32,
     look: Look,
+    /// High contrast's system colours, set by the UI with the theme.
+    pub contrast: Option<HighContrast>,
 }
 
 impl Tip {
@@ -63,6 +71,7 @@ impl Tip {
             position: (0, 0),
             scale: 1.0,
             look: Look::Tray,
+            contrast: None,
         })
     }
 
@@ -200,6 +209,9 @@ impl Tip {
             return;
         };
         let text = self.text.clone();
+        let contrast = self
+            .contrast
+            .map(|hc| (hc.window, hc.window_frame, hc.window_text));
         if let Look::Wpf { light } = self.look {
             surface.draw(pixels.0, pixels.1, self.scale, |canvas| {
                 let rect = Rect::new(0.0, 0.0, w - WPF_SHADOW, h - WPF_SHADOW);
@@ -213,7 +225,9 @@ impl Tip {
                         Rgba::rgba(0, 0, 0, 0.44 / 4.0),
                     );
                 }
-                let (background, border, foreground) = if light {
+                let (background, border, foreground) = if let Some(colors) = contrast {
+                    colors
+                } else if light {
                     (
                         Rgba::rgb(242, 242, 242),
                         Rgba::rgb(122, 122, 122),
@@ -253,14 +267,14 @@ impl Tip {
                     Rgba::rgba(0, 0, 0, 0.35 / 4.0 * (1.0 - i as f32 / 5.0)),
                 );
             }
-            canvas.round_rect(rect, 8.0, Rgba::rgba(28, 28, 30, 0.91));
-            canvas.stroke_round_rect(rect, 8.0, 1.0, Rgba::rgba(255, 255, 255, 0.27));
-            canvas.text(
-                &text,
-                rect,
-                &Self::style().align(Align::Center),
+            let (background, border, foreground) = contrast.unwrap_or((
+                Rgba::rgba(28, 28, 30, 0.91),
+                Rgba::rgba(255, 255, 255, 0.27),
                 Rgba::WHITE,
-            );
+            ));
+            canvas.round_rect(rect, 8.0, background);
+            canvas.stroke_round_rect(rect, 8.0, 1.0, border);
+            canvas.text(&text, rect, &Self::style().align(Align::Center), foreground);
         });
         surface.present(self.window.raw(), self.position.0, self.position.1, fade);
         self.surface = Some(surface);
