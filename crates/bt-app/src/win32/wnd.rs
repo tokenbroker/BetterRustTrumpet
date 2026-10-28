@@ -18,8 +18,8 @@ use windows::{
                 DwmSetWindowAttribute,
             },
             Gdi::{
-                BeginPaint, EndPaint, GetMonitorInfoW, MONITOR_DEFAULTTONEAREST, MONITORINFO,
-                MonitorFromPoint, PAINTSTRUCT,
+                BeginPaint, ClientToScreen, EndPaint, GetMonitorInfoW, MONITOR_DEFAULTTONEAREST,
+                MONITORINFO, MonitorFromPoint, PAINTSTRUCT,
             },
         },
         System::LibraryLoader::{GetModuleHandleW, GetProcAddress},
@@ -840,6 +840,19 @@ impl Window {
         unsafe {
             let _ = DestroyWindow(self.hwnd());
         }
+    }
+    /// A client point in DIPs as a screen position in pixels.
+    pub fn client_to_screen(self, x: f32, y: f32) -> (i32, i32) {
+        let scale = self.scale();
+        let mut p = POINT {
+            x: (x * scale).round() as i32,
+            y: (y * scale).round() as i32,
+        };
+        // SAFETY: valid in/out parameter for our window.
+        unsafe {
+            let _ = ClientToScreen(self.hwnd(), &mut p);
+        }
+        (p.x, p.y)
     }
     /// Client area size in physical pixels.
     pub fn client_size(self) -> (i32, i32) {
