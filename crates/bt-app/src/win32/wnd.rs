@@ -184,7 +184,7 @@ fn point(window: Window, lparam: LPARAM) -> (f32, f32) {
     let x = (lparam.0 & 0xffff) as u16 as i16;
     let y = ((lparam.0 >> 16) & 0xffff) as u16 as i16;
     let scale = window.scale();
-    (f32::from(x) / scale, f32::from(y) / scale)
+    (window.mirror_x(f32::from(x)) / scale, f32::from(y) / scale)
 }
 
 /// Per-window flags kept in GWLP_USERDATA.
@@ -192,6 +192,8 @@ const NO_ACTIVATE: isize = 1;
 const TRACKING: isize = 2;
 /// A normal top-level window (`create_app`).
 const APP: isize = 4;
+/// Laid out right to left: pointer x counts from the right edge.
+const MIRRORED: isize = 8;
 
 thread_local! {
     /// App windows' minimum client size in DIPs.
@@ -342,7 +344,7 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
             let delta = ((wparam.0 >> 16) & 0xffff) as u16 as i16;
             Some(Event::Wheel(
                 delta,
-                (f32::from(sx) - origin.0 as f32) / scale,
+                window.mirror_x(f32::from(sx) - origin.0 as f32) / scale,
                 (f32::from(sy) - origin.1 as f32) / scale,
             ))
         }
@@ -927,11 +929,12 @@ impl Window {
             let _ = DestroyWindow(self.hwnd());
         }
     }
-    /// A client point in DIPs as a screen position in pixels.
+    /// A client point in DIPs as a screen position in pixels (x from the
+    /// right edge on a mirrored window).
     pub fn client_to_screen(self, x: f32, y: f32) -> (i32, i32) {
         let scale = self.scale();
         let mut p = POINT {
-            x: (x * scale).round() as i32,
+            x: self.mirror_x(x * scale).round() as i32,
             y: (y * scale).round() as i32,
         };
         // SAFETY: valid in/out parameter for our window.
@@ -939,6 +942,33 @@ impl Window {
             let _ = ClientToScreen(self.hwnd(), &mut p);
         }
         (p.x, p.y)
+    }
+    /// Lays the window out right to left (`FlowDirection="RightToLeft"`):
+    /// pointer events and `client_to_screen` count x from the right edge,
+    /// to match a surface drawn with `Surface::set_mirrored`.
+    pub fn set_mirrored(self, mirrored: bool) {
+        // SAFETY: reads and writes our own window's flags.
+        unsafe {
+            let flags = GetWindowLongPtrW(self.hwnd(), GWLP_USERDATA);
+            let flags = if mirrored {
+                flags | MIRRORED
+            } else {
+                flags & !MIRRORED
+            };
+            SetWindowLongPtrW(self.hwnd(), GWLP_USERDATA, flags);
+        }
+    }
+    pub fn is_mirrored(self) -> bool {
+        // SAFETY: reads our own window's flags.
+        unsafe { GetWindowLongPtrW(self.hwnd(), GWLP_USERDATA) & MIRRORED != 0 }
+    }
+    /// A client x in pixels, counted from the right on a mirrored window.
+    fn mirror_x(self, x: f32) -> f32 {
+        if self.is_mirrored() {
+            self.client_size().0 as f32 - x
+        } else {
+            x
+        }
     }
     /// Client area size in physical pixels.
     pub fn client_size(self) -> (i32, i32) {

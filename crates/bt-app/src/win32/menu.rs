@@ -9,8 +9,8 @@ use windows::{
         UI::WindowsAndMessaging::{
             AppendMenuW, CreatePopupMenu, DestroyMenu, HMENU, MF_CHECKED, MF_GRAYED, MF_POPUP,
             MF_SEPARATOR, MF_STRING, PostMessageW, SetForegroundWindow, TPM_BOTTOMALIGN,
-            TPM_LEFTALIGN, TPM_NONOTIFY, TPM_RETURNCMD, TPM_RIGHTBUTTON, TPM_TOPALIGN,
-            TrackPopupMenuEx, WM_NULL,
+            TPM_LAYOUTRTL, TPM_LEFTALIGN, TPM_NONOTIFY, TPM_RETURNCMD, TPM_RIGHTALIGN,
+            TPM_RIGHTBUTTON, TPM_TOPALIGN, TrackPopupMenuEx, WM_NULL,
         },
     },
     core::{BOOL, HSTRING, PCSTR, w},
@@ -114,7 +114,8 @@ fn set_theme(owner: HWND, dark: bool) {
 
 /// Shows a menu at screen point (`x`, `y`) owned by `owner` and returns the
 /// chosen command id. `above` opens it upwards (for the taskbar); `dark`
-/// draws it in the dark theme.
+/// draws it in the dark theme; `rtl` lays it out right to left, ending at
+/// the point.
 pub fn popup(
     owner: Window,
     items: &[Item],
@@ -122,11 +123,17 @@ pub fn popup(
     y: i32,
     above: bool,
     dark: bool,
+    rtl: bool,
 ) -> Option<u32> {
     let menu = build(items)?;
     let hwnd = HWND(owner.raw() as *mut _);
     set_theme(hwnd, dark);
     let vertical = if above { TPM_BOTTOMALIGN } else { TPM_TOPALIGN };
+    let horizontal = if rtl {
+        TPM_LAYOUTRTL | TPM_RIGHTALIGN
+    } else {
+        TPM_LEFTALIGN
+    };
     // SAFETY: the documented pattern: the owner becomes foreground so the
     // menu closes on outside clicks, and WM_NULL is posted after; the menu
     // is destroyed once.
@@ -134,7 +141,7 @@ pub fn popup(
         let _ = SetForegroundWindow(hwnd);
         let chosen = TrackPopupMenuEx(
             menu,
-            (TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON | TPM_LEFTALIGN | vertical).0,
+            (TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON | horizontal | vertical).0,
             x,
             y,
             hwnd,

@@ -232,11 +232,21 @@ fn taskbar_edge(monitor: &Monitor) -> Edge {
 
 /// The tray menu's position (ShellNotifyIcon.PositionTrayContextMenu):
 /// against the taskbar's edge of the work area, `gap` pixels from it, at
-/// the click point along it, kept `gap` inside the work area.
-fn place_tray(size: (i32, i32), point: (i32, i32), monitor: &Monitor, gap: i32) -> (i32, i32) {
+/// the click point along it, kept `gap` inside the work area. Right to
+/// left, the menu ends at the click point.
+fn place_tray(
+    size: (i32, i32),
+    point: (i32, i32),
+    monitor: &Monitor,
+    gap: i32,
+    rtl: bool,
+) -> (i32, i32) {
     let (w, h) = size;
     let (wx, wy, ww, wh) = monitor.work;
     let (mut left, mut top) = point;
+    if rtl {
+        left -= w;
+    }
     match taskbar_edge(monitor) {
         Edge::Top => top = wy + gap,
         Edge::Left => left = wx + gap,
@@ -251,14 +261,27 @@ fn place_tray(size: (i32, i32), point: (i32, i32), monitor: &Monitor, gap: i32) 
 }
 
 /// A context menu at a point: its top-left corner there (bottom-left when
-/// `above`), flipped to the other side of the point when it would leave
-/// the work area, then kept inside it.
-fn place_at(size: (i32, i32), point: (i32, i32), above: bool, monitor: &Monitor) -> (i32, i32) {
+/// `above`; top-right or bottom-right right to left), flipped to the other
+/// side of the point when it would leave the work area, then kept inside
+/// it.
+fn place_at(
+    size: (i32, i32),
+    point: (i32, i32),
+    above: bool,
+    monitor: &Monitor,
+    rtl: bool,
+) -> (i32, i32) {
     let (w, h) = size;
     let (x, y) = point;
     let (wx, wy, ww, wh) = monitor.work;
     let (right, bottom) = (wx + ww, wy + wh);
-    let left = if x + w > right { x - w } else { x };
+    let left = if rtl {
+        if x - w < wx { x } else { x - w }
+    } else if x + w > right {
+        x - w
+    } else {
+        x
+    };
     let top = if above {
         if y - h < wy { y } else { y - h }
     } else if y + h > bottom {
@@ -273,22 +296,27 @@ fn place_at(size: (i32, i32), point: (i32, i32), above: bool, monitor: &Monitor)
 }
 
 /// A submenu beside its item (screen rectangle left, top, right, bottom):
-/// to the right with a 2 DIP offset, or to the left where it does not fit;
-/// moved up to stay inside the work area.
+/// to the right with a 2 DIP offset, or to the left where it does not fit
+/// (the other way round right to left); moved up to stay inside the work
+/// area.
 fn place_submenu(
     size: (i32, i32),
     item: (i32, i32, i32, i32),
     gap: i32,
     m: &Monitor,
+    rtl: bool,
 ) -> (i32, i32) {
     let (w, h) = size;
     let (l, t, r, _) = item;
     let (wx, wy, ww, wh) = m.work;
-    let left = if r + gap + w <= wx + ww || l - gap - w < wx {
-        r + gap
+    let fits_right = r + gap + w <= wx + ww;
+    let fits_left = l - gap - w >= wx;
+    let right_side = if rtl {
+        !fits_left && fits_right
     } else {
-        l - gap - w
+        fits_right || !fits_left
     };
+    let left = if right_side { r + gap } else { l - gap - w };
     (
         left.clamp(wx, (wx + ww - w).max(wx)),
         t.clamp(wy, (wy + wh - h).max(wy)),
@@ -313,6 +341,8 @@ struct Level<'a> {
     glow: Vec<(f32, f32, Instant)>,
     /// The item of the level above that opened this one.
     parent: Option<usize>,
+    /// Laid out right to left (the original's ContextMenu FlowDirection).
+    rtl: bool,
 }
 
 impl<'a> Level<'a> {
@@ -327,7 +357,7 @@ impl<'a> Level<'a> {
         let now = Instant::now();
         Some(Self {
             window: None,
-            surface: Some(Surface::new(gfx.clone()).ok()?),
+            surface: Some(super::flow_surface(gfx).ok()?),
             items,
             glow: vec![(0.0, 0.0, now); rects.len()],
             rects,
@@ -337,6 +367,7 @@ impl<'a> Level<'a> {
             scale,
             hover: None,
             parent: None,
+            rtl: bt_app::i18n::is_rtl(),
         })
     }
 
@@ -362,9 +393,18 @@ impl<'a> Level<'a> {
         x >= px && y >= py && x < px + w && y < py + h
     }
 
+    /// A screen x as a distance from the window's leading edge, in pixels.
+    fn leading_x(&self, x: i32) -> i32 {
+        if self.rtl {
+            self.position.0 + self.pixels().0 - x
+        } else {
+            x - self.position.0
+        }
+    }
+
     /// The selectable item at a screen point.
     fn item_at(&self, x: i32, y: i32) -> Option<usize> {
-        let lx = (x - self.position.0) as f32 / self.scale;
+        let lx = self.leading_x(x) as f32 / self.scale;
         let ly = (y - self.position.1) as f32 / self.scale;
         self.rects
             .iter()
@@ -377,10 +417,17 @@ impl<'a> Level<'a> {
     fn item_screen(&self, index: usize) -> (i32, i32, i32, i32) {
         let r = self.rects[index];
         let px = |v: f32| (v * self.scale).round() as i32;
+        let (start, end) = (px(r.x - ITEM_MARGIN_X), px(r.right() + ITEM_MARGIN_X));
+        let (left, right) = if self.rtl {
+            let w = self.pixels().0;
+            (w - end, w - start)
+        } else {
+            (start, end)
+        };
         (
-            self.position.0 + px(r.x - ITEM_MARGIN_X),
+            self.position.0 + left,
             self.position.1 + px(r.y - ITEM_MARGIN_Y),
-            self.position.0 + px(r.right() + ITEM_MARGIN_X),
+            self.position.0 + right,
             self.position.1 + px(r.bottom() + ITEM_MARGIN_Y),
         )
     }
@@ -615,7 +662,7 @@ impl<'a> Menu<'a> {
             return;
         };
         let gap = (2.0 * scale).round() as i32;
-        child.position = place_submenu(child.pixels(), item, gap, &monitor);
+        child.position = place_submenu(child.pixels(), item, gap, &monitor, child.rtl);
         child.parent = Some(index);
         if select {
             let first = child.step(None, true);
@@ -727,6 +774,12 @@ impl<'a> Menu<'a> {
         let level = self.levels.len() - 1;
         let hover = self.levels[level].hover;
         self.pending = None;
+        // Right to left, submenus open with the left arrow.
+        let vk = match vk {
+            VK_LEFT if self.levels[level].rtl => VK_RIGHT,
+            VK_RIGHT if self.levels[level].rtl => VK_LEFT,
+            vk => vk,
+        };
         match vk {
             VK_ESCAPE | VK_LEFT if level > 0 => {
                 self.close_from(level);
@@ -898,9 +951,9 @@ pub fn popup(
     let mut root = Level::new(gfx, items, look, scale, max_width).ok_or(())?;
     root.position = if tray {
         let gap = (TRAY_GAP * scale).round().max(1.0) as i32;
-        place_tray(root.pixels(), (x, y), &monitor, gap)
+        place_tray(root.pixels(), (x, y), &monitor, gap, root.rtl)
     } else {
-        place_at(root.pixels(), (x, y), above, &monitor)
+        place_at(root.pixels(), (x, y), above, &monitor, root.rtl)
     };
     // The tray menu's first level takes the foreground (the original's
     // SetForegroundWindow on its popup); other menus leave it with their
@@ -962,7 +1015,7 @@ pub fn render(
     let past = Instant::now() - std::time::Duration::from_secs(1);
     level.set_hover(hover, past);
     let (w, h) = level.pixels();
-    let mut surface = Surface::new(gfx.clone()).ok()?;
+    let mut surface = super::flow_surface(gfx).ok()?;
     surface.draw(w, h, scale, |canvas| {
         if look == Look::Acrylic {
             canvas.round_rect(level.frame, RADIUS + 1.0, palette.tint_color);
@@ -998,21 +1051,21 @@ mod tests {
         // Bottom taskbar: 8 px above the work area's bottom, at the click.
         let bottom = monitor((0, 0, 1920, 1032));
         assert_eq!(
-            place_tray(size, (1700, 1050), &bottom, 8),
+            place_tray(size, (1700, 1050), &bottom, 8, false),
             (1700, 1032 - 300 - 8)
         );
         // Near the right edge it stays inside.
         assert_eq!(
-            place_tray(size, (1900, 1050), &bottom, 8),
+            place_tray(size, (1900, 1050), &bottom, 8, false),
             (1920 - 200 - 8, 724)
         );
         let top = monitor((0, 48, 1920, 1032));
-        assert_eq!(place_tray(size, (1700, 20), &top, 8).1, 56);
+        assert_eq!(place_tray(size, (1700, 20), &top, 8, false).1, 56);
         let left = monitor((48, 0, 1872, 1080));
-        assert_eq!(place_tray(size, (20, 500), &left, 8), (56, 500));
+        assert_eq!(place_tray(size, (20, 500), &left, 8, false), (56, 500));
         let right = monitor((0, 0, 1872, 1080));
         assert_eq!(
-            place_tray(size, (1900, 500), &right, 8),
+            place_tray(size, (1900, 500), &right, 8, false),
             (1872 - 200 - 8, 500)
         );
     }
@@ -1020,27 +1073,71 @@ mod tests {
     #[test]
     fn context_menu_flips_at_the_work_area() {
         let m = monitor((0, 0, 1920, 1040));
-        assert_eq!(place_at((200, 300), (100, 100), false, &m), (100, 100));
-        assert_eq!(place_at((200, 300), (100, 900), false, &m), (100, 600));
-        assert_eq!(place_at((200, 300), (100, 500), true, &m), (100, 200));
-        assert_eq!(place_at((200, 300), (100, 100), true, &m), (100, 100));
-        assert_eq!(place_at((200, 300), (1800, 100), false, &m), (1600, 100));
+        assert_eq!(
+            place_at((200, 300), (100, 100), false, &m, false),
+            (100, 100)
+        );
+        assert_eq!(
+            place_at((200, 300), (100, 900), false, &m, false),
+            (100, 600)
+        );
+        assert_eq!(
+            place_at((200, 300), (100, 500), true, &m, false),
+            (100, 200)
+        );
+        assert_eq!(
+            place_at((200, 300), (100, 100), true, &m, false),
+            (100, 100)
+        );
+        assert_eq!(
+            place_at((200, 300), (1800, 100), false, &m, false),
+            (1600, 100)
+        );
     }
 
     #[test]
     fn submenus_open_right_then_left() {
         let m = monitor((0, 0, 1920, 1040));
         assert_eq!(
-            place_submenu((200, 100), (100, 50, 300, 80), 2, &m),
+            place_submenu((200, 100), (100, 50, 300, 80), 2, &m, false),
             (302, 50)
         );
         assert_eq!(
-            place_submenu((200, 100), (1600, 50, 1800, 80), 2, &m),
+            place_submenu((200, 100), (1600, 50, 1800, 80), 2, &m, false),
             (1398, 50)
         );
         assert_eq!(
-            place_submenu((200, 100), (100, 1000, 300, 1030), 2, &m),
+            place_submenu((200, 100), (100, 1000, 300, 1030), 2, &m, false),
             (302, 940)
+        );
+    }
+
+    #[test]
+    fn right_to_left_menus_open_the_other_way() {
+        let m = monitor((0, 0, 1920, 1032));
+        // The tray menu ends at the click point.
+        assert_eq!(
+            place_tray((200, 300), (1700, 1050), &m, 8, true),
+            (1500, 724)
+        );
+        // A context menu's top-right corner is at the point, flipped near
+        // the left edge.
+        assert_eq!(
+            place_at((200, 300), (500, 100), false, &m, true),
+            (300, 100)
+        );
+        assert_eq!(
+            place_at((200, 300), (100, 100), false, &m, true),
+            (100, 100)
+        );
+        // Submenus open to the left, or to the right where that does not fit.
+        assert_eq!(
+            place_submenu((200, 100), (600, 50, 800, 80), 2, &m, true),
+            (398, 50)
+        );
+        assert_eq!(
+            place_submenu((200, 100), (100, 50, 300, 80), 2, &m, true),
+            (302, 50)
         );
     }
 

@@ -294,11 +294,13 @@ impl Flyout {
             },
         )?;
         window.round_corners();
+        // FlyoutWindow: FlowDirection="Auto".
+        window.set_mirrored(bt_app::i18n::is_rtl());
         let now = Instant::now();
         let tip = Tip::new(gfx.clone())?;
         Ok(Self {
             window,
-            surface: Some(Surface::new(gfx.clone())?),
+            surface: Some(super::flow_surface(&gfx)?),
             gfx,
             visible: false,
             closing: None,
@@ -769,7 +771,12 @@ impl Flyout {
             let screen_bottom = monitor.bounds.1 + monitor.bounds.3;
             bottom = bottom.min(icon_y.min(screen_bottom - icon_h));
         }
-        let x = wx + ww - width - margin;
+        // Right to left, the flyout sits in the bottom-left corner.
+        let x = if self.window.is_mirrored() {
+            wx + margin
+        } else {
+            wx + ww - width - margin
+        };
         let y = (bottom - pixels_h - margin).max(wy + margin);
         self.position = (x, y);
     }
@@ -1241,10 +1248,16 @@ impl Flyout {
         }
     }
 
-    /// Screen point below a rectangle (for menus that open under a button).
+    /// Screen point below a rectangle's leading edge (for menus that open
+    /// under a button): its right edge when mirrored.
     fn screen_below(&self, rect: Rect) -> (i32, i32) {
+        let x = if self.window.is_mirrored() {
+            WIDTH - rect.x
+        } else {
+            rect.x
+        };
         (
-            self.position.0 + (rect.x * self.scale).round() as i32,
+            self.position.0 + (x * self.scale).round() as i32,
             self.position.1 + (rect.bottom() * self.scale).round() as i32,
         )
     }
@@ -1657,7 +1670,7 @@ impl Flyout {
                     let (cx, cy) = wnd::cursor_pos();
                     menu = Some(MenuRequest {
                         owner: self.window,
-                        items: vec![Item::command("Set as default device", 1)],
+                        items: vec![Item::command(tr("SetAsDefaultDeviceText"), 1)],
                         commands: vec![super::MenuCommand::Flyout(Command::Nothing)],
                         x: cx,
                         y: cy,
@@ -1807,7 +1820,9 @@ impl Flyout {
             }
         };
         let text = target.text.clone();
-        self.tip.show_at(&text, x, y, flip, theme.light);
+        // Right to left, a tooltip beside a control opens on its left.
+        let end = self.window.is_mirrored() && matches!(target.anchor, TipAnchor::Right(_));
+        self.tip.show_at(&text, x, y, end, flip, theme.light);
         self.window.set_timer(TIP_HIDE, TIP_DURATION);
     }
 
@@ -1961,7 +1976,8 @@ impl Flyout {
     /// original's LightDismissBorder shows BaseVisual through a Gaussian
     /// BlurEffect). Computed once per popup; halving first keeps it cheap.
     fn blur_list(&self, theme: &Theme, width: i32, height: i32, now: Instant) -> Option<Rc<Image>> {
-        let mut surface = Surface::new(self.gfx.clone()).ok()?;
+        // Mirrored like the window, so it lines up when drawn there.
+        let mut surface = super::flow_surface(&self.gfx).ok()?;
         surface.draw(width, height, self.scale, |canvas| {
             self.draw_list(canvas, theme, now)
         });

@@ -138,6 +138,15 @@ thread_local! {
     static UI: RefCell<Option<Ui>> = const { RefCell::new(None) };
 }
 
+/// A surface for a window that follows the UI culture's flow direction
+/// (the original's `FrameworkElementEx.FlowDirection="Auto"`): mirrored
+/// for a right-to-left language.
+fn flow_surface(gfx: &std::rc::Rc<Gfx>) -> windows::core::Result<bt_app::win32::gfx::Surface> {
+    let mut surface = bt_app::win32::gfx::Surface::new(gfx.clone())?;
+    surface.set_mirrored(bt_app::i18n::is_rtl());
+    Ok(surface)
+}
+
 /// Runs `f` on the UI state (if the UI is running and not already in use).
 fn with<R>(f: impl FnOnce(&mut Ui) -> R) -> Option<R> {
     UI.with(|ui| ui.try_borrow_mut().ok()?.as_mut().map(f))
@@ -496,7 +505,7 @@ fn open_menu(request: MenuRequest) {
             })
             .unwrap_or_else(|| {
                 let dark = !bt_app::win32::theme::system_light();
-                native_menu::popup(owner, &items, x, y, above, dark)
+                native_menu::popup(owner, &items, x, y, above, dark, bt_app::i18n::is_rtl())
             });
         let command = chosen.and_then(|id| commands.get(id as usize - 1).cloned());
         with(|ui| {

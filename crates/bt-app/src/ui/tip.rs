@@ -54,7 +54,7 @@ impl Tip {
         )?;
         Ok(Self {
             window,
-            surface: Some(Surface::new(gfx.clone())?),
+            surface: Some(super::flow_surface(&gfx)?),
             gfx,
             visible: false,
             text: String::new(),
@@ -84,10 +84,19 @@ impl Tip {
     }
 
     /// Shows `text` in the original's ToolTip style with its top-left
-    /// corner at screen pixel (`x`, `y`). Where it would cross the bottom
-    /// of the work area it moves up to end at `flip_bottom` instead (WPF
-    /// flips a popup that does not fit); it stays inside horizontally.
-    pub fn show_at(&mut self, text: &str, x: i32, y: i32, flip_bottom: i32, light: bool) {
+    /// corner (top-right with `end`) at screen pixel (`x`, `y`). Where it
+    /// would cross the bottom of the work area it moves up to end at
+    /// `flip_bottom` instead (WPF flips a popup that does not fit); it
+    /// stays inside horizontally.
+    pub fn show_at(
+        &mut self,
+        text: &str,
+        x: i32,
+        y: i32,
+        end: bool,
+        flip_bottom: i32,
+        light: bool,
+    ) {
         let monitor = wnd::monitor_at(x, y);
         self.scale = monitor.scale;
         self.look = Look::Wpf { light };
@@ -95,6 +104,7 @@ impl Tip {
         let width = (self.size.0 * self.scale).round() as i32;
         let height = (self.size.1 * self.scale).round() as i32;
         let (wx, wy, ww, wh) = monitor.work;
+        let x = if end { x - width } else { x };
         let x = x.clamp(wx, (wx + ww - width).max(wx));
         let y = if y + height > wy + wh {
             (flip_bottom - height).max(wy)

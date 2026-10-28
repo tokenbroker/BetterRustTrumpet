@@ -31,11 +31,12 @@ use windows::{
             DirectWrite::{
                 DWRITE_FACTORY_TYPE_SHARED, DWRITE_FONT_STRETCH_NORMAL, DWRITE_FONT_STYLE_NORMAL,
                 DWRITE_FONT_WEIGHT, DWRITE_PARAGRAPH_ALIGNMENT_CENTER,
-                DWRITE_PARAGRAPH_ALIGNMENT_NEAR, DWRITE_TEXT_ALIGNMENT_CENTER,
-                DWRITE_TEXT_ALIGNMENT_LEADING, DWRITE_TEXT_ALIGNMENT_TRAILING, DWRITE_TEXT_METRICS,
-                DWRITE_TRIMMING, DWRITE_TRIMMING_GRANULARITY_CHARACTER,
-                DWRITE_WORD_WRAPPING_NO_WRAP, DWRITE_WORD_WRAPPING_WRAP, DWriteCreateFactory,
-                IDWriteFactory, IDWriteTextFormat, IDWriteTextLayout,
+                DWRITE_PARAGRAPH_ALIGNMENT_NEAR, DWRITE_READING_DIRECTION_RIGHT_TO_LEFT,
+                DWRITE_TEXT_ALIGNMENT_CENTER, DWRITE_TEXT_ALIGNMENT_LEADING,
+                DWRITE_TEXT_ALIGNMENT_TRAILING, DWRITE_TEXT_METRICS, DWRITE_TRIMMING,
+                DWRITE_TRIMMING_GRANULARITY_CHARACTER, DWRITE_WORD_WRAPPING_NO_WRAP,
+                DWRITE_WORD_WRAPPING_WRAP, DWriteCreateFactory, IDWriteFactory, IDWriteTextFormat,
+                IDWriteTextLayout,
             },
             Dxgi::Common::DXGI_FORMAT_B8G8R8A8_UNORM,
             Gdi::{
@@ -191,6 +192,9 @@ pub struct TextStyle {
     /// Trims with an ellipsis instead of overflowing.
     pub ellipsis: bool,
     pub wrap: bool,
+    /// Right-to-left reading order: leading is the right edge. Set by a
+    /// mirrored canvas.
+    pub rtl: bool,
 }
 
 impl TextStyle {
@@ -203,6 +207,7 @@ impl TextStyle {
             middle: true,
             ellipsis: false,
             wrap: false,
+            rtl: false,
         }
     }
     pub const fn weight(self, weight: u16) -> Self {
@@ -235,13 +240,14 @@ impl TextStyle {
             self.middle,
             self.ellipsis,
             self.wrap,
+            self.rtl,
         )
     }
 }
 
 /// A text style as a cache key: family, size bits, weight, alignment and
-/// the middle, ellipsis and wrap flags.
-type StyleKey = (String, u32, u16, Align, bool, bool, bool);
+/// the middle, ellipsis, wrap and rtl flags.
+type StyleKey = (String, u32, u16, Align, bool, bool, bool, bool);
 
 /// Premultiplied BGRA pixels with an identity for the per-window bitmap
 /// cache.
@@ -366,6 +372,9 @@ impl Gfx {
             } else {
                 DWRITE_PARAGRAPH_ALIGNMENT_NEAR
             });
+            if style.rtl {
+                let _ = format.SetReadingDirection(DWRITE_READING_DIRECTION_RIGHT_TO_LEFT);
+            }
             let _ = format.SetWordWrapping(if style.wrap {
                 DWRITE_WORD_WRAPPING_WRAP
             } else {
@@ -589,6 +598,8 @@ pub struct Surface {
     target: ID2D1DCRenderTarget,
     brush: ID2D1SolidColorBrush,
     images: RefCell<HashMap<u64, ID2D1Bitmap>>,
+    /// Draws right to left (`set_mirrored`).
+    mirrored: bool,
 }
 
 impl Surface {
@@ -619,12 +630,21 @@ impl Surface {
                 target,
                 brush,
                 images: RefCell::default(),
+                mirrored: false,
             })
         }
     }
 
     pub fn gfx(&self) -> &Gfx {
         &self.gfx
+    }
+
+    /// Mirrors what is drawn left to right, like WPF's
+    /// `FlowDirection="RightToLeft"`: layout coordinates stay as they are
+    /// and x runs from the right edge, while text and images keep their
+    /// own direction (text then reads right to left).
+    pub fn set_mirrored(&mut self, mirrored: bool) {
+        self.mirrored = mirrored;
     }
 
     fn ensure(&mut self, width: i32, height: i32) -> bool {
@@ -681,11 +701,21 @@ impl Surface {
             self.target.SetDpi(96.0 * scale, 96.0 * scale);
             self.target.BeginDraw();
             self.target.Clear(Some(&Rgba::TRANSPARENT.d2d()));
+            let base = if self.mirrored {
+                Matrix3x2 {
+                    M11: -1.0,
+                    M31: width as f32 / scale,
+                    ..identity()
+                }
+            } else {
+                identity()
+            };
             let mut canvas = Canvas {
                 surface: self,
-                transforms: vec![identity()],
+                transforms: vec![base],
                 layers: 0,
             };
+            canvas.apply();
             paint(&mut canvas);
             while canvas.layers > 0 {
                 canvas.pop();
@@ -1059,14 +1089,41 @@ impl Canvas<'_> {
         }
     }
 
+    /// Whether the surface draws right to left (`Surface::set_mirrored`).
+    pub fn mirrored(&self) -> bool {
+        self.surface.mirrored
+    }
+
+    /// On a mirrored surface, flips `rect`'s contents back so text and
+    /// images are not drawn mirror-written; pop with `pop_transform`.
+    fn unmirror(&mut self, rect: Rect) -> bool {
+        if !self.surface.mirrored {
+            return false;
+        }
+        let local = Matrix3x2 {
+            M11: -1.0,
+            M31: 2.0 * rect.x + rect.w,
+            ..identity()
+        };
+        let top = self.transforms.last().copied().unwrap_or_else(identity);
+        self.transforms.push(multiply(&local, &top));
+        self.apply();
+        true
+    }
+
     /// Draws `text` in `rect` with `style`.
     pub fn text(&mut self, text: &str, rect: Rect, style: &TextStyle, color: Rgba) {
         if text.is_empty() || color.a <= 0.0 {
             return;
         }
+        let style = &TextStyle {
+            rtl: style.rtl || self.surface.mirrored,
+            ..*style
+        };
         let Some(layout) = self.surface.gfx.layout(text, style, rect.w, rect.h) else {
             return;
         };
+        let flipped = self.unmirror(rect);
         let brush = self.brush(color);
         // SAFETY: draws a layout we created with our brush.
         unsafe {
@@ -1084,6 +1141,9 @@ impl Canvas<'_> {
                 },
             )
         };
+        if flipped {
+            self.pop_transform();
+        }
     }
 
     /// Fills an SVG path scaled uniformly to fit `rect` by its own bounds
@@ -1177,6 +1237,7 @@ impl Canvas<'_> {
                 }
             }
         };
+        let flipped = self.unmirror(rect);
         // SAFETY: draws a bitmap created on our target.
         unsafe {
             self.surface.target.DrawBitmap(
@@ -1187,6 +1248,9 @@ impl Canvas<'_> {
                 source.map(|s| s.d2d()).as_ref().map(|s| s as *const _),
             )
         };
+        if flipped {
+            self.pop_transform();
+        }
     }
 }
 
