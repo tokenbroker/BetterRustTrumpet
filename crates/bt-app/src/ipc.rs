@@ -2,7 +2,7 @@
 //! (a queue plus an `Event::App` post to the hidden window) and waits for the
 //! answer, like the original's DispatchToUI. Ping is answered on the pipe
 //! thread, as in the original.
-use crate::{core::Core, profiles, rules};
+use crate::{core::Core, profiles, rules, settings_file};
 use bt_app::win32::{
     clock,
     pipe::{self, PipeServer},
@@ -73,6 +73,8 @@ pub struct Effects {
     pub hotkeys: bool,
     /// Routed preset apps to re-apply once their move has settled.
     pub settle: Vec<AppVolumeEntry>,
+    /// Settings were imported: everything that caches them reloads.
+    pub reload: bool,
 }
 
 /// Runs the waiting pipe commands (UI thread).
@@ -412,6 +414,19 @@ impl Provider for Live<'_> {
             "preset-prev" | "preset-previous" => self.cycle(-1),
             "delete" => self.delete(args),
             "preset-create" => self.create(args),
+            "export-settings" | "import-settings" => {
+                let mut files = settings_file::Files {
+                    core: &mut *self.core,
+                    imported: false,
+                };
+                let response = if command == "export-settings" {
+                    cli_dispatch::export_settings(&mut files, args)
+                } else {
+                    cli_dispatch::import_settings(&mut files, args)
+                };
+                self.effects.reload |= files.imported;
+                response
+            }
             _ => return None,
         })
     }
