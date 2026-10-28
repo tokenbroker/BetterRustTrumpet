@@ -65,6 +65,15 @@ pub struct ProcessSession {
     pub muted: bool,
 }
 
+/// An app session producing sound right now (AudioSessionStateActive).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ActiveSession {
+    /// Full image path of the session's process.
+    pub executable: String,
+    pub display_name: String,
+    pub process_id: u32,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Device {
@@ -350,6 +359,15 @@ impl AudioEngine {
             let _ = (id, role);
             Err(AudioError::Unsupported)
         }
+    }
+    /// App sessions (not system sounds) that are playing right now on any
+    /// active output, in endpoint then session order. Session state changes
+    /// arrive through [`watch`](Self::watch) as [`Change::Sessions`].
+    pub fn active_sessions(&self) -> Result<Vec<ActiveSession>, AudioError> {
+        #[cfg(windows)]
+        return self.inner.active_sessions();
+        #[cfg(not(windows))]
+        Err(AudioError::Unsupported)
     }
     /// PKEY_AudioEndpoint_FormFactor of an endpoint (see [`form_factor`]).
     pub fn form_factor(&self, id: &str) -> Result<Option<u32>, AudioError> {

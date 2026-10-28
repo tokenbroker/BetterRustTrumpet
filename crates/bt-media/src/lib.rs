@@ -91,6 +91,28 @@ impl MediaEngine {
         #[cfg(not(windows))]
         Err(MediaError::Unsupported)
     }
+    /// Calls `listener` from a WinRT thread when the current session
+    /// changes, sessions come or go, or any session's playback state
+    /// changes (GSMTC CurrentSessionChanged, SessionsChanged and
+    /// PlaybackInfoChanged, as MediaSessionService subscribes). It only
+    /// signals: re-read with [`any_playing`](Self::any_playing) or
+    /// [`now_playing`](Self::now_playing). No polling.
+    pub fn watch(&self, listener: impl Fn() + Send + Sync + 'static) -> Result<(), MediaError> {
+        #[cfg(windows)]
+        return self.inner.watch(std::sync::Arc::new(listener));
+        #[cfg(not(windows))]
+        {
+            let _ = listener;
+            Err(MediaError::Unsupported)
+        }
+    }
+    /// MediaSessionService.IsMediaPlaying: any media session is playing.
+    pub fn any_playing(&self) -> Result<bool, MediaError> {
+        #[cfg(windows)]
+        return self.inner.any_playing();
+        #[cfg(not(windows))]
+        Err(MediaError::Unsupported)
+    }
     pub fn send(&self, command: Command) -> Result<(), MediaError> {
         #[cfg(windows)]
         return self.inner.send(command);
