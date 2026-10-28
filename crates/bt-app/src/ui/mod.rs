@@ -5,13 +5,16 @@
 pub mod anim;
 mod blur;
 mod flyout;
+mod gif;
 mod media;
 mod menu;
+mod onboarding;
 mod quick;
 mod settings;
 mod slider;
 mod theme;
 mod tip;
+mod toast;
 mod trayicon;
 mod traymenu;
 
@@ -58,6 +61,9 @@ const AUDIO: usize = 4;
 /// Re-applies routed preset apps once the move has settled.
 const PRESET_SETTLE: usize = 5;
 
+/// Left Ctrl (Key.LeftCtrl).
+const VK_LCONTROL: u16 = 0xa2;
+
 /// The original's popup hide delay after the pointer leaves.
 const MEDIA_HIDE_GRACE: u32 = 800;
 
@@ -76,6 +82,7 @@ pub enum MenuCommand {
     Mixer,
     Settings,
     LegacySettings,
+    Onboarding,
     GitHub,
     LegacyMixer,
     ControlPanel(&'static str),
@@ -107,6 +114,11 @@ pub struct Ui {
     quick: quick::Quick,
     /// The settings window while it is open.
     settings: Option<settings::Settings>,
+    /// The setup window while it is open.
+    onboarding: Option<onboarding::Onboarding>,
+    toasts: toast::Toasts,
+    /// The default output last seen, for NotifyOnDefaultDeviceChange.
+    last_default: Option<String>,
     gfx: std::rc::Rc<Gfx>,
     theme: theme::Theme,
     icon_font: &'static str,
@@ -195,6 +207,13 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         tip: tip::Tip::new(gfx.clone())?,
         quick: quick::Quick::new(gfx.clone())?,
         settings: None,
+        onboarding: None,
+        toasts: toast::Toasts::new(gfx.clone(), icon_font),
+        last_default: devices
+            .devices
+            .iter()
+            .find(|d| d.is_default)
+            .map(|d| d.id.clone()),
         gfx: gfx.clone(),
         theme: theme::Theme::load(&core.store, icon_font),
         icon_font,
@@ -226,6 +245,14 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         let menu = with(|ui| ui.event(window, event)).flatten();
         if let Some(request) = menu {
             open_menu(request);
+        }
+    });
+    // Q09: an ordinary launch only marks first run as shown; holding Left
+    // Ctrl while the app starts opens the setup window.
+    with(|ui| {
+        ui.core.store.set(Key::HasShownFirstRun, Value::Bool(true));
+        if wnd::key_down(VK_LCONTROL) {
+            ui.open_onboarding();
         }
     });
     // `--show` opens the flyout at startup; `--media` the media popup.
@@ -377,7 +404,7 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         }
     }
     // Every settings page at full length.
-    let mut settings = settings::Settings::new(gfx, &mut core, icon_font)?;
+    let mut settings = settings::Settings::new(gfx.clone(), &mut core, icon_font)?;
     for page in settings::PageId::all() {
         let name = format!("settings-{}.png", format!("{page:?}").to_lowercase());
         save(&name, settings.render(&mut core, page, None, false));
@@ -395,6 +422,36 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         save(&name, settings.render_open(&mut core, page));
     }
     settings.close();
+    // The setup window's pages (the privacy page also with its
+    // confirmation open) and toasts (one look, as in the original).
+    let mut setup = onboarding::Onboarding::new(gfx.clone(), &mut core)?;
+    for page in 0..onboarding::PAGES {
+        save(
+            &format!("onboarding-{}.png", page + 1),
+            setup.render(page, false),
+        );
+    }
+    save("onboarding-3-confirm.png", setup.render(2, true));
+    setup.close();
+    let toasts = toast::Toasts::new(gfx, icon_font);
+    let device = trf(
+        "DefaultDeviceChangedNotificationFormat",
+        &[("0", "Speakers (Realtek(R) Audio)")],
+    );
+    save(
+        "toast-device.png",
+        toasts.render(&format!(
+            "{}\n{device}",
+            tr("DefaultDeviceChangedNotificationTitle")
+        )),
+    );
+    save(
+        "toast-preset.png",
+        toasts.render(&format!(
+            "{}\nDefault output: Headphones (USB Audio). 2 devices and 5 apps set; one app was not running.",
+            profiles::toast_title("Gaming")
+        )),
+    );
     Ok(())
 }
 
@@ -656,11 +713,12 @@ impl Ui {
     }
 
     /// ShowDeviceChangeNotification (NotifyOnDeviceHotkeyChange).
-    fn device_switch_notification(&self, name: &str) {
+    fn device_switch_notification(&mut self, name: &str) {
         if self.core.store.bool(Key::NotifyOnDeviceHotkeyChange) {
-            self.tray.notify(
+            self.toasts.notify(
                 tr("DefaultDeviceChangedNotificationTitle"),
                 &trf("DefaultDeviceChangedNotificationFormat", &[("0", name)]),
+                toast::DEFAULT_MS,
             );
         }
     }
@@ -689,7 +747,8 @@ impl Ui {
     }
 
     /// Applies a QuickTrumpet preset and shows its confirmation
-    /// (ShowQuickTrumpetConfirmation) as a tray notification. Settings
+    /// (ShowQuickTrumpetConfirmation) as a toast for
+    /// QuickTrumpetNotificationSeconds. Settings
     /// pages call this too.
     pub fn apply_preset(&mut self, index: usize) {
         let mut service = profiles::Service::open(&mut self.core);
@@ -705,9 +764,11 @@ impl Ui {
             self.hidden.set_timer(PRESET_SETTLE, 250);
         }
         if self.core.store.bool(Key::ShowQuickTrumpetConfirmation) {
-            self.tray.notify(
+            let seconds = self.core.store.int(Key::QuickTrumpetNotificationSeconds);
+            self.toasts.notify(
                 &profiles::toast_title(&name),
                 &profiles::describe_result(&result),
+                seconds.clamp(1, 10) as u32 * 1000,
             );
         }
         self.after_volume_change();
@@ -819,6 +880,38 @@ impl Ui {
     fn reload_hotkeys(&mut self) {
         self.unregister_hotkeys();
         self.register_hotkeys();
+    }
+
+    // ---------- setup window ----------
+
+    /// ShowOnboardingManually (the tray menu) and Left Ctrl at startup:
+    /// opens the setup window, or brings the open one forward.
+    fn open_onboarding(&mut self) {
+        if self.onboarding.is_none() {
+            match onboarding::Onboarding::new(self.gfx.clone(), &mut self.core) {
+                Ok(window) => self.onboarding = Some(window),
+                Err(e) => eprintln!("BetterTrumpet: the setup window failed to open: {e}"),
+            }
+        }
+        if let Some(onboarding) = &mut self.onboarding {
+            onboarding.present();
+        }
+    }
+
+    fn onboarding_outcome(&mut self, outcome: onboarding::Outcome) {
+        if outcome.settings {
+            // The theme, consent and startup reach everything that shows
+            // or caches them.
+            self.settings_imported();
+        }
+        if outcome.device {
+            self.after_volume_change();
+        }
+        if outcome.close {
+            if let Some(onboarding) = self.onboarding.take() {
+                onboarding.close();
+            }
+        }
     }
 
     // ---------- settings window ----------
@@ -974,6 +1067,18 @@ impl Ui {
             }
             return None;
         }
+        if self.toasts.owns(window) {
+            self.toasts.event(window, event);
+            return None;
+        }
+        if self.onboarding.as_ref().is_some_and(|o| o.window == window) {
+            let outcome = self
+                .onboarding
+                .as_mut()
+                .map(|o| o.event(&mut self.core, event))?;
+            self.onboarding_outcome(outcome);
+            return None;
+        }
         if self.settings.as_ref().is_some_and(|s| s.window == window) {
             let outcome = self
                 .settings
@@ -1124,12 +1229,44 @@ impl Ui {
             }
         }
         self.devices_changed = false;
+        self.default_change_notification();
         self.core.enforce_rules();
         self.focus.audio_changed(&mut self.core);
         self.present_tooltip();
         if self.flyout.showing() {
             self.flyout.refresh(&mut self.core);
             self.flyout.paint(&self.theme);
+        }
+    }
+
+    /// OnDefaultPlaybackDeviceChanged: a toast when the default output
+    /// changed (NotifyOnDefaultDeviceChange), not for the first one seen.
+    fn default_change_notification(&mut self) {
+        let Some(device) = self
+            .core
+            .audio
+            .devices()
+            .ok()
+            .and_then(|s| s.devices.into_iter().find(|d| d.is_default))
+        else {
+            return;
+        };
+        if bt_core::window_policy::should_notify_default_change(
+            self.last_default.as_deref(),
+            Some(&device.id),
+            self.core.store.bool(Key::NotifyOnDefaultDeviceChange),
+        ) {
+            self.toasts.notify(
+                tr("DefaultDeviceChangedNotificationTitle"),
+                &trf(
+                    "DefaultDeviceChangedNotificationFormat",
+                    &[("0", &device.name)],
+                ),
+                toast::DEFAULT_MS,
+            );
+        }
+        if !device.id.trim().is_empty() {
+            self.last_default = Some(device.id);
         }
     }
 
@@ -1320,6 +1457,7 @@ impl Ui {
             MenuCommand::Preset(index) => self.apply_preset(index),
             MenuCommand::Mixer => self.open_mixer(),
             MenuCommand::Settings | MenuCommand::LegacySettings => self.open_settings(),
+            MenuCommand::Onboarding => self.open_onboarding(),
             MenuCommand::GitHub => open("https://github.com/xammen/BetterTrumpet"),
             MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
             MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
