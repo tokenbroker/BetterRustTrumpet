@@ -10,7 +10,7 @@ use super::{
 };
 use crate::core::{AppView, Core, DeviceView, HiddenEntry, RuleKind, View};
 use bt_app::win32::{
-    gfx::{Align, Canvas, Gfx, Image, Rect, Rgba, Surface, TextStyle},
+    gfx::{Align, Canvas, Gfx, Image, Rect, Surface, TextStyle},
     icons,
     menu::Item,
     sound,
@@ -1749,10 +1749,10 @@ impl Flyout {
     fn draw(&self, canvas: &mut Canvas, theme: &Theme, now: Instant) {
         let full = Rect::new(0.0, 0.0, WIDTH, self.height);
         // Transparency effects off: the solid DarkChromeLow background.
-        // Otherwise an all-but-invisible fill keeps the window clickable
-        // over the acrylic.
+        // Otherwise the content tint (at least an all-but-invisible fill,
+        // which keeps the window clickable) over the acrylic.
         if theme.transparency {
-            canvas.rect(full, Rgba::rgba(0, 0, 0, 1.0 / 255.0));
+            canvas.rect(full, theme.flyout_tint);
         } else {
             canvas.rect(full, theme.opaque_bg);
         }
