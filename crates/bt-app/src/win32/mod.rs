@@ -6,6 +6,7 @@ pub mod icons;
 pub mod instance;
 pub mod menu;
 pub mod package;
+pub mod pipe;
 pub mod registry;
 pub mod sound;
 pub mod startup;
