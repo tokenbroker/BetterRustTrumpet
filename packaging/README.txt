@@ -1,5 +1,5 @@
 Better Rust Trumpet {version}
-==========================
+{underline}
 
 BetterTrumpet (EarTrumpet) rewritten in Rust: per-app volume control from
 the Windows notification area. Alpha: please report anything odd.
@@ -12,8 +12,10 @@ Start
   Quit the C# BetterTrumpet or EarTrumpet first if it is running.
 
   It reads your existing EarTrumpet/BetterTrumpet settings but never changes
-  them; its own settings go to %LOCALAPPDATA%\BetterTrumpet-Rust. It sends
-  nothing over the network.
+  them; its own settings go to %LOCALAPPDATA%\BetterTrumpet-Rust. No
+  telemetry. If you turn on update checks (onboarding offers it), it asks
+  this project's GitHub releases every 6 hours whether a newer version is
+  out; nothing else goes over the network and nothing is downloaded.
 
 bt.exe
   Optional command-line tool for the running app. Try: bt --help

@@ -35,10 +35,17 @@ jobs:
         shell: pwsh
         run: |
           $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { "dev-$($env:GITHUB_SHA.Substring(0, 7))" }
+          # The app compares its own version with the releases' tags, so a
+          # tag must match the workspace version.
+          $cargo = (Select-String -Path Cargo.toml -Pattern '^version = "(.+)"').Matches[0].Groups[1].Value
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $version -ne $cargo) {
+            throw "Tag $env:GITHUB_REF_NAME does not match the workspace version $cargo"
+          }
           $name = "BetterRustTrumpet-$version"
           New-Item -ItemType Directory -Force stage | Out-Null
           Copy-Item target\release\BetterTrumpet.exe, target\release\bt.exe, LICENSE, THIRD_PARTY_NOTICES.md stage\
-          (Get-Content packaging\README.txt -Raw).Replace('{version}', $version) | Set-Content stage\README.txt -Encoding utf8 -NoNewline
+          $title = "Better Rust Trumpet $version"
+          (Get-Content packaging\README.txt -Raw).Replace('{version}', $version).Replace('{underline}', '=' * $title.Length) | Set-Content stage\README.txt -Encoding utf8 -NoNewline
           Compress-Archive -Path stage\* -DestinationPath "$name.zip"
           $hash = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
           "name=$name" >> $env:GITHUB_OUTPUT
