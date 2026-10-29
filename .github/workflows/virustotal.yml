@@ -50,27 +50,35 @@ jobs:
           $files = Get-ChildItem assets -File | Sort-Object Name | ForEach-Object {
             [pscustomobject]@{ Name = $_.Name; Path = $_; sha = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower() }
           }
-          $pending = @{}
+          # A file's report has a last_analysis_date once a scan finished; 404
+          # means VirusTotal has never seen it.
+          function Scanned($f) {
+            try { [bool](VT GET "files/$($f.sha)").data.attributes.last_analysis_date }
+            catch { if ($_.Exception.Response.StatusCode.value__ -eq 404) { $null } else { throw } }
+          }
+
+          $pending = [System.Collections.Generic.List[object]]::new()
           foreach ($f in $files) {
-            try {
-              $known = VT GET "files/$sha"
-              if ($known.data.attributes.last_analysis_date) { "$($f.Name): already scanned"; continue }
-            } catch {
-              if ($_.Exception.Response.StatusCode.value__ -ne 404) { throw }
+            $state = Scanned $f
+            if ($state) { "$($f.Name): already scanned"; continue }
+            if ($null -eq $state) {
+              "$($f.Name): uploading"
+              try { VT POST files @{ file = $f.Path } | Out-Null }
+              catch { if ($_.ErrorDetails.Message -notmatch 'AlreadySubmitted') { throw } }
+            } else {
+              "$($f.Name): already queued"
             }
-            "$($f.Name): uploading"
-            $pending[$f.Name] = (VT POST files @{ file = $f.Path }).data.id
+            $pending.Add($f)
           }
 
           # Analyses usually finish within a few minutes.
           $deadline = (Get-Date).AddMinutes(25)
           while ($pending.Count -and (Get-Date) -lt $deadline) {
-            foreach ($name in @($pending.Keys)) {
-              $status = (VT GET "analyses/$($pending[$name])").data.attributes.status
-              if ($status -eq 'completed') { "${name}: scanned"; $pending.Remove($name) }
+            foreach ($f in @($pending)) {
+              if (Scanned $f) { "$($f.Name): scanned"; [void]$pending.Remove($f) }
             }
           }
-          foreach ($name in $pending.Keys) { "::warning::$name was not scanned in time; its link shows the result later" }
+          foreach ($f in $pending) { "::warning::$($f.Name) was not scanned in time; its link shows the result later" }
 
           $rows = foreach ($f in $files) {
             $link = "https://www.virustotal.com/gui/file/$($f.sha)"
