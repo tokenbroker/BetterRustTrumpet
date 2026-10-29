@@ -107,8 +107,17 @@
   <data name="UpdateInstallNow" xml:space="preserve">
     <value>Update now ›</value>
   </data>
-  <data name="UpdateToastBody" xml:space="preserve">
-    <value>Open the flyout or the tray menu to install it.</value>
+  <data name="UpdateNotificationBody" xml:space="preserve">
+    <value>Click here to install it. It asks first, and your settings stay.</value>
+  </data>
+  <data name="OnboardingNotifyUpdates" xml:space="preserve">
+    <value>Notify me</value>
+  </data>
+  <data name="SettingsNotifyUpdates" xml:space="preserve">
+    <value>Show a notification when an update is out</value>
+  </data>
+  <data name="SettingsNotifyUpdatesDesc" xml:space="preserve">
+    <value>A Windows notification, once per new version; Do not disturb holds it back. The flyout and the tray menu still show the update.</value>
   </data>
   <data name="UpdateReleaseNotes" xml:space="preserve">
     <value>Release notes</value>

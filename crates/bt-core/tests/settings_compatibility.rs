@@ -54,6 +54,8 @@ fn snapshot(settings: &Settings, on_battery: bool) -> Json {
             && key != Key::AnimateTrayIcon
             && key != Key::ShowProjectLinks
             && key != Key::CheckGitHubForUpdates
+            && key != Key::NotifyUpdates
+            && key != Key::UpdateNotifiedVersion
         {
             result.insert(key.name().into(), encoded(&settings.get(key, context)));
         }

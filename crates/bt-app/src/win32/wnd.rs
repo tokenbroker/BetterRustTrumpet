@@ -91,6 +91,8 @@ pub enum TrayEvent {
     Move,
     /// Enter / Space with the icon focused.
     Select,
+    /// The icon's notification (`Tray::notify`) was clicked.
+    NotificationClick,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -481,6 +483,7 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
             );
             const NIN_SELECT: u32 = 0x400;
             const NIN_KEYSELECT: u32 = 0x401;
+            const NIN_BALLOONUSERCLICK: u32 = 0x405;
             const WM_CONTEXTMENU: u32 = 0x7b;
             match code {
                 WM_LBUTTONUP => Some(Event::Tray(TrayEvent::LeftUp)),
@@ -488,6 +491,7 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
                 WM_CONTEXTMENU => Some(Event::Tray(TrayEvent::Context(i32::from(x), i32::from(y)))),
                 WM_MOUSEMOVE => Some(Event::Tray(TrayEvent::Move)),
                 NIN_KEYSELECT => Some(Event::Tray(TrayEvent::Select)),
+                NIN_BALLOONUSERCLICK => Some(Event::Tray(TrayEvent::NotificationClick)),
                 NIN_SELECT => None,
                 _ => None,
             }

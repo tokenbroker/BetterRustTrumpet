@@ -1373,6 +1373,19 @@ fn updates(core: &mut Core) -> Vec<Section> {
                 tr("AutoUpdateCheckboxText"),
                 Some(tr("UpdatesCheckDesc")),
             ),
+            disabled(
+                toggle(
+                    core,
+                    Key::NotifyUpdates,
+                    tr("SettingsNotifyUpdates"),
+                    Some(if auto {
+                        tr("SettingsNotifyUpdatesDesc")
+                    } else {
+                        tr("WebSettingsRequiresAutoCheck")
+                    }),
+                ),
+                !auto,
+            ),
             row(
                 &format!("{} {}", tr("SettingsVersion"), bt_app::updates::CURRENT),
                 Some(&status),

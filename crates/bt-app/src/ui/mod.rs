@@ -192,8 +192,10 @@ pub struct Ui {
     settle_ticks: u32,
     /// CheckGitHubForUpdates as last applied.
     update_checks: bool,
-    /// The release the toast already told about (once per version).
-    update_told: Option<String>,
+    /// The running check was asked for (Settings, `bt`): no notification.
+    update_manual: bool,
+    /// The tray notification shown is about an update.
+    update_notified: bool,
 }
 
 thread_local! {
@@ -289,7 +291,8 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         settle: vec![],
         settle_ticks: 0,
         update_checks: false,
-        update_told: None,
+        update_manual: false,
+        update_notified: false,
     };
     ui.register_hotkeys();
     bt_app::win32::presence::watch_display(hidden);
@@ -578,15 +581,6 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         toasts.render(&format!(
             "{}\n{device}",
             tr("DefaultDeviceChangedNotificationTitle")
-        )),
-    );
-    save(
-        "toast-update.png",
-        toasts.render(&format!(
-            "{}
-{}",
-            trf("UpdateTextAvailable", &[("0", "0.1.0-alpha.4")]),
-            tr("UpdateToastBody")
         )),
     );
     save(
@@ -1136,6 +1130,7 @@ impl Ui {
             return;
         }
         self.core.update = Status::Checking;
+        self.update_manual = manual;
         self.updates_shown();
         let poster = self.hidden.poster();
         // UpdateNotifyChannel: 0 all, 1 minor and major, 2 major, 3 none.
@@ -1157,18 +1152,28 @@ impl Ui {
             Status::UpToDate => "UpdateService: Up to date or filtered".to_string(),
             _ => "UpdateService: Check failed".to_string(),
         });
-        // The toast tells about each newer version once per run.
+        // D58: a timed check tells through a Windows notification from the
+        // tray icon (Focus Assist and Do not disturb hold it back), once per
+        // version; a check someone asked for shows its result where asked.
+        let store = &mut self.core.store;
         if let Status::Available(release) = &status
-            && self.update_told.as_ref() != Some(&release.version)
+            && !self.update_manual
+            && store.bool(Key::NotifyUpdates)
+            && store
+                .text(Key::UpdateNotifiedVersion.storage_key())
+                .as_deref()
+                != Some(release.version.as_str())
         {
-            self.update_told = Some(release.version.clone());
-            let text = format!(
-                "{}\n{}",
-                trf("UpdateTextAvailable", &[("0", &release.version)]),
-                tr("UpdateToastBody")
+            store.set(
+                Key::UpdateNotifiedVersion,
+                Value::Text(Some(release.version.clone())),
             );
-            // The Download glyph.
-            self.toasts.show(&text, "\u{E896}", 8000);
+            let shown = self.tray.notify(
+                &trf("UpdateTextAvailable", &[("0", &release.version)]),
+                tr("UpdateNotificationBody"),
+            );
+            bt_app::log::line(format!("UpdateService: Notification shown={shown}"));
+            self.update_notified = true;
         }
         self.core.update = status;
         self.updates_shown();
@@ -1554,6 +1559,11 @@ impl Ui {
 
     fn hidden_event(&mut self, event: Event) -> Option<MenuRequest> {
         match event {
+            Event::Tray(TrayEvent::NotificationClick) => {
+                if std::mem::take(&mut self.update_notified) {
+                    self.hidden.post(APP_INSTALL);
+                }
+            }
             Event::Tray(TrayEvent::LeftUp | TrayEvent::Select) => {
                 self.media.hide();
                 self.toggle_flyout();

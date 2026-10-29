@@ -100,6 +100,7 @@ enum Target {
     KeepEnabled,
     Startup,
     Updates,
+    UpdateNotify,
 }
 
 /// What the rest of the app has to pick up after an event.
@@ -153,6 +154,8 @@ pub struct Onboarding {
     run_at_startup: bool,
     /// CheckGitHubForUpdates (D55), ticked on a first run.
     check_updates: bool,
+    /// NotifyUpdates (D58).
+    notify_updates: bool,
     hover: Option<Target>,
     pressed: Option<Target>,
     focus: Option<Target>,
@@ -211,6 +214,7 @@ impl Onboarding {
             confirm: false,
             run_at_startup: startup::is_enabled(),
             check_updates: first_run || core.store.bool(Key::CheckGitHubForUpdates),
+            notify_updates: core.store.bool(Key::NotifyUpdates),
             hover: None,
             pressed: None,
             focus: None,
@@ -381,6 +385,8 @@ impl Onboarding {
         core.store.set(Key::UpdateNotifyChannel, Value::Int(0));
         core.store
             .set(Key::CheckGitHubForUpdates, Value::Bool(self.check_updates));
+        core.store
+            .set(Key::NotifyUpdates, Value::Bool(self.notify_updates));
         out.settings = true;
     }
 
@@ -406,6 +412,11 @@ impl Onboarding {
             }
             Target::Startup => self.run_at_startup = !self.run_at_startup,
             Target::Updates => self.check_updates = !self.check_updates,
+            // Only meaningful while checks are on.
+            Target::UpdateNotify if self.check_updates => {
+                self.notify_updates = !self.notify_updates
+            }
+            Target::UpdateNotify => {}
         }
     }
 
@@ -512,8 +523,14 @@ impl Onboarding {
                 Target::KeepEnabled,
                 Target::Startup,
                 Target::Updates,
+                Target::UpdateNotify,
             ],
-            2 => vec![Target::Telemetry, Target::Startup, Target::Updates],
+            2 => vec![
+                Target::Telemetry,
+                Target::Startup,
+                Target::Updates,
+                Target::UpdateNotify,
+            ],
             _ => vec![],
         };
         list.push(Target::Skip);
@@ -656,6 +673,8 @@ impl Onboarding {
         let updates_y = startup_desc + self.line(12.0, 400) + 14.0;
         let updates_w = self.text_width(tr("OnboardingCheckUpdates"), 12.0, 400);
         let updates = Rect::new(x + 4.0, updates_y, 28.0 + updates_w, row_h);
+        let notify_w = self.text_width(tr("OnboardingNotifyUpdates"), 12.0, 400);
+        let notify = Rect::new(updates.right() + 24.0, updates_y, 28.0 + notify_w, row_h);
         Privacy {
             card,
             inner,
@@ -665,6 +684,7 @@ impl Onboarding {
             startup,
             startup_desc,
             updates,
+            notify,
             updates_desc: updates_y + row_h + 6.0,
         }
     }
@@ -705,6 +725,9 @@ impl Onboarding {
                 }
                 if p.updates.contains(x, y) {
                     return Some(Target::Updates);
+                }
+                if p.notify.contains(x, y) {
+                    return Some(Target::UpdateNotify);
                 }
                 p.startup.contains(x, y).then_some(Target::Startup)
             }
@@ -1141,6 +1164,24 @@ impl Onboarding {
             TEXT,
         );
         self.focus_ring(canvas, Target::Updates, u, 4.0);
+        // Dimmed while update checks are off.
+        let n = p.notify;
+        let pushed = !self.check_updates;
+        if pushed {
+            canvas.push_layer(0.4, None);
+        }
+        let box_rect = Rect::new(n.x, n.y + (n.h - 18.0) / 2.0, 18.0, 18.0);
+        self.checkbox(canvas, box_rect, self.check_updates && self.notify_updates);
+        canvas.text(
+            tr("OnboardingNotifyUpdates"),
+            Rect::new(n.x + 28.0, n.y, n.w - 28.0 + 1.0, n.h),
+            &TextStyle::new(FONT, 12.0),
+            TEXT,
+        );
+        if pushed {
+            canvas.pop();
+        }
+        self.focus_ring(canvas, Target::UpdateNotify, n, 4.0);
         canvas.text(
             tr("OnboardingCheckUpdatesDesc"),
             Rect::new(
@@ -1339,6 +1380,8 @@ struct Privacy {
     startup: Rect,
     startup_desc: f32,
     updates: Rect,
+    /// "Notify me" beside it (NotifyUpdates).
+    notify: Rect,
     updates_desc: f32,
 }
 

@@ -12,7 +12,7 @@ use windows::{
         UI::{
             HiDpi::GetSystemMetricsForDpi,
             Shell::{
-                NIF_ICON, NIF_INFO, NIF_MESSAGE, NIF_SHOWTIP, NIF_TIP, NIIF_INFO,
+                NIF_ICON, NIF_INFO, NIF_MESSAGE, NIF_SHOWTIP, NIF_TIP, NIIF_NONE,
                 NIIF_RESPECT_QUIET_TIME, NIM_ADD, NIM_DELETE, NIM_MODIFY, NIM_SETVERSION,
                 NOTIFYICON_VERSION_4, NOTIFYICONDATAW, NOTIFYICONIDENTIFIER,
                 Shell_NotifyIconGetRect, Shell_NotifyIconW,
@@ -44,14 +44,23 @@ fn copy_tip(text: &str, out: &mut [u16]) {
 
 /// The application icon (resource 1) at the small-icon size for `dpi`.
 fn load_icon(dpi: u32) -> HICON {
+    load_icon_metric(dpi, SM_CXSMICON, SM_CYSMICON)
+}
+
+/// Resource 1 at the size of the given system metrics for `dpi`.
+fn load_icon_metric(
+    dpi: u32,
+    width: windows::Win32::UI::WindowsAndMessaging::SYSTEM_METRICS_INDEX,
+    height: windows::Win32::UI::WindowsAndMessaging::SYSTEM_METRICS_INDEX,
+) -> HICON {
     // SAFETY: loads icon resource 1 from our own module; the handle is
     // destroyed in Drop.
     unsafe {
         let Ok(module) = GetModuleHandleW(None) else {
             return HICON::default();
         };
-        let cx = GetSystemMetricsForDpi(SM_CXSMICON, dpi);
-        let cy = GetSystemMetricsForDpi(SM_CYSMICON, dpi);
+        let cx = GetSystemMetricsForDpi(width, dpi);
+        let cy = GetSystemMetricsForDpi(height, dpi);
         LoadImageW(
             Some(module.into()),
             // MAKEINTRESOURCE(1).
@@ -130,17 +139,19 @@ impl Tray {
         }
     }
 
-    /// A notification from the icon (title and text), shown by the shell.
-    pub fn notify(&self, title: &str, text: &str) {
+    /// A notification from the icon (title and text), shown by the shell;
+    /// `false` if the shell refused it.
+    pub fn notify(&self, title: &str, text: &str) -> bool {
         let mut data = self.data();
         data.uFlags |= NIF_INFO;
-        data.dwInfoFlags = NIIF_INFO | NIIF_RESPECT_QUIET_TIME;
+        // No icon in the body: Windows 10 and 11 already head the
+        // notification with the app's icon and name (FileDescription). A
+        // custom balloon icon (NIIF_USER) made Windows 11 drop it.
+        data.dwInfoFlags = NIIF_NONE | NIIF_RESPECT_QUIET_TIME;
         copy_tip(title, &mut data.szInfoTitle);
         copy_tip(text, &mut data.szInfo);
         // SAFETY: as above.
-        unsafe {
-            let _ = Shell_NotifyIconW(NIM_MODIFY, &data);
-        }
+        unsafe { Shell_NotifyIconW(NIM_MODIFY, &data).as_bool() }
     }
 
     /// The icon's screen rectangle (x, y, width, height), physical pixels.

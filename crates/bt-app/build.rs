@@ -12,6 +12,15 @@ fn main() {
     if std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
         let mut resource = winresource::WindowsResource::new();
         resource.set_icon("icons/icon.ico");
+        // Windows shows FileDescription as the app's name, in notifications
+        // among other places (D58).
+        resource.set("FileDescription", "Better Rust Trumpet");
+        resource.set("ProductName", "Better Rust Trumpet");
+        resource.set("CompanyName", "tokenbroker");
+        resource.set(
+            "LegalCopyright",
+            "MIT License. Based on BetterTrumpet and EarTrumpet.",
+        );
         resource.set_manifest(include_str!("app.manifest"));
         resource.compile().expect("compile Windows resources");
     }

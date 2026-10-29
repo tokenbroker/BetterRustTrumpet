@@ -39,6 +39,9 @@ keys! {
     // version. Off unless onboarding turns it on, so settings carried over
     // from the original never start the request.
     CheckGitHubForUpdates: Bool(false),
+    // Port-only (D58): a Windows notification when a timed check finds a
+    // newer version, once per version (the last one told is remembered).
+    NotifyUpdates: Bool(true), UpdateNotifiedVersion: Text(Some(String::new())),
     IsTelemetryEnabled: Bool(true), TelemetryAnonymousId: Text(Some(String::new())),
     VoteAnonymousId: Text(Some(String::new())), AnnouncementsEnabled: Bool(true),
     HasCompletedOnboarding: Bool(false), UseLogarithmicVolume: Bool(false),
