@@ -43,7 +43,7 @@ contain device and app names, so have a look first.
 
 ## Building
 
-Requires Windows 10 or 11 and [Rust](https://rustup.rs) 1.85 or newer (the
+Requires Windows 10 or 11 and [Rust](https://rustup.rs) 1.88 or newer (the
 MSVC toolchain, with the Visual Studio C++ build tools).
 
 ```powershell
@@ -55,6 +55,11 @@ The app is `target\release\BetterTrumpet.exe` and the CLI
 `target\release\bt.exe`. The C runtime is linked statically
 (`.cargo/config.toml`), so the exe runs without the Visual C++
 redistributable.
+
+Releases are built by GitHub Actions (`.github/workflows/release.yml`) when a
+`v*` tag is pushed, so the published exes never contain a local machine's
+paths. Every push and pull request runs format, clippy and tests
+(`.github/workflows/ci.yml`).
 
 `cargo run -p bt-app --release -- --render <folder>` draws every window to
 PNG files without opening anything, which is handy for checking UI changes.

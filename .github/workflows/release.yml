@@ -1,0 +1,72 @@
+name: Release
+
+# Pushing a tag like v0.1.0-alpha.2 builds the zip on GitHub and publishes it
+# as a release (a pre-release when the tag has a "-" suffix). Running the
+# workflow by hand only builds the zip and keeps it as a workflow artifact.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        shell: pwsh
+        run: |
+          # Static C runtime (as in .cargo/config.toml, which RUSTFLAGS
+          # replaces) and no build-machine paths in the exes.
+          $cargo = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { "$env:USERPROFILE\.cargo" }
+          $env:RUSTFLAGS = "-C target-feature=+crt-static --remap-path-prefix=$cargo=/cargo --remap-path-prefix=$env:GITHUB_WORKSPACE=/build"
+          cargo build --release --workspace
+
+      - name: Package
+        id: package
+        shell: pwsh
+        run: |
+          $version = if ($env:GITHUB_REF_TYPE -eq 'tag') { $env:GITHUB_REF_NAME.TrimStart('v') } else { "dev-$($env:GITHUB_SHA.Substring(0, 7))" }
+          $name = "BetterRustTrumpet-$version"
+          New-Item -ItemType Directory -Force stage | Out-Null
+          Copy-Item target\release\BetterTrumpet.exe, target\release\bt.exe, LICENSE, THIRD_PARTY_NOTICES.md stage\
+          (Get-Content packaging\README.txt -Raw).Replace('{version}', $version) | Set-Content stage\README.txt -Encoding utf8 -NoNewline
+          Compress-Archive -Path stage\* -DestinationPath "$name.zip"
+          $hash = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
+          "name=$name" >> $env:GITHUB_OUTPUT
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "hash=$hash" >> $env:GITHUB_OUTPUT
+
+      - name: Keep the zip (manual runs)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package.outputs.name }}
+          path: ${{ steps.package.outputs.name }}.zip
+
+      - name: Publish the release
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $zip = "${{ steps.package.outputs.name }}.zip"
+          $notes = (Get-Content packaging\RELEASE_NOTES.md -Raw).Replace('{version}', '${{ steps.package.outputs.version }}').Replace('{sha256}', '${{ steps.package.outputs.hash }}').Replace('{zip}', $zip)
+          $notes | Set-Content notes.md -Encoding utf8
+          $extra = @()
+          if ($tag.Contains('-')) { $extra += '--prerelease' }
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $zip --clobber
+          } else {
+            gh release create $tag $zip --title "Better Rust Trumpet ${{ steps.package.outputs.version }}" --notes-file notes.md @extra
+          }
