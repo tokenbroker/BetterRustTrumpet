@@ -37,10 +37,10 @@ unsafe extern "system" fn hook(
     _thread: u32,
     _time: u32,
 ) {
-    if event == EVENT_SYSTEM_FOREGROUND {
-        if let Some(handler) = HANDLER.get() {
-            handler();
-        }
+    if event == EVENT_SYSTEM_FOREGROUND
+        && let Some(handler) = HANDLER.get()
+    {
+        handler();
     }
 }
 

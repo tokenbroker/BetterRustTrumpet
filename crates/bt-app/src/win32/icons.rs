@@ -73,13 +73,17 @@ fn rgba(path: &str, size: u32) -> Option<Vec<u8>> {
     let mut pixels = render(icon, size, 0);
     // Icons without an alpha channel: derive coverage by drawing on black and
     // on white; unchanged pixels are opaque.
-    if let Some(dark) = &mut pixels {
-        if dark.chunks_exact(4).all(|p| p[3] == 0) {
-            if let Some(light) = render(icon, size, 255) {
-                for (d, l) in dark.chunks_exact_mut(4).zip(light.chunks_exact(4)) {
-                    d[3] = if d[..3] == l[..3] { 255 } else { 0 };
-                }
-            }
+    if let Some(dark) = &mut pixels
+        && dark.as_chunks::<4>().0.iter().all(|p| p[3] == 0)
+        && let Some(light) = render(icon, size, 255)
+    {
+        for (d, l) in dark
+            .as_chunks_mut::<4>()
+            .0
+            .iter_mut()
+            .zip(light.as_chunks::<4>().0)
+        {
+            d[3] = if d[..3] == l[..3] { 255 } else { 0 };
         }
     }
     // SAFETY: the icon came from SHDefExtractIconW and is destroyed once.
@@ -87,7 +91,7 @@ fn rgba(path: &str, size: u32) -> Option<Vec<u8>> {
         let _ = DestroyIcon(icon);
     }
     let mut pixels = pixels?;
-    for p in pixels.chunks_exact_mut(4) {
+    for p in pixels.as_chunks_mut::<4>().0 {
         p.swap(0, 2);
     }
     Some(pixels)
@@ -173,7 +177,7 @@ fn base64(data: &[u8]) -> String {
 /// The executable's icon as straight-alpha BGRA pixels, `size` square.
 pub fn bgra(path: &str, size: u32) -> Option<Vec<u8>> {
     let mut pixels = rgba(path, size)?;
-    for p in pixels.chunks_exact_mut(4) {
+    for p in pixels.as_chunks_mut::<4>().0 {
         p.swap(0, 2);
     }
     Some(pixels)
@@ -216,7 +220,7 @@ mod tests {
         assert!(url.starts_with("data:image/png;base64,iVBORw0KGgo"));
         let pixels = rgba(&format!(r"{windir}\explorer.exe"), 32).unwrap();
         assert!(
-            pixels.chunks_exact(4).any(|p| p[3] > 0),
+            pixels.as_chunks::<4>().0.iter().any(|p| p[3] > 0),
             "icon is fully transparent"
         );
         assert!(data_url(r"C:\definitely\missing.exe", 32).is_none());

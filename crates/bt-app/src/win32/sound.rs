@@ -20,7 +20,7 @@ fn scaled(wav: &[u8], level: u8) -> Vec<u8> {
         if &out[at..at + 4] == b"data" {
             let end = (at + 8 + size).min(out.len());
             let gain = f32::from(level) / 20.0;
-            for sample in out[at + 8..end].chunks_exact_mut(2) {
+            for sample in out[at + 8..end].as_chunks_mut::<2>().0 {
                 let v = i16::from_le_bytes([sample[0], sample[1]]);
                 let s = (f32::from(v) * gain).round() as i16;
                 sample.copy_from_slice(&s.to_le_bytes());

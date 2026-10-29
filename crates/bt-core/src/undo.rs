@@ -73,14 +73,13 @@ impl UndoHistory {
             // and a backwards wall-clock step also meets its <500ms test.
             if last.target.id == target.id
                 && (timestamp_ms as i128 - last.timestamp_ms as i128) < COALESCE_WINDOW_MS as i128
+                && let Change::Volume { new: last_new, .. } = &mut last.change
             {
-                if let Change::Volume { new: last_new, .. } = &mut last.change {
-                    *last_new = new;
-                    last.timestamp_ms = timestamp_ms;
-                    self.redo.clear();
-                    self.changed();
-                    return true;
-                }
+                *last_new = new;
+                last.timestamp_ms = timestamp_ms;
+                self.redo.clear();
+                self.changed();
+                return true;
             }
         }
         self.push(VolumeAction {

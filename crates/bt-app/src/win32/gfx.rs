@@ -285,7 +285,7 @@ impl Image {
     }
     /// Premultiplies straight-alpha BGRA in place.
     pub fn from_straight_bgra(width: u32, height: u32, mut pixels: Vec<u8>) -> Rc<Self> {
-        for p in pixels.chunks_exact_mut(4) {
+        for p in pixels.as_chunks_mut::<4>().0 {
             let a = u16::from(p[3]);
             for c in &mut p[..3] {
                 *c = ((u16::from(*c) * a + 127) / 255) as u8;
@@ -389,15 +389,15 @@ impl Gfx {
             } else {
                 DWRITE_WORD_WRAPPING_NO_WRAP
             });
-            if style.ellipsis {
-                if let Ok(sign) = self.dwrite.CreateEllipsisTrimmingSign(&format) {
-                    let trimming = DWRITE_TRIMMING {
-                        granularity: DWRITE_TRIMMING_GRANULARITY_CHARACTER,
-                        delimiter: 0,
-                        delimiterCount: 0,
-                    };
-                    let _ = format.SetTrimming(&trimming, &sign);
-                }
+            if style.ellipsis
+                && let Ok(sign) = self.dwrite.CreateEllipsisTrimmingSign(&format)
+            {
+                let trimming = DWRITE_TRIMMING {
+                    granularity: DWRITE_TRIMMING_GRANULARITY_CHARACTER,
+                    delimiter: 0,
+                    delimiterCount: 0,
+                };
+                let _ = format.SetTrimming(&trimming, &sign);
             }
             format
         };
@@ -883,7 +883,7 @@ impl Surface {
     /// The last drawing as straight-alpha RGBA (debug renders).
     pub fn rgba(&self) -> Option<(u32, u32, Vec<u8>)> {
         let (w, h, mut out) = self.bgra()?;
-        for p in out.chunks_exact_mut(4) {
+        for p in out.as_chunks_mut::<4>().0 {
             let a = u16::from(p[3]);
             if a > 0 && a < 255 {
                 for c in &mut p[..3] {

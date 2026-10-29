@@ -179,13 +179,13 @@ fn attribute(tag: &str, name: &str) -> Option<String> {
         let before = search[..at].chars().last();
         let after = &search[at + name.len()..];
         search = after;
-        if before.is_some_and(|c| c.is_whitespace()) {
-            if let Some(after) = after.trim_start().strip_prefix('=') {
-                let after = after.trim_start();
-                let quote = after.chars().next()?;
-                let value = &after[1..];
-                return Some(value[..value.find(quote)?].to_owned());
-            }
+        if before.is_some_and(|c| c.is_whitespace())
+            && let Some(after) = after.trim_start().strip_prefix('=')
+        {
+            let after = after.trim_start();
+            let quote = after.chars().next()?;
+            let value = &after[1..];
+            return Some(value[..value.find(quote)?].to_owned());
         }
     }
 }

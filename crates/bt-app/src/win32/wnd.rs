@@ -394,10 +394,10 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
         // SAFETY: as above.
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, f)
     };
-    if flags & APP != 0 {
-        if let Some(result) = app_message(window, msg, wparam, lparam) {
-            return result;
-        }
+    if flags & APP != 0
+        && let Some(result) = app_message(window, msg, wparam, lparam)
+    {
+        return result;
     }
     let event = match msg {
         WM_CHAR => Some(Event::Char(wparam.0 as u16)),

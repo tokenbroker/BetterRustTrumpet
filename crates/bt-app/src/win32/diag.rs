@@ -90,17 +90,17 @@ pub fn copy_text(text: &str) -> bool {
             return false;
         }
         let mut done = false;
-        if EmptyClipboard().is_ok() {
-            if let Ok(memory) = GlobalAlloc(GMEM_MOVEABLE, bytes) {
-                let target = GlobalLock(memory) as *mut u16;
-                if !target.is_null() {
-                    std::ptr::copy_nonoverlapping(wide.as_ptr(), target, wide.len());
-                    let _ = GlobalUnlock(memory);
-                    done = SetClipboardData(CF_UNICODETEXT, Some(HANDLE(memory.0))).is_ok();
-                }
-                if !done {
-                    let _ = GlobalFree(Some(memory));
-                }
+        if EmptyClipboard().is_ok()
+            && let Ok(memory) = GlobalAlloc(GMEM_MOVEABLE, bytes)
+        {
+            let target = GlobalLock(memory) as *mut u16;
+            if !target.is_null() {
+                std::ptr::copy_nonoverlapping(wide.as_ptr(), target, wide.len());
+                let _ = GlobalUnlock(memory);
+                done = SetClipboardData(CF_UNICODETEXT, Some(HANDLE(memory.0))).is_ok();
+            }
+            if !done {
+                let _ = GlobalFree(Some(memory));
             }
         }
         let _ = CloseClipboard();

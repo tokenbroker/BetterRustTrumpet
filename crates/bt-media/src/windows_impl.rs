@@ -272,10 +272,11 @@ impl Backend {
                 .duration_since(std::time::UNIX_EPOCH)
                 .map_or(0, |d| d.as_nanos() as i64 / 100)
                 + 116_444_736_000_000_000;
-            if let Ok(updated) = timeline.LastUpdatedTime() {
-                if updated.UniversalTime > 0 && now > updated.UniversalTime {
-                    position += now - updated.UniversalTime;
-                }
+            if let Ok(updated) = timeline.LastUpdatedTime()
+                && updated.UniversalTime > 0
+                && now > updated.UniversalTime
+            {
+                position += now - updated.UniversalTime;
             }
             position = position.min(end);
         }

@@ -307,7 +307,7 @@ fn file_description(path: &str) -> Option<String> {
         let mut languages = vec![];
         if let Some((pointer, bytes)) = query("\\VarFileInfo\\Translation") {
             let pairs = std::slice::from_raw_parts(pointer as *const u16, bytes as usize / 2);
-            languages.extend(pairs.chunks_exact(2).map(|p| (p[0], p[1])));
+            languages.extend(pairs.as_chunks::<2>().0.iter().map(|p| (p[0], p[1])));
         }
         languages.extend([(0x0409, 0x04b0), (0x0409, 0x04e4), (0x0000, 0x04b0)]);
         for (language, codepage) in languages {

@@ -949,37 +949,37 @@ fn iso_date(c: &[char], zone: &(impl LocalZone + ?Sized)) -> Result<Option<Date>
             kind = Zone::Utc;
             start += 1;
         } else {
-            if start + 2 < end {
-                if let Some(h) = digits(c, start + 1, 2) {
-                    match c[start] {
-                        '-' => {
-                            kind = Zone::West;
-                            zone_hour = h;
-                            start += 3;
-                        }
-                        '+' => {
-                            kind = Zone::East;
-                            zone_hour = h;
-                            start += 3;
-                        }
-                        _ => {}
+            if start + 2 < end
+                && let Some(h) = digits(c, start + 1, 2)
+            {
+                match c[start] {
+                    '-' => {
+                        kind = Zone::West;
+                        zone_hour = h;
+                        start += 3;
                     }
+                    '+' => {
+                        kind = Zone::East;
+                        zone_hour = h;
+                        start += 3;
+                    }
+                    _ => {}
                 }
             }
             if start < end {
                 if ch(start, ':') {
                     start += 1;
-                    if start + 1 < end {
-                        if let Some(m) = digits(c, start, 2) {
-                            zone_minute = m;
-                            start += 2;
-                        }
-                    }
-                } else if start + 1 < end {
-                    if let Some(m) = digits(c, start, 2) {
+                    if start + 1 < end
+                        && let Some(m) = digits(c, start, 2)
+                    {
                         zone_minute = m;
                         start += 2;
                     }
+                } else if start + 1 < end
+                    && let Some(m) = digits(c, start, 2)
+                {
+                    zone_minute = m;
+                    start += 2;
                 }
             }
         }

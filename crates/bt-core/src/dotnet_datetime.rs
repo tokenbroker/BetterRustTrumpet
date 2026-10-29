@@ -147,15 +147,15 @@ fn date(c: &Cursor<'_>) -> Option<(u32, u32, u32, usize, bool)> {
     // yyyy S M S d | yyyy S M
     if let Some(year) = c.num(0, 4, 4) {
         for s in ['-', '/', '.'] {
-            if c.sym(1, s) {
-                if let Some(month) = c.num(2, 1, 2) {
-                    if c.sym(3, s) {
-                        let day = c.num(4, 1, 2)?;
-                        return Some((year, month, day, 5, s == '-'));
-                    }
-                    if s != '.' {
-                        return Some((year, month, 1, 3, false));
-                    }
+            if c.sym(1, s)
+                && let Some(month) = c.num(2, 1, 2)
+            {
+                if c.sym(3, s) {
+                    let day = c.num(4, 1, 2)?;
+                    return Some((year, month, day, 5, s == '-'));
+                }
+                if s != '.' {
+                    return Some((year, month, 1, 3, false));
                 }
             }
         }
@@ -365,11 +365,11 @@ pub fn try_parse(text: &str, today_ticks: i64, zone: &(impl LocalZone + ?Sized))
         return None;
     }
     let mut kind = Zone::None;
-    if clock.is_some() {
-        if let Some((z, used)) = zone_suffix(&c) {
-            kind = z;
-            c.i += used;
-        }
+    if clock.is_some()
+        && let Some((z, used)) = zone_suffix(&c)
+    {
+        kind = z;
+        c.i += used;
     }
     if weekday.is_none() {
         weekday = c.weekday().flatten();

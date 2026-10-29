@@ -4,6 +4,8 @@
 //! its apps, the media popup and the tray tooltip, drawn with Direct2D into
 //! layered windows like the original's WPF windows. No web view.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// Nested `if`s often carry a comment per level; let chains stay optional.
+#![allow(clippy::collapsible_if)]
 
 mod core;
 mod diagnostics;

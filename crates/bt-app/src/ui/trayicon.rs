@@ -325,7 +325,7 @@ pub fn sheet(states: &[State]) -> Option<(u32, u32, Vec<u8>)> {
 /// and keep their alpha.
 fn recolor(pixels: &mut [u8], size: u32, fill: f32, color: [u8; 3]) {
     let columns = (size as f32 * fill).ceil() as usize;
-    for (i, p) in pixels.chunks_exact_mut(4).enumerate() {
+    for (i, p) in pixels.as_chunks_mut::<4>().0.iter_mut().enumerate() {
         // BGRA: red is byte 2.
         if i % size as usize >= columns || p[2] <= 220 {
             continue;
