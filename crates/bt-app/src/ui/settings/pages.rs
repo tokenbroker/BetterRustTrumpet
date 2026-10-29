@@ -700,6 +700,19 @@ fn general(core: &mut Core) -> Vec<Section> {
                     ),
                     legacy,
                 ),
+                disabled(
+                    toggle(
+                        core,
+                        Key::AnimateTrayIcon,
+                        tr("SettingsAnimateTrayIcon"),
+                        Some(if legacy {
+                            tr("WebSettingsRequiresModernIcon")
+                        } else {
+                            tr("SettingsAnimateTrayIconDesc")
+                        }),
+                    ),
+                    legacy,
+                ),
                 toggle(
                     core,
                     Key::ShowAppTooltips,

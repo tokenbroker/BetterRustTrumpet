@@ -1637,6 +1637,7 @@ impl Ui {
         let store = &self.core.store;
         let legacy = store.bool(Key::UseLegacyIcon);
         let shows_type = store.bool(Key::TrayIconShowsDeviceType);
+        self.animator.disabled = !store.bool(Key::AnimateTrayIcon);
         let default = devices.devices.iter().find(|d| d.is_default);
         let form = match default {
             Some(d) if shows_type && !legacy => match &self.form_factor {

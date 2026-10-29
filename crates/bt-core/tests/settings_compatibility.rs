@@ -48,7 +48,8 @@ fn snapshot(settings: &Settings, on_battery: bool) -> Json {
     let context = context(on_battery);
     for &key in Key::ALL {
         // Reading this source property allocates an ID; test it explicitly.
-        if key != Key::VoteAnonymousId {
+        // AnimateTrayIcon is port-only (D51); the C# app has no such property.
+        if key != Key::VoteAnonymousId && key != Key::AnimateTrayIcon {
             result.insert(key.name().into(), encoded(&settings.get(key, context)));
         }
     }

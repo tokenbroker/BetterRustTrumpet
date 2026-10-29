@@ -153,6 +153,8 @@ pub struct Animator {
     pub session_playing: bool,
     /// A legacy player is playing (LegacyMediaPlayerService).
     pub legacy_playing: bool,
+    /// AnimateTrayIcon is off (D51): the icon stays still.
+    pub disabled: bool,
     /// The glyph being animated and the current frame.
     running: Option<(Glyph, u16)>,
     /// Icons of the running loop's poses, so each is drawn once.
@@ -167,7 +169,8 @@ impl Animator {
     /// Starts or stops the loop for the static icon `base` (StartAnimation
     /// / StopAnimation); `true` when that changed.
     pub fn update(&mut self, base: &State) -> bool {
-        let wanted = (self.session_playing || self.legacy_playing) && can_animate(base);
+        let wanted =
+            !self.disabled && (self.session_playing || self.legacy_playing) && can_animate(base);
         if wanted == self.running() {
             return false;
         }

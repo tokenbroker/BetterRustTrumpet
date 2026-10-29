@@ -31,6 +31,8 @@ keys! {
     UseLegacyIcon: Bool(false), IsExpanded: Bool(false), HasShownFirstRun: Bool(false),
     UseScrollWheelInTray: Bool(true), UseGlobalMouseWheelHook: Bool(false),
     TrayIconShowsDeviceType: Bool(false), ShowAppTooltips: Bool(true),
+    // Port-only (D51): the tray playback animation can be turned off.
+    AnimateTrayIcon: Bool(true),
     IsTelemetryEnabled: Bool(true), TelemetryAnonymousId: Text(Some(String::new())),
     VoteAnonymousId: Text(Some(String::new())), AnnouncementsEnabled: Bool(true),
     HasCompletedOnboarding: Bool(false), UseLogarithmicVolume: Bool(false),
