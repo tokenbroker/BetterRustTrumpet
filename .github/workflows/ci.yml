@@ -25,6 +25,14 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
+      # D56: a private key must never be committed (the release signing key
+      # lives only in a secret and offline backups).
+      - name: No private keys
+        shell: bash
+        run: |
+          if git grep -nE 'BEGIN ([A-Z]+ )?PRIVATE KEY-{5}' -- . || git ls-files | grep -E '(^|/)\.keys/|\.key\.pem$'; then
+            echo "::error::a private key is tracked"; exit 1
+          fi
       - run: cargo fmt --all --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace

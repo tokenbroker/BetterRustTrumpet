@@ -52,12 +52,45 @@ jobs:
           "version=$version" >> $env:GITHUB_OUTPUT
           "hash=$hash" >> $env:GITHUB_OUTPUT
 
+      - name: Sign the update
+        shell: pwsh
+        env:
+          # D56: the private key exists only as this secret (and offline
+          # backups); it is written to the runner's temp folder for one
+          # openssl call and deleted.
+          UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+        run: |
+          if (-not $env:UPDATE_SIGNING_KEY) { throw "UPDATE_SIGNING_KEY is not set: releases must be signed" }
+          $openssl = (Get-Command openssl -ErrorAction SilentlyContinue).Source
+          if (-not $openssl) { $openssl = "C:\Program Files\Git\usr\bin\openssl.exe" }
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item target\release\BetterTrumpet.exe, target\release\bt.exe dist\
+          $files = foreach ($f in 'BetterTrumpet.exe', 'bt.exe') {
+            [ordered]@{ name = $f; size = (Get-Item "dist\$f").Length; sha256 = (Get-FileHash "dist\$f" -Algorithm SHA256).Hash.ToLower() }
+          }
+          $manifest = [ordered]@{ app = 'BetterRustTrumpet'; version = '${{ steps.package.outputs.version }}'; files = @($files) } | ConvertTo-Json -Depth 4
+          [IO.File]::WriteAllText("$PWD\dist\update.json", $manifest, [Text.UTF8Encoding]::new($false))
+          $key = Join-Path $env:RUNNER_TEMP 'update-signing.pem'
+          try {
+            [IO.File]::WriteAllText($key, $env:UPDATE_SIGNING_KEY)
+            & $openssl dgst -sha256 -sign $key -out dist\update.json.sig dist\update.json
+            if ($LASTEXITCODE -ne 0) { throw "signing failed" }
+          } finally {
+            Remove-Item $key -Force -ErrorAction SilentlyContinue
+          }
+          # The app's compiled-in public key must accept it.
+          & $openssl dgst -sha256 -verify packaging\update-signing.pub.pem -signature dist\update.json.sig dist\update.json
+          if ($LASTEXITCODE -ne 0) { throw "the signature does not verify with packaging/update-signing.pub.pem" }
+          Get-Content dist\update.json
+
       - name: Keep the zip (manual runs)
         if: github.ref_type != 'tag'
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.package.outputs.name }}
-          path: ${{ steps.package.outputs.name }}.zip
+          path: |
+            ${{ steps.package.outputs.name }}.zip
+            dist/*
 
       - name: Publish the release
         if: github.ref_type == 'tag'
@@ -71,9 +104,12 @@ jobs:
           $notes | Set-Content notes.md -Encoding utf8
           $extra = @()
           if ($tag.Contains('-')) { $extra += '--prerelease' }
+          # The zip for people; the exes and the signed manifest for the
+          # app's updater (D56).
+          $assets = @($zip) + (Get-ChildItem dist | ForEach-Object { $_.FullName })
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $tag $zip --clobber
+            gh release upload $tag @assets --clobber
           } else {
-            gh release create $tag $zip --title "Better Rust Trumpet ${{ steps.package.outputs.version }}" --notes-file notes.md @extra
+            gh release create $tag @assets --title "Better Rust Trumpet ${{ steps.package.outputs.version }}" --notes-file notes.md @extra
           }

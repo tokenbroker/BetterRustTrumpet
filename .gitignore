@@ -1,2 +1,5 @@
 /target/
 /crates/bt-app/gen/
+# Release signing keys: never commit (D56).
+/.keys/
+*.key.pem
