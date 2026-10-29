@@ -1,0 +1,9 @@
+name: Idea or feedback
+description: A suggestion, a missing feature, or general feedback
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea or feedback
+    validations:
+      required: true

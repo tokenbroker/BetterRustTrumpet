@@ -6,7 +6,7 @@ resolver = "3"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
-authors = ["David Golden", "Rafael Rivera", "Dave Amenta", "xammen"]
+authors = ["David Golden", "Rafael Rivera", "Dave Amenta", "xammen", "tokenbroker"]
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }

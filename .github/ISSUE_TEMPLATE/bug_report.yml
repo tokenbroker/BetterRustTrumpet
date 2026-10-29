@@ -1,0 +1,39 @@
+name: Bug report
+description: Something in Better Rust Trumpet doesn't work or looks wrong
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the flyout
+        2. ...
+  - type: input
+    id: version
+    attributes:
+      label: Better Rust Trumpet version or commit
+      description: The release name, or the commit you built.
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      description: Press Win+R, type `winver`, and copy the version and build (for example 24H2, build 26100.2314).
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup (optional)
+      description: Display scaling, number of monitors, audio devices, light or dark mode, language - whatever seems relevant.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log or diagnostic report
+      description: Attach the newest file from `%LOCALAPPDATA%\BetterTrumpet-Rust\logs`, or a report from Settings > About > Export diagnostic report. Have a look first; they can contain device and app names.
