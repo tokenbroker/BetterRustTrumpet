@@ -1,0 +1,104 @@
+name: VirusTotal
+
+# Scans a published release's setup, zip and exes on VirusTotal and adds the
+# results to its notes. It runs after the release is out (release.yml calls
+# it) and never blocks it: unsigned new exes are often flagged by an engine or
+# two by mistake, so the table is for people to judge, not a gate. Running it
+# by hand rescans an existing release.
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to scan, e.g. v0.1.0-alpha.5
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan and report
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+          VT_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+        run: |
+          if (-not $env:VT_KEY) { "::warning::VIRUSTOTAL_API_KEY is not set; skipping the scan"; exit 0 }
+          $tag = $env:TAG
+          New-Item -ItemType Directory -Force assets | Out-Null
+          gh release download $tag --dir assets --pattern '*.exe' --pattern '*.zip'
+          if ($LASTEXITCODE -ne 0) { throw "could not download the assets of $tag" }
+
+          # The free API allows 4 requests a minute: space every call out.
+          function VT([string]$Method, [string]$Path, $Form) {
+            Start-Sleep -Seconds 16
+            $req = @{ Method = $Method; Uri = "https://www.virustotal.com/api/v3/$Path"; Headers = @{ 'x-apikey' = $env:VT_KEY } }
+            if ($Form) { $req.Form = $Form }
+            Invoke-RestMethod @req
+          }
+
+          $files = Get-ChildItem assets -File | Sort-Object Name | ForEach-Object {
+            [pscustomobject]@{ Name = $_.Name; Path = $_; sha = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower() }
+          }
+          $pending = @{}
+          foreach ($f in $files) {
+            try {
+              $known = VT GET "files/$sha"
+              if ($known.data.attributes.last_analysis_date) { "$($f.Name): already scanned"; continue }
+            } catch {
+              if ($_.Exception.Response.StatusCode.value__ -ne 404) { throw }
+            }
+            "$($f.Name): uploading"
+            $pending[$f.Name] = (VT POST files @{ file = $f.Path }).data.id
+          }
+
+          # Analyses usually finish within a few minutes.
+          $deadline = (Get-Date).AddMinutes(25)
+          while ($pending.Count -and (Get-Date) -lt $deadline) {
+            foreach ($name in @($pending.Keys)) {
+              $status = (VT GET "analyses/$($pending[$name])").data.attributes.status
+              if ($status -eq 'completed') { "${name}: scanned"; $pending.Remove($name) }
+            }
+          }
+          foreach ($name in $pending.Keys) { "::warning::$name was not scanned in time; its link shows the result later" }
+
+          $rows = foreach ($f in $files) {
+            $link = "https://www.virustotal.com/gui/file/$($f.sha)"
+            $a = (VT GET "files/$($f.sha)").data.attributes
+            $s = $a.last_analysis_stats
+            $total = $s.malicious + $s.suspicious + $s.undetected + $s.harmless
+            if (-not $total) { "| ``$($f.Name)`` | pending | [report]($link) |"; continue }
+            $flagged = @($a.last_analysis_results.PSObject.Properties.Value |
+              Where-Object { $_.category -in 'malicious', 'suspicious' } |
+              ForEach-Object { "$($_.engine_name): $($_.result)" })
+            $result = if ($flagged) { "$($flagged.Count) / $total ($($flagged -join '; '))" } else { "0 / $total" }
+            "| ``$($f.Name)`` | $result | [report]($link) |"
+          }
+          $section = @(
+            '<!-- virustotal -->'
+            '### VirusTotal'
+            ''
+            'Engines that flagged each file. New unsigned programs are sometimes flagged by one or two engines by mistake; please report anything flagged by Microsoft Defender.'
+            ''
+            '| File | Flagged | |'
+            '| --- | --- | --- |'
+            $rows
+            '<!-- /virustotal -->'
+          ) -join "`n"
+          $section
+
+          # Replace the section of an earlier scan.
+          $body = gh release view $tag --json body --jq .body
+          $body = ($body -join "`n") -replace '(?s)\s*<!-- virustotal -->.*?<!-- /virustotal -->', ''
+          "$($body.TrimEnd())`n`n$section`n" | Set-Content notes.md -Encoding utf8
+          gh release edit $tag --notes-file notes.md

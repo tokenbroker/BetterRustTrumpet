@@ -134,3 +134,12 @@ jobs:
           } else {
             gh release create $tag @assets --title "Better Rust Trumpet ${{ steps.package.outputs.version }}" --notes-file notes.md @extra
           }
+
+  # After publishing, so a slow or failing scan never holds a release back.
+  virustotal:
+    needs: release
+    if: github.ref_type == 'tag'
+    uses: ./.github/workflows/virustotal.yml
+    with:
+      tag: ${{ github.ref_name }}
+    secrets: inherit
