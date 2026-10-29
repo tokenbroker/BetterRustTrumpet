@@ -56,6 +56,8 @@ const APP_SHOW_MEDIA: usize = 6;
 pub const APP_SETTINGS: usize = 7;
 /// A media session's playback state changed (bt-media's watch).
 const APP_MEDIA: usize = 60;
+/// The update check finished (`updates::take` has the result).
+const APP_UPDATE: usize = 61;
 
 // Timers on the hidden window.
 const TRAY_POLL: usize = 1;
@@ -69,6 +71,13 @@ const TRAY_ANIMATION: usize = 60;
 /// Shortly after a window closes, memory goes back to Windows.
 const MEMORY_TRIM: usize = 61;
 const MEMORY_TRIM_DELAY_MS: u32 = 1000;
+/// The update check (D55): 10 s after startup, then every 6 hours, as the
+/// original's UpdateService; on battery with Eco Mode, an hour later.
+const UPDATE_CHECK: usize = 62;
+const UPDATE_STARTUP_MS: u32 = 10_000;
+const UPDATE_SOON_MS: u32 = 2_000;
+const UPDATE_EVERY_MS: u32 = 6 * 60 * 60 * 1000;
+const UPDATE_ECO_RETRY_MS: u32 = 60 * 60 * 1000;
 /// While the tray icon can't be seen, how often the animation checks
 /// whether it can again.
 const UNSEEN_CHECK_MS: u32 = 1000;
@@ -99,6 +108,8 @@ pub enum MenuCommand {
     Onboarding,
     /// A web page (the project's repository, issues, the original).
     Url(&'static str),
+    /// The newer release the update check found.
+    UpdatePage,
     LegacyMixer,
     ControlPanel(&'static str),
     /// An ms-settings: page.
@@ -169,6 +180,8 @@ pub struct Ui {
     /// Routed preset apps re-applied by PRESET_SETTLE, and ticks left.
     settle: Vec<AppVolumeEntry>,
     settle_ticks: u32,
+    /// CheckGitHubForUpdates as last applied.
+    update_checks: bool,
 }
 
 thread_local! {
@@ -263,6 +276,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         form_factor: None,
         settle: vec![],
         settle_ticks: 0,
+        update_checks: false,
     };
     ui.register_hotkeys();
     bt_app::win32::presence::watch_display(hidden);
@@ -286,8 +300,9 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         let first_run = !ui.core.store.bool(Key::HasShownFirstRun);
         ui.core.store.set(Key::HasShownFirstRun, Value::Bool(true));
         if first_run || wnd::key_down(VK_LCONTROL) {
-            ui.open_onboarding();
+            ui.open_onboarding(first_run);
         }
+        ui.updates_changed(UPDATE_STARTUP_MS);
     });
     // `--show` opens the flyout at startup; `--media` the media popup.
     if std::env::args().any(|a| a == "--show") {
@@ -523,7 +538,7 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     settings.close();
     // The setup window's pages (the privacy page also with its
     // confirmation open) and toasts (one look, as in the original).
-    let mut setup = onboarding::Onboarding::new(gfx.clone(), &mut core)?;
+    let mut setup = onboarding::Onboarding::new(gfx.clone(), &mut core, true)?;
     for page in 0..onboarding::PAGES {
         save(
             &format!("onboarding-{}.png", page + 1),
@@ -881,6 +896,7 @@ impl Ui {
     /// again (shortcut settings, VolumeProfilesJson, DeviceHotkey:<id>);
     /// services that cache settings re-read them (focus lost).
     pub fn settings_changed(&mut self) {
+        self.updates_changed(UPDATE_SOON_MS);
         self.focus.settings_changed(&mut self.core);
         self.icon = None;
         self.form_factor = None;
@@ -1044,13 +1060,84 @@ impl Ui {
         self.register_hotkeys();
     }
 
+    // ---------- update check ----------
+
+    /// Starts or stops the timed check after CheckGitHubForUpdates may
+    /// have changed; turning it on checks after `delay_ms`.
+    fn updates_changed(&mut self, delay_ms: u32) {
+        let on = self.core.store.bool(Key::CheckGitHubForUpdates);
+        if on == self.update_checks {
+            return;
+        }
+        self.update_checks = on;
+        if on {
+            self.hidden.set_timer(UPDATE_CHECK, delay_ms);
+        } else {
+            self.hidden.kill_timer(UPDATE_CHECK);
+            if self.core.update != bt_app::updates::Status::Checking {
+                self.core.update = bt_app::updates::Status::Unchecked;
+            }
+            self.updates_shown();
+        }
+    }
+
+    /// The timer's check (skipped while off, and on battery with Eco Mode)
+    /// or Settings' Check button (`manual`, always).
+    fn check_for_updates(&mut self, manual: bool) {
+        use bt_app::updates::Status;
+        if !manual {
+            if !self.core.store.bool(Key::CheckGitHubForUpdates) {
+                self.hidden.kill_timer(UPDATE_CHECK);
+                return;
+            }
+            let store = &self.core.store;
+            if crate::store::context().on_battery
+                && store.settings.effective_eco_mode(crate::store::context())
+            {
+                self.hidden.set_timer(UPDATE_CHECK, UPDATE_ECO_RETRY_MS);
+                return;
+            }
+            self.hidden.set_timer(UPDATE_CHECK, UPDATE_EVERY_MS);
+        }
+        if self.core.update == Status::Checking {
+            return;
+        }
+        self.core.update = Status::Checking;
+        self.updates_shown();
+        let poster = self.hidden.poster();
+        // UpdateNotifyChannel: 0 all, 1 minor and major, 2 major, 3 none.
+        let channel = self.core.store.int(Key::UpdateNotifyChannel);
+        bt_app::updates::start(channel, move || poster.post(APP_UPDATE));
+    }
+
+    fn update_checked(&mut self) {
+        use bt_app::updates::Status;
+        let Some(status) = bt_app::updates::take() else {
+            return;
+        };
+        bt_app::log::line(match &status {
+            Status::Available(r) => format!("UpdateService: Update available! {}", r.version),
+            Status::UpToDate => "UpdateService: Up to date or filtered".to_string(),
+            _ => "UpdateService: Check failed".to_string(),
+        });
+        self.core.update = status;
+        self.updates_shown();
+    }
+
+    /// The Updates page shows the check's state.
+    fn updates_shown(&mut self) {
+        if let Some(settings) = &mut self.settings {
+            settings.refresh(&mut self.core);
+        }
+    }
+
     // ---------- setup window ----------
 
     /// ShowOnboardingManually (the tray menu) and Left Ctrl at startup:
     /// opens the setup window, or brings the open one forward.
-    fn open_onboarding(&mut self) {
+    fn open_onboarding(&mut self, first_run: bool) {
         if self.onboarding.is_none() {
-            match onboarding::Onboarding::new(self.window_gfx(), &mut self.core) {
+            match onboarding::Onboarding::new(self.window_gfx(), &mut self.core, first_run) {
                 Ok(window) => self.onboarding = Some(window),
                 Err(e) => eprintln!("BetterTrumpet: the setup window failed to open: {e}"),
             }
@@ -1102,6 +1189,7 @@ impl Ui {
         if outcome.theme {
             // Every setting change lands here: services that cache
             // settings re-read them and the tray icon is redrawn.
+            self.updates_changed(UPDATE_SOON_MS);
             self.focus.settings_changed(&mut self.core);
             self.icon = None;
             self.form_factor = None;
@@ -1121,6 +1209,9 @@ impl Ui {
             Some(false) => self.reload_hotkeys(),
             None if outcome.hotkeys => self.reload_hotkeys(),
             None => {}
+        }
+        if outcome.check_updates {
+            self.check_for_updates(true);
         }
         if let Some(index) = outcome.apply_preset {
             self.apply_preset(index);
@@ -1350,6 +1441,8 @@ impl Ui {
                 }
             }
             Event::Timer(MEMORY_TRIM) => self.trim_memory(),
+            Event::Timer(UPDATE_CHECK) => self.check_for_updates(false),
+            Event::App(APP_UPDATE) => self.update_checked(),
             Event::Timer(TRAY_ANIMATION) => {
                 if let Some(base) = self.icon_base {
                     // Nobody sees the icon under a full-screen app or a
@@ -1795,8 +1888,13 @@ impl Ui {
             MenuCommand::Preset(index) => self.apply_preset(index),
             MenuCommand::Mixer => self.open_mixer(),
             MenuCommand::Settings | MenuCommand::LegacySettings => self.open_settings(),
-            MenuCommand::Onboarding => self.open_onboarding(),
+            MenuCommand::Onboarding => self.open_onboarding(false),
             MenuCommand::Url(url) => open(url),
+            MenuCommand::UpdatePage => {
+                if let bt_app::updates::Status::Available(release) = &self.core.update {
+                    open(&release.url);
+                }
+            }
             MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
             MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
             MenuCommand::SystemSettings(page) => open(&format!("ms-settings:{page}")),

@@ -99,6 +99,7 @@ enum Target {
     DisableAnyway,
     KeepEnabled,
     Startup,
+    Updates,
 }
 
 /// What the rest of the app has to pick up after an event.
@@ -150,6 +151,8 @@ pub struct Onboarding {
     telemetry: bool,
     confirm: bool,
     run_at_startup: bool,
+    /// CheckGitHubForUpdates (D55), ticked on a first run.
+    check_updates: bool,
     hover: Option<Target>,
     pressed: Option<Target>,
     focus: Option<Target>,
@@ -160,7 +163,7 @@ pub struct Onboarding {
 impl Onboarding {
     /// OnboardingViewModel's constructor: reads the current settings and
     /// the active outputs (sorted by name, the default one chosen).
-    pub fn new(gfx: Rc<Gfx>, core: &mut Core) -> windows::core::Result<Self> {
+    pub fn new(gfx: Rc<Gfx>, core: &mut Core, first_run: bool) -> windows::core::Result<Self> {
         let window = wnd::create_layered_app(tr("OnboardingWindowTitle"))?;
         let mut devices: Vec<Device> = core
             .audio
@@ -207,6 +210,7 @@ impl Onboarding {
             telemetry: core.store.bool(Key::IsTelemetryEnabled),
             confirm: false,
             run_at_startup: startup::is_enabled(),
+            check_updates: first_run || core.store.bool(Key::CheckGitHubForUpdates),
             hover: None,
             pressed: None,
             focus: None,
@@ -375,6 +379,8 @@ impl Onboarding {
             let _ = startup::set_enabled(self.run_at_startup, &exe);
         }
         core.store.set(Key::UpdateNotifyChannel, Value::Int(0));
+        core.store
+            .set(Key::CheckGitHubForUpdates, Value::Bool(self.check_updates));
         out.settings = true;
     }
 
@@ -399,6 +405,7 @@ impl Onboarding {
                 self.telemetry = true;
             }
             Target::Startup => self.run_at_startup = !self.run_at_startup,
+            Target::Updates => self.check_updates = !self.check_updates,
         }
     }
 
@@ -504,8 +511,9 @@ impl Onboarding {
                 Target::DisableAnyway,
                 Target::KeepEnabled,
                 Target::Startup,
+                Target::Updates,
             ],
-            2 => vec![Target::Telemetry, Target::Startup],
+            2 => vec![Target::Telemetry, Target::Startup, Target::Updates],
             _ => vec![],
         };
         list.push(Target::Skip);
@@ -644,6 +652,10 @@ impl Onboarding {
         let label_w = self.text_width(tr("OnboardingLaunchAtStartup"), 12.0, 400);
         let row_h = self.line(12.0, 400).max(18.0);
         let startup = Rect::new(x + 4.0, row_y, 28.0 + label_w, row_h);
+        let startup_desc = row_y + row_h + 6.0;
+        let updates_y = startup_desc + self.line(12.0, 400) + 14.0;
+        let updates_w = self.text_width(tr("OnboardingCheckUpdates"), 12.0, 400);
+        let updates = Rect::new(x + 4.0, updates_y, 28.0 + updates_w, row_h);
         Privacy {
             card,
             inner,
@@ -651,7 +663,9 @@ impl Onboarding {
             check,
             confirm,
             startup,
-            startup_desc: row_y + row_h + 6.0,
+            startup_desc,
+            updates,
+            updates_desc: updates_y + row_h + 6.0,
         }
     }
 
@@ -688,6 +702,9 @@ impl Onboarding {
                 }
                 if p.check.contains(x, y) {
                     return Some(Target::Telemetry);
+                }
+                if p.updates.contains(x, y) {
+                    return Some(Target::Updates);
                 }
                 p.startup.contains(x, y).then_some(Target::Startup)
             }
@@ -1114,6 +1131,27 @@ impl Onboarding {
             &style(12.0, 400),
             MUTED,
         );
+        let u = p.updates;
+        let box_rect = Rect::new(u.x, u.y + (u.h - 18.0) / 2.0, 18.0, 18.0);
+        self.checkbox(canvas, box_rect, self.check_updates);
+        canvas.text(
+            tr("OnboardingCheckUpdates"),
+            Rect::new(u.x + 28.0, u.y, u.w - 28.0 + 1.0, u.h),
+            &TextStyle::new(FONT, 12.0),
+            TEXT,
+        );
+        self.focus_ring(canvas, Target::Updates, u, 4.0);
+        canvas.text(
+            tr("OnboardingCheckUpdatesDesc"),
+            Rect::new(
+                p.card.x + 32.0,
+                p.updates_desc,
+                p.card.w - 32.0,
+                self.line(12.0, 400),
+            ),
+            &style(12.0, 400),
+            MUTED,
+        );
     }
 
     fn draw_ready(&self, canvas: &mut Canvas) {
@@ -1300,6 +1338,8 @@ struct Privacy {
     confirm: Option<(Rect, Rect, Rect)>,
     startup: Rect,
     startup_desc: f32,
+    updates: Rect,
+    updates_desc: f32,
 }
 
 #[cfg(test)]

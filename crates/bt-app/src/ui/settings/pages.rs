@@ -339,6 +339,9 @@ pub enum Action {
     OpenUrl(&'static str),
     /// Settings > About's "Export diagnostic report" (local files only).
     ExportDiagnostics,
+    /// Settings > Updates' Check button and the found release's page.
+    CheckForUpdates,
+    OpenUpdate,
     /// Settings > About's Export & Import buttons (.btsettings).
     SettingsExport,
     SettingsImport,
@@ -1328,16 +1331,40 @@ fn performance(core: &mut Core) -> Vec<Section> {
 }
 
 fn updates(core: &mut Core) -> Vec<Section> {
-    let auto = core.store.bool(Key::AutoCheckForUpdates);
+    use bt_app::updates::Status;
+    let auto = core.store.bool(Key::CheckGitHubForUpdates);
+    let status = match &core.update {
+        Status::Unchecked => tr("UpdateTextNeverChecked").to_string(),
+        Status::Checking => tr("CheckingForUpdatesText").to_string(),
+        Status::UpToDate => tr("NoUpdatesAvailableText").to_string(),
+        Status::Available(r) => bt_app::i18n::trf("UpdateTextAvailable", &[("0", &r.version)]),
+        Status::Failed => tr("UpdateCheckFailed").to_string(),
+    };
+    let mut buttons = vec![];
+    if matches!(core.update, Status::Available(_)) {
+        let mut open = button(tr("UpdateOpenReleasePage"), None, Action::OpenUpdate);
+        open.primary = true;
+        buttons.push(open);
+    }
+    buttons.push(button(
+        tr("SettingsCheckUpdate"),
+        None,
+        Action::CheckForUpdates,
+    ));
     vec![section(
         tr("WebSettingsUpdatesSection"),
         Some(tr("SettingsUpdatesDesc")),
         vec![
             toggle(
                 core,
-                Key::AutoCheckForUpdates,
+                Key::CheckGitHubForUpdates,
                 tr("AutoUpdateCheckboxText"),
-                Some(tr("UpdatesPreviewNote")),
+                Some(tr("UpdatesCheckDesc")),
+            ),
+            row(
+                &format!("{} {}", tr("SettingsVersion"), bt_app::updates::CURRENT),
+                Some(&status),
+                Control::Buttons(buttons),
             ),
             disabled(
                 row(

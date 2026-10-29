@@ -98,8 +98,23 @@
   <data name="PrivacyPreviewNote" xml:space="preserve">
     <value>This preview sends no data and fetches no announcements, so there is nothing to turn off here.</value>
   </data>
-  <data name="UpdatesPreviewNote" xml:space="preserve">
-    <value>Saved for the original app; this preview never checks for updates itself.</value>
+  <data name="UpdatesCheckDesc" xml:space="preserve">
+    <value>Every 6 hours, asks this project's GitHub releases whether a newer version is out. Only your IP address and the app's version reach GitHub; nothing is downloaded.</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Couldn't reach GitHub. Try again later.</value>
+  </data>
+  <data name="UpdateOpenReleasePage" xml:space="preserve">
+    <value>Open release page</value>
+  </data>
+  <data name="SettingsVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="OnboardingCheckUpdates" xml:space="preserve">
+    <value>Tell me when a new version is out</value>
+  </data>
+  <data name="OnboardingCheckUpdatesDesc" xml:space="preserve">
+    <value>Checks this project's GitHub releases every 6 hours. Nothing is downloaded.</value>
   </data>
   <data name="AboutPreviewCredits" xml:space="preserve">
     <value>By tokenbroker. A Rust rewrite of BetterTrumpet by xammen, itself based on EarTrumpet by David Golden, Rafael Rivera and Dave Amenta. MIT License.</value>

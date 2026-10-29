@@ -9,7 +9,9 @@ features and settings, in a small native app.
 - About 5 MB of memory and no CPU while idle; one process.
 - Reads your existing EarTrumpet/BetterTrumpet settings but never changes
   them. Its own settings live in `%LOCALAPPDATA%\BetterTrumpet-Rust`.
-- No telemetry and no network access.
+- No telemetry. The only network request is an opt-in update check: every
+  6 hours it asks this repository's GitHub releases for a newer version, and
+  only tells you (Settings > Updates).
 
 **Status: alpha.** Most features are in but much of it has not been tested on
 other machines yet. Bug reports are very welcome (see below).

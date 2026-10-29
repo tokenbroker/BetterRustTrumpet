@@ -5,6 +5,7 @@ pub mod diag;
 pub mod dialog;
 pub mod foreground;
 pub mod gfx;
+pub mod http;
 pub mod icons;
 pub mod instance;
 pub mod locale;

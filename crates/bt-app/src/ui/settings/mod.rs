@@ -116,6 +116,8 @@ pub struct Outcome {
     pub capture: Option<bool>,
     /// Apply this QuickTrumpet preset (with its confirmation).
     pub apply_preset: Option<usize>,
+    /// Settings > Updates' Check button.
+    pub check_updates: bool,
     pub close: bool,
 }
 
@@ -1183,6 +1185,18 @@ impl Settings {
             }
             Action::OpenUrl(url) => {
                 let _ = std::process::Command::new("explorer").arg(url).spawn();
+                return;
+            }
+            Action::CheckForUpdates => {
+                out.check_updates = true;
+                return;
+            }
+            Action::OpenUpdate => {
+                if let bt_app::updates::Status::Available(release) = &core.update {
+                    let _ = std::process::Command::new("explorer")
+                        .arg(&release.url)
+                        .spawn();
+                }
                 return;
             }
             Action::ExportDiagnostics => {

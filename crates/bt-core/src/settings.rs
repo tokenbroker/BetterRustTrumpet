@@ -35,6 +35,10 @@ keys! {
     AnimateTrayIcon: Bool(true),
     // Port-only (D54): the tray menu's "Star on GitHub" links can be hidden.
     ShowProjectLinks: Bool(true),
+    // Port-only (D55): asks this project's GitHub releases for a newer
+    // version. Off unless onboarding turns it on, so settings carried over
+    // from the original never start the request.
+    CheckGitHubForUpdates: Bool(false),
     IsTelemetryEnabled: Bool(true), TelemetryAnonymousId: Text(Some(String::new())),
     VoteAnonymousId: Text(Some(String::new())), AnnouncementsEnabled: Bool(true),
     HasCompletedOnboarding: Bool(false), UseLogarithmicVolume: Bool(false),

@@ -225,6 +225,13 @@ impl Ui {
             SPARKLE,
             0.92,
         ));
+        // D55: the update check found a newer release.
+        if let bt_app::updates::Status::Available(release) = &self.core.update {
+            items.push(b.command(
+                trf("UpdateTextAvailable", &[("0", &release.version)]),
+                MenuCommand::UpdatePage,
+            ));
+        }
         items.push(b.command(
             tr("TrayReportProblem"),
             MenuCommand::Url(bt_app::links::NEW_ISSUE),

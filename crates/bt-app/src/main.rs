@@ -86,6 +86,7 @@ fn main() {
         store: store::Store::open(),
         undo: UndoHistory::default(),
         launch: rules::LaunchTracker::default(),
+        update: Default::default(),
     };
     if let Some(dir) = render {
         let _ = ui::render(core, &dir);

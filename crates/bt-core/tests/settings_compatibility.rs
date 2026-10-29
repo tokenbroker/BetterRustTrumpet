@@ -48,11 +48,12 @@ fn snapshot(settings: &Settings, on_battery: bool) -> Json {
     let context = context(on_battery);
     for &key in Key::ALL {
         // Reading this source property allocates an ID; test it explicitly.
-        // AnimateTrayIcon and ShowProjectLinks are port-only (D51, D54); the
-        // C# app has no such properties.
+        // AnimateTrayIcon, ShowProjectLinks and CheckGitHubForUpdates are
+        // port-only (D51, D54, D55); the C# app has no such properties.
         if key != Key::VoteAnonymousId
             && key != Key::AnimateTrayIcon
             && key != Key::ShowProjectLinks
+            && key != Key::CheckGitHubForUpdates
         {
             result.insert(key.name().into(), encoded(&settings.get(key, context)));
         }

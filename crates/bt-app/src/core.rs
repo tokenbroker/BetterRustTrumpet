@@ -22,6 +22,8 @@ pub struct Core {
     pub store: Store,
     pub undo: UndoHistory,
     pub launch: rules::LaunchTracker,
+    /// The update check's last result (D55).
+    pub update: bt_app::updates::Status,
 }
 
 /// A hidden app entry saved for a device.

@@ -182,6 +182,12 @@ Effective Eco Mode (EcoMode, or AutoEcoMode on battery) keeps the tray icon stil
 
 The setup window opens on the first launch when HasShownFirstRun is unset, meaning the PC never ran EarTrumpet, BetterTrumpet or this app (the original's Q09 launch stays silent); Left Ctrl at startup and the tray item still open it later.
 
+## D55 - opt-in update check against this project's releases (user decision, 2026-10-29)
+
+The app's only network request. Like the original's UpdateService it checks 10 s after startup and then every 6 hours, filtered by UpdateNotifyChannel, but it asks `api.github.com/repos/tokenbroker/BetterRustTrumpet/releases` (the list, because `releases/latest` leaves out pre-releases) through WinHTTP, and it only tells: a tray menu item and Settings > Updates open the release page; nothing is downloaded or installed. Drafts never count, pre-releases only for a pre-release build, versions compare as SemVer, and only this repository's release pages are opened. The request carries the app's name and version as its user agent and nothing else. On battery with Eco Mode the timed check waits an hour; Settings > Updates' Check button always checks.
+
+The switch is a port-only key, CheckGitHubForUpdates, off by default, so settings carried over from the original (whose AutoCheckForUpdates defaults to on) never start the request. Onboarding's Privacy page offers it, ticked on a first launch. The workspace version now follows the release tags (0.1.0-alpha.3), and the release workflow refuses a tag that differs from it.
+
 ## Preserved quirks
 
 | ID | Behavior to retain | Source / implication |
