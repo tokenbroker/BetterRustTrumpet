@@ -700,19 +700,6 @@ fn general(core: &mut Core) -> Vec<Section> {
                     ),
                     legacy,
                 ),
-                disabled(
-                    toggle(
-                        core,
-                        Key::AnimateTrayIcon,
-                        tr("SettingsAnimateTrayIcon"),
-                        Some(if legacy {
-                            tr("WebSettingsRequiresModernIcon")
-                        } else {
-                            tr("SettingsAnimateTrayIconDesc")
-                        }),
-                    ),
-                    legacy,
-                ),
                 toggle(
                     core,
                     Key::ShowAppTooltips,
@@ -1241,6 +1228,7 @@ fn speed_step(speed: f64) -> f64 {
 
 fn performance(core: &mut Core) -> Vec<Section> {
     let smooth = core.store.bool(Key::UseSmoothVolumeAnimation);
+    let legacy = core.store.bool(Key::UseLegacyIcon);
     let eco = core
         .store
         .settings
@@ -1284,6 +1272,20 @@ fn performance(core: &mut Core) -> Vec<Section> {
                         },
                     ),
                     !smooth,
+                ),
+                // Port-only (D51).
+                disabled(
+                    toggle(
+                        core,
+                        Key::AnimateTrayIcon,
+                        tr("SettingsAnimateTrayIcon"),
+                        Some(if legacy {
+                            tr("WebSettingsRequiresModernIcon")
+                        } else {
+                            tr("SettingsAnimateTrayIconDesc")
+                        }),
+                    ),
+                    legacy,
                 ),
             ],
         ),

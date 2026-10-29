@@ -19,7 +19,7 @@
     <value>Undo</value>
   </data>
   <data name="SettingsAnimateTrayIcon" xml:space="preserve">
-    <value>Animate the icon while media plays</value>
+    <value>Animate the tray icon while media plays</value>
   </data>
   <data name="SettingsAnimateTrayIconDesc" xml:space="preserve">
     <value>The icon moves while music or video plays. Turn this off to keep it still and save a little CPU.</value>
