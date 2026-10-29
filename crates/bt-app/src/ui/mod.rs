@@ -58,6 +58,13 @@ pub const APP_SETTINGS: usize = 7;
 const APP_MEDIA: usize = 60;
 /// The update check finished (`updates::take` has the result).
 const APP_UPDATE: usize = 61;
+/// An update was downloaded and verified, or failed (`STAGED`).
+const APP_UPDATE_STAGED: usize = 62;
+/// The flyout's update banner was clicked.
+const APP_INSTALL: usize = 63;
+
+/// The staging thread's result (D56).
+static STAGED: std::sync::Mutex<Option<Result<(), String>>> = std::sync::Mutex::new(None);
 
 // Timers on the hidden window.
 const TRAY_POLL: usize = 1;
@@ -108,8 +115,8 @@ pub enum MenuCommand {
     Onboarding,
     /// A web page (the project's repository, issues, the original).
     Url(&'static str),
-    /// The newer release the update check found.
-    UpdatePage,
+    /// Installs the newer release the update check found (it asks first).
+    InstallUpdate,
     LegacyMixer,
     ControlPanel(&'static str),
     /// An ms-settings: page.
@@ -353,6 +360,7 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     core.update = bt_app::updates::Status::Available(bt_app::updates::Release {
         version: "0.1.0-alpha.4".into(),
         url: String::new(),
+        assets: vec![],
     });
     save("flyout-update.png", flyout.render(&mut core, &theme, false));
     core.update = Default::default();
@@ -1093,7 +1101,10 @@ impl Ui {
             self.hidden.set_timer(UPDATE_CHECK, delay_ms);
         } else {
             self.hidden.kill_timer(UPDATE_CHECK);
-            if self.core.update != bt_app::updates::Status::Checking {
+            if !matches!(
+                self.core.update,
+                bt_app::updates::Status::Checking | bt_app::updates::Status::Installing(_)
+            ) {
                 self.core.update = bt_app::updates::Status::Unchecked;
             }
             self.updates_shown();
@@ -1118,7 +1129,7 @@ impl Ui {
             }
             self.hidden.set_timer(UPDATE_CHECK, UPDATE_EVERY_MS);
         }
-        if self.core.update == Status::Checking {
+        if matches!(self.core.update, Status::Checking | Status::Installing(_)) {
             return;
         }
         self.core.update = Status::Checking;
@@ -1134,6 +1145,10 @@ impl Ui {
         let Some(status) = bt_app::updates::take() else {
             return;
         };
+        // An install under way keeps its state.
+        if matches!(self.core.update, Status::Installing(_)) {
+            return;
+        }
         bt_app::log::line(match &status {
             Status::Available(r) => format!("UpdateService: Update available! {}", r.version),
             Status::UpToDate => "UpdateService: Up to date or filtered".to_string(),
@@ -1154,6 +1169,91 @@ impl Ui {
         }
         self.core.update = status;
         self.updates_shown();
+    }
+
+    /// D56: asks, then downloads and verifies the update off the UI
+    /// thread; `update_staged` swaps the files in and restarts.
+    fn install_update(&mut self) {
+        use bt_app::updates::Status;
+        let Status::Available(release) = self.core.update.clone() else {
+            return;
+        };
+        self.flyout.hide();
+        let title = "Better Rust Trumpet";
+        if !bt_app::install::can_install() {
+            let text = trf("UpdateCantInstall", &[("0", &release.version)]);
+            if bt_app::win32::dialog::confirm(0, title, &text) {
+                open(&release.url);
+            }
+            return;
+        }
+        let text = trf("UpdateConfirm", &[("0", &release.version)]);
+        if !bt_app::win32::dialog::confirm(0, title, &text) {
+            return;
+        }
+        bt_app::log::line(format!("UpdateService: Installing {}", release.version));
+        self.core.update = Status::Installing(release.clone());
+        self.updates_shown();
+        let poster = self.hidden.poster();
+        let spawned = std::thread::Builder::new()
+            .name("update install".into())
+            .spawn(move || {
+                let result = bt_app::install::prepare(&release);
+                *STAGED.lock().unwrap_or_else(|e| e.into_inner()) = Some(result);
+                poster.post(APP_UPDATE_STAGED);
+            });
+        if spawned.is_err() {
+            *STAGED.lock().unwrap_or_else(|e| e.into_inner()) =
+                Some(Err("the download could not start".into()));
+            self.update_staged();
+        }
+    }
+
+    fn update_staged(&mut self) {
+        use bt_app::updates::Status;
+        let Some(result) = STAGED.lock().unwrap_or_else(|e| e.into_inner()).take() else {
+            return;
+        };
+        let Status::Installing(release) = self.core.update.clone() else {
+            bt_app::install::discard();
+            return;
+        };
+        let result = result.and_then(|()| bt_app::install::apply());
+        match result {
+            Ok(()) => {
+                bt_app::log::line(format!(
+                    "UpdateService: Installed {}; restarting",
+                    release.version
+                ));
+                let started = bt_app::install::install_dir()
+                    .map(|dir| dir.join(bt_app::install::FILES[0]))
+                    .and_then(|exe| {
+                        std::process::Command::new(exe)
+                            .arg("--after-update")
+                            .arg(std::process::id().to_string())
+                            .spawn()
+                            .ok()
+                    });
+                if started.is_none() {
+                    bt_app::win32::dialog::message(
+                        0,
+                        "Better Rust Trumpet",
+                        tr("UpdateRestartManually"),
+                        false,
+                    );
+                }
+                wnd::quit();
+            }
+            Err(e) => {
+                bt_app::log::line(format!("UpdateService: Install failed - {e}"));
+                self.core.update = Status::Available(release.clone());
+                self.updates_shown();
+                let text = trf("UpdateFailed", &[("0", &e)]);
+                if bt_app::win32::dialog::confirm(0, "Better Rust Trumpet", &text) {
+                    open(&release.url);
+                }
+            }
+        }
     }
 
     /// The Updates page and the flyout show the check's state.
@@ -1248,6 +1348,9 @@ impl Ui {
         }
         if outcome.check_updates {
             self.check_for_updates(true);
+        }
+        if outcome.install_update {
+            self.install_update();
         }
         if let Some(index) = outcome.apply_preset {
             self.apply_preset(index);
@@ -1363,7 +1466,7 @@ impl Ui {
                 self.open_palette();
                 return None;
             }
-            return match event {
+            let menu = match event {
                 Event::Timer(id) => {
                     self.flyout.timer(id, &mut self.core, &self.theme);
                     None
@@ -1374,6 +1477,11 @@ impl Ui {
                 }
                 event => self.flyout.event(&mut self.core, &self.theme, event),
             };
+            // The flyout's update banner (D56): asked once this event is done.
+            if std::mem::take(&mut self.flyout.install_requested) {
+                self.hidden.post(APP_INSTALL);
+            }
+            return menu;
         }
         if window == self.media.window {
             match event {
@@ -1479,6 +1587,8 @@ impl Ui {
             Event::Timer(MEMORY_TRIM) => self.trim_memory(),
             Event::Timer(UPDATE_CHECK) => self.check_for_updates(false),
             Event::App(APP_UPDATE) => self.update_checked(),
+            Event::App(APP_UPDATE_STAGED) => self.update_staged(),
+            Event::App(APP_INSTALL) => self.install_update(),
             Event::Timer(TRAY_ANIMATION) => {
                 if let Some(base) = self.icon_base {
                     // Nobody sees the icon under a full-screen app or a
@@ -1929,11 +2039,7 @@ impl Ui {
             MenuCommand::Settings | MenuCommand::LegacySettings => self.open_settings(),
             MenuCommand::Onboarding => self.open_onboarding(false),
             MenuCommand::Url(url) => open(url),
-            MenuCommand::UpdatePage => {
-                if let bt_app::updates::Status::Available(release) = &self.core.update {
-                    open(&release.url);
-                }
-            }
+            MenuCommand::InstallUpdate => self.install_update(),
             MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
             MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
             MenuCommand::SystemSettings(page) => open(&format!("ms-settings:{page}")),

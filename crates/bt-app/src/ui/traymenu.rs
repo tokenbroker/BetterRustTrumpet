@@ -73,7 +73,7 @@ impl Ui {
         if let bt_app::updates::Status::Available(release) = &self.core.update {
             items.push(b.command(
                 trf("UpdateTextAvailable", &[("0", &release.version)]),
-                MenuCommand::UpdatePage,
+                MenuCommand::InstallUpdate,
             ));
             items.push(Item::Separator);
         }

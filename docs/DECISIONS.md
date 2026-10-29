@@ -188,6 +188,15 @@ The app's only network request. Like the original's UpdateService it checks 10 s
 
 The switch is a port-only key, CheckGitHubForUpdates, off by default, so settings carried over from the original (whose AutoCheckForUpdates defaults to on) never start the request. Onboarding's Privacy page offers it, ticked on a first launch. The workspace version now follows the release tags (0.1.0-alpha.3), and the release workflow refuses a tag that differs from it.
 
+## D56 - signed one-click updates (user decision, 2026-10-29)
+
+"Update now" (the flyout banner, the first tray menu item, Settings > Updates) asks, then installs the release the check found; the app does not install anything on its own. The user asked for a security-focused design:
+
+- Every release carries `BetterTrumpet.exe`, `bt.exe`, `update.json` (app name, version, each file's size and SHA-256) and `update.json.sig`, an ECDSA P-256 signature of the manifest. The release workflow signs with a private key held only in the `UPDATE_SIGNING_KEY` Actions secret, refuses to publish without it, and checks the signature against `packaging/update-signing.pub.pem`, whose point is compiled into `install.rs`. Verification uses Windows' CNG (no new dependency).
+- The app installs only when the signature verifies, the manifest is for this app and for the release's own version, that version is newer than the running one (no downgrades or replays of an older signed release), and it lists exactly the two files, each matching its signed size and hash. Downloads come only from this repository's release links over HTTPS, with size limits.
+- Staged files sit beside the app as `.new`; the swap renames the running files to `.old` (allowed for a running exe) and puts them back if any step fails. The new copy starts with `--after-update <pid>`, waits for the old one to exit, and removes the `.old` files. A folder the app cannot write to (Program Files without admin rights) gets the release page instead.
+- An Authenticode certificate would also let Windows vouch for the exes; it is not bought yet, so the manifest signature is the trust anchor. Losing the private key means later releases cannot be verified by installed copies; backups are kept offline by the maintainer, never in the repository (`.gitignore`, a local pre-commit hook and a CI check refuse key files).
+
 ## Preserved quirks
 
 | ID | Behavior to retain | Source / implication |

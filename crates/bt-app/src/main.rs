@@ -34,6 +34,15 @@ fn main() {
         .position(|a| a == "--render")
         .and_then(|i| args.get(i + 1))
         .map(std::path::PathBuf::from);
+    // D56: the copy an update started waits for the old one to exit.
+    if let Some(pid) = args
+        .iter()
+        .position(|a| a == "--after-update")
+        .and_then(|i| args.get(i + 1))
+        .and_then(|p| p.parse::<u32>().ok())
+    {
+        instance::wait_for_exit(pid, 15_000);
+    }
     // A second launch opens the running instance's flyout instead.
     let instance = if render.is_some() {
         None
@@ -49,6 +58,10 @@ fn main() {
         }
     };
     let _instance = instance;
+    // The files a finished (or abandoned) update left beside the exe.
+    if render.is_none() {
+        bt_app::install::cleanup();
+    }
     // Local log files and the in-memory trace (ErrorReporter); a running
     // copy only, not `--render`.
     if render.is_none() {

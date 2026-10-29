@@ -5,7 +5,7 @@ use super::wnd::{Poster, Window};
 use windows::{
     Win32::{
         Foundation::{ERROR_ALREADY_EXISTS, GetLastError, HANDLE},
-        System::Threading::CreateMutexW,
+        System::Threading::{CreateMutexW, OpenProcess, PROCESS_SYNCHRONIZE, WaitForSingleObject},
         UI::WindowsAndMessaging::FindWindowW,
     },
     core::{HSTRING, w},
@@ -15,6 +15,18 @@ const MUTEX: &str = "Local\\BetterTrumpet-Rust-5f0c2a4e";
 
 /// Holds the mutex for the life of the process.
 pub struct Instance(#[allow(dead_code)] HANDLE);
+
+/// Waits (up to `ms`) for process `pid` to exit: after an update the new
+/// copy waits for the old one to let go of the mutex (D56).
+pub fn wait_for_exit(pid: u32, ms: u32) {
+    // SAFETY: a synchronize-only handle, closed after the wait.
+    unsafe {
+        if let Ok(process) = OpenProcess(PROCESS_SYNCHRONIZE, false, pid) {
+            let _ = WaitForSingleObject(process, ms);
+            let _ = windows::Win32::Foundation::CloseHandle(process);
+        }
+    }
+}
 
 /// Takes the instance mutex, or `None` if another copy holds it.
 pub fn acquire() -> Option<Instance> {

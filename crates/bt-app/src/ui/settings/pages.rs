@@ -341,6 +341,7 @@ pub enum Action {
     ExportDiagnostics,
     /// Settings > Updates' Check button and the found release's page.
     CheckForUpdates,
+    InstallUpdate,
     OpenUpdate,
     /// Settings > About's Export & Import buttons (.btsettings).
     SettingsExport,
@@ -1338,19 +1339,30 @@ fn updates(core: &mut Core) -> Vec<Section> {
         Status::Checking => tr("CheckingForUpdatesText").to_string(),
         Status::UpToDate => tr("NoUpdatesAvailableText").to_string(),
         Status::Available(r) => bt_app::i18n::trf("UpdateTextAvailable", &[("0", &r.version)]),
+        Status::Installing(_) => tr("UpdateTextDownloading").to_string(),
         Status::Failed => tr("UpdateCheckFailed").to_string(),
     };
     let mut buttons = vec![];
-    if matches!(core.update, Status::Available(_)) {
-        let mut open = button(tr("UpdateOpenReleasePage"), None, Action::OpenUpdate);
-        open.primary = true;
-        buttons.push(open);
+    match core.update {
+        Status::Available(_) => {
+            buttons
+                .push(button(tr("SettingsInstallUpdate"), None, Action::InstallUpdate).primary());
+            buttons.push(button(tr("UpdateReleaseNotes"), None, Action::OpenUpdate));
+            buttons.push(button(
+                tr("SettingsCheckUpdate"),
+                None,
+                Action::CheckForUpdates,
+            ));
+        }
+        Status::Installing(_) => {
+            buttons.push(button(tr("UpdateReleaseNotes"), None, Action::OpenUpdate));
+        }
+        _ => buttons.push(button(
+            tr("SettingsCheckUpdate"),
+            None,
+            Action::CheckForUpdates,
+        )),
     }
-    buttons.push(button(
-        tr("SettingsCheckUpdate"),
-        None,
-        Action::CheckForUpdates,
-    ));
     vec![section(
         tr("WebSettingsUpdatesSection"),
         Some(tr("SettingsUpdatesDesc")),

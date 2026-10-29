@@ -15,7 +15,9 @@ Start
   them; its own settings go to %LOCALAPPDATA%\BetterTrumpet-Rust. No
   telemetry. If you turn on update checks (onboarding offers it), it asks
   this project's GitHub releases every 6 hours whether a newer version is
-  out; nothing else goes over the network and nothing is downloaded.
+  out. "Update now" (flyout, tray menu or Settings > Updates) asks first,
+  then downloads it, installs it only if its signature checks out, and
+  restarts. Nothing else goes over the network.
 
 bt.exe
   Optional command-line tool for the running app. Try: bt --help

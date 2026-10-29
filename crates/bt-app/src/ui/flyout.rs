@@ -174,6 +174,8 @@ pub struct Flyout {
     tip_closed: Option<Instant>,
     /// A newer release the update check found (D55).
     update: Option<bt_app::updates::Release>,
+    /// The banner was clicked: the app asks and installs (D56).
+    pub install_requested: bool,
 }
 
 impl Flyout {
@@ -227,6 +229,7 @@ impl Flyout {
             tip_target: None,
             tip_closed: None,
             update: None,
+            install_requested: false,
         })
     }
 
@@ -1343,14 +1346,7 @@ impl Flyout {
             }
             Hit::Dismiss => self.close_popup(),
             Hit::Tool(i) => return self.tool(core, i),
-            Hit::Update => {
-                if let Some(release) = &self.update {
-                    let _ = std::process::Command::new("explorer")
-                        .arg(&release.url)
-                        .spawn();
-                    self.hide();
-                }
-            }
+            Hit::Update => self.install_requested = self.update.is_some(),
             _ => {}
         }
         None
@@ -1609,7 +1605,7 @@ impl Flyout {
                 Rgba::WHITE,
             );
             canvas.text(
-                tr("UpdateGetIt"),
+                tr("UpdateInstallNow"),
                 Rect::new(banner.right() - 98.0, banner.y, 90.0, banner.h),
                 &TextStyle::new(UI_FONT, 13.0).align(Align::Trailing),
                 Rgba::WHITE,

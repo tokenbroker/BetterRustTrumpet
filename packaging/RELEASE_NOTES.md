@@ -6,7 +6,7 @@ Better Rust Trumpet {version}: BetterTrumpet (EarTrumpet) rewritten in Rust as a
 - Settings window, named themes, settings export/import, the volume mixer window.
 - QuickTrumpet presets, the command palette and global shortcuts; focus-lost volume and folder rules.
 - The original's translations; high contrast; the `bt` command-line tool.
-- About 5 MB of memory and no CPU when idle. No telemetry; the only network request is an opt-in check of this repo's releases for a newer version.
+- About 5 MB of memory and no CPU when idle. No telemetry. Opt-in update check; **Update now** installs a newer release in one click, only if its signature verifies.
 - Reads your existing EarTrumpet/BetterTrumpet settings but never changes them.
 
 This is an alpha: much of it hasn't been tested on other PCs yet. Please [open an issue](https://github.com/tokenbroker/BetterRustTrumpet/issues/new/choose) for anything that breaks or looks off, with your Windows version and, if you can, a log from `%LOCALAPPDATA%\BetterTrumpet-Rust\logs`. [docs/MANUAL_TESTS.md](https://github.com/tokenbroker/BetterRustTrumpet/blob/main/docs/MANUAL_TESTS.md) lists things worth trying.

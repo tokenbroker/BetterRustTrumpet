@@ -1,6 +1,7 @@
 //! The update check (D55): asks this project's GitHub releases whether a
-//! newer version is out. It only tells; nothing is downloaded. The request
-//! carries the app's name and version and nothing else.
+//! newer version is out and tells; installing is `install` (D56), only
+//! when the user agrees. The request carries the app's name and version
+//! and nothing else.
 use std::sync::Mutex;
 
 /// This build's version (the release tag without its "v").
@@ -13,6 +14,8 @@ pub struct Release {
     pub version: String,
     /// The release's page.
     pub url: String,
+    /// The release's files: name and download link.
+    pub assets: Vec<(String, String)>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -22,6 +25,8 @@ pub enum Status {
     Checking,
     UpToDate,
     Available(Release),
+    /// Downloading and verifying it after the user agreed (D56).
+    Installing(Release),
     /// No answer (offline, GitHub unreachable, or an answer not understood).
     Failed,
 }
@@ -139,13 +144,26 @@ pub fn pick(json: &[u8], current: &str, channel: i32) -> Option<Option<Release>>
                 return None;
             }
             let version = Version::parse(tag)?;
-            Some((version, tag, url))
+            Some((version, tag, url, r))
         })
         .filter(|(v, ..)| *v > current && relevant(&current, v, channel))
         .max_by(|a, b| a.0.cmp(&b.0));
-    Some(best.map(|(_, tag, url)| Release {
-        version: tag.trim_start_matches(['v', 'V']).to_string(),
-        url: url.to_string(),
+    Some(best.map(|(_, tag, url, r)| {
+        Release {
+            version: tag.trim_start_matches(['v', 'V']).to_string(),
+            url: url.to_string(),
+            assets: r["assets"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(|a| {
+                    Some((
+                        a["name"].as_str()?.to_string(),
+                        a["browser_download_url"].as_str()?.to_string(),
+                    ))
+                })
+                .collect(),
+        }
     }))
 }
 
@@ -180,6 +198,7 @@ fn check(channel: i32) -> Status {
         crate::links::RELEASES_API,
         &agent,
         "Accept: application/vnd.github+json\r\nX-GitHub-Api-Version: 2022-11-28\r\n",
+        1 << 20,
     );
     match body.and_then(|b| pick(&b, CURRENT, channel)) {
         Some(Some(release)) => Status::Available(release),
@@ -273,8 +292,8 @@ mod tests {
             crate::links::API_HOST,
             crate::links::RELEASES_API,
             "BetterRustTrumpet/test",
-            "Accept: application/vnd.github+json
-",
+            "Accept: application/vnd.github+json\r\n",
+            1 << 20,
         )
         .unwrap();
         let found = pick(&body, "0.0.1-alpha.1", 0).unwrap().unwrap();

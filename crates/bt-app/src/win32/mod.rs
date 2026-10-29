@@ -1,6 +1,7 @@
 //! Win32 shim: windows, drawing, the tray icon, menus and settings access.
 //! Audio and media COM stay in bt-audio and bt-media.
 pub mod clock;
+pub mod crypto;
 pub mod diag;
 pub mod dialog;
 pub mod foreground;

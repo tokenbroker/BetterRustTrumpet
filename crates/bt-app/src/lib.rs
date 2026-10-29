@@ -1,5 +1,7 @@
 //! Native adapters shared by the application and isolated Windows tests.
 pub mod i18n;
+#[cfg(windows)]
+pub mod install;
 pub mod links;
 pub mod log;
 #[cfg(windows)]

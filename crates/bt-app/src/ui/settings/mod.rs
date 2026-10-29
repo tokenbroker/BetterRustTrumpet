@@ -118,6 +118,8 @@ pub struct Outcome {
     pub apply_preset: Option<usize>,
     /// Settings > Updates' Check button.
     pub check_updates: bool,
+    /// Settings > Updates' Update now button.
+    pub install_update: bool,
     pub close: bool,
 }
 
@@ -1191,8 +1193,15 @@ impl Settings {
                 out.check_updates = true;
                 return;
             }
+            Action::InstallUpdate => {
+                self.pressed = None;
+                out.install_update = true;
+                return;
+            }
             Action::OpenUpdate => {
-                if let bt_app::updates::Status::Available(release) = &core.update {
+                if let bt_app::updates::Status::Available(release)
+                | bt_app::updates::Status::Installing(release) = &core.update
+                {
                     let _ = std::process::Command::new("explorer")
                         .arg(&release.url)
                         .spawn();

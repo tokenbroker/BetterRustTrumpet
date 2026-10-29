@@ -8,8 +8,6 @@ use windows::Win32::Networking::WinHttp::{
 };
 use windows::core::{HSTRING, PCWSTR};
 
-/// Answers larger than this are not what was asked for.
-const MAX_BODY: usize = 4 << 20;
 const TIMEOUT_MS: i32 = 15_000;
 
 /// A WinHTTP handle, closed on drop.
@@ -30,9 +28,17 @@ fn handle(raw: *mut core::ffi::c_void) -> Option<Handle> {
     (!raw.is_null()).then_some(Handle(raw))
 }
 
-/// GETs `https://{host}{path}` and returns the body of a 200 answer.
-/// `headers` are extra request lines ("Name: value\r\n...").
-pub fn get(host: &str, path: &str, agent: &str, headers: &str) -> Option<Vec<u8>> {
+/// GETs an `https://` URL (following HTTPS redirects) and returns the
+/// body of a 200 answer of at most `max` bytes.
+pub fn get_url(url: &str, agent: &str, max: usize) -> Option<Vec<u8>> {
+    let rest = url.strip_prefix("https://")?;
+    let (host, path) = rest.split_at(rest.find('/')?);
+    get(host, path, agent, "", max)
+}
+
+/// GETs `https://{host}{path}` and returns the body of a 200 answer of at
+/// most `max` bytes. `headers` are extra request lines ("Name: value\r\n...").
+pub fn get(host: &str, path: &str, agent: &str, headers: &str, max: usize) -> Option<Vec<u8>> {
     let agent = HSTRING::from(agent);
     let host = HSTRING::from(host);
     let path = HSTRING::from(path);
@@ -105,7 +111,7 @@ pub fn get(host: &str, path: &str, agent: &str, headers: &str) -> Option<Vec<u8>
                 break;
             }
             body.extend_from_slice(&chunk[..read as usize]);
-            if body.len() > MAX_BODY {
+            if body.len() > max {
                 return None;
             }
         }

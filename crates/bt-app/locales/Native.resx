@@ -99,19 +99,37 @@
     <value>This preview sends no data and fetches no announcements, so there is nothing to turn off here.</value>
   </data>
   <data name="UpdatesCheckDesc" xml:space="preserve">
-    <value>Every 6 hours, asks this project's GitHub releases whether a newer version is out. Only your IP address and the app's version reach GitHub; nothing is downloaded.</value>
+    <value>Every 6 hours, asks this project's GitHub releases whether a newer version is out. Only your IP address and the app's version reach GitHub. Updates install only when you choose Update now, and only if their signature checks out.</value>
   </data>
   <data name="UpdateCheckFailed" xml:space="preserve">
     <value>Couldn't reach GitHub. Try again later.</value>
   </data>
-  <data name="UpdateGetIt" xml:space="preserve">
-    <value>Get it ›</value>
+  <data name="UpdateInstallNow" xml:space="preserve">
+    <value>Update now ›</value>
   </data>
   <data name="UpdateToastBody" xml:space="preserve">
-    <value>Open the flyout or Settings &gt; Updates to get it.</value>
+    <value>Open the flyout or the tray menu to install it.</value>
   </data>
-  <data name="UpdateOpenReleasePage" xml:space="preserve">
-    <value>Open release page</value>
+  <data name="UpdateReleaseNotes" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="UpdateConfirm" xml:space="preserve">
+    <value>Install Better Rust Trumpet {0}?
+
+The update is downloaded from this project's GitHub releases and installed only if its signature checks out. The app then restarts; your settings stay.</value>
+  </data>
+  <data name="UpdateCantInstall" xml:space="preserve">
+    <value>Version {0} can't be installed here: the app's folder can't be written to (for example, Program Files without administrator rights).
+
+Open the release page to download it?</value>
+  </data>
+  <data name="UpdateFailed" xml:space="preserve">
+    <value>The update wasn't installed: {0}. Nothing was changed.
+
+Open the release page to download it yourself?</value>
+  </data>
+  <data name="UpdateRestartManually" xml:space="preserve">
+    <value>The update is installed. Start Better Rust Trumpet again to use it.</value>
   </data>
   <data name="SettingsVersion" xml:space="preserve">
     <value>Version</value>
@@ -120,7 +138,7 @@
     <value>Tell me when a new version is out</value>
   </data>
   <data name="OnboardingCheckUpdatesDesc" xml:space="preserve">
-    <value>Checks this project's GitHub releases every 6 hours. Nothing is downloaded.</value>
+    <value>Checks this project's GitHub releases every 6 hours; updates install only when you say so.</value>
   </data>
   <data name="AboutPreviewCredits" xml:space="preserve">
     <value>By tokenbroker. A Rust rewrite of BetterTrumpet by xammen, itself based on EarTrumpet by David Golden, Rafael Rivera and Dave Amenta. MIT License.</value>
