@@ -26,7 +26,7 @@ jobs:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
       # D56: a private key must never be committed (the release signing key
-      # lives only in a secret and offline backups).
+      # lives only in a secret and the maintainer's own backups).
       - name: No private keys
         shell: bash
         run: |

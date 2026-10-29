@@ -55,8 +55,8 @@ jobs:
       - name: Sign the update
         shell: pwsh
         env:
-          # D56: the private key exists only as this secret (and offline
-          # backups); it is written to the runner's temp folder for one
+          # D56: the private key exists only as this secret (and the maintainer's
+          # own backups); it is written to the runner's temp folder for one
           # openssl call and deleted.
           UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
         run: |
