@@ -18,7 +18,7 @@ use super::{
 use crate::core::{Core, DeviceView, View};
 use bt_app::i18n::tr;
 use bt_app::win32::{
-    gfx::{Align, Canvas, Gfx, Image, Rect, Surface, TextStyle},
+    gfx::{Align, Canvas, Gfx, Image, Rect, Rgba, Surface, TextStyle},
     menu::Item,
     wnd::{self, Button, Event, Modifiers, Window},
 };
@@ -48,6 +48,9 @@ const GLYPH_CHEVRON: char = '\u{E010}';
 const GLYPH_RESTORE: char = '\u{E18B}';
 const GLYPH_PIN: char = '\u{E840}';
 const GLYPH_PINNED: char = '\u{E841}';
+const GLYPH_DOWNLOAD: char = '\u{E896}';
+/// The update banner's height (D55).
+const BANNER_H: f32 = 36.0;
 
 #[derive(Clone, Debug, PartialEq)]
 enum Hit {
@@ -67,6 +70,8 @@ enum Hit {
     PopupBody,
     Scrollbar,
     Header,
+    /// The "Update available" banner below the list (D55).
+    Update,
 }
 
 /// Where a tooltip opens: to the right of a control (window DIPs), or
@@ -122,6 +127,8 @@ struct Layout {
     content: f32,
     /// The top device block's title row (the header overlays it).
     header: Option<Rect>,
+    /// The update banner below the devices.
+    banner: Option<Rect>,
 }
 
 pub struct Flyout {
@@ -165,6 +172,8 @@ pub struct Flyout {
     pub tip: Tip,
     tip_target: Option<TipTarget>,
     tip_closed: Option<Instant>,
+    /// A newer release the update check found (D55).
+    update: Option<bt_app::updates::Release>,
 }
 
 impl Flyout {
@@ -217,6 +226,7 @@ impl Flyout {
             tip,
             tip_target: None,
             tip_closed: None,
+            update: None,
         })
     }
 
@@ -254,6 +264,11 @@ impl Flyout {
         let mut out = Layout::default();
         let mut y = -self.scroll;
         let mut cascade = 0;
+        // On top, so it shows when the flyout opens however long the list.
+        if self.update.is_some() && !self.view.devices.is_empty() {
+            out.banner = Some(Rect::new(8.0, y + 8.0, WIDTH - 16.0, BANNER_H));
+            y += BANNER_H + 16.0;
+        }
         for (index, device) in self.shown().into_iter().enumerate() {
             let id = &device.device.id;
             out.blocks.push(Block {
@@ -404,6 +419,9 @@ impl Flyout {
                 Hit::Header
             });
         }
+        if layout.banner.is_some_and(|b| b.contains(x, y)) {
+            return Some(Hit::Update);
+        }
         for row in &layout.rows {
             if let Some(hit) = Self::row_hit(row, x, y) {
                 return Some(hit);
@@ -445,7 +463,15 @@ impl Flyout {
     /// Re-reads devices and apps; sliders in use keep their value.
     pub fn refresh(&mut self, core: &mut Core) {
         self.view = core.view();
+        self.update = Self::found(core);
         self.sync();
+    }
+
+    fn found(core: &Core) -> Option<bt_app::updates::Release> {
+        match &core.update {
+            bt_app::updates::Status::Available(release) => Some(release.clone()),
+            _ => None,
+        }
     }
 
     fn sync(&mut self) {
@@ -482,6 +508,7 @@ impl Flyout {
         self.scroll = 0.0;
         self.keyboard = false;
         self.view = core.view();
+        self.update = Self::found(core);
         self.sync();
         for slider in self.sliders.values_mut() {
             slider.reset_peaks();
@@ -1316,6 +1343,14 @@ impl Flyout {
             }
             Hit::Dismiss => self.close_popup(),
             Hit::Tool(i) => return self.tool(core, i),
+            Hit::Update => {
+                if let Some(release) = &self.update {
+                    let _ = std::process::Command::new("explorer")
+                        .arg(&release.url)
+                        .spawn();
+                    self.hide();
+                }
+            }
             _ => {}
         }
         None
@@ -1332,6 +1367,7 @@ impl Flyout {
         popup: bool,
     ) -> Option<(u32, u32, Vec<u8>)> {
         self.view = core.view();
+        self.update = Self::found(core);
         self.sync();
         self.place();
         self.visible = true;
@@ -1550,6 +1586,34 @@ impl Flyout {
                 self.painter().app_row(canvas, theme, row.rect, &row.key);
             }
             Self::pop_cascade(canvas, pushed);
+        }
+        if let (Some(banner), Some(release)) = (layout.banner, &self.update) {
+            let lit = self.hover == Some(Hit::Update);
+            // Windows' default blue (the theme's accent can be near black
+            // or grey), darker under the pointer.
+            canvas.round_rect(banner, 6.0, Rgba::rgb(0, 120, 215));
+            if lit {
+                canvas.round_rect(banner, 6.0, Rgba::rgba(0, 0, 0, 0.18));
+            }
+            let icons = TextStyle::new(theme.icon_font, 14.0).align(Align::Center);
+            canvas.text(
+                &glyph(GLYPH_DOWNLOAD),
+                Rect::new(banner.x + 8.0, banner.y, 24.0, banner.h),
+                &icons,
+                Rgba::WHITE,
+            );
+            canvas.text(
+                &bt_app::i18n::trf("UpdateTextAvailable", &[("0", &release.version)]),
+                Rect::new(banner.x + 40.0, banner.y, banner.w - 48.0 - 90.0, banner.h),
+                &TextStyle::new(UI_FONT, 13.0).weight(600).ellipsis(),
+                Rgba::WHITE,
+            );
+            canvas.text(
+                tr("UpdateGetIt"),
+                Rect::new(banner.right() - 98.0, banner.y, 90.0, banner.h),
+                &TextStyle::new(UI_FONT, 13.0).align(Align::Trailing),
+                Rgba::WHITE,
+            );
         }
         if let Some(header) = layout.header {
             self.draw_header(canvas, theme, header, now);

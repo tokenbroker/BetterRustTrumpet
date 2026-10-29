@@ -104,6 +104,12 @@
   <data name="UpdateCheckFailed" xml:space="preserve">
     <value>Couldn't reach GitHub. Try again later.</value>
   </data>
+  <data name="UpdateGetIt" xml:space="preserve">
+    <value>Get it ›</value>
+  </data>
+  <data name="UpdateToastBody" xml:space="preserve">
+    <value>Open the flyout or Settings &gt; Updates to get it.</value>
+  </data>
   <data name="UpdateOpenReleasePage" xml:space="preserve">
     <value>Open release page</value>
   </data>

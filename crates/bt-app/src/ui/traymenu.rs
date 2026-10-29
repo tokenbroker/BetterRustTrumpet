@@ -69,6 +69,14 @@ impl Ui {
     pub(super) fn tray_menu(&mut self, x: i32, y: i32) -> MenuRequest {
         let mut b = Builder::default();
         let mut items = vec![];
+        // D55: a newer release the update check found comes first.
+        if let bt_app::updates::Status::Available(release) = &self.core.update {
+            items.push(b.command(
+                trf("UpdateTextAvailable", &[("0", &release.version)]),
+                MenuCommand::UpdatePage,
+            ));
+            items.push(Item::Separator);
+        }
         let mut devices = self.core.audio.devices().unwrap_or_default().devices;
         devices.sort_by(|a, b| compare(&a.name, &b.name));
         for device in &devices {
@@ -225,13 +233,6 @@ impl Ui {
             SPARKLE,
             0.92,
         ));
-        // D55: the update check found a newer release.
-        if let bt_app::updates::Status::Available(release) = &self.core.update {
-            items.push(b.command(
-                trf("UpdateTextAvailable", &[("0", &release.version)]),
-                MenuCommand::UpdatePage,
-            ));
-        }
         items.push(b.command(
             tr("TrayReportProblem"),
             MenuCommand::Url(bt_app::links::NEW_ISSUE),

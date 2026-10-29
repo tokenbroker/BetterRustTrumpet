@@ -182,6 +182,8 @@ pub struct Ui {
     settle_ticks: u32,
     /// CheckGitHubForUpdates as last applied.
     update_checks: bool,
+    /// The release the toast already told about (once per version).
+    update_told: Option<String>,
 }
 
 thread_local! {
@@ -277,6 +279,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         settle: vec![],
         settle_ticks: 0,
         update_checks: false,
+        update_told: None,
     };
     ui.register_hotkeys();
     bt_app::win32::presence::watch_display(hidden);
@@ -346,6 +349,13 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
     let mut flyout = flyout::Flyout::new(gfx.clone(), &core.store)?;
     save("flyout.png", flyout.render(&mut core, &theme, false));
     save("flyout-popup.png", flyout.render(&mut core, &theme, true));
+    // D55: the banner when the update check found a newer release.
+    core.update = bt_app::updates::Status::Available(bt_app::updates::Release {
+        version: "0.1.0-alpha.4".into(),
+        url: String::new(),
+    });
+    save("flyout-update.png", flyout.render(&mut core, &theme, false));
+    core.update = Default::default();
     // A tray icon position near the bottom-right of the primary monitor.
     let monitor = wnd::monitor_at(0, 0);
     let (x, y, w, h) = monitor.bounds;
@@ -557,6 +567,15 @@ pub fn render(mut core: Core, dir: &std::path::Path) -> windows::core::Result<()
         toasts.render(&format!(
             "{}\n{device}",
             tr("DefaultDeviceChangedNotificationTitle")
+        )),
+    );
+    save(
+        "toast-update.png",
+        toasts.render(&format!(
+            "{}
+{}",
+            trf("UpdateTextAvailable", &[("0", "0.1.0-alpha.4")]),
+            tr("UpdateToastBody")
         )),
     );
     save(
@@ -1120,14 +1139,31 @@ impl Ui {
             Status::UpToDate => "UpdateService: Up to date or filtered".to_string(),
             _ => "UpdateService: Check failed".to_string(),
         });
+        // The toast tells about each newer version once per run.
+        if let Status::Available(release) = &status
+            && self.update_told.as_ref() != Some(&release.version)
+        {
+            self.update_told = Some(release.version.clone());
+            let text = format!(
+                "{}\n{}",
+                trf("UpdateTextAvailable", &[("0", &release.version)]),
+                tr("UpdateToastBody")
+            );
+            // The Download glyph.
+            self.toasts.show(&text, "\u{E896}", 8000);
+        }
         self.core.update = status;
         self.updates_shown();
     }
 
-    /// The Updates page shows the check's state.
+    /// The Updates page and the flyout show the check's state.
     fn updates_shown(&mut self) {
         if let Some(settings) = &mut self.settings {
             settings.refresh(&mut self.core);
+        }
+        if self.flyout.visible {
+            self.flyout.refresh(&mut self.core);
+            self.flyout.paint(&self.theme);
         }
     }
 
@@ -1508,6 +1544,9 @@ impl Ui {
             Event::App(APP_SHOW) => self.show_flyout(),
             Event::App(crate::ipc::APP_IPC) => {
                 let effects = crate::ipc::drain(&mut self.core);
+                if effects.check_updates {
+                    self.check_for_updates(true);
+                }
                 if effects.reload {
                     self.settings_imported();
                 } else if effects.hotkeys {

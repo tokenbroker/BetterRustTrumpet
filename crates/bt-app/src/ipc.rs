@@ -75,6 +75,8 @@ pub struct Effects {
     pub settle: Vec<AppVolumeEntry>,
     /// Settings were imported: everything that caches them reloads.
     pub reload: bool,
+    /// `check-update`: start an update check (D55).
+    pub check_updates: bool,
 }
 
 /// Runs the waiting pipe commands (UI thread).
@@ -427,7 +429,31 @@ impl Provider for Live<'_> {
                 self.effects.reload |= files.imported;
                 response
             }
+            "check-update" => self.check_update(),
             _ => return None,
         })
+    }
+}
+
+impl Live<'_> {
+    /// CliHandler.CheckUpdate: starts a check and answers with what is
+    /// known now (the original also returns while a check may still run);
+    /// the toast and the flyout tell when it finishes.
+    fn check_update(&mut self) -> String {
+        use bt_app::updates::{CURRENT, Status};
+        self.effects.check_updates = true;
+        let (available, latest, url) = match &self.core.update {
+            Status::Available(r) => (true, r.version.as_str(), r.url.as_str()),
+            Status::UpToDate => (false, CURRENT, ""),
+            _ => (false, "unknown", ""),
+        };
+        serde_json::json!({
+            "updateAvailable": available,
+            "currentVersion": CURRENT,
+            "latestVersion": latest,
+            "releaseUrl": url,
+            "checking": true,
+        })
+        .to_string()
     }
 }
