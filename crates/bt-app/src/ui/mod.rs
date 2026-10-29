@@ -97,7 +97,8 @@ pub enum MenuCommand {
     Settings,
     LegacySettings,
     Onboarding,
-    GitHub,
+    /// A web page (the project's repository, issues, the original).
+    Url(&'static str),
     LegacyMixer,
     ControlPanel(&'static str),
     /// An ms-settings: page.
@@ -278,11 +279,13 @@ pub fn run(core: Core) -> windows::core::Result<()> {
             open_menu(request);
         }
     });
-    // Q09: an ordinary launch only marks first run as shown; holding Left
-    // Ctrl while the app starts opens the setup window.
+    // D54: the first launch on a PC that never ran EarTrumpet, BetterTrumpet
+    // or this app opens the setup window (the original's Q09 launch stays
+    // silent); later, holding Left Ctrl while the app starts opens it.
     with(|ui| {
+        let first_run = !ui.core.store.bool(Key::HasShownFirstRun);
         ui.core.store.set(Key::HasShownFirstRun, Value::Bool(true));
-        if wnd::key_down(VK_LCONTROL) {
+        if first_run || wnd::key_down(VK_LCONTROL) {
             ui.open_onboarding();
         }
     });
@@ -1793,7 +1796,7 @@ impl Ui {
             MenuCommand::Mixer => self.open_mixer(),
             MenuCommand::Settings | MenuCommand::LegacySettings => self.open_settings(),
             MenuCommand::Onboarding => self.open_onboarding(),
-            MenuCommand::GitHub => open("https://github.com/xammen/BetterTrumpet"),
+            MenuCommand::Url(url) => open(url),
             MenuCommand::LegacyMixer => traymenu::legacy_mixer(),
             MenuCommand::ControlPanel(panel) => traymenu::control_panel(panel),
             MenuCommand::SystemSettings(page) => open(&format!("ms-settings:{page}")),

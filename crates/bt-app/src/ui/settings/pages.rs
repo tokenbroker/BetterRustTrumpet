@@ -706,6 +706,12 @@ fn general(core: &mut Core) -> Vec<Section> {
                     tr("SettingsShowAppTooltips"),
                     Some(tr("SettingsAppTooltipsDesc")),
                 ),
+                toggle(
+                    core,
+                    Key::ShowProjectLinks,
+                    tr("SettingsShowProjectLinks"),
+                    Some(tr("SettingsShowProjectLinksDesc")),
+                ),
             ],
         ),
     ];
@@ -1358,7 +1364,7 @@ fn updates(core: &mut Core) -> Vec<Section> {
 
 fn about(core: &mut Core) -> Vec<Section> {
     let mut sections = vec![section(
-        &format!("BetterTrumpet {}", env!("CARGO_PKG_VERSION")),
+        &format!("Better Rust Trumpet {}", env!("CARGO_PKG_VERSION")),
         Some(tr("AboutPreviewCredits")),
         vec![row(
             "",
@@ -1367,17 +1373,32 @@ fn about(core: &mut Core) -> Vec<Section> {
                 button(
                     tr("AboutGitHub"),
                     None,
-                    Action::OpenUrl("https://github.com/xammen/BetterTrumpet"),
+                    Action::OpenUrl(bt_app::links::REPO),
                 ),
-                // The About page's TroubleshootEarTrumpetText link.
                 button(
-                    tr("TroubleshootEarTrumpetText"),
+                    tr("AboutReportProblem"),
                     None,
-                    Action::ExportDiagnostics,
+                    Action::OpenUrl(bt_app::links::NEW_ISSUE),
+                ),
+                button(
+                    tr("AboutOriginalProject"),
+                    None,
+                    Action::OpenUrl(bt_app::links::ORIGINAL),
                 ),
             ]),
         )],
     )];
+    // The About page's TroubleshootEarTrumpetText link, on its own row so
+    // the project links fit.
+    sections[0].rows.push(row(
+        "",
+        None,
+        Control::Buttons(vec![button(
+            tr("TroubleshootEarTrumpetText"),
+            None,
+            Action::ExportDiagnostics,
+        )]),
+    ));
     sections.push(section(
         tr("SettingsExportImport"),
         Some(tr("SettingsExportImportDesc")),

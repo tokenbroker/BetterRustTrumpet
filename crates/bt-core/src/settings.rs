@@ -33,6 +33,8 @@ keys! {
     TrayIconShowsDeviceType: Bool(false), ShowAppTooltips: Bool(true),
     // Port-only (D51): the tray playback animation can be turned off.
     AnimateTrayIcon: Bool(true),
+    // Port-only (D54): the tray menu's "Star on GitHub" links can be hidden.
+    ShowProjectLinks: Bool(true),
     IsTelemetryEnabled: Bool(true), TelemetryAnonymousId: Text(Some(String::new())),
     VoteAnonymousId: Text(Some(String::new())), AnnouncementsEnabled: Bool(true),
     HasCompletedOnboarding: Bool(false), UseLogarithmicVolume: Bool(false),
@@ -250,10 +252,10 @@ impl Settings {
 
     pub fn device_hotkey(&self, device_id: Option<&str>) -> Option<HotkeyData> {
         let id = device_id.unwrap_or_default();
-        if !id.is_empty() {
-            if let Some(Value::Hotkey(hotkey)) = self.values.get(&format!("DeviceHotkey:{id}")) {
-                return *hotkey;
-            }
+        if !id.is_empty()
+            && let Some(Value::Hotkey(hotkey)) = self.values.get(&format!("DeviceHotkey:{id}"))
+        {
+            return *hotkey;
         }
         Some(HotkeyData::default())
     }
@@ -283,10 +285,10 @@ impl Settings {
 
     pub fn poll_vote(&self, announcement_id: Option<&str>) -> Option<String> {
         let id = announcement_id.unwrap_or_default();
-        if !id.is_empty() {
-            if let Some(Value::Text(value)) = self.values.get(&format!("PollVote:{id}")) {
-                return value.clone();
-            }
+        if !id.is_empty()
+            && let Some(Value::Text(value)) = self.values.get(&format!("PollVote:{id}"))
+        {
+            return value.clone();
         }
         Some(String::new())
     }

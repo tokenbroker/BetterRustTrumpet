@@ -1650,7 +1650,7 @@ impl Settings {
             canvas.image(icon, Rect::new(20.0, 22.0, 24.0, 24.0), 1.0);
         }
         canvas.text(
-            "BetterTrumpet",
+            "Better Rust Trumpet",
             Rect::new(54.0, 16.0, SIDEBAR - 70.0, 36.0),
             &label_style(15.0).weight(600),
             p.text,

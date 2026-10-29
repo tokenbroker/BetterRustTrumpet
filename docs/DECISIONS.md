@@ -176,6 +176,12 @@ The settings, mixer and onboarding windows each get their own Direct2D factory, 
 
 Effective Eco Mode (EcoMode, or AutoEcoMode on battery) keeps the tray icon still, and the AnimateTrayIcon switch (D51) shows "Overridden by eco mode". The battery state comes from GetSystemPowerStatus, refreshed on PBT_APMPOWERSTATUSCHANGE; switching power source reloads the peak-meter rate, the tray animation and the settings page. (Before this, the port always reported mains power, so AutoEcoMode never took effect.)
 
+## D54 - this project's links, ShowProjectLinks, onboarding on first launch
+
+"Report a problem" (tray menu and Settings > About) opens this repository's new-issue page; Settings > About also links this repository and the original BetterTrumpet. The tray menu's "Star on GitHub" is a submenu with this project and the original; ShowProjectLinks (port-only, on by default; Settings > General > Tray Icon) hides it, while "Report a problem" stays. The addresses live in `bt_app::links`.
+
+The setup window opens on the first launch when HasShownFirstRun is unset, meaning the PC never ran EarTrumpet, BetterTrumpet or this app (the original's Q09 launch stays silent); Left Ctrl at startup and the tray item still open it later.
+
 ## Preserved quirks
 
 | ID | Behavior to retain | Source / implication |

@@ -225,7 +225,26 @@ impl Ui {
             SPARKLE,
             0.92,
         ));
-        items.push(b.command(tr("TrayStarProject"), MenuCommand::GitHub));
+        items.push(b.command(
+            tr("TrayReportProblem"),
+            MenuCommand::Url(bt_app::links::NEW_ISSUE),
+        ));
+        // ShowProjectLinks (D54): this project and the original.
+        if self.core.store.bool(Key::ShowProjectLinks) {
+            items.push(Item::Submenu(
+                tr("TrayStarProject").into(),
+                vec![
+                    b.command(
+                        tr("TrayStarThisProject"),
+                        MenuCommand::Url(bt_app::links::REPO),
+                    ),
+                    b.command(
+                        tr("TrayStarOriginal"),
+                        MenuCommand::Url(bt_app::links::ORIGINAL),
+                    ),
+                ],
+            ));
+        }
         items.push(Item::Separator);
         let apps_volume = if self.windows_11 {
             tr("OpenAppsVolume_Windows11_Text")

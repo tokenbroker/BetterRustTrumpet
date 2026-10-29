@@ -799,7 +799,7 @@ impl Onboarding {
         let width = SIZE.0 - 2.0 * SIDE;
         let title_h = self.line(22.0, 600);
         canvas.text(
-            "BetterTrumpet",
+            "Better Rust Trumpet",
             Rect::new(SIDE, 25.0, width, title_h),
             &style(22.0, 600),
             TEXT,

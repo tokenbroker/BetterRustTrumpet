@@ -18,6 +18,27 @@
   <data name="CommandPaletteUndo" xml:space="preserve">
     <value>Undo</value>
   </data>
+  <data name="TrayReportProblem" xml:space="preserve">
+    <value>Report a problem</value>
+  </data>
+  <data name="TrayStarThisProject" xml:space="preserve">
+    <value>Better Rust Trumpet</value>
+  </data>
+  <data name="TrayStarOriginal" xml:space="preserve">
+    <value>BetterTrumpet (the original)</value>
+  </data>
+  <data name="AboutReportProblem" xml:space="preserve">
+    <value>Report a problem</value>
+  </data>
+  <data name="AboutOriginalProject" xml:space="preserve">
+    <value>Original BetterTrumpet</value>
+  </data>
+  <data name="SettingsShowProjectLinks" xml:space="preserve">
+    <value>Show "Star on GitHub" in the tray menu</value>
+  </data>
+  <data name="SettingsShowProjectLinksDesc" xml:space="preserve">
+    <value>Links to star this project and the original BetterTrumpet. "Report a problem" stays.</value>
+  </data>
   <data name="SettingsAnimateTrayIcon" xml:space="preserve">
     <value>Animate the tray icon while media plays</value>
   </data>
@@ -81,7 +102,7 @@
     <value>Saved for the original app; this preview never checks for updates itself.</value>
   </data>
   <data name="AboutPreviewCredits" xml:space="preserve">
-    <value>Rust preview. © 2026 xmn. Based on EarTrumpet; MIT License.</value>
+    <value>By tokenbroker. A Rust rewrite of BetterTrumpet by xammen, itself based on EarTrumpet by David Golden, Rafael Rivera and Dave Amenta. MIT License.</value>
   </data>
   <data name="SettingsExportFailed" xml:space="preserve">
     <value>Failed to export settings:
