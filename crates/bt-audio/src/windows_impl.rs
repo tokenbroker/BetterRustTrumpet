@@ -10,7 +10,7 @@ use std::{cell::RefCell, collections::HashMap, ffi::c_void, sync::Arc, sync::mps
 use windows::{
     Win32::{
         Devices::FunctionDiscovery::{PKEY_Device_DeviceDesc, PKEY_Device_FriendlyName},
-        Foundation::{CloseHandle, PROPERTYKEY},
+        Foundation::{CloseHandle, HANDLE, INVALID_HANDLE_VALUE, PROPERTYKEY, WAIT_TIMEOUT},
         Media::Audio::{
             AudioSessionStateActive, AudioSessionStateExpired, DEVICE_STATE_ACTIVE,
             Endpoints::IAudioEndpointVolume, Endpoints::IAudioEndpointVolumeCallback,
@@ -25,9 +25,14 @@ use windows::{
                 CLSCTX_ALL, COINIT_MULTITHREADED, CoCreateInstance, CoInitializeEx, CoTaskMemFree,
                 CoUninitialize, STGM_READ,
             },
+            Diagnostics::ToolHelp::{
+                CreateToolhelp32Snapshot, PROCESSENTRY32W, Process32FirstW, Process32NextW,
+                TH32CS_SNAPPROCESS,
+            },
             Threading::{
-                OpenProcess, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
-                QueryFullProcessImageNameW,
+                INFINITE, OpenProcess, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION,
+                PROCESS_SYNCHRONIZE, QueryFullProcessImageNameW, RegisterWaitForSingleObject,
+                UnregisterWaitEx, WT_EXECUTEONLYONCE, WaitForSingleObject,
             },
         },
     },
@@ -257,23 +262,143 @@ fn take_string(value: PWSTR) -> Result<String, AudioError> {
     }
 }
 
-fn process_image(pid: u32) -> Option<String> {
-    // SAFETY: OpenProcess with limited query rights has no preconditions; the
-    // handle is closed below. The buffer outlives the call and `len` holds its
-    // capacity in UTF-16 units as the API requires.
+/// A session's process, as the original's DesktopAppInfo sees it.
+enum Process {
+    /// Running: its image path, or only its exe name when it can't be opened
+    /// (elevated or protected processes).
+    Running(Option<String>),
+    /// Exited. Windows keeps such sessions listed (inactive) for a while; the
+    /// original drops them (ZombieProcessException), so we do too.
+    Exited,
+}
+
+fn process(pid: u32) -> Process {
+    // SAFETY: OpenProcess has no preconditions and its handle is closed
+    // below; a zero wait only polls the handle's signalled (exited) state.
     unsafe {
-        let handle = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid).ok()?;
-        let mut buffer = [0u16; 1024];
-        let mut len = buffer.len() as u32;
-        let result = QueryFullProcessImageNameW(
+        match OpenProcess(
+            PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SYNCHRONIZE,
+            false,
+            pid,
+        ) {
+            Ok(handle) => {
+                let exited = WaitForSingleObject(handle, 0) != WAIT_TIMEOUT;
+                let path = if exited { None } else { image_path(handle) };
+                let _ = CloseHandle(handle);
+                if exited {
+                    Process::Exited
+                } else {
+                    Process::Running(path)
+                }
+            }
+            // Not openable: running if the process list still has it.
+            Err(_) => match listed_name(pid) {
+                Some(name) => Process::Running(Some(name)),
+                None => Process::Exited,
+            },
+        }
+    }
+}
+
+fn image_path(handle: HANDLE) -> Option<String> {
+    let mut buffer = [0u16; 1024];
+    let mut len = buffer.len() as u32;
+    // SAFETY: `handle` is an open process handle with query rights; the
+    // buffer outlives the call and `len` holds its capacity in UTF-16 units.
+    unsafe {
+        QueryFullProcessImageNameW(
             handle,
             PROCESS_NAME_WIN32,
             PWSTR(buffer.as_mut_ptr()),
             &mut len,
-        );
-        let _ = CloseHandle(handle);
-        result.ok()?;
-        Some(String::from_utf16_lossy(&buffer[..len as usize]))
+        )
+        .ok()?;
+    }
+    Some(String::from_utf16_lossy(&buffer[..len as usize]))
+}
+
+/// The exe name of a running process from the system's process list, as the
+/// original's NtQuerySystemInformation fallback.
+fn listed_name(pid: u32) -> Option<String> {
+    // SAFETY: the snapshot handle is closed below; `entry.dwSize` is set as
+    // the API requires and `szExeFile` is NUL-terminated within its array.
+    unsafe {
+        let snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0).ok()?;
+        let mut entry = PROCESSENTRY32W {
+            dwSize: size_of::<PROCESSENTRY32W>() as u32,
+            ..Default::default()
+        };
+        let mut found = None;
+        let mut more = Process32FirstW(snapshot, &mut entry).is_ok();
+        while more {
+            if entry.th32ProcessID == pid {
+                let len = entry.szExeFile.iter().position(|&c| c == 0).unwrap_or(0);
+                found = Some(String::from_utf16_lossy(&entry.szExeFile[..len]));
+                break;
+            }
+            more = Process32NextW(snapshot, &mut entry).is_ok();
+        }
+        let _ = CloseHandle(snapshot);
+        found.filter(|name| !name.is_empty())
+    }
+}
+
+/// Tells the listener when a session's process exits, as the original's
+/// ProcessWatcherService: Windows itself often sends no session event then.
+struct ProcessWait {
+    wait: HANDLE,
+    process: HANDLE,
+    listener: *mut Listener,
+}
+
+unsafe extern "system" fn process_exited(context: *mut c_void, _timed_out: bool) {
+    // SAFETY: `context` is the ProcessWait's boxed listener, freed only after
+    // UnregisterWaitEx has waited for this callback to finish.
+    let listener = unsafe { &*(context as *const Listener) };
+    listener(notify::Change::Sessions);
+}
+
+impl ProcessWait {
+    fn new(pid: u32, listener: &Listener) -> Option<Self> {
+        // SAFETY: the process handle and the wait are released in Drop; the
+        // boxed listener stays allocated until then (see process_exited).
+        unsafe {
+            let process = OpenProcess(PROCESS_SYNCHRONIZE, false, pid).ok()?;
+            let listener = Box::into_raw(Box::new(listener.clone()));
+            let mut wait = HANDLE::default();
+            if RegisterWaitForSingleObject(
+                &mut wait,
+                process,
+                Some(process_exited),
+                Some(listener as *const c_void),
+                INFINITE,
+                WT_EXECUTEONLYONCE,
+            )
+            .is_err()
+            {
+                drop(Box::from_raw(listener));
+                let _ = CloseHandle(process);
+                return None;
+            }
+            Some(Self {
+                wait,
+                process,
+                listener,
+            })
+        }
+    }
+}
+
+impl Drop for ProcessWait {
+    fn drop(&mut self) {
+        // SAFETY: INVALID_HANDLE_VALUE makes UnregisterWaitEx block until a
+        // running callback returns, so the listener can be freed after it.
+        // Never dropped from inside the callback.
+        unsafe {
+            let _ = UnregisterWaitEx(self.wait, Some(INVALID_HANDLE_VALUE));
+            let _ = CloseHandle(self.process);
+            drop(Box::from_raw(self.listener));
+        }
     }
 }
 
@@ -354,6 +479,8 @@ struct Backend {
     /// New-session callbacks per output, and every live session's events.
     manager_watchers: RefCell<Vec<(IAudioSessionManager2, IAudioSessionNotification)>>,
     session_watchers: RefCell<Vec<(IAudioSessionControl, IAudioSessionEvents)>>,
+    /// Exit waits on the processes of those sessions, by process id.
+    process_waits: RefCell<HashMap<u32, ProcessWait>>,
     /// Lazily created; `Some(None)` once creation has failed.
     policy: RefCell<Option<Option<PolicyFactory>>>,
     /// FileDescription per executable path; version resources rarely change.
@@ -383,6 +510,7 @@ impl Backend {
             endpoint_watchers: RefCell::new(vec![]),
             manager_watchers: RefCell::new(vec![]),
             session_watchers: RefCell::new(vec![]),
+            process_waits: RefCell::new(HashMap::new()),
             policy: RefCell::new(None),
             descriptions: RefCell::new(HashMap::new()),
             meters: RefCell::new(vec![]),
@@ -482,6 +610,7 @@ impl Backend {
             .iter()
             .map(|(m, _)| m.clone())
             .collect();
+        let mut pids = std::collections::HashSet::new();
         for manager in managers {
             // SAFETY: live manager on this thread; indices are within
             // GetCount; each callback is kept alive in `session_watchers`.
@@ -504,10 +633,26 @@ impl Backend {
                         listener: listener.clone(),
                     }
                     .into();
+                    if let Ok(control2) = control.cast::<IAudioSessionControl2>()
+                        && control2.IsSystemSoundsSession().0 != 0
+                        && let Ok(pid) = control2.GetProcessId()
+                    {
+                        pids.insert(pid);
+                    }
                     if control.RegisterAudioSessionNotification(&callback).is_ok() {
                         self.session_watchers.borrow_mut().push((control, callback));
                     }
                 }
+            }
+        }
+        // Keep the waits of processes still listed; drop the rest.
+        let mut waits = self.process_waits.borrow_mut();
+        waits.retain(|pid, _| pids.contains(pid));
+        for pid in pids {
+            if let std::collections::hash_map::Entry::Vacant(slot) = waits.entry(pid)
+                && let Some(wait) = ProcessWait::new(pid, &listener)
+            {
+                slot.insert(wait);
             }
         }
     }
@@ -640,7 +785,11 @@ impl Backend {
                 let control2: IAudioSessionControl2 = control.cast()?;
                 let pid = control2.GetProcessId().unwrap_or(0);
                 let system = control2.IsSystemSoundsSession().0 == 0;
-                let executable = if system { None } else { process_image(pid) };
+                let executable = match (system, process(pid)) {
+                    (true, _) => None,
+                    (false, Process::Running(executable)) => executable,
+                    (false, Process::Exited) => continue,
+                };
                 let key = if system {
                     "system".to_owned()
                 } else {
@@ -889,5 +1038,53 @@ impl Drop for Backend {
                 let _ = control.UnregisterAudioSessionNotification(&callback);
             }
         }
+        self.process_waits.borrow_mut().clear();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Process, process};
+
+    #[test]
+    fn running_process_has_its_path() {
+        let Process::Running(Some(path)) = process(std::process::id()) else {
+            panic!("this test process should be running and openable");
+        };
+        assert!(path.to_lowercase().ends_with(".exe"), "{path}");
+    }
+
+    #[test]
+    fn exited_process_is_dropped() {
+        let mut child = std::process::Command::new("cmd")
+            .args(["/c", "exit"])
+            .spawn()
+            .unwrap();
+        let pid = child.id();
+        child.wait().unwrap();
+        // The Child still holds a handle, so the pid is not reused yet.
+        assert!(matches!(process(pid), Process::Exited));
+        drop(child);
+    }
+
+    #[test]
+    fn protected_process_is_named_from_the_process_list() {
+        // csrss.exe can't be opened by a normal user but is always running.
+        let out = std::process::Command::new("tasklist")
+            .args(["/fi", "imagename eq csrss.exe", "/fo", "csv", "/nh"])
+            .output()
+            .unwrap();
+        let text = String::from_utf8_lossy(&out.stdout);
+        let pid: u32 = text
+            .split(',')
+            .nth(1)
+            .unwrap()
+            .trim_matches('"')
+            .parse()
+            .unwrap();
+        let Process::Running(Some(name)) = process(pid) else {
+            panic!("csrss.exe should count as running");
+        };
+        assert!(name.eq_ignore_ascii_case("csrss.exe"), "{name}");
     }
 }
