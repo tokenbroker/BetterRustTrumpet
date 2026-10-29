@@ -54,6 +54,9 @@ const APP_WHEEL_DOWN: usize = 5;
 const APP_SHOW_MEDIA: usize = 6;
 /// Opens (or brings back) the settings window.
 pub const APP_SETTINGS: usize = 7;
+/// Quits cleanly: the setup (packaging/installer.iss) posts it before it
+/// replaces or removes the app (D57).
+pub const APP_QUIT: usize = 8;
 /// A media session's playback state changed (bt-media's watch).
 const APP_MEDIA: usize = 60;
 /// The update check finished (`updates::take` has the result).
@@ -1221,6 +1224,7 @@ impl Ui {
         let result = result.and_then(|()| bt_app::install::apply());
         match result {
             Ok(()) => {
+                bt_app::install::record(&release.version);
                 bt_app::log::line(format!(
                     "UpdateService: Installed {}; restarting",
                     release.version
@@ -1669,6 +1673,7 @@ impl Ui {
                 }
             }
             Event::App(APP_SETTINGS) => self.open_settings(),
+            Event::App(APP_QUIT) => wnd::quit(),
             Event::App(APP_SHOW_MEDIA) => {
                 if let Some(rect) = self.tray.rect() {
                     self.media.show(&self.core, rect);

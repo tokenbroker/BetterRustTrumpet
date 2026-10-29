@@ -83,6 +83,26 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "the signature does not verify with packaging/update-signing.pub.pem" }
           Get-Content dist\update.json
 
+      - name: Build the setup
+        id: setup
+        shell: pwsh
+        run: |
+          # D57: Inno Setup, as the original's installer.iss (installed if the
+          # runner image lacks it).
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup -y --no-progress | Out-Null
+          }
+          if (-not (Test-Path $iscc)) { throw "Inno Setup is not available" }
+          $version = '${{ steps.package.outputs.version }}'
+          $cargo = (Select-String -Path Cargo.toml -Pattern '^version = "(.+)"').Matches[0].Groups[1].Value
+          $num = ($cargo -split '-')[0] + '.0'
+          & $iscc /Q "/DVersion=$version" "/DNumVersion=$num" "/DSourceDir=$PWD\target\release" "/O$PWD\setup" packaging\installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
+          $exe = Get-ChildItem setup\*.exe | Select-Object -First 1
+          "file=$($exe.Name)" >> $env:GITHUB_OUTPUT
+          "hash=$((Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLower())" >> $env:GITHUB_OUTPUT
+
       - name: Keep the zip (manual runs)
         if: github.ref_type != 'tag'
         uses: actions/upload-artifact@v4
@@ -91,6 +111,7 @@ jobs:
           path: |
             ${{ steps.package.outputs.name }}.zip
             dist/*
+            setup/*
 
       - name: Publish the release
         if: github.ref_type == 'tag'
@@ -100,13 +121,13 @@ jobs:
         run: |
           $tag = $env:GITHUB_REF_NAME
           $zip = "${{ steps.package.outputs.name }}.zip"
-          $notes = (Get-Content packaging\RELEASE_NOTES.md -Raw).Replace('{version}', '${{ steps.package.outputs.version }}').Replace('{sha256}', '${{ steps.package.outputs.hash }}').Replace('{zip}', $zip)
+          $notes = (Get-Content packaging\RELEASE_NOTES.md -Raw).Replace('{version}', '${{ steps.package.outputs.version }}').Replace('{sha256}', '${{ steps.package.outputs.hash }}').Replace('{zip}', $zip).Replace('{setup}', '${{ steps.setup.outputs.file }}').Replace('{setup_sha256}', '${{ steps.setup.outputs.hash }}')
           $notes | Set-Content notes.md -Encoding utf8
           $extra = @()
           if ($tag.Contains('-')) { $extra += '--prerelease' }
-          # The zip for people; the exes and the signed manifest for the
-          # app's updater (D56).
-          $assets = @($zip) + (Get-ChildItem dist | ForEach-Object { $_.FullName })
+          # The setup and the zip for people; the exes and the signed
+          # manifest for the app's updater (D56, D57).
+          $assets = @((Get-ChildItem setup\*.exe).FullName, $zip) + (Get-ChildItem dist | ForEach-Object { $_.FullName })
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
             gh release upload $tag @assets --clobber

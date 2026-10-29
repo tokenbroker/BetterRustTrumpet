@@ -240,6 +240,14 @@ pub fn apply() -> Result<(), String> {
     Ok(())
 }
 
+/// After a successful swap: Settings > Apps shows the new version when
+/// setup installed this copy (D57).
+pub fn record(version: &str) {
+    if let Some(dir) = install_dir() {
+        crate::win32::uninstall::record_version(&dir, version);
+    }
+}
+
 /// Removes staged files that were not applied.
 pub fn discard() {
     if let Some(dir) = install_dir() {

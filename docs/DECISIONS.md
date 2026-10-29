@@ -197,6 +197,10 @@ The switch is a port-only key, CheckGitHubForUpdates, off by default, so setting
 - Staged files sit beside the app as `.new`; the swap renames the running files to `.old` (allowed for a running exe) and puts them back if any step fails. The new copy starts with `--after-update <pid>`, waits for the old one to exit, and removes the `.old` files. A folder the app cannot write to (Program Files without admin rights) gets the release page instead.
 - An Authenticode certificate would also let Windows vouch for the exes; it is not bought yet, so the manifest signature is the trust anchor. Losing the private key means later releases cannot be verified by installed copies; the maintainer keeps backups outside the repository (`.gitignore`, a local pre-commit hook and a CI check refuse key files).
 
+## D57 - a setup like the original's (user decision, 2026-10-29)
+
+Releases carry `BetterRustTrumpet-<version>-setup.exe` beside the zip, built in the release workflow from `packaging/installer.iss`, a copy of the original's Inno Setup script with these changes so both apps can be installed together: its own AppId, folder (`{autopf}\BetterRustTrumpet`, per user by default as the original, which keeps the folder writable for the updater), Start menu entry and startup value (`BetterTrumpet Rust Preview`, the one the app's own switch writes). The original stops the app with `taskkill /IM BetterTrumpet.exe`, which would also stop the C# app; this setup posts the app's quit code (`APP_QUIT`) to its hidden window and waits, with the Restart Manager (files in `{app}` only) as a fallback. Tasks as the original: desktop icon, start with Windows, `bt` on PATH (checked once). Uninstalling removes the files, the PATH entry and a startup value that points into the install, and keeps the settings, as the original. After a self-update the app sets the setup entry's DisplayVersion when setup installed that copy. The zip stays for portable use.
+
 ## Preserved quirks
 
 | ID | Behavior to retain | Source / implication |

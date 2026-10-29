@@ -20,12 +20,20 @@ other machines yet. Bug reports are very welcome (see below).
 
 ## Trying it
 
-1. Download `BetterRustTrumpet.zip` from the
-   [releases](../../releases) and unzip it anywhere.
-2. Run `BetterTrumpet.exe`. Windows SmartScreen may warn because the file is
-   not signed: choose **More info**, then **Run anyway**.
+1. Download `BetterRustTrumpet-<version>-setup.exe` from the
+   [releases](../../releases) and run it. It installs for your account only
+   (no admin prompt) into `%LOCALAPPDATA%\Programs\BetterRustTrumpet`, adds a
+   Start menu entry and an uninstaller (Settings > Apps), and offers a
+   desktop icon, starting with Windows and `bt` on PATH. Or download
+   `BetterRustTrumpet-<version>.zip`, unzip it anywhere and run
+   `BetterTrumpet.exe`.
+2. Windows SmartScreen may warn because the files are not code-signed:
+   choose **More info**, then **Run anyway**.
 3. Quit the C# BetterTrumpet or EarTrumpet first if it is running; both would
-   add a tray icon and claim the same shortcuts.
+   add a tray icon and claim the same shortcuts. The two can be installed
+   side by side.
+4. Later versions install from inside the app: **Update now** in the flyout,
+   the tray menu or Settings > Updates.
 
 `bt.exe` is an optional command-line tool (`bt --help`) that talks to the
 running app.
