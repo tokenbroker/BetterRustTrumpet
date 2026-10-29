@@ -1273,7 +1273,7 @@ fn performance(core: &mut Core) -> Vec<Section> {
                     ),
                     !smooth,
                 ),
-                // Port-only (D51).
+                // Port-only (D51); Eco Mode keeps the icon still too.
                 disabled(
                     toggle(
                         core,
@@ -1281,11 +1281,13 @@ fn performance(core: &mut Core) -> Vec<Section> {
                         tr("SettingsAnimateTrayIcon"),
                         Some(if legacy {
                             tr("WebSettingsRequiresModernIcon")
+                        } else if eco {
+                            tr("WebSettingsDisabledByEco")
                         } else {
                             tr("SettingsAnimateTrayIconDesc")
                         }),
                     ),
-                    legacy,
+                    legacy || eco,
                 ),
             ],
         ),

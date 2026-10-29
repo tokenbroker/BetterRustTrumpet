@@ -319,6 +319,14 @@ impl Gfx {
         }
     }
 
+    /// Drops cached text layouts (a closed window's labels); formats and
+    /// paths are few and stay.
+    pub fn trim(&self) {
+        let mut layouts = self.layouts.borrow_mut();
+        layouts.clear();
+        layouts.shrink_to_fit();
+    }
+
     /// Whether a font family is installed (for the icon font fallback).
     pub fn has_font(&self, family: &str) -> bool {
         let mut collection = None;

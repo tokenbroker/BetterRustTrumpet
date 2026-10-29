@@ -39,22 +39,22 @@ use windows::{
                 HTBOTTOM, HTBOTTOMLEFT, HTBOTTOMRIGHT, HTCAPTION, HTCLIENT, HTLEFT, HTRIGHT, HTTOP,
                 HTTOPLEFT, HTTOPRIGHT, HWND_TOPMOST, ICON_BIG, ICON_SMALL, IDC_ARROW, IMAGE_ICON,
                 IsIconic, IsWindowVisible, KillTimer, LR_DEFAULTCOLOR, LR_SHARED, LoadCursorW,
-                LoadImageW, MA_NOACTIVATE, MINMAXINFO, MSG, PBT_POWERSETTINGCHANGE, PostMessageW,
-                PostQuitMessage, RegisterClassExW, RegisterWindowMessageW, SM_CXICON, SM_CXSMICON,
-                SW_HIDE, SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE, SWP_FRAMECHANGED, SWP_NOACTIVATE,
-                SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SendMessageW, SetForegroundWindow, SetTimer,
-                SetWindowLongPtrW, SetWindowPlacement, SetWindowPos, ShowWindow, TranslateMessage,
-                WINDOWPLACEMENT, WINDOWPLACEMENT_FLAGS, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED,
-                WM_CHAR, WM_CLOSE, WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND,
-                WM_GETMINMAXINFO, WM_HOTKEY, WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDBLCLK,
-                WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP,
-                WM_MOUSEACTIVATE, WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_MOVE, WM_NCCALCSIZE,
-                WM_NCHITTEST, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
-                WM_POWERBROADCAST, WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON,
-                WM_SETTINGCHANGE, WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER,
-                WNDCLASSEXW, WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW,
-                WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP,
-                WS_SYSMENU, WS_THICKFRAME,
+                LoadImageW, MA_NOACTIVATE, MINMAXINFO, MSG, PBT_APMPOWERSTATUSCHANGE,
+                PBT_POWERSETTINGCHANGE, PostMessageW, PostQuitMessage, RegisterClassExW,
+                RegisterWindowMessageW, SM_CXICON, SM_CXSMICON, SW_HIDE, SW_RESTORE, SW_SHOW,
+                SW_SHOWNOACTIVATE, SWP_FRAMECHANGED, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE,
+                SWP_NOZORDER, SendMessageW, SetForegroundWindow, SetTimer, SetWindowLongPtrW,
+                SetWindowPlacement, SetWindowPos, ShowWindow, TranslateMessage, WINDOWPLACEMENT,
+                WINDOWPLACEMENT_FLAGS, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED, WM_CHAR, WM_CLOSE,
+                WM_DISPLAYCHANGE, WM_DPICHANGED, WM_ERASEBKGND, WM_GETMINMAXINFO, WM_HOTKEY,
+                WM_KEYDOWN, WM_KEYUP, WM_LBUTTONDBLCLK, WM_LBUTTONDOWN, WM_LBUTTONUP,
+                WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP, WM_MOUSEACTIVATE, WM_MOUSEMOVE,
+                WM_MOUSEWHEEL, WM_MOVE, WM_NCCALCSIZE, WM_NCHITTEST, WM_NCLBUTTONDOWN,
+                WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT, WM_POWERBROADCAST, WM_RBUTTONDBLCLK,
+                WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE, WM_SIZE, WM_SYSCHAR,
+                WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER, WNDCLASSEXW, WS_EX_APPWINDOW, WS_EX_LAYERED,
+                WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT,
+                WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP, WS_SYSMENU, WS_THICKFRAME,
             },
         },
     },
@@ -131,6 +131,9 @@ pub enum Event {
     /// The display turned on (`true`, dimmed included) or off, for windows
     /// registered with `presence::watch_display`.
     Display(bool),
+    /// The PC switched between battery and mains (`presence::on_battery`
+    /// is already up to date).
+    PowerSource,
 }
 
 const WM_MOUSELEAVE: u32 = 0x02a3;
@@ -490,6 +493,13 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
             }
         }
         WM_APP_POST => Some(Event::App(wparam.0)),
+        WM_POWERBROADCAST if wparam.0 == PBT_APMPOWERSTATUSCHANGE as usize => {
+            let before = super::presence::on_battery();
+            if super::presence::refresh_power() != before {
+                dispatch(window, Event::PowerSource);
+            }
+            return LRESULT(1);
+        }
         WM_POWERBROADCAST if wparam.0 == PBT_POWERSETTINGCHANGE as usize => {
             // SAFETY: for PBT_POWERSETTINGCHANGE, lParam points to a
             // POWERBROADCAST_SETTING whose data holds at least a DWORD for

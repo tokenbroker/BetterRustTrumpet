@@ -77,7 +77,7 @@ fn kind(key: Key) -> Kind {
 pub fn context() -> Context<'static> {
     Context {
         region_code: "",
-        on_battery: false,
+        on_battery: bt_app::win32::presence::on_battery(),
     }
 }
 

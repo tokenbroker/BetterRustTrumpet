@@ -66,6 +66,9 @@ const AUDIO: usize = 4;
 const PRESET_SETTLE: usize = 5;
 /// The tray icon's playback animation, only while it runs.
 const TRAY_ANIMATION: usize = 60;
+/// Shortly after a window closes, memory goes back to Windows.
+const MEMORY_TRIM: usize = 61;
+const MEMORY_TRIM_DELAY_MS: u32 = 1000;
 /// While the tray icon can't be seen, how often the animation checks
 /// whether it can again.
 const UNSEEN_CHECK_MS: u32 = 1000;
@@ -926,7 +929,7 @@ impl Ui {
         if let Some(mixer) = self.mixer.take() {
             mixer.destroy();
         }
-        match mixer::Mixer::new(self.gfx.clone(), &self.theme) {
+        match mixer::Mixer::new(self.window_gfx(), &self.theme) {
             Ok(mut mixer) => {
                 mixer.open(&mut self.core);
                 self.mixer = Some(mixer);
@@ -951,8 +954,32 @@ impl Ui {
         if self.mixer.as_ref().is_some_and(|m| m.closed) {
             if let Some(mixer) = self.mixer.take() {
                 mixer.destroy();
+                self.schedule_trim();
             }
         }
+    }
+
+    /// Drawing resources for a window that comes and goes (settings,
+    /// mixer, onboarding): its own Direct2D factory, so the rasterizer's
+    /// buffers and caches go with it instead of staying with the tray's.
+    fn window_gfx(&self) -> std::rc::Rc<Gfx> {
+        Gfx::new().unwrap_or_else(|_| self.gfx.clone())
+    }
+
+    /// After a window closes: drop the caches it filled and give the freed
+    /// memory back to Windows, once its last messages have been handled.
+    fn schedule_trim(&self) {
+        self.hidden.set_timer(MEMORY_TRIM, MEMORY_TRIM_DELAY_MS);
+    }
+
+    fn trim_memory(&self) {
+        self.hidden.kill_timer(MEMORY_TRIM);
+        // A window opened again in the meantime keeps its caches.
+        if self.settings.is_some() || self.mixer.is_some() || self.onboarding.is_some() {
+            return;
+        }
+        self.gfx.trim();
+        bt_app::win32::memory::trim();
     }
 
     /// Ctrl+Shift+P: the command palette.
@@ -1020,7 +1047,7 @@ impl Ui {
     /// opens the setup window, or brings the open one forward.
     fn open_onboarding(&mut self) {
         if self.onboarding.is_none() {
-            match onboarding::Onboarding::new(self.gfx.clone(), &mut self.core) {
+            match onboarding::Onboarding::new(self.window_gfx(), &mut self.core) {
                 Ok(window) => self.onboarding = Some(window),
                 Err(e) => eprintln!("BetterTrumpet: the setup window failed to open: {e}"),
             }
@@ -1042,6 +1069,7 @@ impl Ui {
         if outcome.close {
             if let Some(onboarding) = self.onboarding.take() {
                 onboarding.close();
+                self.schedule_trim();
             }
         }
     }
@@ -1052,7 +1080,7 @@ impl Ui {
     /// palette and the settings hotkey all come through here.
     pub fn open_settings(&mut self) {
         if self.settings.is_none() {
-            match settings::Settings::new(self.gfx.clone(), &mut self.core, self.icon_font) {
+            match settings::Settings::new(self.window_gfx(), &mut self.core, self.icon_font) {
                 Ok(window) => self.settings = Some(window),
                 Err(e) => {
                     eprintln!("BetterTrumpet: the settings window failed to open: {e}");
@@ -1101,6 +1129,7 @@ impl Ui {
             if let Some(settings) = self.settings.take() {
                 let recording = settings.recording();
                 settings.close();
+                self.schedule_trim();
                 if recording {
                     self.reload_hotkeys();
                 }
@@ -1317,6 +1346,7 @@ impl Ui {
                     self.present_tooltip();
                 }
             }
+            Event::Timer(MEMORY_TRIM) => self.trim_memory(),
             Event::Timer(TRAY_ANIMATION) => {
                 if let Some(base) = self.icon_base {
                     // Nobody sees the icon under a full-screen app or a
@@ -1328,6 +1358,14 @@ impl Ui {
                         self.show_icon();
                         self.hidden.set_timer(TRAY_ANIMATION, self.animator.delay());
                     }
+                }
+            }
+            // AutoEcoMode: peak meter rate, tray animation, settings page.
+            Event::PowerSource => {
+                self.reload_theme();
+                self.present_tooltip();
+                if let Some(settings) = &mut self.settings {
+                    settings.refresh(&mut self.core);
                 }
             }
             Event::Display(on) => {
@@ -1637,7 +1675,9 @@ impl Ui {
         let store = &self.core.store;
         let legacy = store.bool(Key::UseLegacyIcon);
         let shows_type = store.bool(Key::TrayIconShowsDeviceType);
-        self.animator.disabled = !store.bool(Key::AnimateTrayIcon);
+        // Eco Mode (always, or on battery with AutoEcoMode) keeps it still.
+        self.animator.disabled = !store.bool(Key::AnimateTrayIcon)
+            || store.settings.effective_eco_mode(crate::store::context());
         let default = devices.devices.iter().find(|d| d.is_default);
         let form = match default {
             Some(d) if shows_type && !legacy => match &self.form_factor {

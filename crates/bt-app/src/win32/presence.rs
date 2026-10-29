@@ -1,12 +1,17 @@
 //! Whether anyone can see the notification area, so the tray animation can
 //! rest: the display's power state (GUID_CONSOLE_DISPLAY_STATE, delivered
 //! to a window as `Event::Display`) and the shell's notification state
-//! (locked session, screen saver, full-screen app).
+//! (locked session, screen saver, full-screen app). Also whether the PC
+//! runs on battery, for AutoEcoMode.
+use std::sync::atomic::{AtomicU8, Ordering};
+
 use windows::{
     Win32::{
         Foundation::{HANDLE, HWND, POINT},
         Graphics::Gdi::{MONITOR_DEFAULTTONEAREST, MonitorFromPoint, MonitorFromWindow},
-        System::Power::RegisterPowerSettingNotification,
+        System::Power::{
+            GetSystemPowerStatus, RegisterPowerSettingNotification, SYSTEM_POWER_STATUS,
+        },
         UI::{
             Shell::{
                 QUNS_BUSY, QUNS_NOT_PRESENT, QUNS_RUNNING_D3D_FULL_SCREEN,
@@ -35,6 +40,29 @@ pub fn watch_display(window: Window) {
             DEVICE_NOTIFY_WINDOW_HANDLE,
         );
     }
+}
+
+/// The last power source seen: 0 unknown, 1 battery, 2 mains.
+static BATTERY: AtomicU8 = AtomicU8::new(0);
+
+/// Whether the PC runs on battery (SystemInformation.PowerStatus), from the
+/// last WM_POWERBROADCAST or asked once.
+pub fn on_battery() -> bool {
+    match BATTERY.load(Ordering::Relaxed) {
+        0 => refresh_power(),
+        state => state == 1,
+    }
+}
+
+/// Asks Windows for the power source again (PBT_APMPOWERSTATUSCHANGE).
+pub fn refresh_power() -> bool {
+    let mut status = SYSTEM_POWER_STATUS::default();
+    // SAFETY: `status` is a valid out-parameter.
+    let ok = unsafe { GetSystemPowerStatus(&mut status) }.is_ok();
+    // ACLineStatus: 0 offline (battery), 1 online, 255 unknown (desktops).
+    let battery = ok && status.ACLineStatus == 0;
+    BATTERY.store(if battery { 1 } else { 2 }, Ordering::Relaxed);
+    battery
 }
 
 /// Whether the icon at `rect` (the tray's rectangle, physical pixels) is
