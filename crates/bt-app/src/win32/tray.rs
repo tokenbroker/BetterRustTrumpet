@@ -1,4 +1,6 @@
 //! The notification-area icon (Shell_NotifyIcon, NOTIFYICON_VERSION_4).
+use std::rc::Rc;
+
 use super::{
     trayicon::Icon,
     wnd::{WM_TRAY, Window},
@@ -30,7 +32,7 @@ pub struct Tray {
     window: Window,
     icon: HICON,
     /// The drawn icon that replaces the application icon once set.
-    drawn: Option<Icon>,
+    drawn: Option<Rc<Icon>>,
     tip: String,
 }
 
@@ -84,7 +86,7 @@ impl Tray {
             uID: ID,
             uFlags: NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_SHOWTIP,
             uCallbackMessage: WM_TRAY,
-            hIcon: self.drawn.as_ref().map_or(self.icon, Icon::handle),
+            hIcon: self.drawn.as_ref().map_or(self.icon, |icon| icon.handle()),
             ..Default::default()
         };
         copy_tip(&self.tip, &mut data.szTip);
@@ -117,9 +119,11 @@ impl Tray {
 
     /// Replaces the icon (the previous drawn one is destroyed after the
     /// shell has the new one).
-    pub fn set_icon(&mut self, icon: Icon) {
+    pub fn set_icon(&mut self, icon: Rc<Icon>) {
         let _previous = self.drawn.replace(icon);
-        let data = self.data();
+        let mut data = self.data();
+        // Only the image changed (the animation sends one per pose).
+        data.uFlags = NIF_ICON;
         // SAFETY: as above; the new icon outlives the call.
         unsafe {
             let _ = Shell_NotifyIconW(NIM_MODIFY, &data);

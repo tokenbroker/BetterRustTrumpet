@@ -39,9 +39,9 @@ use windows::{
                 HTBOTTOM, HTBOTTOMLEFT, HTBOTTOMRIGHT, HTCAPTION, HTCLIENT, HTLEFT, HTRIGHT, HTTOP,
                 HTTOPLEFT, HTTOPRIGHT, HWND_TOPMOST, ICON_BIG, ICON_SMALL, IDC_ARROW, IMAGE_ICON,
                 IsIconic, IsWindowVisible, KillTimer, LR_DEFAULTCOLOR, LR_SHARED, LoadCursorW,
-                LoadImageW, MA_NOACTIVATE, MINMAXINFO, MSG, PostMessageW, PostQuitMessage,
-                RegisterClassExW, RegisterWindowMessageW, SM_CXICON, SM_CXSMICON, SW_HIDE,
-                SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE, SWP_FRAMECHANGED, SWP_NOACTIVATE,
+                LoadImageW, MA_NOACTIVATE, MINMAXINFO, MSG, PBT_POWERSETTINGCHANGE, PostMessageW,
+                PostQuitMessage, RegisterClassExW, RegisterWindowMessageW, SM_CXICON, SM_CXSMICON,
+                SW_HIDE, SW_RESTORE, SW_SHOW, SW_SHOWNOACTIVATE, SWP_FRAMECHANGED, SWP_NOACTIVATE,
                 SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER, SendMessageW, SetForegroundWindow, SetTimer,
                 SetWindowLongPtrW, SetWindowPlacement, SetWindowPos, ShowWindow, TranslateMessage,
                 WINDOWPLACEMENT, WINDOWPLACEMENT_FLAGS, WM_ACTIVATE, WM_APP, WM_CAPTURECHANGED,
@@ -50,11 +50,11 @@ use windows::{
                 WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MBUTTONDBLCLK, WM_MBUTTONDOWN, WM_MBUTTONUP,
                 WM_MOUSEACTIVATE, WM_MOUSEMOVE, WM_MOUSEWHEEL, WM_MOVE, WM_NCCALCSIZE,
                 WM_NCHITTEST, WM_NCLBUTTONDOWN, WM_NCMBUTTONDOWN, WM_NCRBUTTONDOWN, WM_PAINT,
-                WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON, WM_SETTINGCHANGE,
-                WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER, WNDCLASSEXW,
-                WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
-                WS_EX_TRANSPARENT, WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP, WS_SYSMENU,
-                WS_THICKFRAME,
+                WM_POWERBROADCAST, WM_RBUTTONDBLCLK, WM_RBUTTONDOWN, WM_RBUTTONUP, WM_SETICON,
+                WM_SETTINGCHANGE, WM_SIZE, WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP, WM_TIMER,
+                WNDCLASSEXW, WS_EX_APPWINDOW, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW,
+                WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_MINIMIZEBOX, WS_OVERLAPPEDWINDOW, WS_POPUP,
+                WS_SYSMENU, WS_THICKFRAME,
             },
         },
     },
@@ -128,6 +128,9 @@ pub enum Event {
     /// A typed character (WM_CHAR UTF-16 unit, control characters
     /// included for text editing).
     Char(u16),
+    /// The display turned on (`true`, dimmed included) or off, for windows
+    /// registered with `presence::watch_display`.
+    Display(bool),
 }
 
 const WM_MOUSELEAVE: u32 = 0x02a3;
@@ -487,6 +490,21 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wparam: WPARAM, lparam: 
             }
         }
         WM_APP_POST => Some(Event::App(wparam.0)),
+        WM_POWERBROADCAST if wparam.0 == PBT_POWERSETTINGCHANGE as usize => {
+            // SAFETY: for PBT_POWERSETTINGCHANGE, lParam points to a
+            // POWERBROADCAST_SETTING whose data holds at least a DWORD for
+            // the display state.
+            let setting = unsafe {
+                &*(lparam.0 as *const windows::Win32::System::Power::POWERBROADCAST_SETTING)
+            };
+            if setting.PowerSetting != super::presence::DISPLAY_STATE || setting.DataLength < 4 {
+                return LRESULT(1);
+            }
+            // SAFETY: as above, DataLength covers the first DWORD.
+            let state = unsafe { std::ptr::read_unaligned(setting.Data.as_ptr() as *const u32) };
+            dispatch(window, Event::Display(state != 0));
+            return LRESULT(1);
+        }
         WM_APP_TASK => {
             while let Some(task) = TASKS.with(|t| t.borrow_mut().pop_front()) {
                 task();

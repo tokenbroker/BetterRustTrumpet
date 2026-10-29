@@ -66,6 +66,9 @@ const AUDIO: usize = 4;
 const PRESET_SETTLE: usize = 5;
 /// The tray icon's playback animation, only while it runs.
 const TRAY_ANIMATION: usize = 60;
+/// While the tray icon can't be seen, how often the animation checks
+/// whether it can again.
+const UNSEEN_CHECK_MS: u32 = 1000;
 
 /// Left Ctrl (Key.LeftCtrl).
 const VK_LCONTROL: u16 = 0xa2;
@@ -152,6 +155,11 @@ pub struct Ui {
     /// The static icon the default output calls for, under any animation.
     icon_base: Option<trayicon::State>,
     animator: trayicon::Animator,
+    /// The display is off (GUID_CONSOLE_DISPLAY_STATE): the animation's
+    /// timer stops until it is on again.
+    display_off: bool,
+    /// When `tray_unseen` last asked the shell, and its answer.
+    unseen_checked: Option<(std::time::Instant, bool)>,
     /// The default output's form factor, cached per device id.
     form_factor: Option<(String, Option<u32>)>,
     /// Routed preset apps re-applied by PRESET_SETTLE, and ticks left.
@@ -246,11 +254,14 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         icon: None,
         icon_base: None,
         animator: trayicon::Animator::default(),
+        display_off: false,
+        unseen_checked: None,
         form_factor: None,
         settle: vec![],
         settle_ticks: 0,
     };
     ui.register_hotkeys();
+    bt_app::win32::presence::watch_display(hidden);
     ui.share_contrast();
     ui.present_tooltip();
     ui.watch();
@@ -1308,8 +1319,25 @@ impl Ui {
             }
             Event::Timer(TRAY_ANIMATION) => {
                 if let Some(base) = self.icon_base {
-                    self.animator.tick(&base);
-                    self.show_icon();
+                    // Nobody sees the icon under a full-screen app or a
+                    // locked session: check again in a second instead.
+                    if self.tray_unseen() {
+                        self.hidden.set_timer(TRAY_ANIMATION, UNSEEN_CHECK_MS);
+                    } else {
+                        self.animator.tick(&base);
+                        self.show_icon();
+                        self.hidden.set_timer(TRAY_ANIMATION, self.animator.delay());
+                    }
+                }
+            }
+            Event::Display(on) => {
+                self.display_off = !on;
+                if self.animator.running() {
+                    if on {
+                        self.hidden.set_timer(TRAY_ANIMATION, self.animator.delay());
+                    } else {
+                        self.hidden.kill_timer(TRAY_ANIMATION);
+                    }
                 }
             }
             Event::App(APP_MEDIA) => {
@@ -1652,12 +1680,32 @@ impl Ui {
                 "TaskbarIconSource: Animation stopped"
             });
             if self.animator.running() {
-                self.hidden.set_timer(TRAY_ANIMATION, trayicon::FRAME_MS);
+                self.hidden.set_timer(TRAY_ANIMATION, self.animator.delay());
             } else {
                 self.hidden.kill_timer(TRAY_ANIMATION);
             }
         }
         self.show_icon();
+    }
+
+    /// Whether nobody can see the tray icon right now: the display is off,
+    /// the session is locked or a screen saver runs, or a full-screen app
+    /// covers the taskbar's monitor. Asked of the shell at most once a
+    /// second.
+    fn tray_unseen(&mut self) -> bool {
+        if self.display_off {
+            return true;
+        }
+        let now = std::time::Instant::now();
+        if let Some((at, unseen)) = self.unseen_checked
+            && now.duration_since(at).as_millis() < u128::from(UNSEEN_CHECK_MS)
+        {
+            return unseen;
+        }
+        let rect = self.tray_rect.or_else(|| self.tray.rect());
+        let unseen = bt_app::win32::presence::tray_unseen(rect);
+        self.unseen_checked = Some((now, unseen));
+        unseen
     }
 
     /// Pushes the icon to the shell only when what it shows changed (the
@@ -1670,11 +1718,7 @@ impl Ui {
         if self.icon == Some(state) {
             return;
         }
-        let icon = self
-            .animator
-            .pixels(state)
-            .and_then(|pixels| icon_adapter::from_bgra(state.size, &pixels));
-        if let Some(icon) = icon {
+        if let Some(icon) = self.animator.icon(state) {
             self.tray.set_icon(icon);
             self.icon = Some(state);
         }

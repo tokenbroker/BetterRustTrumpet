@@ -11,8 +11,12 @@
 //! While media plays the modern icon animates (VolumeIconGenerator): the
 //! speaker's waves fade in over a 16-frame loop, a waveform scrolls inside
 //! the headphones (48 frames) and an equalizer bounces on the monitor (16
-//! frames; both hold each pose for two frames), at 50 ms a frame.
-use bt_app::win32::trayicon::{self, SndVol};
+//! frames; both hold each pose for two frames), at 50 ms a frame. The
+//! timer fires only when the pose changes, and each pose's icon handle is
+//! made once per loop.
+use std::rc::Rc;
+
+use bt_app::win32::trayicon::{self, Icon, SndVol};
 use bt_audio::form_factor;
 
 /// DeviceViewModel.DeviceIconKind for the default output, or no device.
@@ -151,8 +155,8 @@ pub struct Animator {
     pub legacy_playing: bool,
     /// The glyph being animated and the current frame.
     running: Option<(Glyph, u16)>,
-    /// Rendered poses of the running loop, so each is drawn once.
-    cache: Vec<(State, Vec<u8>)>,
+    /// Icons of the running loop's poses, so each is drawn once.
+    cache: Vec<(State, Rc<Icon>)>,
 }
 
 impl Animator {
@@ -172,15 +176,35 @@ impl Animator {
         true
     }
 
-    /// OnAnimationTick: the next frame; a different glyph (the default
-    /// output changed kind) restarts from its first frame.
+    /// Frames until the running loop shows a different pose (the
+    /// original's timer ticks in between redraw the same icon).
+    fn hold(&self) -> u16 {
+        let Some((glyph, frame)) = self.running else {
+            return 1;
+        };
+        let count = frame_count(glyph);
+        let now = canonical(glyph, frame);
+        (1..count)
+            .find(|n| canonical(glyph, (frame + n) % count) != now)
+            .unwrap_or(count)
+    }
+
+    /// Milliseconds until the next pose.
+    pub fn delay(&self) -> u32 {
+        u32::from(self.hold()) * FRAME_MS
+    }
+
+    /// OnAnimationTick, skipping the ticks that would show the same pose;
+    /// a different glyph (the default output changed kind) restarts from
+    /// its first frame.
     pub fn tick(&mut self, base: &State) {
+        let hold = self.hold();
         if let Some((glyph, frame)) = &mut self.running {
             if *glyph != base.glyph {
                 *glyph = base.glyph;
                 *frame = 0;
             } else {
-                *frame = (*frame + 1) % frame_count(*glyph);
+                *frame = (*frame + hold) % frame_count(*glyph);
             }
         }
     }
@@ -193,15 +217,21 @@ impl Animator {
         }
     }
 
-    /// `pixels`, drawing each pose of the running loop only once.
-    pub fn pixels(&mut self, state: State) -> Option<Vec<u8>> {
+    /// The icon for `state`, drawing each pose of the running loop only
+    /// once.
+    pub fn icon(&mut self, state: State) -> Option<Rc<Icon>> {
+        let make = |state: State| {
+            pixels(state)
+                .and_then(|pixels| trayicon::from_bgra(state.size, &pixels))
+                .map(Rc::new)
+        };
         if state.frame.is_none() {
-            return pixels(state);
+            return make(state);
         }
         if let Some((_, cached)) = self.cache.iter().find(|(s, _)| *s == state) {
             return Some(cached.clone());
         }
-        let drawn = pixels(state)?;
+        let drawn = make(state)?;
         // A theme, size or glyph change starts a new set of poses.
         self.cache.retain(|(s, _)| {
             State { frame: None, ..*s }
@@ -640,6 +670,42 @@ mod tests {
         .unwrap();
         assert_eq!(alpha_at(&first, 24, 15, 12), 0);
         assert!(alpha_at(&full, 24, 15, 12) > 200);
+    }
+
+    #[test]
+    fn ticks_only_when_the_pose_changes() {
+        let base = State {
+            kind: Kind::Bars(3),
+            glyph: Glyph::Headphones,
+            light: false,
+            legacy: false,
+            size: 24,
+            frame: None,
+            contrast: None,
+        };
+        let mut animator = Animator {
+            session_playing: true,
+            ..Default::default()
+        };
+        assert!(animator.update(&base));
+        // Device poses are held for two frames.
+        assert_eq!(animator.delay(), 2 * FRAME_MS);
+        animator.tick(&base);
+        assert_eq!(animator.shown(base).frame, Some(2));
+        // A new glyph restarts; the speaker holds full waves from frame
+        // 10 to 15, then loops.
+        let speaker = State {
+            glyph: Glyph::Speaker,
+            ..base
+        };
+        animator.tick(&speaker);
+        for _ in 0..10 {
+            animator.tick(&speaker);
+        }
+        assert_eq!(animator.shown(speaker).frame, Some(10));
+        assert_eq!(animator.delay(), 6 * FRAME_MS);
+        animator.tick(&speaker);
+        assert_eq!(animator.shown(speaker).frame, Some(0));
     }
 
     #[test]
