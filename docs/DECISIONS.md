@@ -209,9 +209,9 @@ A timed check that finds a newer version tells through a notification from the t
 
 The port sends nothing about its users. The original's startup ping and its identity and region (N03), Sentry crash reporting (N04), the announcement feed, polls, surveys and votes (N02, the votes-worker client) are not ported; the opt-in update check (D55) is the only network request. The settings keys those features used are kept so settings still round-trip and export unchanged, and onboarding's Privacy page stores the consent answer without acting on it. This supersedes D16's feed, vote and telemetry scope and D19's client contract; the votes-worker itself stays untouched.
 
-## D60 - an Alucard theme (user decision, 2026-10-30)
+## D60 - Alucard and Blood Moon themes (user decision, 2026-10-30)
 
-A thirteenth built-in palette that the original lacks: Alucard, a blood moon (crimson thumb and glow, dark blood fill on near-black, a copper peak, bone-white text), under Atmosphere and listed after Dracula. Dracula keeps the original's colours. A C# install shown the name "Alucard" in ActiveThemeName would not find it and fall back as for any unknown name; the two apps keep separate settings, so that only matters for an exported file opened there. The parity test checks the original twelve and skips it.
+Two built-in palettes that the original lacks. Alucard, under Editors after Dracula, is Dracula's official light variant (purple thumb and glow, pink fill, cyan peak, dark text on cream), mapped to the channels as the original maps Dracula. Blood Moon, under Atmosphere after Aurora, is crimson thumb and glow, dark blood fill on near-black, a copper peak and bone-white text. Dracula keeps the original's colours. A C# install shown either name in ActiveThemeName would not find it and fall back as for any unknown name; the two apps keep separate settings, so that only matters for an exported file opened there. The parity test checks the original twelve and skips these two.
 
 ## Preserved quirks
 

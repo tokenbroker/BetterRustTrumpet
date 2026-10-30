@@ -242,9 +242,9 @@ impl BuiltinTheme {
 }
 
 pub const CATEGORIES: [&str; 5] = ["Minimal", "Apps", "Editors", "Atmosphere", "Accessibility"];
-/// The original's twelve palettes, plus Alucard (D60, ours: not in the
-/// original).
-pub const BUILTIN_THEMES: [BuiltinTheme; 13] = [
+/// The original's twelve palettes, plus Alucard and Blood Moon (D60, ours:
+/// not in the original).
+pub const BUILTIN_THEMES: [BuiltinTheme; 14] = [
     BuiltinTheme {
         name: "Default (Windows Accent)",
         category: "Minimal",
@@ -330,19 +330,19 @@ pub const BUILTIN_THEMES: [BuiltinTheme; 13] = [
         opacity: Some(0.75),
     },
     BuiltinTheme {
-        // A blood moon: crimson on near-black, with a copper peak.
+        // Dracula's official light variant, mapped as Dracula is.
         name: "Alucard",
-        category: "Atmosphere",
+        category: "Editors",
         colors: [
-            Rgb(230, 57, 70),
-            Rgb(160, 16, 32),
-            Rgb(38, 10, 13),
-            Rgb(255, 122, 61),
-            Rgb(20, 5, 7),
-            Rgb(242, 216, 212),
-            Rgb(200, 18, 40),
+            Rgb(100, 74, 201),
+            Rgb(163, 20, 77),
+            Rgb(207, 207, 222),
+            Rgb(3, 106, 150),
+            Rgb(255, 251, 235),
+            Rgb(31, 31, 31),
+            Rgb(100, 74, 201),
         ],
-        opacity: Some(0.8),
+        opacity: Some(0.85),
     },
     BuiltinTheme {
         name: "Catppuccin",
@@ -399,6 +399,21 @@ pub const BUILTIN_THEMES: [BuiltinTheme; 13] = [
             Rgb(0, 220, 150),
         ],
         opacity: Some(0.45),
+    },
+    BuiltinTheme {
+        // Crimson on near-black, with a copper peak.
+        name: "Blood Moon",
+        category: "Atmosphere",
+        colors: [
+            Rgb(230, 57, 70),
+            Rgb(160, 16, 32),
+            Rgb(38, 10, 13),
+            Rgb(255, 122, 61),
+            Rgb(20, 5, 7),
+            Rgb(242, 216, 212),
+            Rgb(200, 18, 40),
+        ],
+        opacity: Some(0.8),
     },
     BuiltinTheme {
         name: "High Contrast",
