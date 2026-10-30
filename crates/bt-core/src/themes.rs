@@ -242,7 +242,9 @@ impl BuiltinTheme {
 }
 
 pub const CATEGORIES: [&str; 5] = ["Minimal", "Apps", "Editors", "Atmosphere", "Accessibility"];
-pub const BUILTIN_THEMES: [BuiltinTheme; 12] = [
+/// The original's twelve palettes, plus Alucard (D60, ours: not in the
+/// original).
+pub const BUILTIN_THEMES: [BuiltinTheme; 13] = [
     BuiltinTheme {
         name: "Default (Windows Accent)",
         category: "Minimal",
@@ -326,6 +328,21 @@ pub const BUILTIN_THEMES: [BuiltinTheme; 12] = [
             Rgb(189, 147, 249),
         ],
         opacity: Some(0.75),
+    },
+    BuiltinTheme {
+        // A blood moon: crimson on near-black, with a copper peak.
+        name: "Alucard",
+        category: "Atmosphere",
+        colors: [
+            Rgb(230, 57, 70),
+            Rgb(160, 16, 32),
+            Rgb(38, 10, 13),
+            Rgb(255, 122, 61),
+            Rgb(20, 5, 7),
+            Rgb(242, 216, 212),
+            Rgb(200, 18, 40),
+        ],
+        opacity: Some(0.8),
     },
     BuiltinTheme {
         name: "Catppuccin",

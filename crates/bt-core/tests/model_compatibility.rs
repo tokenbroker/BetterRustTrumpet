@@ -64,8 +64,10 @@ fn hotkey_computed_property_and_invalid_default_slot_match_source() {
 
 #[test]
 fn all_twelve_palettes_match_actual_csharp_color_exports() {
+    // Alucard is ours (D60); the other twelve are the original's.
     let actual: Vec<Value> = BUILTIN_THEMES
         .into_iter()
+        .filter(|theme| theme.name != "Alucard")
         .map(|theme| serde_json::from_str(&theme.to_theme().to_json().unwrap()).unwrap())
         .collect();
     assert_eq!(actual, *reference()["themes"].as_array().unwrap());
@@ -75,6 +77,8 @@ fn all_twelve_palettes_match_actual_csharp_color_exports() {
     );
     assert!(!BUILTIN_THEMES[0].to_theme().is_custom);
     assert_eq!(BUILTIN_THEMES[0].opacity, None);
+    let alucard = BUILTIN_THEMES.iter().find(|t| t.name == "Alucard").unwrap();
+    assert!(CATEGORIES.contains(&alucard.category));
 }
 
 #[test]
