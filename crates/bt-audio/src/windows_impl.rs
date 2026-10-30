@@ -1068,8 +1068,10 @@ mod tests {
     }
 
     #[test]
-    fn protected_process_is_named_from_the_process_list() {
-        // csrss.exe can't be opened by a normal user but is always running.
+    fn protected_process_counts_as_running() {
+        // csrss.exe is always running. A normal user can't open it, so its
+        // name comes from the process list; an administrator (CI) gets the
+        // full path.
         let out = std::process::Command::new("tasklist")
             .args(["/fi", "imagename eq csrss.exe", "/fo", "csv", "/nh"])
             .output()
@@ -1085,6 +1087,6 @@ mod tests {
         let Process::Running(Some(name)) = process(pid) else {
             panic!("csrss.exe should count as running");
         };
-        assert!(name.eq_ignore_ascii_case("csrss.exe"), "{name}");
+        assert!(name.to_lowercase().ends_with("csrss.exe"), "{name}");
     }
 }
