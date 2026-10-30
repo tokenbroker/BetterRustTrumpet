@@ -138,6 +138,72 @@ pub fn randomize(core: &mut Core) {
     apply(core, &theme);
 }
 
+/// The original's GetDominantColorFromBitmap: the plain average of about
+/// 200 evenly spaced pixels, skipping very dark and very light ones.
+fn album_art_color(image: &bt_app::win32::gfx::Image) -> Option<Rgb> {
+    let pixels = &image.pixels;
+    let step = (pixels.len() / (4 * 200)).max(1) * 4;
+    let (mut r, mut g, mut b, mut n) = (0u64, 0u64, 0u64, 0u64);
+    let mut i = 0;
+    while i + 3 < pixels.len() {
+        let (pb, pg, pr) = (
+            u64::from(pixels[i]),
+            u64::from(pixels[i + 1]),
+            u64::from(pixels[i + 2]),
+        );
+        let sum = pr + pg + pb;
+        if sum > 60 && sum < 700 {
+            r += pr;
+            g += pg;
+            b += pb;
+            n += 1;
+        }
+        i += step;
+    }
+    (n > 0).then(|| Rgb((r / n) as u8, (g / n) as u8, (b / n) as u8))
+}
+
+/// ColorToHsv, with hue, saturation and value in 0..1.
+fn to_hsv(Rgb(r, g, b): Rgb) -> (f64, f64, f64) {
+    let (r, g, b) = (f64::from(r) / 255.0, f64::from(g) / 255.0, f64::from(b) / 255.0);
+    let (max, min) = (r.max(g).max(b), r.min(g).min(b));
+    let d = max - min;
+    let s = if max == 0.0 { 0.0 } else { d / max };
+    let mut h = 0.0;
+    if max != min {
+        h = if max == r {
+            (g - b) / d + if g < b { 6.0 } else { 0.0 }
+        } else if max == g {
+            (b - r) / d + 2.0
+        } else {
+            (r - g) / d + 4.0
+        };
+        h /= 6.0;
+    }
+    (h, s, max)
+}
+
+/// The dynamic album art theme (UseDynamicAlbumArtTheme): a palette around
+/// the art's average colour, written to the seven colour settings as the
+/// original's OnAlbumArtDebounceTick does. False when the art has no usable
+/// pixels.
+pub fn album_art(core: &mut Core, image: &bt_app::win32::gfx::Image) -> bool {
+    let Some(dominant) = album_art_color(image) else {
+        return false;
+    };
+    let (h, s, v) = to_hsv(dominant);
+    let lighter = hsv(h, (s * 0.6).max(0.3), (v * 1.4).min(1.0));
+    let darker = hsv(h, (s * 1.2).min(1.0), v * 0.4);
+    let muted = hsv(h, s * 0.5, v * 0.6);
+    let very_dark = hsv(h, (s * 0.8).min(1.0), v * 0.15);
+    let text = hsv(h, (s * 0.15).max(0.05), (v * 0.3 + 0.75).min(1.0));
+    let colors = [dominant, lighter, darker, muted, very_dark, text, lighter];
+    for ((_, key), Rgb(r, g, b)) in theme::CHANNEL_KEYS.iter().zip(colors) {
+        core.store.set_text(key, &color_text(Rgba::rgb(r, g, b)));
+    }
+    true
+}
+
 /// ResetToDefault: custom colours off, the extended colours unset and the
 /// default opacity.
 pub fn reset(core: &mut Core) {

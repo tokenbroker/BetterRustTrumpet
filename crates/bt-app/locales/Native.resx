@@ -119,6 +119,12 @@
   <data name="SettingsNotifyUpdatesDesc" xml:space="preserve">
     <value>A Windows notification, once per new version; Do not disturb holds it back. The flyout and the tray menu still show the update.</value>
   </data>
+  <data name="SettingsMediaPopupAlbumArtColors" xml:space="preserve">
+    <value>Use the album art's colour</value>
+  </data>
+  <data name="SettingsMediaPopupAlbumArtColorsDesc" xml:space="preserve">
+    <value>With a theme on, the popup's bars take the theme's colour. Turn this on to keep the colour of the cover art instead.</value>
+  </data>
   <data name="UpdateReleaseNotes" xml:space="preserve">
     <value>Release notes</value>
   </data>

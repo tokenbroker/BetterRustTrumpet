@@ -213,6 +213,10 @@ The port sends nothing about its users. The original's startup ping and its iden
 
 Two built-in palettes that the original lacks. Alucard, under Editors after Dracula, is Dracula's official light variant (purple thumb and glow, pink fill, cyan peak, dark text on cream), mapped to the channels as the original maps Dracula. Blood Moon, under Atmosphere after Aurora, is crimson thumb and glow, dark blood fill on near-black, a copper peak and bone-white text. Dracula keeps the original's colours. A C# install shown either name in ActiveThemeName would not find it and fall back as for any unknown name; the two apps keep separate settings, so that only matters for an exported file opened there. The parity test checks the original twelve and skips these two.
 
+## D61 - the media popup follows the theme (user decision, 2026-10-30)
+
+The original's media popup always colours its seek and volume bars from the album art, so with a theme on it changed colour from track to track. Here, while custom colours are on (a theme, a random palette or picked colours), the popup's bars use the theme's slider fill colour; with them off it keeps the album art's, as the original. A port-only switch, MediaPopupAlbumArtColors (Media popup > "Use the album art's colour", off), keeps the album art's colour with a theme on too. The dynamic album-art theme (UseDynamicAlbumArtTheme) is ported as the original's: on each new track it writes a palette around the art's average colour to the seven colour settings, so with it on the popup follows the art through the theme. To see new tracks, the media watch also subscribes to MediaPropertiesChanged.
+
 ## Preserved quirks
 
 | ID | Behavior to retain | Source / implication |

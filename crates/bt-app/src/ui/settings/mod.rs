@@ -5,7 +5,7 @@
 //! Store at once. Closing destroys the window and its pixels.
 mod lists;
 mod pages;
-mod themes;
+pub(super) mod themes;
 mod widgets;
 
 pub use pages::PageId;

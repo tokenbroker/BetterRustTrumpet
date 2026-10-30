@@ -1073,6 +1073,12 @@ fn media(core: &mut Core) -> Vec<Section> {
                     tr("SettingsRememberExpanded"),
                     None,
                 ),
+                toggle(
+                    core,
+                    Key::MediaPopupAlbumArtColors,
+                    tr("SettingsMediaPopupAlbumArtColors"),
+                    Some(tr("SettingsMediaPopupAlbumArtColorsDesc")),
+                ),
             ],
         ),
     ]

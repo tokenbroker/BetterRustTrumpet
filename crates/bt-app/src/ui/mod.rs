@@ -190,6 +190,8 @@ pub struct Ui {
     /// Routed preset apps re-applied by PRESET_SETTLE, and ticks left.
     settle: Vec<AppVolumeEntry>,
     settle_ticks: u32,
+    /// The art the dynamic album art theme last used.
+    album_art: Option<std::sync::Arc<Vec<u8>>>,
     /// CheckGitHubForUpdates as last applied.
     update_checks: bool,
     /// The running check was asked for (Settings, `bt`): no notification.
@@ -290,6 +292,7 @@ pub fn run(core: Core) -> windows::core::Result<()> {
         form_factor: None,
         settle: vec![],
         settle_ticks: 0,
+        album_art: None,
         update_checks: false,
         update_manual: false,
         update_notified: false,
@@ -1340,6 +1343,7 @@ impl Ui {
             self.form_factor = None;
             self.present_tooltip();
             self.reload_theme();
+            self.album_art_theme();
             if self.flyout.visible {
                 self.flyout.window.set_acrylic(self.theme.acrylic);
                 self.flyout.paint(&self.theme);
@@ -1412,6 +1416,55 @@ impl Ui {
     fn reload_theme(&mut self) {
         self.theme = theme::Theme::load(&self.core.store, self.icon_font);
         self.share_contrast();
+        // With a theme on, the media popup takes its fill colour rather
+        // than the album art's, unless asked to keep the art's (D61).
+        let follow_art = self.core.store.bool(Key::MediaPopupAlbumArtColors);
+        let accent = self.theme.custom.filter(|_| !follow_art).map(|c| c.fill);
+        self.media.set_theme_accent(accent);
+        if self.media.visible {
+            self.media.paint();
+        }
+    }
+
+    /// UseDynamicAlbumArtTheme: recolours the theme from the playing
+    /// track's art when it changes, as the original's album art monitoring
+    /// does (only with custom colours on, and only for a session's own art).
+    fn album_art_theme(&mut self) {
+        let store = &self.core.store;
+        if !store.bool(Key::UseDynamicAlbumArtTheme) || !store.bool(Key::UseCustomSliderColors) {
+            self.album_art = None;
+            return;
+        }
+        let art = self
+            .core
+            .media
+            .as_ref()
+            .and_then(|m| m.now_playing().ok().flatten())
+            .and_then(|n| n.art);
+        let Some(art) = art else {
+            return;
+        };
+        if self.album_art.as_ref().is_some_and(|last| **last == *art) {
+            return;
+        }
+        self.album_art = Some(art.clone());
+        let Some(image) = bt_app::win32::gfx::decode_image(&art, 400) else {
+            return;
+        };
+        if !settings::themes::album_art(&mut self.core, &image) {
+            return;
+        }
+        self.reload_theme();
+        if self.flyout.visible {
+            self.flyout.window.set_acrylic(self.theme.acrylic);
+            self.flyout.paint(&self.theme);
+        }
+        if let Some(mixer) = &mut self.mixer {
+            mixer.retheme(&self.theme);
+        }
+        if let Some(settings) = &mut self.settings {
+            settings.refresh(&mut self.core);
+        }
     }
 
     /// Hands the high-contrast colours to the windows that draw their own
@@ -1647,6 +1700,7 @@ impl Ui {
                 }
                 self.animator.session_playing = playing;
                 self.animate();
+                self.album_art_theme();
             }
             Event::Timer(focus::FADE_TIMER) => self.focus.timer(&mut self.core),
             Event::App(focus::APP_FOREGROUND) => self.focus.foreground_changed(&mut self.core),

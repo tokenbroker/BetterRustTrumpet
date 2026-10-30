@@ -94,8 +94,9 @@ impl Engine {
 }
 
 /// The change subscriptions: the manager's two events, and
-/// PlaybackInfoChanged on every session (re-made when the sessions change,
-/// like the original's SubscribeToAllSessions).
+/// PlaybackInfoChanged and MediaPropertiesChanged (a new track) on every
+/// session (re-made when the sessions change, like the original's
+/// SubscribeToAllSessions).
 struct Watch {
     listener: Arc<dyn Fn() + Send + Sync>,
     /// Set by the manager's handlers; the next call on the worker thread
@@ -103,7 +104,7 @@ struct Watch {
     /// the worker still ends when the engine is dropped.
     stale: Arc<AtomicBool>,
     manager_tokens: [i64; 2],
-    sessions: Vec<(Session, i64)>,
+    sessions: Vec<(Session, i64, i64)>,
 }
 
 /// Cover art is read once per track rather than on every poll.
@@ -125,8 +126,9 @@ impl Drop for Backend {
                 .manager
                 .RemoveCurrentSessionChanged(watch.manager_tokens[0]);
             let _ = self.manager.RemoveSessionsChanged(watch.manager_tokens[1]);
-            for (session, token) in watch.sessions {
-                let _ = session.RemovePlaybackInfoChanged(token);
+            for (session, playback, properties) in watch.sessions {
+                let _ = session.RemovePlaybackInfoChanged(playback);
+                let _ = session.RemoveMediaPropertiesChanged(properties);
             }
         }
     }
@@ -179,27 +181,42 @@ impl Backend {
         self.resubscribe();
         Ok(())
     }
-    /// Re-subscribes PlaybackInfoChanged on the current list of sessions.
+    /// Re-subscribes the session events on the current list of sessions.
     fn resubscribe(&self) {
         let mut watch = self.watch.borrow_mut();
         let Some(watch) = watch.as_mut() else {
             return;
         };
         watch.stale.store(false, Ordering::Release);
-        for (session, token) in watch.sessions.drain(..) {
-            let _ = session.RemovePlaybackInfoChanged(token);
+        for (session, playback, properties) in watch.sessions.drain(..) {
+            let _ = session.RemovePlaybackInfoChanged(playback);
+            let _ = session.RemoveMediaPropertiesChanged(properties);
         }
         let Ok(list) = self.manager.GetSessions() else {
             return;
         };
         for session in list {
             let listener = watch.listener.clone();
-            let token = session.PlaybackInfoChanged(&TypedEventHandler::new(move |_, _| {
+            let playback = session.PlaybackInfoChanged(&TypedEventHandler::new(move |_, _| {
                 listener();
                 Ok(())
             }));
-            if let Ok(token) = token {
-                watch.sessions.push((session, token));
+            let listener = watch.listener.clone();
+            let properties = session.MediaPropertiesChanged(&TypedEventHandler::new(move |_, _| {
+                listener();
+                Ok(())
+            }));
+            match (playback, properties) {
+                (Ok(playback), Ok(properties)) => {
+                    watch.sessions.push((session, playback, properties));
+                }
+                (Ok(playback), Err(_)) => {
+                    let _ = session.RemovePlaybackInfoChanged(playback);
+                }
+                (Err(_), Ok(properties)) => {
+                    let _ = session.RemoveMediaPropertiesChanged(properties);
+                }
+                (Err(_), Err(_)) => {}
             }
         }
     }

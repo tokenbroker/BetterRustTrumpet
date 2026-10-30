@@ -7,7 +7,7 @@ This file is the source of truth for completion. An unchecked item is incomplete
 Every open item below was re-checked against the code; the notes under each say what exists and what is missing. Most features are built but, by D47, only compile-checked, unit-tested or drawn offscreen: the testing pass has not happened yet.
 
 - **Checked live:** the update check, update notification and one-click update (MANUAL_TESTS 46, 47, 49), the setup (48), the tray menu's update item, exited-process sessions on a user's PC (alpha.6), and `bt ping`.
-- **Switches that do nothing yet:** Logarithmic volume (stored, never applied), Dynamic album-art theme (stored, never applied) and the monkey sound (no unlock and no sound files).
+- **Switches that do nothing yet:** Logarithmic volume (stored, never applied) and the monkey sound (no unlock and no sound files).
 - **Missing features:** settings migration from a portable or Microsoft Store (MSIX) BetterTrumpet (only the installed/registry one is read); the tray update badge; settings search, sidebar collapse and window placement; theme import/export and the 300 ms transition; per-channel volume and input-device control; screen-reader support; RTL and high contrast in the settings window, palette, onboarding and toasts; seek retry and the media session fallback; health monitoring and crash exports; arm64 builds; winget and Chocolatey manifests; Crowdin workflow.
 - **Decisions still needed:** the Actions addon (B03/D22); whether the IPC pipe keeps its own name (it differs from the original's on purpose, so the two apps can run side by side, which rules out C#/Rust cross-compatibility); `BetterTrumpet.exe` does not answer CLI arguments itself and no `bt.cmd` ships; items written for the web UI that D48 replaced. Telemetry, Sentry, the announcement feed and votes are not ported (D59).
 - **Not measured:** warm flyout latency, idle RAM/CPU and size against the C# build.
@@ -171,7 +171,7 @@ In progress: workspace/bt-core, CLI/protocol/response DTOs, batch/Doctor aggrega
 - [ ] Theme selection/custom save/rename where present/delete/import/export/random/reset and legacy format defaults.
   - Missing in the UI: import/export (clipboard and file), rename and the 300 ms transition. Import parsing exists and is tested in bt-core.
 - [ ] Album-art dynamic colors/cache/fallback/high contrast and every peak-meter style.
-  - All five peak-meter styles are drawn. The dynamic album-art theme is missing: `UseDynamicAlbumArtTheme` is stored but nothing applies it (the media card's own accent does follow the art).
+  - All five peak-meter styles are drawn. The dynamic album-art theme recolours the seven colour settings from the playing track's art on each new track, as the original's (only with custom colours on; choosing a preset turns it off). Not yet checked live. With a theme on, the media popup takes the theme's fill colour unless "Use the album art's colour" is on (D61).
 - [ ] D18 ColorTool classified as developer tooling or any discovered production dependency covered.
   - Not classified yet.
 - [ ] Build/tests pass, PARITY updated, focused milestone commit and PROGRESS entry created.

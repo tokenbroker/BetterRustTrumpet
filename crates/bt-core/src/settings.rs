@@ -55,6 +55,9 @@ keys! {
     WindowBackgroundOpacity: Float(0.7), VolumeProfilesJson: Text(Some("[]".into())),
     ShowQuickTrumpetConfirmation: Bool(true), QuickTrumpetNotificationSeconds: Int(3),
     QuickTrumpetLastAppliedId: Text(Some(String::new())), UseDynamicAlbumArtTheme: Bool(false),
+    // Port-only (D61): the media popup keeps the album art's colour even
+    // when a theme is on.
+    MediaPopupAlbumArtColors: Bool(false),
     MixerWindowWidth: Float(0.0), MixerWindowHeight: Float(0.0),
     NotifyOnDefaultDeviceChange: Bool(false), NotifyOnDeviceHotkeyChange: Bool(true),
     UseFocusLostVolume: Bool(false), FocusLostAttenuatePercent: Int(0),
@@ -227,7 +230,10 @@ impl Settings {
             IsTelemetryEnabled => vec![E::TelemetryConsentChanged],
             AnnouncementsEnabled => vec![E::AnnouncementsEnabledChanged],
             EcoMode => vec![E::EcoModeChanged],
-            UseCustomSliderColors | CustomThemesJson | UseDynamicAlbumArtTheme => {
+            UseCustomSliderColors
+            | CustomThemesJson
+            | UseDynamicAlbumArtTheme
+            | MediaPopupAlbumArtColors => {
                 vec![E::CustomSliderColorsChanged]
             }
             PeakMeterStyle if self.batch => vec![E::PeakMeterStyleChanged],

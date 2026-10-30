@@ -107,6 +107,10 @@ pub struct Media {
     accent_from: Rgba,
     accent_to: Rgba,
     accent_at: Instant,
+    /// The current art's colour (the original's GetDominantColor).
+    art_accent: Rgba,
+    /// The theme's colour, used instead of the art's when set (D61).
+    theme_accent: Option<Rgba>,
     /// Position anchor: when, and the position then.
     anchor: (Instant, i64),
     seek_pending: Option<Instant>,
@@ -230,6 +234,8 @@ impl Media {
             accent_from: DEFAULT_ACCENT,
             accent_to: DEFAULT_ACCENT,
             accent_at: now,
+            art_accent: DEFAULT_ACCENT,
+            theme_accent: None,
             anchor: (now, 0),
             seek_pending: None,
             drag: None,
@@ -397,6 +403,13 @@ impl Media {
         self.accent_from.lerp(self.accent_to, t)
     }
 
+    /// The theme's colour for the bars and toggles, or `None` to follow the
+    /// album art as the original does (D61).
+    pub fn set_theme_accent(&mut self, color: Option<Rgba>) {
+        self.theme_accent = color;
+        self.set_accent(color.unwrap_or(self.art_accent));
+    }
+
     fn set_accent(&mut self, color: Rgba) {
         let now = Instant::now();
         if color == self.accent_to {
@@ -434,8 +447,8 @@ impl Media {
         if !same_art {
             let decoded = art.as_ref().and_then(|bytes| gfx::decode_image(bytes, 400));
             self.art_bytes = art;
-            let accent = decoded.as_deref().map_or(DEFAULT_ACCENT, dominant_color);
-            self.set_accent(accent);
+            self.art_accent = decoded.as_deref().map_or(DEFAULT_ACCENT, dominant_color);
+            self.set_accent(self.theme_accent.unwrap_or(self.art_accent));
             // Low-resolution art is shown slightly blurred (ApplyThumbnail).
             self.art = decoded.map(super::blur::soften_art);
         }
