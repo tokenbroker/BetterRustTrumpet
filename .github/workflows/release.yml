@@ -1,7 +1,7 @@
 name: Release
 
 # Pushing a tag like v0.1.0-alpha.2 builds the zip on GitHub and publishes it
-# as a release (a pre-release when the tag has a "-" suffix). Running the
+# as the Latest release (alphas too, so the repository page shows them). Running the
 # workflow by hand only builds the zip and keeps it as a workflow artifact.
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
   release:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Build
@@ -105,7 +105,7 @@ jobs:
 
       - name: Keep the zip (manual runs)
         if: github.ref_type != 'tag'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.package.outputs.name }}
           path: |
@@ -123,8 +123,10 @@ jobs:
           $zip = "${{ steps.package.outputs.name }}.zip"
           $notes = (Get-Content packaging\RELEASE_NOTES.md -Raw).Replace('{version}', '${{ steps.package.outputs.version }}').Replace('{sha256}', '${{ steps.package.outputs.hash }}').Replace('{zip}', $zip).Replace('{setup}', '${{ steps.setup.outputs.file }}').Replace('{setup_sha256}', '${{ steps.setup.outputs.hash }}')
           $notes | Set-Content notes.md -Encoding utf8
-          $extra = @()
-          if ($tag.Contains('-')) { $extra += '--prerelease' }
+          # Alphas are published as Latest, so the repository page shows
+          # them (as the original's releases); the app's updater still treats
+          # a "-" version as a pre-release (updates.rs).
+          $extra = @('--latest')
           # The setup and the zip for people; the exes and the signed
           # manifest for the app's updater (D56, D57).
           $assets = @((Get-ChildItem setup\*.exe).FullName, $zip) + (Get-ChildItem dist | ForEach-Object { $_.FullName })

@@ -126,8 +126,9 @@ pub fn relevant(current: &Version, newer: &Version, channel: i32) -> bool {
 }
 
 /// Picks the newest relevant release from GitHub's release list. Drafts
-/// never count; pre-releases count only when this build is one. `None` when
-/// the answer is not a release list.
+/// never count; pre-releases (GitHub's flag or a version suffix such as
+/// `-alpha.6`, since alphas are published as Latest) count only when this
+/// build is one. `None` when the answer is not a release list.
 pub fn pick(json: &[u8], current: &str, channel: i32) -> Option<Option<Release>> {
     let current = Version::parse(current)?;
     let list: serde_json::Value = serde_json::from_slice(json).ok()?;
@@ -144,6 +145,9 @@ pub fn pick(json: &[u8], current: &str, channel: i32) -> Option<Option<Release>>
                 return None;
             }
             let version = Version::parse(tag)?;
+            if version.is_prerelease() && !current.is_prerelease() {
+                return None;
+            }
             Some((version, tag, url, r))
         })
         .filter(|(v, ..)| *v > current && relevant(&current, v, channel))
@@ -271,13 +275,18 @@ mod tests {
 
     #[test]
     fn stable_builds_ignore_prereleases() {
-        let json = list(&[("v0.2.0-alpha.1", true, false), ("v0.1.1", false, false)]);
+        // Flagged on GitHub, or only by its version (published as Latest).
+        let json = list(&[
+            ("v0.2.0-alpha.1", true, false),
+            ("v0.2.0-beta.1", false, false),
+            ("v0.1.1", false, false),
+        ]);
         let found = pick(&json, "0.1.0", 0).unwrap().unwrap();
         assert_eq!(found.version, "0.1.1");
         assert_eq!(pick(&json, "0.1.1", 0), Some(None));
         // A pre-release build is offered the newer pre-release.
         let found = pick(&json, "0.1.0-alpha.3", 0).unwrap().unwrap();
-        assert_eq!(found.version, "0.2.0-alpha.1");
+        assert_eq!(found.version, "0.2.0-beta.1");
     }
 
     /// The real request (`cargo test -p bt-app -- --ignored asks_github`).
