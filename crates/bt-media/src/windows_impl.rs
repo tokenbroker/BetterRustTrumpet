@@ -202,10 +202,11 @@ impl Backend {
                 Ok(())
             }));
             let listener = watch.listener.clone();
-            let properties = session.MediaPropertiesChanged(&TypedEventHandler::new(move |_, _| {
-                listener();
-                Ok(())
-            }));
+            let properties =
+                session.MediaPropertiesChanged(&TypedEventHandler::new(move |_, _| {
+                    listener();
+                    Ok(())
+                }));
             match (playback, properties) {
                 (Ok(playback), Ok(properties)) => {
                     watch.sessions.push((session, playback, properties));

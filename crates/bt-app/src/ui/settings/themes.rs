@@ -165,7 +165,11 @@ fn album_art_color(image: &bt_app::win32::gfx::Image) -> Option<Rgb> {
 
 /// ColorToHsv, with hue, saturation and value in 0..1.
 fn to_hsv(Rgb(r, g, b): Rgb) -> (f64, f64, f64) {
-    let (r, g, b) = (f64::from(r) / 255.0, f64::from(g) / 255.0, f64::from(b) / 255.0);
+    let (r, g, b) = (
+        f64::from(r) / 255.0,
+        f64::from(g) / 255.0,
+        f64::from(b) / 255.0,
+    );
     let (max, min) = (r.max(g).max(b), r.min(g).min(b));
     let d = max - min;
     let s = if max == 0.0 { 0.0 } else { d / max };
