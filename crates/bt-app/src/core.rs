@@ -6,7 +6,7 @@ use crate::{
     store::{Store, with_env},
 };
 use bt_app::win32::clock;
-use bt_audio::{AppSession, AudioEngine, Device};
+use bt_audio::{AppSession, AudioEngine, AudioError, Device, Snapshot};
 use bt_core::{
     app_rules::{Metadata, Mutation},
     hidden::AppKey,
@@ -24,6 +24,78 @@ pub struct Core {
     pub launch: rules::LaunchTracker,
     /// The update check's last result (D55).
     pub update: bt_app::updates::Status,
+    /// Apps moved to another output from the flyout or the mixer.
+    pub moved: Vec<Moved>,
+    /// Sessions already sent back to their saved output (key, device).
+    pub forced: Vec<(String, String)>,
+}
+
+/// An app moved off a device, as the original's MoveToDevice with `hide`:
+/// its entry there is hidden (at once, or once it stops playing) until it
+/// plays there again or its session ends. Until it opens a session on the
+/// new device it is shown there anyway (TemporaryAppItemViewModel), and
+/// its controls still reach the old one.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Moved {
+    pub key: String,
+    pub from: String,
+    pub to: String,
+    /// Hidden on `from` now; otherwise once it goes quiet there.
+    pub hidden: bool,
+    /// Windows briefly reactivates a moved session; that is not playing.
+    pub at: std::time::Instant,
+}
+
+/// How long after a move a session's activity is ignored.
+const MOVE_SETTLE: std::time::Duration = std::time::Duration::from_millis(1500);
+
+fn find_app(snapshot: &Snapshot, device: &str, key: &str) -> Option<AppSession> {
+    snapshot
+        .devices
+        .iter()
+        .find(|d| d.id == device)
+        .and_then(|d| d.apps.iter().find(|a| a.key == key))
+        .cloned()
+}
+
+/// Updates the moves from a fresh snapshot and applies them to it: an
+/// entry is hidden on its old device and shown on its new one.
+fn arrange(moved: &mut Vec<Moved>, snapshot: &mut Snapshot, now: std::time::Instant) {
+    moved.retain_mut(|m| {
+        let Some(app) = find_app(snapshot, &m.from, &m.key) else {
+            // Its session there ended.
+            return false;
+        };
+        let settled = now.duration_since(m.at) > MOVE_SETTLE;
+        if m.hidden && app.active && settled {
+            // Playing there again.
+            return false;
+        }
+        if !app.active {
+            m.hidden = true;
+        }
+        true
+    });
+    for m in moved.iter() {
+        if find_app(snapshot, &m.to, &m.key).is_some() {
+            continue;
+        }
+        let Some(mut app) = find_app(snapshot, &m.from, &m.key) else {
+            continue;
+        };
+        app.peak = 0.0;
+        if let Some(device) = snapshot.devices.iter_mut().find(|d| d.id == m.to) {
+            device.apps.push(app);
+            device
+                .apps
+                .sort_by_key(|a| (a.is_system_sounds, a.display_name.to_lowercase()));
+        }
+    }
+    for m in moved.iter().filter(|m| m.hidden) {
+        if let Some(device) = snapshot.devices.iter_mut().find(|d| d.id == m.from) {
+            device.apps.retain(|a| a.key != m.key);
+        }
+    }
 }
 
 /// A hidden app entry saved for a device.
@@ -125,9 +197,10 @@ pub enum RuleKind {
 impl Core {
     /// Devices and apps with their hidden state and app rules.
     pub fn view(&mut self) -> View {
-        let Ok(snapshot) = self.audio.snapshot() else {
+        let Ok(mut snapshot) = self.audio.snapshot() else {
             return View::default();
         };
+        self.place_moved(&mut snapshot);
         let store = &mut self.store;
         let view = with_env(|env| View {
             devices: snapshot
@@ -181,6 +254,82 @@ impl Core {
         view
     }
 
+    /// Moves an app to `target` (the default output when `None`) and
+    /// remembers the move so the flyout shows it there at once.
+    pub fn route_app(&mut self, key: &str, target: Option<&str>) -> Result<(), AudioError> {
+        self.audio.set_app_device(key, target)?;
+        let snapshot = self.audio.snapshot()?;
+        let to = match target {
+            Some(id) => id.to_owned(),
+            None => match snapshot.devices.iter().find(|d| d.is_default) {
+                Some(d) => d.id.clone(),
+                None => return Ok(()),
+            },
+        };
+        // Moving back to a device it was hidden on shows it there again.
+        self.moved.retain(|m| !(m.key == key && m.from == to));
+        for m in self.moved.iter_mut().filter(|m| m.key == key) {
+            m.to.clone_from(&to);
+        }
+        for device in snapshot.devices.iter().filter(|d| d.id != to) {
+            if let Some(app) = device.apps.iter().find(|a| a.key == key) {
+                self.note_move(key, &device.id, &to, app.active);
+            }
+        }
+        Ok(())
+    }
+
+    fn note_move(&mut self, key: &str, from: &str, to: &str, active: bool) {
+        if self.moved.iter().any(|m| m.key == key && m.from == from) {
+            return;
+        }
+        self.moved.push(Moved {
+            key: key.into(),
+            from: from.into(),
+            to: to.into(),
+            hidden: !active,
+            at: std::time::Instant::now(),
+        });
+    }
+
+    /// Applies the moves to a fresh snapshot: hides moved entries, shows
+    /// them on their new device until they have a session there, and sends
+    /// a session that opened away from its saved output back to it (the
+    /// original's SyncPersistedEndpoint, for a Windows bug that reopens
+    /// some apps on the old device).
+    fn place_moved(&mut self, snapshot: &mut Snapshot) {
+        let ids: Vec<String> = snapshot.devices.iter().map(|d| d.id.clone()).collect();
+        let mut force = vec![];
+        for device in &snapshot.devices {
+            for app in device.apps.iter().filter(|a| !a.is_system_sounds) {
+                let Some(saved) = &app.routed_device_id else {
+                    continue;
+                };
+                let done = (app.key.clone(), device.id.clone());
+                if saved != &device.id && ids.contains(saved) && !self.forced.contains(&done) {
+                    force.push((done, saved.clone(), app.active));
+                }
+            }
+        }
+        for ((key, from), to, active) in force {
+            let _ = self.audio.set_app_device(&key, Some(&to));
+            self.note_move(&key, &from, &to, active);
+            self.forced.push((key, from));
+        }
+        self.forced
+            .retain(|(key, device)| find_app(snapshot, device, key).is_some());
+        arrange(&mut self.moved, snapshot, std::time::Instant::now());
+    }
+
+    /// The device whose sessions an app's controls reach: a moved app
+    /// without a session on its new device yet still plays on the old one.
+    fn session_device(&self, device: &str, key: &str) -> Option<String> {
+        self.moved
+            .iter()
+            .find(|m| m.key == key && m.to == device)
+            .map(|m| m.from.clone())
+    }
+
     pub fn record_volume(&mut self, target: Target, old: i32, new: i32) {
         self.undo
             .record_volume_change(target, old, new, clock::local_now_ms());
@@ -211,18 +360,30 @@ impl Core {
     ) {
         self.record_volume(undo_target(key, name, false), previous, percent(volume));
         let _ = self.audio.set_app_volume(device, key, volume);
+        if let Some(source) = self.session_device(device, key) {
+            let _ = self.audio.set_app_volume(&source, key, volume);
+        }
     }
     pub fn set_app_mute(&mut self, device: &str, key: &str, name: &str, muted: bool) {
         self.record_mute(undo_target(key, name, false), !muted, muted);
         let _ = self.audio.set_app_mute(device, key, muted);
+        if let Some(source) = self.session_device(device, key) {
+            let _ = self.audio.set_app_mute(&source, key, muted);
+        }
     }
     /// One process's session (the app popup's rows). The original cannot
     /// undo these: its undo targets whole apps.
     pub fn set_process_volume(&mut self, device: &str, key: &str, pid: u32, volume: f32) {
         let _ = self.audio.set_process_volume(device, key, pid, volume);
+        if let Some(source) = self.session_device(device, key) {
+            let _ = self.audio.set_process_volume(&source, key, pid, volume);
+        }
     }
     pub fn set_process_mute(&mut self, device: &str, key: &str, pid: u32, muted: bool) {
         let _ = self.audio.set_process_mute(device, key, pid, muted);
+        if let Some(source) = self.session_device(device, key) {
+            let _ = self.audio.set_process_mute(&source, key, pid, muted);
+        }
     }
 
     /// Hidden entries are saved (HiddenAppEntriesJson), so they stay hidden
@@ -404,5 +565,128 @@ impl Core {
                 .audio
                 .set_device_volume(&device.id, device.volume + notches as f32 * 0.02);
         }
+    }
+}
+
+#[cfg(test)]
+mod move_tests {
+    use super::*;
+    use std::time::{Duration, Instant};
+
+    fn app(key: &str, active: bool) -> AppSession {
+        AppSession {
+            key: key.into(),
+            display_name: key.into(),
+            executable: None,
+            process_ids: vec![1],
+            is_system_sounds: false,
+            volume: 1.0,
+            muted: false,
+            peak: 0.5,
+            routed_device_id: None,
+            active,
+            sessions: vec![],
+        }
+    }
+
+    fn device(id: &str, apps: Vec<AppSession>) -> Device {
+        Device {
+            id: id.into(),
+            name: id.into(),
+            description: String::new(),
+            enumerator: String::new(),
+            is_default: false,
+            volume: 1.0,
+            muted: false,
+            peak: 0.0,
+            apps,
+        }
+    }
+
+    fn keys(snapshot: &Snapshot, id: &str) -> Vec<String> {
+        let device = snapshot.devices.iter().find(|d| d.id == id).unwrap();
+        device.apps.iter().map(|a| a.key.clone()).collect()
+    }
+
+    fn moved(active: bool, at: Instant) -> Vec<Moved> {
+        vec![Moved {
+            key: "app".into(),
+            from: "a".into(),
+            to: "b".into(),
+            hidden: !active,
+            at,
+        }]
+    }
+
+    #[test]
+    fn a_quiet_app_moves_at_once() {
+        let mut snapshot = Snapshot {
+            devices: vec![device("a", vec![app("app", false)]), device("b", vec![])],
+        };
+        let mut moves = moved(false, Instant::now());
+        arrange(&mut moves, &mut snapshot, Instant::now());
+        assert!(keys(&snapshot, "a").is_empty());
+        assert_eq!(keys(&snapshot, "b"), ["app"]);
+        // Shown there without the old device's meter.
+        assert_eq!(snapshot.devices[1].apps[0].peak, 0.0);
+    }
+
+    #[test]
+    fn a_playing_app_stays_until_it_goes_quiet() {
+        let now = Instant::now();
+        let mut moves = moved(true, now);
+        let mut snapshot = Snapshot {
+            devices: vec![device("a", vec![app("app", true)]), device("b", vec![])],
+        };
+        arrange(&mut moves, &mut snapshot, now);
+        assert_eq!(keys(&snapshot, "a"), ["app"]);
+        assert_eq!(keys(&snapshot, "b"), ["app"]);
+        let mut snapshot = Snapshot {
+            devices: vec![device("a", vec![app("app", false)]), device("b", vec![])],
+        };
+        arrange(&mut moves, &mut snapshot, now);
+        assert!(keys(&snapshot, "a").is_empty());
+        assert!(moves[0].hidden);
+    }
+
+    #[test]
+    fn a_real_session_replaces_the_stand_in() {
+        let mut snapshot = Snapshot {
+            devices: vec![
+                device("a", vec![app("app", false)]),
+                device("b", vec![app("app", true)]),
+            ],
+        };
+        let mut moves = moved(false, Instant::now());
+        arrange(&mut moves, &mut snapshot, Instant::now());
+        assert!(keys(&snapshot, "a").is_empty());
+        assert_eq!(keys(&snapshot, "b"), ["app"]);
+        assert_eq!(snapshot.devices[1].apps[0].peak, 0.5);
+    }
+
+    #[test]
+    fn playing_on_the_old_device_again_shows_it_there() {
+        let then = Instant::now() - Duration::from_secs(5);
+        let mut moves = moved(false, then);
+        let mut snapshot = Snapshot {
+            devices: vec![device("a", vec![app("app", true)]), device("b", vec![])],
+        };
+        // Right after the move, activity there is Windows settling it.
+        let mut early = moved(false, Instant::now());
+        arrange(&mut early, &mut snapshot.clone(), Instant::now());
+        assert_eq!(early.len(), 1);
+        arrange(&mut moves, &mut snapshot, Instant::now());
+        assert!(moves.is_empty());
+        assert_eq!(keys(&snapshot, "a"), ["app"]);
+    }
+
+    #[test]
+    fn a_move_ends_with_its_old_session() {
+        let mut snapshot = Snapshot {
+            devices: vec![device("a", vec![]), device("b", vec![])],
+        };
+        let mut moves = moved(false, Instant::now());
+        arrange(&mut moves, &mut snapshot, Instant::now());
+        assert!(moves.is_empty());
     }
 }

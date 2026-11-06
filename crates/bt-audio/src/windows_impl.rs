@@ -890,9 +890,11 @@ impl Backend {
                 Some(app) => {
                     app.process_ids.push(session.pid);
                     app.peak = app.peak.max(peak);
+                    app.active |= session.active;
                     app.sessions.push(process);
                 }
                 None => apps.push(AppSession {
+                    active: session.active,
                     key: session.key,
                     display_name: session.display_name,
                     executable: session.executable,

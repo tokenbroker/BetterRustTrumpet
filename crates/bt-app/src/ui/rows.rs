@@ -395,7 +395,7 @@ pub fn run_command(view: &View, core: &mut Core, command: Command) -> bool {
             }
         }
         Command::Route(key, device) => {
-            let _ = core.audio.set_app_device(&key, device.as_deref());
+            let _ = core.route_app(&key, device.as_deref());
         }
         Command::SetDefault(device) => {
             let _ = core.audio.set_default_device(&device);

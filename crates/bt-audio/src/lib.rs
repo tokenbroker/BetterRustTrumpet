@@ -51,6 +51,8 @@ pub struct AppSession {
     pub peak: f32,
     /// Output the app is routed to, when not following the default.
     pub routed_device_id: Option<String>,
+    /// Any of its sessions is active (producing sound now).
+    pub active: bool,
     /// Each process's own session (the original's child rows).
     pub sessions: Vec<ProcessSession>,
 }

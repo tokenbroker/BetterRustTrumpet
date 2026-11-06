@@ -100,6 +100,8 @@ fn main() {
         undo: UndoHistory::default(),
         launch: rules::LaunchTracker::default(),
         update: Default::default(),
+        moved: vec![],
+        forced: vec![],
     };
     if let Some(dir) = render {
         let _ = ui::render(core, &dir);
